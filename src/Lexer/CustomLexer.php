@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Lexer;
+
+use PhpParser\Lexer\Emulative;
+use PhpParser\Parser\Tokens;
+
+class CustomLexer extends Emulative {
+    public function getTokens(): array {
+        $tokens = parent::getTokens();
+        $newTokens = [];
+
+        foreach ($tokens as $token) {
+            if (is_array($token) && $token[0] === Tokens::T_STRING) {
+                $value = $token[1];
+                $reserved = ['echo', 'var', 'func', 'return', 'if', 'else', 'new', 'stdClass', 'true', 'false'];
+
+                // if its a word thar is not reserved, then became T_VARIABLE
+                if (!in_array($value, $reserved)) {
+                    $token[0] = Tokens::T_VARIABLE;
+                }
+            }
+            $newTokens[] = $token;
+        }
+        return $newTokens;
+    }
+}

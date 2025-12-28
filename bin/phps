@@ -1,0 +1,55 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use App\Transpiler;
+
+if ($argc < 3) {
+    echo "Uso: php bin/phps <diretorio_origem> <diretorio_destino>\n";
+    echo "Exemplo: php bin/phps src dist\n";
+    exit(1);
+}
+
+$sourceDir = rtrim($argv[1], '/');
+$distDir = rtrim($argv[2], '/');
+$transpiler = new Transpiler();
+
+if (!is_dir($sourceDir)) {
+    echo "Error: Directory '$sourceDir' not found.\n";
+    exit(1);
+}
+
+if (!is_dir($distDir)) {
+    mkdir($distDir, 0755, true);
+}
+
+$directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
+$iterator = new RecursiveIteratorIterator($directory);
+
+foreach ($iterator as $file) {
+    if ($file->getExtension() === 'ps') {
+        $relativePath = substr($file->getPathname(), strlen($sourceDir) + 1);
+
+        $outputFile = $distDir . '/' . str_replace('.ps', '.php', $relativePath);
+
+        $outputSubDir = dirname($outputFile);
+        if (!is_dir($outputSubDir)) {
+            mkdir($outputSubDir, 0755, true);
+        }
+
+        compileFile($file->getPathname(), $outputFile, $transpiler);
+    }
+}
+
+function compileFile($input, $output, $transpiler) {
+    try {
+        $sourceCode = file_get_contents($input);
+        $result = $transpiler->compile($sourceCode);
+
+        file_put_contents($output, $result);
+        echo "✓ $input -> $output\n";
+    } catch (Exception $e) {
+        echo "✗ Error in $input: " . $e->getMessage() . "\n";
+    }
+}
