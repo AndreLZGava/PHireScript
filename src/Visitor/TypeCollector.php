@@ -16,11 +16,11 @@ class TypeCollector extends NodeVisitorAbstract {
     }
 
     public function enterNode(Node $node) {
+
         // When encountering an assignment: var x = ...
         if ($node instanceof Assign && $node->var instanceof Variable) {
             $varName = $node->var->name;
             $type = $this->inferType($node->expr);
-
             if ($type) {
                 $this->symbolTable->set($varName, $type);
             }
@@ -29,17 +29,27 @@ class TypeCollector extends NodeVisitorAbstract {
     }
 
     private function inferType(Node $expr): ?string {
-        // If it is "string" or 'string'
+        // Castings explícitos (ex: Object(...), String(...))
+        if ($expr instanceof Node\Expr\Cast\Array_)  return 'ARRAY';
+        if ($expr instanceof Node\Expr\Array_)  return 'ARRAY';
+
+        if ($expr instanceof Node\Expr\Cast\Object_) return 'OBJECT';
+
+        if ($expr instanceof Node\Expr\Cast\Bool_)   return 'BOOL';
+        if ($expr instanceof Node\Expr\Cast\Int_)    return 'INT';
+        if ($expr instanceof Node\Expr\Cast\String_) return 'STRING';
+        if ($expr instanceof Node\Expr\Cast\Double)  return 'FLOAT';
+
+        // Inferência por valor literal
+        if ($expr instanceof Node\Expr\Array_) {
+            // Se veio de {}, o transpiler converteu para Array,
+            // mas o PHPScript trata como Object se houver chaves nomeadas
+            return 'OBJECT';
+        }
+
         if ($expr instanceof Node\Scalar\String_) return 'STRING';
-
-        // If it is [1, 2, 3] or array()
-        if ($expr instanceof Node\Expr\Array_) return 'ARRAY';
-
-        // If it is 123 or 1.5
-        if ($expr instanceof Node\Scalar\LNumber || $expr instanceof Node\Scalar\DNumber) return 'NUMBER';
-
-        // If it is new stdClass()
-        if ($expr instanceof Node\Expr\New_) return 'OBJECT';
+        if ($expr instanceof Node\Scalar\LNumber) return 'INT';
+        if ($expr instanceof Node\Scalar\DNumber) return 'FLOAT';
 
         return 'UNKNOWN';
     }

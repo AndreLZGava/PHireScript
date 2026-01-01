@@ -6,8 +6,8 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Transpiler;
 
 if ($argc < 3) {
-    echo "Uso: php bin/phps <diretorio_origem> <diretorio_destino>\n";
-    echo "Exemplo: php bin/phps src dist\n";
+    echo "Use: php bin/phps <origin_dir> <destiny_dir>\n";
+    echo "Example: php bin/phps src dist\n";
     exit(1);
 }
 
@@ -20,7 +20,10 @@ if (!is_dir($sourceDir)) {
     exit(1);
 }
 
-if (!is_dir($distDir)) {
+if (is_dir($distDir)) {
+    echo "Cleaning destination directory: $distDir...\n";
+    cleanDirectory($distDir);
+} else {
     mkdir($distDir, 0755, true);
 }
 
@@ -42,13 +45,40 @@ foreach ($iterator as $file) {
     }
 }
 
+function cleanDirectory($dir) {
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST
+    );
+
+    foreach ($files as $fileinfo) {
+        $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+        $todo($fileinfo->getRealPath());
+    }
+}
+
 function compileFile($input, $output, $transpiler) {
     try {
         $sourceCode = file_get_contents($input);
         $result = $transpiler->compile($sourceCode);
 
         file_put_contents($output, $result);
-        echo "✓ $input -> $output\n";
+
+        // --- NOVO: Verificação de Sintaxe (Lint) ---
+        $output_text = [];
+        $return_var = 0;
+        // Executa: php -l path/to/file.php
+        exec("php -l " . escapeshellarg($output), $output_text, $return_var);
+
+        if ($return_var !== 0) {
+            echo "✗ Syntax Error in generated file $output:\n";
+            echo implode("\n", $output_text) . "\n";
+            // Opcional: deletar o arquivo se estiver com erro
+            // unlink($output);
+        } else {
+            echo "✓ $input -> $output\n";
+        }
+
     } catch (Exception $e) {
         echo "✗ Error in $input: " . $e->getMessage() . "\n";
     }
