@@ -126,7 +126,9 @@ class Transpiler {
 
         // 3. Limpeza de segurança
         $code = str_replace('function eachfunction', 'each', $code);
+        $code = str_replace('function mapfunction', 'each', $code);
         $code = preg_replace('/each\s*\(\s*\((.*?)\)\s*\{/', 'each(function($1) {', $code);
+        $code = preg_replace('/map\s*\(\s*\((.*?)\)\s*\{/', 'map(function($1) {', $code);
         $code = str_replace('function fn(', 'fn(', $code);
         return $code;
     }
