@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Visitor;
+namespace PHPScript\Visitor;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
-use App\SymbolTable;
+use PHPScript\SymbolTable;
 
 class TypeCollector extends NodeVisitorAbstract {
     private SymbolTable $symbolTable;

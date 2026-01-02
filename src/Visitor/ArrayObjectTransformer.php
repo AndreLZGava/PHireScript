@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Visitor;
+namespace PHPScript\Visitor;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
@@ -9,7 +9,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Name;
 use PhpParser\Node\Identifier;
-use App\SymbolTable;
+use PHPScript\SymbolTable;
 
 class ArrayObjectTransformer extends NodeVisitorAbstract {
   private SymbolTable $symbolTable;

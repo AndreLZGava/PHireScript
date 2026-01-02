@@ -1,7 +1,7 @@
 <?php
 require 'vendor/autoload.php';
 
-use App\Transpiler;
+use PHPScript\Transpiler;
 
 $transpiler = new Transpiler();
 

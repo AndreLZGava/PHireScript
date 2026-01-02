@@ -3,7 +3,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use App\Transpiler;
+use PHPScript\Transpiler;
 
 if ($argc < 3) {
     echo "Use: php bin/phps <origin_dir> <destiny_dir>\n";

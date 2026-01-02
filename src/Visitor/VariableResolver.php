@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Visitor;
+namespace PHPScript\Visitor;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
-use App\SymbolTable; // Certifique-se de importar sua SymbolTable
+use PHPScript\SymbolTable; // Certifique-se de importar sua SymbolTable
 
 class VariableResolver extends NodeVisitorAbstract {
     private $symbolTable;

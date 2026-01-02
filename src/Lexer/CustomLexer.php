@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Lexer;
+namespace PHPScript\Lexer;
 
 use PhpParser\Lexer\Emulative;
 use PhpParser\Parser\Tokens;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace PHPScript;
 
 class SymbolTable {
     private array $scopes = [[]]; // Começa com o escopo global

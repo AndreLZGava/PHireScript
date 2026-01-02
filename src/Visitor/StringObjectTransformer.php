@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Visitor;
+namespace PHPScript\Visitor;
 
-use App\SymbolTable;
+use PHPScript\SymbolTable;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node\Expr\MethodCall;
