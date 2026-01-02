@@ -1,0 +1,18 @@
+enum UserStatus: String {
+    Active   = 'A'
+    Inactive = 'I'
+    Banned   = 'B'
+
+    // Método direto no Enum
+    canLogin(): Bool {
+        return this == Active
+    }
+
+    label(): String {
+        return match(this) {
+            Active   => "Usuário Ativo"
+            Inactive => "Inativo no Sistema"
+            Banned   => "Bloqueado por Violação"
+        }
+    }
+}
