@@ -10,8 +10,8 @@ $extension = 'ps';
 $filesHash = [];
 
 if ($argc < 3) {
-    echo "Use: php bin/phps <origin_dir> <destiny_dir>\n";
-    echo "Example: php bin/phps src dist\n";
+    echo "Use: php bin/watch <origin_dir> <destiny_dir>\n";
+    echo "Example: php bin/watch src dist\n";
     exit(1);
 }
 
@@ -43,10 +43,10 @@ while (true) {
 
       if (!isset($filesHash[$filePath]) || $filesHash[$filePath] !== $currentHash) {
         if (isset($filesHash[$filePath])) {
-          echo "[" . date('H:i:s') . "] Changes found in : " . $file->getFilename() . "\n";
+          echo "[" . date('H:i:s') . "] Changes found in : " . $filePath . "\n";
           compileFile($file->getPathname(), $outputFile, $transpiler);
         } else {
-          echo "[" . date('H:i:s') . "] Watching: " . $file->getFilename() . "\n";
+          echo "[" . date('H:i:s') . "] Watching: " . $filePath . "\n";
         }
 
         $filesHash[$filePath] = $currentHash;
