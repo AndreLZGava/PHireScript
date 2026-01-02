@@ -2,6 +2,7 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
+require_once('compilerHelper.php');
 
 use PHPScript\Transpiler;
 
@@ -13,7 +14,7 @@ if ($argc < 3) {
 
 $sourceDir = rtrim($argv[1], '/');
 $distDir = rtrim($argv[2], '/');
-$transpiler = new Transpiler();
+$transpiler = new Transpiler(true);
 
 if (!is_dir($sourceDir)) {
     echo "Error: Directory '$sourceDir' not found.\n";
@@ -72,10 +73,11 @@ function compileFile($input, $output, $transpiler) {
             echo "✗ Syntax Error in generated file $output:\n";
             echo implode("\n", $output_text) . "\n";
         } else {
-            echo "✓ $input -> $output\n";
+            echo "\n\033[1;32m✔ $input -> $output\033[0m\n";
         }
-
     } catch (Exception $e) {
-        echo "✗ Error in $input: " . $e->getMessage() . "\n";
+        echo "\033[1;31m✗ Error in $input: " . $e->getMessage() . "\033[0m\n";
+        getErrorInterface($e, $transpiler, $sourceCode);
+
     }
 }

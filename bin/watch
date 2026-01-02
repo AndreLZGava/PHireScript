@@ -1,0 +1,82 @@
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+require_once('compilerHelper.php');
+
+use PHPScript\Transpiler;
+
+$targetDir = __DIR__ . '/src';
+$extension = 'ps';
+$filesHash = [];
+
+if ($argc < 3) {
+    echo "Use: php bin/phps <origin_dir> <destiny_dir>\n";
+    echo "Example: php bin/phps src dist\n";
+    exit(1);
+}
+
+$sourceDir = rtrim($argv[1], '/');
+$distDir = rtrim($argv[2], '/');
+$transpiler = new Transpiler(true);
+echo "--- PHPScript started the process ---\n";
+echo "Watching files .$extension in: $targetDir\n";
+
+while (true) {
+  $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
+  $iterator = new RecursiveIteratorIterator($directory);
+
+  foreach ($iterator as $file) {
+    if ($file->isFile() && $file->getExtension() === $extension) {
+
+      $filePath = $file->getRealPath();
+      $relativePath = substr($file->getPathname(), strlen($sourceDir) + 1);
+
+      $currentHash = md5_file($filePath);
+
+      $outputFile = $distDir . '/' . str_replace('.ps', '.php', $relativePath);
+
+      $outputSubDir = dirname($outputFile);
+
+      if (!is_dir($outputSubDir)) {
+        mkdir($outputSubDir, 0755, true);
+      }
+
+      if (!isset($filesHash[$filePath]) || $filesHash[$filePath] !== $currentHash) {
+        if (isset($filesHash[$filePath])) {
+          echo "[" . date('H:i:s') . "] Changes found in : " . $file->getFilename() . "\n";
+          compileFile($file->getPathname(), $outputFile, $transpiler);
+        } else {
+          echo "[" . date('H:i:s') . "] Watching: " . $file->getFilename() . "\n";
+        }
+
+        $filesHash[$filePath] = $currentHash;
+      }
+    }
+  }
+
+  clearstatcache();
+  usleep(900000);
+}
+
+function compileFile($input, $output, $transpiler) {
+  try {
+    $sourceCode = file_get_contents($input);
+    $result = $transpiler->compile($sourceCode);
+
+    file_put_contents($output, $result);
+
+    $output_text = [];
+    $return_var = 0;
+    exec("php -l " . escapeshellarg($output), $output_text, $return_var);
+
+    if ($return_var !== 0) {
+      echo "✗ Syntax Error in generated file $output:\n";
+      echo implode("\n", $output_text) . "\n";
+    } else {
+      echo "\n\033[1;32m✔ $input -> $output\033[0m\n";
+    }
+  } catch (Exception $e) {
+    echo "\033[1;31m✗ Error in $input: " . $e->getMessage() . "\033[0m\n";
+    getErrorInterface($e, $transpiler, $sourceCode);
+  }
+}
