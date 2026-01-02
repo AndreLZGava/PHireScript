@@ -11,6 +11,7 @@ use App\Visitor\VariableResolver;
 class Transpiler {
     private $parser;
     private $printer;
+    private $objectPlaceholders = [];
 
     public function __construct() {
         $this->parser = (new ParserFactory())->createForNewestSupportedVersion();
@@ -26,11 +27,26 @@ class Transpiler {
     }
 
     private function handleObjects($code) {
-        // 1. Primeiro: Transforme chaves em arrays/objetos PHP
-        // var obj = {id: 1}  =>  $obj = (object) ["id" => 1]
+        // 1. Converte id: 1 para "id" => 1
         $code = preg_replace('/(?<=\{|\,)\s*([a-zA-Z_]\w*)\s*:/', '"$1" =>', $code);
-        $code = preg_replace('/\{/', '(object) [', $code);
-        $code = str_replace('}', ']', $code);
+
+        // 2. Transforma objetos { } em [ ] e remove quebras de linha internas
+        $pattern = '/\{([^{}]*?=>[^{}]*?)\}/s';
+        while (preg_match($pattern, $code)) {
+            $code = preg_replace_callback($pattern, function ($matches) {
+                $content = str_replace(["\n", "\r"], " ", $matches[1]);
+                return '[' . $content . ']';
+            }, $code);
+        }
+
+        // 3. PROTEÇÃO: Identifica atribuições de objetos/arrays e as esconde
+        // Ex: $config = [ ... ]; vira $config = __OBJ_0__;
+        $code = preg_replace_callback('/=\s*(\[(?:[^\[\]]|(?R))*\])/s', function ($matches) {
+            $placeholder = "__OBJ_" . count($this->objectPlaceholders) . "__";
+            $this->objectPlaceholders[$placeholder] = $matches[1];
+            return "= " . $placeholder;
+        }, $code);
+
         return $code;
     }
 
@@ -161,20 +177,17 @@ class Transpiler {
          * 5. Captura identificadores válidos
          */
         $pattern = '/(?:\/\/.*|\/\*[\s\S]*?\*\/|(?:"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"|\'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*\'))|(?<!\$|->)\b([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\b(?!\s*\()/';
-
         $code = preg_replace_callback($pattern, function ($matches) use ($reserved) {
-            // Se deu match em comentário ou string (não existe grupo 1), retorna original
             if (!isset($matches[1]) || empty($matches[1])) {
                 return $matches[0];
             }
 
             $word = $matches[1];
 
-            // Se a palavra for reservada ou número, ignora
-            if (in_array(strtolower($word), $reserved) || is_numeric($word)) {
+            // Se a palavra for reservada, número ou um placeholder de objeto, NÃO coloca $
+            if (in_array(strtolower($word), $reserved) || is_numeric($word) || str_starts_with($word, '__OBJ_')) {
                 return $word;
             }
-
             return '$' . $word;
         }, $code);
 
@@ -186,33 +199,55 @@ class Transpiler {
 
     private function addSemicolon($code) {
         $lines = explode("\n", $code);
-        foreach ($lines as &$line) {
+        $result = [];
+
+        foreach ($lines as $line) {
             $trimmed = trim($line);
 
-            // Se a linha estiver vazia ou for apenas a tag do PHP, pula
-            if ($trimmed === '' || $trimmed === '<?php') continue;
-
-            // Se a linha já termina com caracteres de controle, pula
-            if (str_ends_with($trimmed, '{') || str_ends_with($trimmed, '}') || str_ends_with($trimmed, ';')) {
+            // 1. Ignorar vazios, tags PHP ou linhas que já fecham blocos
+            if ($trimmed === '' || $trimmed === '<?php' || $trimmed === '}' || $trimmed === '{') {
+                $result[] = $line;
                 continue;
             }
 
-            // --- LÓGICA PARA COMENTÁRIOS ---
-            // Se a linha tem um comentário //, precisamos colocar o ; ANTES dele
-            if (preg_match('/^(.*?)\s*(\/\/.*)$/', $line, $matches)) {
-                $content = trim($matches[1]);
-                $comment = $matches[2];
-
-                // Só adiciona se o conteúdo não estiver vazio e não terminar com { } ou ;
-                if ($content !== '' && !str_ends_with($content, '{') && !str_ends_with($content, '}') && !str_ends_with($content, ';')) {
-                    $line = $content . ';' . ' ' . $comment;
-                }
-            } else {
-                // Linha normal sem comentário
-                $line .= ';';
+            // 2. Se já tem ponto e vírgula ou abre bloco, não mexe
+            if (str_ends_with($trimmed, ';') || str_ends_with($trimmed, '{')) {
+                $result[] = $line;
+                continue;
             }
+
+            // 3. Ignorar declarações de estrutura (if, function, etc)
+            if (preg_match('/^(function|func|if|else|for|while|foreach|try|catch|do)/i', $trimmed)) {
+                $result[] = $line;
+                continue;
+            }
+
+            // 4. Tratar comentários: coloca o ; antes do //
+            if (str_contains($line, '//')) {
+                $parts = explode('//', $line, 2);
+                $content = rtrim($parts[0]);
+                if ($content !== '') {
+                    $result[] = $content . ';' . ' //' . $parts[1];
+                } else {
+                    $result[] = $line;
+                }
+                continue;
+            }
+
+            // 5. Para todo o resto (atribuições, chamadas de função, placeholders), coloca ;
+            $result[] = $line . ';';
         }
-        return implode("\n", $lines);
+
+        $code = implode("\n", $result);
+
+        // ADICIONE ISSO AQUI:
+        foreach ($this->objectPlaceholders as $placeholder => $originalContent) {
+            $code = str_replace($placeholder, $originalContent, $code);
+        }
+        // Limpa para a próxima execução
+        $this->objectPlaceholders = [];
+
+        return $code;
     }
 
     private function formatAsPhpFile($code) {
@@ -235,7 +270,7 @@ class Transpiler {
 
             // Passagem 2: Resolução de métodos e variáveis
             $traverser = new \PhpParser\NodeTraverser();
-            $traverser->addVisitor(new \App\Visitor\VariableResolver());
+            $traverser->addVisitor(new \App\Visitor\VariableResolver($symbolTable));
             $traverser->addVisitor(new \App\Visitor\StringObjectTransformer($symbolTable));
             $traverser->addVisitor(new \App\Visitor\ArrayObjectTransformer($symbolTable));
 
@@ -258,6 +293,7 @@ class Transpiler {
         $code = $this->handleAcessors($code);
         $code = $this->handleVariablesBeforeInitialization($code);
         $code = $this->addSemicolon($code);
+
         return $this->formatAsPhpFile($code);
     }
 }

@@ -16,16 +16,43 @@ class TypeCollector extends NodeVisitorAbstract {
     }
 
     public function enterNode(Node $node) {
+        if (
+            $node instanceof \PhpParser\Node\Stmt\Function_ ||
+            $node instanceof \PhpParser\Node\Expr\Closure ||
+            $node instanceof \PhpParser\Node\Expr\ArrowFunction
+        ) {
+            if ($node instanceof \PhpParser\Node\Stmt\Function_) {
+                $this->symbolTable->registerFunction($node->name->toString());
+            }
+            $this->symbolTable->enterScope();
+
+            foreach ($node->params as $param) {
+                if ($param->var instanceof \PhpParser\Node\Expr\Variable) {
+                    $type = $param->type ? (string)$param->type : 'UNKNOWN';
+                    $this->symbolTable->setType($param->var->name, strtoupper($type), $param->var->getStartLine());
+                }
+            }
+        }
 
         // When encountering an assignment: var x = ...
         if ($node instanceof Assign && $node->var instanceof Variable) {
             $varName = $node->var->name;
             $type = $this->inferType($node->expr);
             if ($type) {
-                $this->symbolTable->set($varName, $type);
+                $this->symbolTable->setType($varName, $type, $node->var->getStartLine());
             }
         }
         return null;
+    }
+
+    public function leaveNode(\PhpParser\Node $node) {
+        if (
+            $node instanceof \PhpParser\Node\Stmt\Function_ ||
+            $node instanceof \PhpParser\Node\Expr\Closure ||
+            $node instanceof \PhpParser\Node\Expr\ArrowFunction
+        ) {
+            $this->symbolTable->exitScope();
+        }
     }
 
     private function inferType(Node $expr): ?string {
@@ -39,13 +66,6 @@ class TypeCollector extends NodeVisitorAbstract {
         if ($expr instanceof Node\Expr\Cast\Int_)    return 'INT';
         if ($expr instanceof Node\Expr\Cast\String_) return 'STRING';
         if ($expr instanceof Node\Expr\Cast\Double)  return 'FLOAT';
-
-        // Inferência por valor literal
-        if ($expr instanceof Node\Expr\Array_) {
-            // Se veio de {}, o transpiler converteu para Array,
-            // mas o PHPScript trata como Object se houver chaves nomeadas
-            return 'OBJECT';
-        }
 
         if ($expr instanceof Node\Scalar\String_) return 'STRING';
         if ($expr instanceof Node\Scalar\LNumber) return 'INT';

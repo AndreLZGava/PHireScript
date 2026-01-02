@@ -27,8 +27,20 @@ class ArrayObjectTransformer extends NodeVisitorAbstract {
     $this->symbolTable = $symbolTable;
   }
 
+  public function enterNode(Node $node) {
+    // Sincroniza o escopo: entra na função na SymbolTable
+    if (
+      $node instanceof \PhpParser\Node\Stmt\Function_ ||
+      $node instanceof \PhpParser\Node\Expr\Closure ||
+      $node instanceof \PhpParser\Node\Expr\ArrowFunction
+    ) {
+      $this->symbolTable->enterScope();
+    }
+    return null;
+  }
+
   public function leaveNode(Node $node) {
-    if ($node instanceof MethodCall && $node->name instanceof Identifier) {
+    if ($node instanceof MethodCall && $node?->name instanceof Identifier) {
       $methodName = $node->name->toString();
 
       // 1. Get the variable name (e.g. 'frutas' in frutas.push())
@@ -36,13 +48,21 @@ class ArrayObjectTransformer extends NodeVisitorAbstract {
         $varName = $node->var->name;
 
         // 2. Query the type in the SymbolTable
-        $type = $this->symbolTable->get($varName);
+        $type = $this->symbolTable->getType($varName, $node->var->getStartLine());
 
         // 3. If we know it is NOT an array, we ignore this transformer
         // (The StringObjectTransformer will handle it if it's a string)
         if ($type !== 'ARRAY' && $type !== 'UNKNOWN' && $type !== null) {
           return null;
         }
+      }
+
+      if (
+        $node instanceof \PhpParser\Node\Stmt\Function_ ||
+        $node instanceof \PhpParser\Node\Expr\Closure ||
+        $node instanceof \PhpParser\Node\Expr\ArrowFunction
+      ) {
+        $this->symbolTable->exitScope();
       }
 
       // Join logic
