@@ -1,0 +1,9 @@
+class TypedArrays {
+  testSimpleArray(): array {
+    return [];
+  }
+
+  testPrimitiveArray(): [Int|Float|String] {
+    return [1, 15.2, 'test'];
+  }
+}

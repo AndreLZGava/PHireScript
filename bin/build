@@ -7,8 +7,8 @@ require_once('compilerHelper.php');
 use PHPScript\Transpiler;
 
 if ($argc < 3) {
-    echo "Use: php bin/phps <origin_dir> <destiny_dir>\n";
-    echo "Example: php bin/phps src dist\n";
+    echo "Use: php bin/build <origin_dir> <destiny_dir>\n";
+    echo "Example: php bin/build src dist\n";
     exit(1);
 }
 

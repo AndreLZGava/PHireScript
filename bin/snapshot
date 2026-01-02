@@ -1,0 +1,117 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+require_once('compilerHelper.php');
+
+use PHPScript\Transpiler;
+
+if ($argc < 3) {
+    echo "Use: php bin/snapshot <origin_dir> <destiny_dir>\n";
+    exit(1);
+}
+
+$sourceDir = rtrim($argv[1], '/');
+$distDir = rtrim($argv[2], '/');
+$transpiler = new Transpiler(true);
+
+$stats = [
+    'success' => [],
+    'error'   => []
+];
+
+// Limpeza e preparação do diretório de destino
+if (is_dir($distDir)) {
+    cleanDirectory($distDir);
+} else {
+    mkdir($distDir, 0755, true);
+}
+
+$directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
+$iterator = new RecursiveIteratorIterator($directory);
+
+foreach ($iterator as $file) {
+    if ($file->getExtension() === 'ps') {
+        $inputPath = $file->getPathname();
+        $relativePath = substr($inputPath, strlen($sourceDir) + 1);
+        $outputFile = $distDir . '/' . str_replace('.ps', '.php', $relativePath);
+
+        $outputSubDir = dirname($outputFile);
+        if (!is_dir($outputSubDir)) {
+            mkdir($outputSubDir, 0755, true);
+        }
+
+        // Tenta compilar e popula os resultados
+        $result = compileFile($inputPath, $outputFile, $transpiler);
+
+        if ($result['status'] === 'success') {
+            $stats['success'][] = $result['pp_file'];
+        } else {
+            $stats['error'][] = $inputPath;
+        }
+    }
+}
+
+// Relatório Final
+echo "\n================================================================\n";
+echo "PHPSCRIPT COMPILATION REPORT\n";
+echo "================================================================\n";
+
+foreach ($stats['success'] as $ppFile) {
+    echo "\033[1;32m[CREATED]  $ppFile\033[0m\n";
+}
+
+foreach ($stats['error'] as $errFile) {
+    echo "\033[1;31m[FAILED]   $errFile\033[0m\n";
+}
+
+echo "----------------------------------------------------------------\n";
+echo "Total: " . (count($stats['success']) + count($stats['error'])) . " | ";
+echo "Success: " . count($stats['success']) . " | ";
+echo "Errors: " . count($stats['error']) . "\n\n";
+
+function compileFile($input, $output, $transpiler) {
+    try {
+        $sourceCode = file_get_contents($input);
+
+        // 1. Gera o código transpilado
+        $result = $transpiler->compile($sourceCode);
+
+        // 2. Obtém o código "sujo" (Pre-Parser)
+        $preParserCode = $transpiler->getCodeBeforeGenerator();
+
+        // 3. Cria o arquivo .pp ao lado do original (.ps)
+        $ppPath = str_replace('.ps', '.pp', $input);
+        file_put_contents($ppPath, $preParserCode);
+
+        // 4. Salva o arquivo final no destino
+        file_put_contents($output, $result);
+
+        // 5. Verificação Lógica do PHP (Lint)
+        $output_text = [];
+        $return_var = 0;
+        exec("php -l " . escapeshellarg($output), $output_text, $return_var);
+
+        if ($return_var !== 0) {
+            return ['status' => 'error', 'msg' => 'Syntax Error'];
+        }
+
+        return ['status' => 'success', 'pp_file' => $ppPath];
+
+    } catch (Exception $e) {
+        // Em caso de erro, mostramos a interface de erro detalhada mas não paramos o loop
+        getErrorInterface($e, $transpiler, $sourceCode);
+        return ['status' => 'error', 'msg' => $e->getMessage()];
+    }
+}
+
+function cleanDirectory($dir) {
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST
+    );
+    foreach ($files as $fileinfo) {
+        $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+        $todo($fileinfo->getRealPath());
+    }
+}

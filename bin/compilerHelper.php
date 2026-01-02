@@ -1,7 +1,7 @@
 <?php
 
 function getErrorInterface($e, $transpiler, $code) {
-  $maxLineWidth = 120;
+  $maxLineWidth = 140;
   $red    = "\033[1;31m";
   $blue   = "\033[1;34m";
   $cyan   = "\033[1;36m";
@@ -18,7 +18,7 @@ function getErrorInterface($e, $transpiler, $code) {
   echo "{$red}" . str_repeat('=', $maxLineWidth) . "{$reset}\n\n";
 
   printf(
-    " %-4s | %-56s | %-45s\n",
+    " %-4s | %-71s | %-60s\n",
     "Line",
     "{$blue}ORIGINAL PHPSCRIPT{$reset}",
     "{$cyan}TRANSPILED PHP (PRE-PARSER){$reset}"
@@ -41,16 +41,16 @@ function getErrorInterface($e, $transpiler, $code) {
     $indicator = $line === $lineNum ? $red . "→" . $gray : " ";
 
     printf(
-      " %s%s%-3d%s | %s%-45s%s | %s%-45s%s\n",
+      " %s%s%-3d%s | %s%-60s%s | %s%-60s%s\n",
       $indicator,
       $lineNumColor,
       $lineNum,
       $reset,
       $originalColor,
-      mb_substr($left, 0, 45),
+      mb_substr($left, 0, 60),
       $reset,
       $compiledColor,
-      mb_substr($right, 0, 45),
+      mb_substr($right, 0, 60),
       $reset
     );
   }

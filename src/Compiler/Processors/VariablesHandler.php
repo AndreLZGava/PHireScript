@@ -30,7 +30,6 @@ class VariablesHandler implements PreprocessorInterface {
       }, $params);
       return '(' . implode(', ', $fixedParams) . ')';
     }, $code);
-
     return $code;
   }
 }
