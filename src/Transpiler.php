@@ -28,6 +28,7 @@ class Transpiler {
 
     private function handleObjects($code) {
         // 1. Converte id: 1 para "id" => 1
+        $code = preg_replace('/(?<==|^|\(|,)\s*\{\s*\}/', '(object) []', $code);
         $code = preg_replace('/(?<=\{|\,)\s*([a-zA-Z_]\w*)\s*:/', '"$1" =>', $code);
 
         // 2. Transforma objetos { } em [ ] e remove quebras de linha internas
@@ -110,13 +111,23 @@ class Transpiler {
     }
 
     private function handleFunctions($code) {
-        /**
-         * BLOCO 2: TRADUÇÃO DE KEYWORDS E SINTAXE DE FUNÇÃO
-         * Intenção: Suportar 'func' como apelido para 'function' e converter
-         * a sintaxe de Arrow Function do PHPScript para o 'fn' do PHP.
-         */
-        $code = str_replace('func ', 'function ', $code);
-        $code = preg_replace('/\((.*?)\)\s*=>/', 'fn($1) =>', $code);
+        // 1. Arrow Functions e Closures
+        // Adicionamos o lookbehind (?<!->) para garantir que não estamos
+        // transformando algo que seja parte de um método
+        $code = preg_replace_callback('/(?<!->)\((.*?)\)\s*=>\s*(\{?)/', function ($matches) {
+            $params = $matches[1];
+            $hasBrace = ($matches[2] === '{');
+            return $hasBrace ? "function($params) {" : "fn($params) => ";
+        }, $code);
+        // 2. Shorthand: nome() { => function nome() {
+        // AQUI É A CHAVE: O (?<!->) impede "->each(" de virar "->function each("
+        $pattern = '/(?<!function|func|if|while|for|foreach|switch|catch|return|->)\b([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\s*\((.*?)\)\s*\{/s';
+        $code = preg_replace($pattern, 'function $1($2) {', $code);
+
+        // 3. Limpeza de segurança
+        $code = str_replace('function eachfunction', 'each', $code);
+        $code = preg_replace('/each\s*\(\s*\((.*?)\)\s*\{/', 'each(function($1) {', $code);
+        $code = str_replace('function fn(', 'fn(', $code);
         return $code;
     }
 
@@ -205,6 +216,14 @@ class Transpiler {
             $trimmed = trim($line);
 
             // 1. Ignorar vazios, tags PHP ou linhas que já fecham blocos
+            if ($trimmed === '}') {
+                // Se a linha anterior (ou a estrutura) era uma atribuição de função, adiciona ;
+                // Para simplificar, como no PHPScript quase tudo que fecha com } em nova linha
+                // e não é um IF/ELSE pode levar ;, vamos testar:
+                $result[] = $line . ';';
+                continue;
+            }
+
             if ($trimmed === '' || $trimmed === '<?php' || $trimmed === '}' || $trimmed === '{') {
                 $result[] = $line;
                 continue;
@@ -293,7 +312,6 @@ class Transpiler {
         $code = $this->handleAcessors($code);
         $code = $this->handleVariablesBeforeInitialization($code);
         $code = $this->addSemicolon($code);
-
         return $this->formatAsPhpFile($code);
     }
 }

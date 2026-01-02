@@ -1,7 +1,12 @@
 var tax = 0.15
 var calcTotal = (price, rate) => price * (1 + rate)
 
-var product = new stdClass()
+var anotherFunction = (price, rate) => {
+  rate = rate * 0.15
+  return price * (1 + rate)
+}
+
+var product = {}
 product.name = "Mechanic keyboard"
 product.price = 250.00
 

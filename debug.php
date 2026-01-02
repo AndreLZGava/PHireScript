@@ -5,24 +5,19 @@ use App\Transpiler;
 
 $transpiler = new Transpiler();
 
-// Caminho do arquivo que você quer testar
-$file = $argv[1] ?? 'src/compile/test/Variables.ps';
+$file = $argv[1];
 
 if (!file_exists($file)) {
-    die("Arquivo não encontrado: $file\n");
+    die("File not found: $file\n");
 }
 
 $code = file_get_contents($file);
 
-//echo "\n--- SOURCE PHPSCRIPT ---\n";
-//echo $code . "\n";
-
 try {
     $result = $transpiler->compile($code);
-    //echo "\n--- SUCCESSFUL PHP OUTPUT ---\n";
-    //echo $result . "\n";
+    echo "\n--- SUCCESSFUL PHP OUTPUT ---\n";
 } catch (\Exception $e) {
-    // O seu Transpiler já imprime o "DEBUG (Generated Code)" no catch
     echo "\n--- ERROR ---\n";
+    echo $code . "\n";
     echo $e->getMessage() . "\n";
 }
