@@ -8,7 +8,7 @@ use PhpParser\PrettyPrinter;
 class PhpFileGeneratorHandler implements PreprocessorInterface {
   private $parser;
   private $printer;
-  public function __construct() {
+  public function __construct(private bool $strictDebugMode = false) {
     $this->parser = (new ParserFactory())->createForNewestSupportedVersion();
     $this->printer = new PrettyPrinter\Standard();
   }
@@ -40,8 +40,11 @@ class PhpFileGeneratorHandler implements PreprocessorInterface {
 
       return $this->printer->prettyPrintFile($ast);
     } catch (\PhpParser\Error $error) {
-      // Se o código gerado pelas Regexes acima estiver inválido, o erro estoura aqui.
-      echo "--- DEBUG (Generated Code) ---\n" . $code . "\n";
+      if (!$this->strictDebugMode) {
+        // Se o código gerado pelas Regexes acima estiver inválido, o erro estoura aqui.
+        echo "--- DEBUG (Generated Code) ---\n" . $code . "\n";
+        throw new \Exception("Compilation error: " . $error->getMessage());
+      }
       throw new \Exception("Compilation error: " . $error->getMessage());
     }
   }
