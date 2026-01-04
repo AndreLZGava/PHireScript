@@ -7,12 +7,12 @@ use PHPScript\Helper\Debug\Debug;
 
 abstract class ClassesFactory extends GlobalFactory {
   public function getContentBlock($context): array {
-    $codeBlock = $this->codeBlock();
+    $codeBlockToken = $this->codeBlockToken();
 
     $factories = FactoryInitializer::getFactories();
     $result = [];
 
-    $newTokenManager = new TokenManager($context, $codeBlock, 0);
+    $newTokenManager = new TokenManager($context, $codeBlockToken, 0);
 
     while (!$newTokenManager->isEndOfTokens()) {
       $token = $newTokenManager->getCurrentToken();
@@ -27,10 +27,12 @@ abstract class ClassesFactory extends GlobalFactory {
       $newTokenManager->advance();
     }
 
+    $this->tokenManager->walk(count($codeBlockToken));
+
     return $result;
   }
 
-  public function codeBlock(): array {
+  public function codeBlockToken(): array {
     $openBrackets = [];
     $closeBrackets = [];
     $tokensOfThisBlock = array_slice($this->tokenManager->getTokens(), $this->tokenManager->getCurrentPosition());

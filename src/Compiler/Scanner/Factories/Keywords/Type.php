@@ -13,7 +13,8 @@ class Type extends ClassesFactory {
     $node = new ClassDefinition();
     $node->type = $this->tokenManager->getCurrentToken()['value'];
     $this->tokenManager->advance();
-    $node->name = $this->tokenManager->getNextTokenAfterCurrent()['value'];
+    // @todo implement validations to walk and validate its a name
+    $node->name = $this->tokenManager->getCurrentToken()['value'];
     $this->tokenManager->advance();
     $node->body = $this->getContentBlock('type');
     return $node;

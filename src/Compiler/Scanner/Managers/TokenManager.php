@@ -56,6 +56,11 @@ class TokenManager {
     }
   }
 
+  public function walk($positions) {
+    $this->currentPosition += $positions;
+    $this->positionLookup += $positions;
+  }
+
   public function isEndOfTokens(): bool {
     return $this->currentPosition >= count($this->tokens);
   }
