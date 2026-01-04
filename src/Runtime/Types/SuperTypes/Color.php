@@ -1,9 +1,9 @@
 <?php
-namespace PHPScript\Runtime\Types\SuperType;
+namespace PHPScript\Runtime\Types\SuperTypes;
 
-use PHPScript\Runtime\Types\SuperType;
+use PHPScript\Runtime\Types\SuperTypes;
 
-class Color extends SuperType {
+class Color extends SuperTypes {
 
     protected static function transform(mixed $value): mixed {
         if (!is_string($value)) return $value;

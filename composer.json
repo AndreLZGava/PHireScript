@@ -11,10 +11,18 @@
             "PHPScript\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "PHPScript\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "André Luiz Gava",
             "email": "andrelzgava@gmail.com"
         }
-    ]
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^12.5"
+    }
 }

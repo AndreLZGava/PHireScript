@@ -1,10 +1,10 @@
 <?php
 
-namespace PHPScript\Runtime\Types\SuperType;
+namespace PHPScript\Runtime\Types\SuperTypes;
 
-use PHPScript\Runtime\Types\SuperType;
+use PHPScript\Runtime\Types\SuperTypes;
 
-class Url extends SuperType {
+class Url extends SuperTypes {
     protected static function validate(mixed $value): bool {
         $result = filter_var($value, FILTER_VALIDATE_URL);
 
@@ -21,6 +21,10 @@ class Url extends SuperType {
     }
 
     protected static function transform(mixed $value): mixed {
+        if(!is_scalar($value)) {
+            return null;
+        }
+
         $value = trim((string)$value);
         return parent::transform($value);
     }

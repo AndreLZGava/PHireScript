@@ -1,2 +1,3 @@
 /vendor
 /src/compile/dist
+.phpunit.result.cache

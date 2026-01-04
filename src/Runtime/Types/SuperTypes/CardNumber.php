@@ -1,11 +1,11 @@
 <?php
 
-namespace PHPScript\Runtime\Types\SuperType;
+namespace PHPScript\Runtime\Types\SuperTypes;
 
-use PHPScript\Runtime\Types\SuperType;
+use PHPScript\Runtime\Types\SuperTypes;
 
 
-class CardNumber extends SuperType {
+class CardNumber extends SuperTypes {
 
   protected static function transform(mixed $value): mixed {
     return is_string($value) ? preg_replace('/\D/', '', $value) : $value;
@@ -20,7 +20,6 @@ class CardNumber extends SuperType {
 
     return self::luhnCheck($preparedValue);
   }
-
 
   private static function luhnCheck(string $number): bool {
     $sum = 0;

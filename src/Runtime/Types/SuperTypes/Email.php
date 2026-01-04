@@ -1,9 +1,9 @@
 <?php
-namespace PHPScript\Runtime\Types\SuperType;
+namespace PHPScript\Runtime\Types\SuperTypes;
 
-use PHPScript\Runtime\Types\SuperType;
+use PHPScript\Runtime\Types\SuperTypes;
 
-class Email extends SuperType {
+class Email extends SuperTypes {
     protected static function validate(mixed $value): bool {
         return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }

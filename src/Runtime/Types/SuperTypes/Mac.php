@@ -3,8 +3,8 @@ namespace PHPScript\Runtime\Types\SuperTypes;
 
 use PHPScript\Runtime\Types\SuperTypes;
 
-class Ipv6 extends SuperTypes {
+class Mac extends SuperTypes {
     protected static function validate(mixed $value): bool {
-        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
+        return filter_var($value, FILTER_VALIDATE_MAC) !== false;
     }
 }
