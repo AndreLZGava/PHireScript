@@ -4,8 +4,6 @@ require_once('compilerHelper.php');
 
 use PHPScript\Transpiler;
 
-
-
 $transpiler = new Transpiler(true);
 
 $file = $argv[1];

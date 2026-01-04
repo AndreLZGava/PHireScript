@@ -1,9 +1,9 @@
 <?php
 $price = 19.90;
-$taxa = 1.05;
-$total = $price * $taxa;
+$income = 1.05;
+$total = $price * $income;
 
 $user =(object) [];
-$user->nome = "William";
+$user->name = "William";
 
-echo "Total value for user: " . $user->nome->toUpperCase() . " is: " . $total;
+echo "Total value for user: " . $user->name->toUpperCase() . " is: " . $total;

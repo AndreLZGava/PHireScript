@@ -20,7 +20,6 @@ $stats = [
     'error'   => []
 ];
 
-// Limpeza e preparação do diretório de destino
 if (is_dir($distDir)) {
     cleanDirectory($distDir);
 } else {
@@ -41,7 +40,6 @@ foreach ($iterator as $file) {
             mkdir($outputSubDir, 0755, true);
         }
 
-        // Tenta compilar e popula os resultados
         $result = compileFile($inputPath, $outputFile, $transpiler);
 
         if ($result['status'] === 'success') {
@@ -74,20 +72,15 @@ function compileFile($input, $output, $transpiler) {
     try {
         $sourceCode = file_get_contents($input);
 
-        // 1. Gera o código transpilado
         $result = $transpiler->compile($sourceCode);
 
-        // 2. Obtém o código "sujo" (Pre-Parser)
         $preParserCode = $transpiler->getCodeBeforeGenerator();
 
-        // 3. Cria o arquivo .pp ao lado do original (.ps)
         $ppPath = str_replace('.ps', '.pp', $input);
         file_put_contents($ppPath, $preParserCode);
 
-        // 4. Salva o arquivo final no destino
         file_put_contents($output, $result);
 
-        // 5. Verificação Lógica do PHP (Lint)
         $output_text = [];
         $return_var = 0;
         exec("php -l " . escapeshellarg($output), $output_text, $return_var);
@@ -97,9 +90,7 @@ function compileFile($input, $output, $transpiler) {
         }
 
         return ['status' => 'success', 'pp_file' => $ppPath];
-
     } catch (Exception $e) {
-        // Em caso de erro, mostramos a interface de erro detalhada mas não paramos o loop
         getErrorInterface($e, $transpiler, $sourceCode);
         return ['status' => 'error', 'msg' => $e->getMessage()];
     }

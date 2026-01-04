@@ -3,16 +3,17 @@ enum UserStatus: String {
     Inactive = 'I'
     Banned   = 'B'
 
-    // Método direto no Enum
+    // Checks if the user status allows authentication
     canLogin(): Bool {
         return this == Active
     }
 
+    // Returns a human-readable description for the status
     label(): String {
         return match(this) {
-            Active   => "Usuário Ativo"
-            Inactive => "Inativo no Sistema"
-            Banned   => "Bloqueado por Violação"
+            Active   => "Active User"
+            Inactive => "System Inactive"
+            Banned   => "Blocked for Violation"
         }
     }
 }

@@ -14,11 +14,16 @@ use PHPScript\Compiler\Processors\ReturnTypeHandler;
 use PHPScript\Compiler\Processors\SemicolonHandler;
 use PHPScript\Compiler\Processors\VariablesBeforeInitializationHandler;
 use PHPScript\Compiler\Processors\VariablesHandler;
+use PHPScript\Compiler\Scanner\Lexer;
+use PHPScript\Compiler\Scanner\Parser;
+use PHPScript\Compiler\Scanner\Parser2;
+use PHPScript\Helper\Debug\Debug;
 
 class Transpiler {
     private $preprocessors = [];
     private PreprocessorInterface $generator;
     private string $codeBeforeGenerator;
+
     public function __construct(private bool $debugMode = false) {
         $objectHandler = new ObjectsHandler();
         $this->preprocessors = [
@@ -37,16 +42,34 @@ class Transpiler {
     }
 
     public function compile(string $code): string {
-        //var_dump(token_get_all($code, TOKEN_PARSE));exit;
-        foreach ($this->preprocessors as $processor) {
-            $code = $processor->process($code);
-            //var_dump(get_class($processor), $code);
+        if (true) {
+            try {
+
+                $lexer = new Lexer($code);
+                $tokens = $lexer->tokenize();
+
+                $parser = new Parser2();
+                $ast = $parser->parse($tokens);
+
+                print_r($ast);
+                exit;
+            } catch (\Exception $e) {
+                Debug::show($e->getMessage(), $e->getTraceAsString());
+                exit;
+            }
         }
-        $this->codeBeforeGenerator = $code;
-        return $this->generator->process($code);
+
+        //Debug::show(token_get_all($code, TOKEN_PARSE));exit;
+        foreach ($this->preprocessors as $processor) {
+            //$code = $processor->process($code);
+            //Debug::show(get_class($processor), $code);
+        }
+        //$this->codeBeforeGenerator = $code;
+        //return $this->generator->process($code);
     }
 
     public function getCodeBeforeGenerator(): string {
-        return $this->codeBeforeGenerator;
+        return '';
+        $this->codeBeforeGenerator;
     }
 }

@@ -34,7 +34,6 @@ class TypeCollector extends NodeVisitorAbstract {
             }
         }
 
-        // When encountering an assignment: var x = ...
         if ($node instanceof Assign && $node->var instanceof Variable) {
             $varName = $node->var->name;
             $type = $this->inferType($node->expr);
@@ -56,7 +55,6 @@ class TypeCollector extends NodeVisitorAbstract {
     }
 
     private function inferType(Node $expr): ?string {
-        // Castings explícitos (ex: Object(...), String(...))
         if ($expr instanceof Node\Expr\Cast\Array_)  return 'ARRAY';
         if ($expr instanceof Node\Expr\Array_)  return 'ARRAY';
 

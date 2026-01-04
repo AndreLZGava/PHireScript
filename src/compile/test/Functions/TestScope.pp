@@ -1,11 +1,11 @@
 <?php
-$data = ["apple", "banana"]; // Global: ARRAY
+$data = ["apple", "banana"];
 
 function resetData() {
-    $data = "cleared"; // Local: STRING ($Shadowing)
-    echo $data->toUpperCase(); // Deve virar strtoupper($data)
+    $data = "cleared";
+    echo $data->toUpperCase();
 };
 
-$data->push("orange"); // Deve virar array_push($data,  "orange")
+$data->push("orange");
 resetData();
-echo $data->join(" - "); // Deve virar implode(" - ",  $data)
+echo $data->join(" - ");

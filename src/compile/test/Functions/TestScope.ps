@@ -2,9 +2,9 @@ var data = ["apple", "banana"] // Global: ARRAY
 
 resetData() {
     var data = "cleared"       // Local: STRING (Shadowing)
-    echo data.toUpperCase()    // Deve virar strtoupper($data)
+    echo data.toUpperCase()    // must become strtoupper($data)
 }
 
-data.push("orange")            // Deve virar array_push($data, "orange")
+data.push("orange")            // must become array_push($data, "orange")
 resetData()
-echo data.join(" - ")          // Deve virar implode(" - ", $data)
+echo data.join(" - ")          // must become implode(" - ", $data)

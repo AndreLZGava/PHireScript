@@ -9,10 +9,10 @@ function outer() {
         echo $item; // INT
     };
 
-    $item->push("nested"); // Deve ser ARRAY
+    $item->push("nested"); // Array
     inner();
 };
 
 $config = ["user" => ["name" => "André","id" => 1     ],"active" => true ];
 
-echo $item->toUpperCase(); // Deve ser STRING
+echo $item->toUpperCase(); // Must be string

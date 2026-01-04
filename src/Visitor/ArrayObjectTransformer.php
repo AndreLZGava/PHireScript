@@ -28,7 +28,6 @@ class ArrayObjectTransformer extends NodeVisitorAbstract {
   }
 
   public function enterNode(Node $node) {
-    // Sincroniza o escopo: entra na função na SymbolTable
     if (
       $node instanceof \PhpParser\Node\Stmt\Function_ ||
       $node instanceof \PhpParser\Node\Expr\Closure ||
@@ -40,7 +39,6 @@ class ArrayObjectTransformer extends NodeVisitorAbstract {
   }
 
   public function leaveNode(Node $node) {
-    // 1. Sincroniza o escopo: Sai do escopo ao terminar de processar uma função
     if (
       $node instanceof \PhpParser\Node\Stmt\Function_ ||
       $node instanceof \PhpParser\Node\Expr\Closure ||
@@ -50,7 +48,6 @@ class ArrayObjectTransformer extends NodeVisitorAbstract {
       return $node;
     }
 
-    // --- CASO ESPECIAL: .each() (Transformação de Expression para Statement) ---
     if ($node instanceof \PhpParser\Node\Stmt\Expression) {
       if ($node->expr instanceof MethodCall && $node->expr->name instanceof Identifier) {
         $methodName = $node->expr->name->toString();
@@ -62,7 +59,6 @@ class ArrayObjectTransformer extends NodeVisitorAbstract {
           if ($arg instanceof \PhpParser\Node\Expr\Closure || $arg instanceof \PhpParser\Node\Expr\ArrowFunction) {
             $params = $arg->params;
 
-            // PHPScript: .each((valor, chave) => ...) -> PHP: foreach($array as $chave => $valor)
             $valVar = isset($params[0]) ? $params[0]->var : new \PhpParser\Node\Expr\Variable('val');
             $keyVar = isset($params[1]) ? $params[1]->var : null;
 
@@ -70,7 +66,6 @@ class ArrayObjectTransformer extends NodeVisitorAbstract {
               ? [new \PhpParser\Node\Stmt\Expression($arg->expr)]
               : $arg->stmts;
 
-            // Substituímos a EXPRESSÃO inteira pelo FOREACH
             return new \PhpParser\Node\Stmt\Foreach_(
               $methodCall->var,
               $valVar,
@@ -84,11 +79,9 @@ class ArrayObjectTransformer extends NodeVisitorAbstract {
       }
     }
 
-    // --- TRANSFORMADORES DE EXPRESSÃO (join, map, push, etc.) ---
     if ($node instanceof MethodCall && $node->name instanceof Identifier) {
       $methodName = $node->name->toString();
 
-      // Validação de Tipo via SymbolTable
       if ($node->var instanceof \PhpParser\Node\Expr\Variable) {
         $varName = $node->var->name;
         $type = $this->symbolTable->getType($varName, $node->var->getStartLine());
@@ -98,7 +91,6 @@ class ArrayObjectTransformer extends NodeVisitorAbstract {
         }
       }
 
-      // Lógica para .join() -> implode
       if ($methodName === 'join') {
         return new FuncCall(
           new Name('implode'),
@@ -109,7 +101,6 @@ class ArrayObjectTransformer extends NodeVisitorAbstract {
         );
       }
 
-      // Lógica para .map() -> array_map
       if ($methodName === 'map') {
         return new FuncCall(
           new Name('array_map'),
@@ -120,7 +111,6 @@ class ArrayObjectTransformer extends NodeVisitorAbstract {
         );
       }
 
-      // Mapeamento PADRÃO (push, pop, etc.)
       if (isset($this->map[$methodName])) {
         $phpFunction = $this->map[$methodName];
         $args = [new Arg($node->var)];

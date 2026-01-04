@@ -31,9 +31,6 @@ class StringObjectTransformer extends NodeVisitorAbstract {
 
             if (isset($this->map[$methodName])) {
                 $phpFunction = $this->map[$methodName];
-
-                // PHP transform $str->toUpperCase() in strtoupper($str)
-                // the 'var' will became the first element of php function
                 return new FuncCall(
                     new Name($phpFunction),
                     [new Arg($node->var)]

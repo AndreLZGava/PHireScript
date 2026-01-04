@@ -1,8 +1,6 @@
-type UUID = String
-type Email = String
-type AnyOtherInformation String | Array | Null
+type Id = String | Int
 
 // use in functions
-findUser(UUID id): Object {
+findUser(Id id): Object {
     // ...
 }

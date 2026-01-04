@@ -15,7 +15,6 @@ class CustomLexer extends Emulative {
                 $value = $token[1];
                 $reserved = ['echo', 'var', 'func', 'return', 'if', 'else', 'new', 'stdClass', 'true', 'false'];
 
-                // if its a word thar is not reserved, then became T_VARIABLE
                 if (!in_array($value, $reserved)) {
                     $token[0] = Tokens::T_VARIABLE;
                 }

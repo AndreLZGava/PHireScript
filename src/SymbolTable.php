@@ -3,7 +3,7 @@
 namespace PHPScript;
 
 class SymbolTable {
-    private array $scopes = [[]]; // Começa com o escopo global
+    private array $scopes = [[]];
 
     private array $functionReturns = [];
 
@@ -26,12 +26,10 @@ class SymbolTable {
     }
 
     public function setType($name, $type, $linePosition) {
-        // Define sempre no escopo atual (o topo da pilha)
         $this->scopes[$name][$linePosition] = $type;
     }
 
     public function getType($name, $linePosition) {
-        // Procura do escopo mais interno para o mais externo
         for ($i = count($this->scopes) - 1; $i >= 0; $i--) {
             if (isset($this->scopes[$name][$linePosition])) {
                 return $this->scopes[$name][$linePosition];
@@ -41,12 +39,11 @@ class SymbolTable {
     }
 
     public function registerBuiltins() {
-        // Mapeamos que certas funções/métodos sempre retornam STRING
         $this->functionReturns = [
             'toUpperCase' => 'STRING',
             'toLowerCase' => 'STRING',
             'join'        => 'STRING',
-            'push'        => 'ARRAY', // array_push retorna int, mas para o PS tratamos como mutação de array
+            'push'        => 'ARRAY',
         ];
     }
 
