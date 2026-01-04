@@ -4,12 +4,31 @@ namespace PHPScript\Compiler\Scanner\Factories;
 
 use PHPScript\Compiler\Scanner\GlobalStatement;
 use PHPScript\Compiler\Scanner\Node;
+use PHPScript\Compiler\Scanner\PropertyDefinition;
+use PHPScript\Compiler\Scanner\Transformers\ModifiersTransform;
+use PHPScript\Helper\Debug\Debug;
+use TypeError;
 
 class Type extends GlobalFactory {
   public function process(): ?Node {
 
-    $node = new GlobalStatement();
-    $node->code = trim($this->tokenManager->getCurrentToken()['value']);
+    $node = new PropertyDefinition();
+
+    $node->modifiers[] = ModifiersTransform::map($this->tokenManager->getPreviousTokenBeforeCurrent());
+
+    while (!$this->tokenManager->isEndOfTokens()) {
+
+      $currentToken = $this->tokenManager->getCurrentToken();
+      $nextToken = $this->tokenManager->getNextTokenAfterCurrent();
+
+      $this->tokenManager->advance();
+      $node->type = $currentToken['value'];
+      if ($nextToken['type'] === 'T_IDENTIFIER') {
+        $node->name = $nextToken['value'];
+        break;
+      }
+    }
+
     return $node;
   }
 }

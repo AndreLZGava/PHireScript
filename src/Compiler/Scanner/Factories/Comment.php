@@ -7,7 +7,6 @@ use PHPScript\Compiler\Scanner\Node;
 
 class Comment extends GlobalFactory {
   public function process(): ?Node {
-
     $node = new GlobalStatement();
     $node->code = trim($this->tokenManager->getCurrentToken()['value']);
     return $node;

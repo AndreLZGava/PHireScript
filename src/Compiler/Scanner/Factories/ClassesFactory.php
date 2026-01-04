@@ -14,17 +14,20 @@ abstract class ClassesFactory extends GlobalFactory {
 
     $newTokenManager = new TokenManager($context, $codeBlock, 0);
 
-    foreach ($codeBlock as $id => $token) {
+    while (!$newTokenManager->isEndOfTokens()) {
+      $token = $newTokenManager->getCurrentToken();
+
       $returned = (new $factories[$token['type']]($newTokenManager))
         ->process();
 
       if ($returned) {
         $result[] = $returned;
       }
+
+      $newTokenManager->advance();
     }
-    Debug::show($result, $codeBlock);
-    exit;
-    return ['test'];
+
+    return $result;
   }
 
   public function codeBlock(): array {
@@ -45,7 +48,7 @@ abstract class ClassesFactory extends GlobalFactory {
       }
     }
 
-    $tokensOfThisBlock = array_slice($tokensOfThisBlock, 0, $keyToken);
+    $tokensOfThisBlock = array_slice($tokensOfThisBlock, 0, $keyToken + 1);
 
     return $tokensOfThisBlock;
   }

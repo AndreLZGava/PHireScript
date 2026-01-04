@@ -19,10 +19,6 @@ class Parser2 {
 
     while (!$tokenManager->isEndOfTokens()) {
       $token = $tokenManager->getCurrentToken();
-      if ($tokenManager->getCurrentPosition() > 2) {
-        //var_dump($token);
-        //exit;
-      }
 
       $result =  (new $this->factories[$token['type']]($tokenManager))
         ->process();

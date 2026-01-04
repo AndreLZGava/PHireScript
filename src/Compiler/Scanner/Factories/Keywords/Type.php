@@ -13,10 +13,9 @@ class Type extends ClassesFactory {
     $node = new ClassDefinition();
     $node->type = $this->tokenManager->getCurrentToken()['value'];
     $this->tokenManager->advance();
-    $node->name = $this->tokenManager->getNextToken()['value'];
+    $node->name = $this->tokenManager->getNextTokenAfterCurrent()['value'];
     $this->tokenManager->advance();
     $node->body = $this->getContentBlock('type');
-    Debug::show($node);exit;
     return $node;
   }
 }

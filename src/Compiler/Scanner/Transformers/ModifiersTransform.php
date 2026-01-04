@@ -1,17 +1,26 @@
 <?php
 
 namespace PHPScript\Compiler\Scanner\Transformers;
-class ModifiersTransform{
-    public static function map(string $accessor) {
-      $map = [
-        '>' => 'set',
-        '<' => 'get',
-        '+' => 'protected',
-        '#' => 'private',
-        'readonly' => 'readonly',
-        'static' => 'static',
-        'async' => 'async'
-      ];
-      return $map[$accessor];
-    }
+
+use PHPScript\Helper\Debug\Debug;
+
+class ModifiersTransform {
+  public static function map(array $accessor) {
+    $modifier = $accessor['type'] === 'T_EOL' ||
+      $accessor['type'] === 'T_COMMENT'
+      ? '*' : $accessor['value'];
+
+    $map = [
+      '>' => 'set',
+      '<' => 'get',
+      '+' => 'protected',
+      '#' => 'private',
+      '*' => 'public',
+      'readonly' => 'readonly',
+      'static' => 'static',
+      'async' => 'async'
+    ];
+
+    return $map[$modifier] ?? Debug::show(debug_backtrace(2));
+  }
 }

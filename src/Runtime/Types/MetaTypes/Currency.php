@@ -4,7 +4,7 @@ namespace PHPScript\Runtime\Types\MetaType;
 
 use PHPScript\Runtime\Types\MetaType;
 
-class Money extends MetaType {
+class Currency extends MetaType {
 
   protected int $amount;
   protected string $currency;
