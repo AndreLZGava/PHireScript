@@ -2,17 +2,48 @@
 
 namespace PHPScript\Compiler\Processors;
 
-class VariablesBeforeInitializationHandler implements PreprocessorInterface {
-
-    public function process(string $code): string {
+class VariablesBeforeInitializationHandler implements PreprocessorInterface
+{
+    public function process(string $code): string
+    {
         $reserved = [
-            'string', 'int', 'float', 'bool', 'array', 'object', 'void', 'php',
-            'echo', 'return', 'if', 'else', 'foreach', 'for', 'while', 'new',
-            'null', 'true', 'false', 'stdClass', 'fn', 'function', 'class', 'static',
-            'public', 'protected', 'private', 'namespace', 'use', 'extends', 'implements'
+        'string',
+        'int',
+        'float',
+        'bool',
+        'array',
+        'object',
+        'void',
+        'php',
+        'echo',
+        'return',
+        'if',
+        'else',
+        'foreach',
+        'for',
+        'while',
+        'new',
+        'null',
+        'true',
+        'false',
+        'stdClass',
+        'fn',
+        'function',
+        'class',
+        'static',
+        'public',
+        'protected',
+        'private',
+        'namespace',
+        'use',
+        'extends',
+        'implements'
         ];
 
-        $pattern = '/(?:\/\/.*|\/\*[\s\S]*?\*\/|(?:"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"|\'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*\'))|(?<!\$|->|class\s|function\s|new\s|extends\s|implements\s|namespace\s|use\s)\b([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\b(?!\s*\()/i';
+        $pattern = '/(?:\/\/.*|\/\*[\s\S]*?\*\/|(?:"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"|' .
+        '\'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*\'))|(?<!\$|->|class\s|function\s|new\s|' .
+        'extends\s|implements\s|namespace\s|use\s)\b([a-zA-Z_\x7f-\xff]' .
+        '[a-zA-Z0-9_\x7f-\xff]*)\b(?!\s*\()/i';
 
         $code = preg_replace_callback($pattern, function ($matches) use ($reserved) {
             if (!isset($matches[1]) || empty($matches[1])) {

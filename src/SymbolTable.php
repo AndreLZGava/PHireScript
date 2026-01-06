@@ -2,7 +2,8 @@
 
 namespace PHPScript;
 
-class SymbolTable {
+class SymbolTable
+{
     private array $scopes = [[]];
 
     private array $functionReturns = [];
@@ -10,35 +11,43 @@ class SymbolTable {
 
     private $functions = [];
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->registerBuiltins();
     }
 
-    public function registerTypeDefinition(string $name, $node) {
+    public function registerTypeDefinition(string $name, $node)
+    {
         $this->typeDefinitions[$name] = $node;
     }
 
-    public function getTypeDefinition(string $name) {
+    public function getTypeDefinition(string $name)
+    {
         return $this->typeDefinitions[$name] ?? null;
     }
 
-    public function enterScope() {
+    public function enterScope()
+    {
         array_push($this->scopes, []);
     }
 
-    public function getAllScopes() {
+    public function getAllScopes()
+    {
         return ($this->scopes);
     }
 
-    public function exitScope() {
+    public function exitScope()
+    {
         array_pop($this->scopes);
     }
 
-    public function setType($name, $type, $linePosition) {
+    public function setType($name, $type, $linePosition)
+    {
         $this->scopes[$name][$linePosition] = $type;
     }
 
-    public function getType($name, $linePosition) {
+    public function getType($name, $linePosition)
+    {
         for ($i = count($this->scopes) - 1; $i >= 0; $i--) {
             if (isset($this->scopes[$name][$linePosition])) {
                 return $this->scopes[$name][$linePosition];
@@ -47,20 +56,23 @@ class SymbolTable {
         return 'UNKNOWN';
     }
 
-    public function registerBuiltins() {
+    public function registerBuiltins()
+    {
         $this->functionReturns = [
-            'toUpperCase' => 'STRING',
-            'toLowerCase' => 'STRING',
-            'join'        => 'STRING',
-            'push'        => 'ARRAY',
+        'toUpperCase' => 'STRING',
+        'toLowerCase' => 'STRING',
+        'join'        => 'STRING',
+        'push'        => 'ARRAY',
         ];
     }
 
-    public function registerFunction($name) {
+    public function registerFunction($name)
+    {
         $this->functions[$name] = true;
     }
 
-    public function isFunction($name) {
+    public function isFunction($name)
+    {
         return isset($this->functions[$name]);
     }
 }

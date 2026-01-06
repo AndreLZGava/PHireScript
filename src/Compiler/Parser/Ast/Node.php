@@ -2,4 +2,6 @@
 
 namespace PHPScript\Compiler\Parser\Ast;
 
-abstract class Node {}
+abstract class Node
+{
+}

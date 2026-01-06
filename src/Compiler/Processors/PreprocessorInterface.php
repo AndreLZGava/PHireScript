@@ -2,6 +2,7 @@
 
 namespace PHPScript\Compiler\Processors;
 
-interface PreprocessorInterface {
+interface PreprocessorInterface
+{
     public function process(string $code): string;
 }

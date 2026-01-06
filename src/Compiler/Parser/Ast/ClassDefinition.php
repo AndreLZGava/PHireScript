@@ -2,8 +2,8 @@
 
 namespace PHPScript\Compiler\Parser\Ast;
 
-
-class ClassDefinition extends Node {
+class ClassDefinition extends Node
+{
     public string $type;
     public string $name;
     public ?string $docBlock;

@@ -6,20 +6,21 @@ use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Type;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Variable;
 
-class Keywords extends GlobalFactory {
+class Keywords extends GlobalFactory
+{
+    private array $factories;
 
-  private array $factories;
+    public function process(): ?Node
+    {
+        $this->factories = [
+        'type' => Type::class,
+        'var' => Variable::class,
+        ];
 
-  public function process(): ?Node {
-    $this->factories = [
-      'type' => Type::class,
-      'var' => Variable::class,
-    ];
+        $tokenValue = $this->tokenManager->getCurrentToken()['value'];
+        $class = $this->factories[$tokenValue] ?? General::class;
+        $processor = new $class($this->tokenManager);
 
-    $tokenValue = $this->tokenManager->getCurrentToken()['value'];
-    $class = $this->factories[$tokenValue] ?? General::class;
-    $processor = new $class($this->tokenManager);
-
-    return $processor->process();
-  }
+        return $processor->process();
+    }
 }

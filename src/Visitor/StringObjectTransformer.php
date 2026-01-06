@@ -10,7 +10,8 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Name;
 
-class StringObjectTransformer extends NodeVisitorAbstract {
+class StringObjectTransformer extends NodeVisitorAbstract
+{
     private $map = [
         'toUpperCase' => 'strtoupper',
         'toLowerCase' => 'strtolower',
@@ -21,11 +22,13 @@ class StringObjectTransformer extends NodeVisitorAbstract {
 
     private SymbolTable $symbolTable;
 
-    public function __construct(SymbolTable $symbolTable) {
+    public function __construct(SymbolTable $symbolTable)
+    {
         $this->symbolTable = $symbolTable;
     }
 
-    public function leaveNode(Node $node) {
+    public function leaveNode(Node $node)
+    {
         if ($node instanceof MethodCall) {
             $methodName = $node->name->toString();
 

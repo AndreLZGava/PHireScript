@@ -4,7 +4,8 @@ namespace PHPScript\Runtime\Types\SuperTypes;
 
 use PHPScript\Runtime\Types\SuperTypes;
 
-class Cron extends SuperTypes {
+class Cron extends SuperTypes
+{
     private const MACROS = [
         '@YEARLY',
         '@ANNUALLY',
@@ -40,13 +41,19 @@ class Cron extends SuperTypes {
         'SAT' => 6,
     ];
 
-    protected static function transform(mixed $value): mixed {
-        if (!is_string($value)) return $value;
+    protected static function transform(mixed $value): mixed
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
         return preg_replace('/\s+/', ' ', strtoupper(trim($value)));
     }
 
-    protected static function validate(mixed $preparedValue): bool {
-        if (!is_string($preparedValue)) return false;
+    protected static function validate(mixed $preparedValue): bool
+    {
+        if (!is_string($preparedValue)) {
+            return false;
+        }
 
         if (in_array($preparedValue, self::MACROS, true)) {
             return true;
@@ -91,31 +98,42 @@ class Cron extends SuperTypes {
     ): bool {
         if (str_contains($segment, '/')) {
             [$base, $step] = explode('/', $segment, 2);
-            if (!ctype_digit($step) || (int)$step <= 0) return false;
+            if (!ctype_digit($step) || (int)$step <= 0) {
+                return false;
+            }
             return self::checkSegment($base, $min, $max, $namedMap);
         }
 
-        if ($segment === '*') return true;
+        if ($segment === '*') {
+            return true;
+        }
 
         if (str_contains($segment, '-')) {
             [$start, $end] = explode('-', $segment, 2);
             $start = self::resolveValue($start, $namedMap);
             $end   = self::resolveValue($end, $namedMap);
 
-            if ($start === null || $end === null) return false;
-            if ($start > $end) return false;
+            if ($start === null || $end === null) {
+                return false;
+            }
+            if ($start > $end) {
+                return false;
+            }
 
             return self::inRange($start, $min, $max)
                 && self::inRange($end, $min, $max);
         }
 
         $value = self::resolveValue($segment, $namedMap);
-        if ($value === null) return false;
+        if ($value === null) {
+            return false;
+        }
 
         return self::inRange($value, $min, $max);
     }
 
-    private static function resolveValue(string $value, array $namedMap): ?int {
+    private static function resolveValue(string $value, array $namedMap): ?int
+    {
         if (ctype_digit($value)) {
             return (int)$value;
         }
@@ -123,8 +141,11 @@ class Cron extends SuperTypes {
         return $namedMap[$value] ?? null;
     }
 
-    private static function inRange(int $value, int $min, int $max): bool {
-        if ($value === 7 && $max === 7) return true;
+    private static function inRange(int $value, int $min, int $max): bool
+    {
+        if ($value === 7 && $max === 7) {
+            return true;
+        }
         return $value >= $min && $value <= $max;
     }
 }

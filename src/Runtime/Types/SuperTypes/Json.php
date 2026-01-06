@@ -4,9 +4,10 @@ namespace PHPScript\Runtime\Types\SuperTypes;
 
 use PHPScript\Runtime\Types\SuperTypes;
 
-class Json extends SuperTypes {
-
-    protected static function transform(mixed $value): mixed {
+class Json extends SuperTypes
+{
+    protected static function transform(mixed $value): mixed
+    {
         if (is_string($value)) {
             $decoded = json_decode($value, true);
             return (json_last_error() === JSON_ERROR_NONE) ? $decoded : $value;
@@ -15,7 +16,8 @@ class Json extends SuperTypes {
         return $value;
     }
 
-    protected static function validate(mixed $preparedValue): bool {
+    protected static function validate(mixed $preparedValue): bool
+    {
         return is_array($preparedValue) || is_object($preparedValue);
     }
 }

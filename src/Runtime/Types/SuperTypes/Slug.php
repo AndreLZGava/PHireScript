@@ -4,10 +4,13 @@ namespace PHPScript\Runtime\Types\SuperTypes;
 
 use PHPScript\Runtime\Types\SuperTypes;
 
-class Slug extends SuperTypes {
-
-    protected static function transform(mixed $value): mixed {
-        if (!is_string($value)) return null;
+class Slug extends SuperTypes
+{
+    protected static function transform(mixed $value): mixed
+    {
+        if (!is_string($value)) {
+            return null;
+        }
 
         $slug = mb_strtolower($value, 'UTF-8');
         $slug = iconv('UTF-8', 'ASCII//TRANSLIT', $slug);
@@ -19,7 +22,8 @@ class Slug extends SuperTypes {
         return trim($slug, '-');
     }
 
-    protected static function validate(mixed $preparedValue): bool {
+    protected static function validate(mixed $preparedValue): bool
+    {
         if (is_null($preparedValue) || !is_scalar($preparedValue)) {
             return false;
         }

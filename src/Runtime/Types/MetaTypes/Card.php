@@ -7,14 +7,15 @@ use PHPScript\Runtime\Types\SuperTypes\CardNumber;
 use PHPScript\Runtime\Types\SuperTypes\Cvv;
 use PHPScript\Runtime\Types\SuperTypes\ExpiryDate;
 
-class Card extends MetaTypes {
-  public CardNumber $number;
-  public Cvv $cvv;
-  public string $holderName;
-  public string $brand;
-  public ExpiryDate $expiry;
+class Card extends MetaTypes
+{
+    public CardNumber $number;
+    public Cvv $cvv;
+    public string $holderName;
+    public string $brand;
+    public ExpiryDate $expiry;
 
-  public function __construct(
+    public function __construct(
         mixed $number = null,
         mixed $cvv = null,
         string $holder_name = '',
@@ -35,51 +36,59 @@ class Card extends MetaTypes {
         $this->expiry = ExpiryDate::cast($source['expiry']);
     }
 
-  protected function detectBrand(string $number): string {
-    $n = preg_replace('/\D/', '', $number);
-    return match (true) {
-      str_starts_with($n, '4') => 'Visa',
-      preg_match('/^5[1-5]/', $n) => 'Mastercard',
-      str_starts_with($n, '34') || str_starts_with($n, '37') => 'Amex',
-      default => 'Unknown'
-    };
-  }
-
-  public function isExpired(): bool {
-    return ExpiryDate::isPast((string) $this->expiry);
-  }
-
-  protected static function transform(mixed $value): array {
-    if (is_array($value)) {
-      return $value;
+    protected function detectBrand(string $number): string
+    {
+        $n = preg_replace('/\D/', '', $number);
+        return match (true) {
+            str_starts_with($n, '4') => 'Visa',
+            preg_match('/^5[1-5]/', $n) => 'Mastercard',
+            str_starts_with($n, '34') || str_starts_with($n, '37') => 'Amex',
+            default => 'Unknown'
+        };
     }
 
-    if (is_object($value)) {
-      return (array) $value;
+    public function isExpired(): bool
+    {
+        return ExpiryDate::isPast((string) $this->expiry);
     }
 
-    return [];
-  }
+    protected static function transform(mixed $value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
 
-  protected static function validate(mixed $value): bool {
-    if (!is_array($value)) return false;
+        if (is_object($value)) {
+            return (array) $value;
+        }
 
-    $required = ['number', 'cvv', 'holder_name', 'expiry'];
-    foreach ($required as $field) {
-        if (!isset($value[$field]) || empty($value[$field])) {
+        return [];
+    }
+
+    protected static function validate(mixed $value): bool
+    {
+        if (!is_array($value)) {
             return false;
         }
+
+        $required = ['number', 'cvv', 'holder_name', 'expiry'];
+        foreach ($required as $field) {
+            if (!isset($value[$field]) || empty($value[$field])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    return true;
-  }
-
-  public function __toString(): string {
-    $lastFour = substr((string) $this->number, -4);
-    return sprintf("%s **** %s (Exp: %s)",
-        $this->brand,
-        $lastFour,
-        ExpiryDate::format((string) $this->expiry)
-    );
-  }
+    public function __toString(): string
+    {
+        $lastFour = substr((string) $this->number, -4);
+        return sprintf(
+            "%s **** %s (Exp: %s)",
+            $this->brand,
+            $lastFour,
+            ExpiryDate::format((string) $this->expiry)
+        );
+    }
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace PHPScript\Tests\Runtime\Types\SuperTypes;
+
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPScript\Runtime\Types\SuperTypes\Cron;

@@ -21,29 +21,32 @@ use PHPScript\Compiler\Processors\VariablesHandler;
 use PHPScript\Compiler\Scanner;
 use PHPScript\Helper\Debug\Debug;
 
-class Transpiler {
+class Transpiler
+{
     private $preprocessors = [];
     private PreprocessorInterface $generator;
     private string $codeBeforeGenerator;
 
-    public function __construct(private bool $debugMode = false) {
+    public function __construct(private bool $debugMode = false)
+    {
         $objectHandler = new ObjectsHandler();
         $this->preprocessors = [
-            new PhpFileHandler(),
-            $objectHandler,
-            new NativeTypesHandler(),
-            new VariablesHandler(),
-            new FunctionsHandler(),
-            new ReturnTypeHandler(),
-            new FunctionBodyProcessor(),
-            new AccessorHandler(),
-            new VariablesBeforeInitializationHandler(),
-            new SemicolonHandler($objectHandler),
+        new PhpFileHandler(),
+        $objectHandler,
+        new NativeTypesHandler(),
+        new VariablesHandler(),
+        new FunctionsHandler(),
+        new ReturnTypeHandler(),
+        new FunctionBodyProcessor(),
+        new AccessorHandler(),
+        new VariablesBeforeInitializationHandler(),
+        new SemicolonHandler($objectHandler),
         ];
         $this->generator = new PhpFileGeneratorHandler($debugMode);
     }
 
-    public function compile(string $code): string {
+    public function compile(string $code): string
+    {
         if (true) {
             try {
                 $scanner = new Scanner($code);
@@ -68,17 +71,10 @@ class Transpiler {
                 exit;
             }
         }
-
-        //Debug::show(token_get_all($code, TOKEN_PARSE));exit;
-        foreach ($this->preprocessors as $processor) {
-            //$code = $processor->process($code);
-            //Debug::show(get_class($processor), $code);
-        }
-        //$this->codeBeforeGenerator = $code;
-        //return $this->generator->process($code);
     }
 
-    public function getCodeBeforeGenerator(): string {
+    public function getCodeBeforeGenerator(): string
+    {
         return '';
         $this->codeBeforeGenerator;
     }

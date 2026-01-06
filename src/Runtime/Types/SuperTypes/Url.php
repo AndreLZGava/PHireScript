@@ -4,8 +4,10 @@ namespace PHPScript\Runtime\Types\SuperTypes;
 
 use PHPScript\Runtime\Types\SuperTypes;
 
-class Url extends SuperTypes {
-    protected static function validate(mixed $value): bool {
+class Url extends SuperTypes
+{
+    protected static function validate(mixed $value): bool
+    {
         $result = filter_var($value, FILTER_VALIDATE_URL);
 
         if ($result === false) {
@@ -20,8 +22,9 @@ class Url extends SuperTypes {
         return true;
     }
 
-    protected static function transform(mixed $value): mixed {
-        if(!is_scalar($value)) {
+    protected static function transform(mixed $value): mixed
+    {
+        if (!is_scalar($value)) {
             return null;
         }
 

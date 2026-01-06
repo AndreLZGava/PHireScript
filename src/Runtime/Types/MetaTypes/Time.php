@@ -4,11 +4,12 @@ namespace PHPScript\Runtime\Types\MetaTypes;
 
 use PHPScript\Runtime\Types\MetaTypes;
 
-class Time extends MetaTypes {
-
+class Time extends MetaTypes
+{
     protected int $secondsSinceMidnight;
 
-    public function __construct(mixed $value = 'now') {
+    public function __construct(mixed $value = 'now')
+    {
         $transformed = self::transform($value);
 
         if (!self::validate($transformed)) {
@@ -18,8 +19,11 @@ class Time extends MetaTypes {
         $this->secondsSinceMidnight = $transformed;
     }
 
-    protected static function transform(mixed $value): mixed {
-        if (is_numeric($value)) return (int)$value;
+    protected static function transform(mixed $value): mixed
+    {
+        if (is_numeric($value)) {
+            return (int)$value;
+        }
 
         if ($value === 'now') {
             $now = new \DateTime();
@@ -38,12 +42,14 @@ class Time extends MetaTypes {
         return false;
     }
 
-    protected static function validate(mixed $value): bool {
+    protected static function validate(mixed $value): bool
+    {
         return is_int($value) && $value >= 0 && $value < 86400;
     }
 
 
-    public function __get(string $name) {
+    public function __get(string $name)
+    {
         return match ($name) {
             'hour'    => (int) floor($this->secondsSinceMidnight / 3600),
             'minute'  => (int) floor(($this->secondsSinceMidnight % 3600) / 60),
@@ -53,7 +59,8 @@ class Time extends MetaTypes {
         };
     }
 
-    public function format(string $style = 'short'): string {
+    public function format(string $style = 'short'): string
+    {
         $h = str_pad($this->hour, 2, '0', STR_PAD_LEFT);
         $m = str_pad($this->minute, 2, '0', STR_PAD_LEFT);
         $s = str_pad($this->second, 2, '0', STR_PAD_LEFT);
@@ -66,7 +73,8 @@ class Time extends MetaTypes {
         };
     }
 
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return $this->format('full');
     }
 }

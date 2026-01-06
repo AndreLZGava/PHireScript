@@ -5,8 +5,10 @@ namespace PHPScript\Lexer;
 use PhpParser\Lexer\Emulative;
 use PhpParser\Parser\Tokens;
 
-class CustomLexer extends Emulative {
-    public function getTokens(): array {
+class CustomLexer extends Emulative
+{
+    public function getTokens(): array
+    {
         $tokens = parent::getTokens();
         $newTokens = [];
 

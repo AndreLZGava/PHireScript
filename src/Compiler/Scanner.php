@@ -2,7 +2,8 @@
 
 namespace PHPScript\Compiler;
 
-class Scanner {
+class Scanner
+{
     private string $code;
     private int $cursor = 0;
     private int $line = 1;
@@ -12,22 +13,27 @@ class Scanner {
         'T_COMMENT'     => '/^\/\/.*|^\/\*[\s\S]*?\*\//',
         'T_STRING_LIT'  => '/^"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|^\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'/',
         'T_NUMBER'      => '/^\d+(\.\d+)?/',
-        'T_KEYWORD'     => '/^\b(class|interface|trait|type|extends|with|implements|inject|async|var|constructor|function|return|echo|if|else|this|super)\b/',
+        'T_KEYWORD'     => '/^\b(class|interface|trait|type|extends|with|' .
+            'implements|inject|async|var|constructor|function|return|echo|' .
+            'if|else|this|super)\b/',
         'T_BOOL'        => '/^\b(true|false)\b/',
         'T_EOL'         => '/^[\r\n]+/',
         'T_WHITESPACE'  => '/^[ \t]+/',
         'T_MODIFIER'    => '/^(\+>|\<>|\#>|\->|=>|::|\.\.\.|\+\+|--|==|!=|<=|>=|&&|\|\|)/',
-        'T_TYPE'        => '/^\b(Int|String|Float|Bool|Object|Array|Void|Mixed|Any|Date|DateTime|Time|Email|Ipv4|Ipv6)\b/',
+        'T_TYPE'        => '/^\b(Int|String|Float|Bool|Object|Array|Void|' .
+            'Mixed|Any|Date|DateTime|Time|Email|Ipv4|Ipv6)\b/',
         'T_VARIABLE'    => '/^\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',
         'T_IDENTIFIER'  => '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',
         'T_SYMBOL'      => '/^([{}();,:=+<>\#!?\[\]\.$*\/%|-])/',
     ];
 
-    public function __construct(string $code) {
+    public function __construct(string $code)
+    {
         $this->code = str_replace(["\r\n", "\r"], "\n", $code);
     }
 
-    public function tokenize(): array {
+    public function tokenize(): array
+    {
         $tokens = [];
         $length = strlen($this->code);
 

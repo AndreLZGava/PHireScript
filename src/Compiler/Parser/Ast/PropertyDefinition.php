@@ -2,7 +2,8 @@
 
 namespace PHPScript\Compiler\Parser\Ast;
 
-class PropertyDefinition extends Node {
+class PropertyDefinition extends Node
+{
     public string $name;
     public ?string $type = null;
     public array $modifiers = [];

@@ -4,16 +4,18 @@ namespace PHPScript\Runtime\Types\SuperTypes;
 
 use PHPScript\Runtime\Types\SuperTypes;
 
-class Cvv extends SuperTypes {
-
-    protected static function transform(mixed $value): mixed {
+class Cvv extends SuperTypes
+{
+    protected static function transform(mixed $value): mixed
+    {
         if (!is_scalar($value)) {
             return null;
         }
         return is_string($value) ? trim($value) : (string) $value;
     }
 
-    protected static function validate(mixed $preparedValue): bool {
+    protected static function validate(mixed $preparedValue): bool
+    {
         if (is_null($preparedValue)) {
             return false;
         }

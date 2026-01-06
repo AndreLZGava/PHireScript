@@ -2,10 +2,12 @@
 
 namespace PHPScript\Helper\Debug;
 
-class Debug {
+class Debug
+{
     private static int $callCount = 0;
 
-    public static function show(...$args): void {
+    public static function show(...$args): void
+    {
         self::$callCount++;
         $isCli = (php_sapi_name() === 'cli');
 
@@ -29,7 +31,8 @@ class Debug {
         }
     }
 
-    private static function formatValue($val): string {
+    private static function formatValue($val): string
+    {
         if (is_array($val) || is_object($val)) {
             return print_r($val, true);
         }
@@ -39,7 +42,8 @@ class Debug {
         return (string)$val;
     }
 
-    private static function renderCli($val, $type, $file, $line, $alt): void {
+    private static function renderCli($val, $type, $file, $line, $alt): void
+    {
         $color = $alt ? "\033[1;37m" : "\033[0;90m";
         $reset = "\033[0m";
         $header = "\033[0;33m[$file : $line]\033[0m";
@@ -47,11 +51,14 @@ class Debug {
         echo "$header $color($type)$reset $color$val$reset\n";
     }
 
-    private static function renderWeb($val, $type, $file, $line, $alt): void {
+    private static function renderWeb($val, $type, $file, $line, $alt): void
+    {
         $bgColor = $alt ? "#ffffff" : "#f0f0f0";
         $textColor = $alt ? "#000000" : "#666666";
 
-        echo "<pre style='background: $bgColor; color: $textColor; margin: 0; padding: 5px; border-left: 3px solid #ffcc00; font-family: monospace;'>";
+        echo "<pre style='background: $bgColor; color: $textColor; " .
+            "margin: 0; padding: 5px; border-left: 3px solid #ffcc00;" .
+            " font-family: monospace;'>";
         echo "<b style='color: #a52a2a;'>[$file : $line]</b> ";
         echo "<i style='opacity: 0.7;'>($type)</i> ";
         echo htmlspecialchars($val);

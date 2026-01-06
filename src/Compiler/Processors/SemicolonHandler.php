@@ -2,59 +2,59 @@
 
 namespace PHPScript\Compiler\Processors;
 
+class SemicolonHandler implements PreprocessorInterface
+{
+    public function __construct(private ObjectsHandler $objectHandler)
+    {
+    }
 
-class SemicolonHandler implements PreprocessorInterface {
+    public function process(string $code): string
+    {
+        $lines = explode("\n", $code);
+        $result = [];
 
-  public function __construct(private ObjectsHandler $objectHandler)
-  {
-  }
+        foreach ($lines as $line) {
+            $trimmed = trim($line);
 
-  public function process(string $code): string {
-    $lines = explode("\n", $code);
-    $result = [];
+            if ($trimmed === '}') {
+                $result[] = $line . ';';
+                continue;
+            }
 
-    foreach ($lines as $line) {
-      $trimmed = trim($line);
+            if ($trimmed === '' || $trimmed === '<?php' || $trimmed === '}' || $trimmed === '{') {
+                $result[] = $line;
+                continue;
+            }
 
-      if ($trimmed === '}') {
-        $result[] = $line . ';';
-        continue;
-      }
+            if (str_ends_with($trimmed, ';') || str_ends_with($trimmed, '{')) {
+                $result[] = $line;
+                continue;
+            }
 
-      if ($trimmed === '' || $trimmed === '<?php' || $trimmed === '}' || $trimmed === '{') {
-        $result[] = $line;
-        continue;
-      }
+            if (preg_match('/^(function|func|if|else|for|while|foreach|try|catch|do)/i', $trimmed)) {
+                $result[] = $line;
+                continue;
+            }
 
-      if (str_ends_with($trimmed, ';') || str_ends_with($trimmed, '{')) {
-        $result[] = $line;
-        continue;
-      }
+            if (str_contains($line, '//')) {
+                $parts = explode('//', $line, 2);
+                $content = rtrim($parts[0]);
+                if ($content !== '') {
+                    $result[] = $content . ';' . ' //' . $parts[1];
+                } else {
+                    $result[] = $line;
+                }
+                continue;
+            }
 
-      if (preg_match('/^(function|func|if|else|for|while|foreach|try|catch|do)/i', $trimmed)) {
-        $result[] = $line;
-        continue;
-      }
-
-      if (str_contains($line, '//')) {
-        $parts = explode('//', $line, 2);
-        $content = rtrim($parts[0]);
-        if ($content !== '') {
-          $result[] = $content . ';' . ' //' . $parts[1];
-        } else {
-          $result[] = $line;
+            $result[] = $line . ';';
         }
-        continue;
-      }
 
-      $result[] = $line . ';';
+        $code = implode("\n", $result);
+
+        foreach ($this->objectHandler->getObjectPlaceholders() as $placeholder => $originalContent) {
+            $code = str_replace($placeholder, $originalContent, $code);
+        }
+        return $code;
     }
-
-    $code = implode("\n", $result);
-
-    foreach ($this->objectHandler->getObjectPlaceholders() as $placeholder => $originalContent) {
-      $code = str_replace($placeholder, $originalContent, $code);
-    }
-    return $code;
-  }
 }

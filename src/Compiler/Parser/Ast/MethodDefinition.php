@@ -2,7 +2,8 @@
 
 namespace PHPScript\Compiler\Parser\Ast;
 
-class MethodDefinition extends Node {
+class MethodDefinition extends Node
+{
     public string $name;
     public array $modifiers = [];
     public array $args = [];

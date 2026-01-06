@@ -7,8 +7,10 @@ use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 
-class VariableFixer extends NodeVisitorAbstract {
-    public function leaveNode(Node $node) {
+class VariableFixer extends NodeVisitorAbstract
+{
+    public function leaveNode(Node $node)
+    {
         if ($node instanceof Node\Expr\PropertyFetch && $node->name instanceof Variable) {
             $node->name = new Identifier($node->name->name);
         }

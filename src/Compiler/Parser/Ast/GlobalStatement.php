@@ -2,7 +2,7 @@
 
 namespace PHPScript\Compiler\Parser\Ast;
 
-
-class GlobalStatement extends Node {
+class GlobalStatement extends Node
+{
     public string $code;
 }

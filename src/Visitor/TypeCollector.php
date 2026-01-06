@@ -8,14 +8,17 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
 use PHPScript\SymbolTable;
 
-class TypeCollector extends NodeVisitorAbstract {
+class TypeCollector extends NodeVisitorAbstract
+{
     private SymbolTable $symbolTable;
 
-    public function __construct(SymbolTable $symbolTable) {
+    public function __construct(SymbolTable $symbolTable)
+    {
         $this->symbolTable = $symbolTable;
     }
 
-    public function enterNode(Node $node) {
+    public function enterNode(Node $node)
+    {
         if (
             $node instanceof \PhpParser\Node\Stmt\Function_ ||
             $node instanceof \PhpParser\Node\Expr\Closure ||
@@ -44,7 +47,8 @@ class TypeCollector extends NodeVisitorAbstract {
         return null;
     }
 
-    public function leaveNode(\PhpParser\Node $node) {
+    public function leaveNode(\PhpParser\Node $node)
+    {
         if (
             $node instanceof \PhpParser\Node\Stmt\Function_ ||
             $node instanceof \PhpParser\Node\Expr\Closure ||
@@ -54,20 +58,41 @@ class TypeCollector extends NodeVisitorAbstract {
         }
     }
 
-    private function inferType(Node $expr): ?string {
-        if ($expr instanceof Node\Expr\Cast\Array_)  return 'ARRAY';
-        if ($expr instanceof Node\Expr\Array_)  return 'ARRAY';
+    private function inferType(Node $expr): ?string
+    {
+        if ($expr instanceof Node\Expr\Cast\Array_) {
+            return 'ARRAY';
+        }
+        if ($expr instanceof Node\Expr\Array_) {
+            return 'ARRAY';
+        }
 
-        if ($expr instanceof Node\Expr\Cast\Object_) return 'OBJECT';
+        if ($expr instanceof Node\Expr\Cast\Object_) {
+            return 'OBJECT';
+        }
 
-        if ($expr instanceof Node\Expr\Cast\Bool_)   return 'BOOL';
-        if ($expr instanceof Node\Expr\Cast\Int_)    return 'INT';
-        if ($expr instanceof Node\Expr\Cast\String_) return 'STRING';
-        if ($expr instanceof Node\Expr\Cast\Double)  return 'FLOAT';
+        if ($expr instanceof Node\Expr\Cast\Bool_) {
+            return 'BOOL';
+        }
+        if ($expr instanceof Node\Expr\Cast\Int_) {
+            return 'INT';
+        }
+        if ($expr instanceof Node\Expr\Cast\String_) {
+            return 'STRING';
+        }
+        if ($expr instanceof Node\Expr\Cast\Double) {
+            return 'FLOAT';
+        }
 
-        if ($expr instanceof Node\Scalar\String_) return 'STRING';
-        if ($expr instanceof Node\Scalar\LNumber) return 'INT';
-        if ($expr instanceof Node\Scalar\DNumber) return 'FLOAT';
+        if ($expr instanceof Node\Scalar\String_) {
+            return 'STRING';
+        }
+        if ($expr instanceof Node\Scalar\LNumber) {
+            return 'INT';
+        }
+        if ($expr instanceof Node\Scalar\DNumber) {
+            return 'FLOAT';
+        }
 
         return 'UNKNOWN';
     }

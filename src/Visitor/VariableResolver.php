@@ -9,14 +9,17 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PHPScript\SymbolTable;
 
-class VariableResolver extends NodeVisitorAbstract {
+class VariableResolver extends NodeVisitorAbstract
+{
     private $symbolTable;
 
-    public function __construct(SymbolTable $symbolTable) {
+    public function __construct(SymbolTable $symbolTable)
+    {
         $this->symbolTable = $symbolTable;
     }
 
-    public function leaveNode(Node $node) {
+    public function leaveNode(Node $node)
+    {
         if ($node instanceof Node\Expr\ConstFetch) {
             $name = $node->name->toString();
             $reserved = ['true', 'false', 'null'];
@@ -29,7 +32,6 @@ class VariableResolver extends NodeVisitorAbstract {
             $functionName = $node->name->toString();
 
             if (!function_exists($functionName)) {
-
                 if (!$this->symbolTable->isFunction($functionName)) {
                     $node->name = new Variable($functionName);
                 }

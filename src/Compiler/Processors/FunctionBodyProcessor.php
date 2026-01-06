@@ -2,18 +2,19 @@
 
 namespace PHPScript\Compiler\Processors;
 
-class FunctionBodyProcessor implements PreprocessorInterface {
-
-    public function process(string $code): string {
+class FunctionBodyProcessor implements PreprocessorInterface
+{
+    public function process(string $code): string
+    {
         $pattern = '/\/\* @PS_VALIDATE_ARRAY\[(.+?)\] \*\/ \s*\{(.*?)\}/s';
 
-        return preg_replace_callback($pattern, function($matches) {
+        return preg_replace_callback($pattern, function ($matches) {
             $rawTypes = $matches[1];
             $body = $matches[2];
 
             $validationCode = $this->buildValidationLogic($rawTypes);
 
-            $newBody = preg_replace_callback('/return\s+(.+?);/', function($retMatches) use ($validationCode) {
+            $newBody = preg_replace_callback('/return\s+(.+?);/', function ($retMatches) use ($validationCode) {
                 $returnValue = $retMatches[1];
 
                 return "{ \$_onArrayValidate = $returnValue; $validationCode return \$_onArrayValidate; }";
@@ -23,7 +24,8 @@ class FunctionBodyProcessor implements PreprocessorInterface {
         }, $code);
     }
 
-    private function buildValidationLogic(string $rawTypes): string {
+    private function buildValidationLogic(string $rawTypes): string
+    {
         $types = explode('|', $rawTypes);
         $conditions = [];
 
@@ -43,8 +45,9 @@ class FunctionBodyProcessor implements PreprocessorInterface {
         }';
     }
 
-    private function getCheckForType(string $type, string $varName): string {
-        return match($type) {
+    private function getCheckForType(string $type, string $varName): string
+    {
+        return match ($type) {
             'Int'    => "is_int($varName)",
             'String' => "is_string($varName)",
             'Float'  => "is_float($varName)",

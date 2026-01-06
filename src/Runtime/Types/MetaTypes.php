@@ -1,10 +1,13 @@
 <?php
+
 namespace PHPScript\Runtime\Types;
 
-abstract class MetaTypes {
+abstract class MetaTypes
+{
     protected mixed $innerValue;
 
-    public function __construct(mixed $value) {
+    public function __construct(mixed $value)
+    {
         $this->innerValue = static::transform($value);
 
         if (!static::validate($this->innerValue)) {

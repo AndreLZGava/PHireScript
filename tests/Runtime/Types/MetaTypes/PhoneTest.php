@@ -35,9 +35,9 @@ class PhoneTest extends TestCase
      */
     public function testValidationFailsForShortInput(): void
     {
-      $this->expectException(\TypeError::class);
+        $this->expectException(\TypeError::class);
       // "123-456" results in 6 digits after transform, which is < 8
-      new Phone("123-456");
+        new Phone("123-456");
     }
 
     /**

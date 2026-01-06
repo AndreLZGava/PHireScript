@@ -4,16 +4,18 @@ namespace PHPScript\Runtime\Types\SuperTypes;
 
 use PHPScript\Runtime\Types\SuperTypes;
 
-class Uuid extends SuperTypes {
-
-    protected static function transform(mixed $value): mixed {
+class Uuid extends SuperTypes
+{
+    protected static function transform(mixed $value): mixed
+    {
         if (empty($value)) {
             return self::generate();
         }
         return is_string($value) ? strtolower(trim($value)) : $value;
     }
 
-    protected static function validate(mixed $preparedValue): bool {
+    protected static function validate(mixed $preparedValue): bool
+    {
         if (!is_string($preparedValue)) {
             return false;
         }
@@ -23,7 +25,8 @@ class Uuid extends SuperTypes {
         return preg_match($regex, $preparedValue) === 1;
     }
 
-    private static function generate(): string {
+    private static function generate(): string
+    {
         $data = random_bytes(16);
 
         $data[6] = chr((ord($data[6]) & 0x0f) | 0x40);
