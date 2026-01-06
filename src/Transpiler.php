@@ -2,6 +2,7 @@
 
 namespace PHPScript;
 
+use PHPScript\Compiler\Parser;
 use PHPScript\Compiler\Processors\AccessorHandler;
 use PHPScript\Compiler\Processors\FunctionBodyProcessor;
 use PHPScript\Compiler\Processors\FunctionsHandler;
@@ -14,9 +15,7 @@ use PHPScript\Compiler\Processors\ReturnTypeHandler;
 use PHPScript\Compiler\Processors\SemicolonHandler;
 use PHPScript\Compiler\Processors\VariablesBeforeInitializationHandler;
 use PHPScript\Compiler\Processors\VariablesHandler;
-use PHPScript\Compiler\Scanner\Lexer;
-use PHPScript\Compiler\Scanner\Parser;
-use PHPScript\Compiler\Scanner\Parser2;
+use PHPScript\Compiler\Scanner ;
 use PHPScript\Helper\Debug\Debug;
 
 class Transpiler {
@@ -44,11 +43,10 @@ class Transpiler {
     public function compile(string $code): string {
         if (true) {
             try {
+                $scanner = new Scanner($code);
+                $tokens = $scanner->tokenize();
 
-                $lexer = new Lexer($code);
-                $tokens = $lexer->tokenize();
-
-                $parser = new Parser2();
+                $parser = new Parser();
                 $ast = $parser->parse($tokens);
 
                 print_r($ast);

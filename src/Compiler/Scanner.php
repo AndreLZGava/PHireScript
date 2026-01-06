@@ -1,8 +1,8 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner;
+namespace PHPScript\Compiler;
 
-class Lexer {
+class Scanner {
     private string $code;
     private int $cursor = 0;
     private int $line = 1;

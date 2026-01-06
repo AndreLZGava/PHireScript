@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner\Managers;
+namespace PHPScript\Compiler\Parser\Managers;
 
 class TokenManager {
 

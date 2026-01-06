@@ -1,9 +1,9 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner\Factories;
+namespace PHPScript\Compiler\Parser\Factories;
 
-use PHPScript\Compiler\Scanner\Managers\TokenManager;
-use PHPScript\Compiler\Scanner\Node;
+use PHPScript\Compiler\Parser\Managers\TokenManager;
+use PHPScript\Compiler\Parser\Node;
 
 abstract class GlobalFactory {
   public function __construct(protected TokenManager $tokenManager) {

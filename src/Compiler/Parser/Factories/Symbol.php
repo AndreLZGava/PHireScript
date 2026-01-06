@@ -1,10 +1,10 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner\Factories;
+namespace PHPScript\Compiler\Parser\Factories;
 
-use PHPScript\Compiler\Scanner\Node;
-use PHPScript\Compiler\Scanner\PropertyDefinition;
-use PHPScript\Compiler\Scanner\Transformers\ModifiersTransform;
+use PHPScript\Compiler\Parser\Node;
+use PHPScript\Compiler\Parser\PropertyDefinition;
+use PHPScript\Compiler\Parser\Transformers\ModifiersTransform;
 
 class Symbol extends GlobalFactory {
 

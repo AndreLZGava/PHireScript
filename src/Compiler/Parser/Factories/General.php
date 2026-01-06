@@ -1,9 +1,9 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner\Factories;
+namespace PHPScript\Compiler\Parser\Factories;
 
-use PHPScript\Compiler\Scanner\GlobalStatement;
-use PHPScript\Compiler\Scanner\Node;
+use PHPScript\Compiler\Parser\GlobalStatement;
+use PHPScript\Compiler\Parser\Node;
 
 class General extends GlobalFactory {
   public function process(): ?Node {

@@ -1,8 +1,8 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner\Factories;
+namespace PHPScript\Compiler\Parser\Factories;
 
-use PHPScript\Compiler\Scanner\Managers\TokenManager;
+use PHPScript\Compiler\Parser\Managers\TokenManager;
 use PHPScript\Helper\Debug\Debug;
 
 abstract class ClassesFactory extends GlobalFactory {

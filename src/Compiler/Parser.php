@@ -1,12 +1,12 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner;
+namespace PHPScript\Compiler;
 
-use PHPScript\Compiler\Scanner\Program;
-use PHPScript\Compiler\Scanner\Factories\FactoryInitializer;
-use PHPScript\Compiler\Scanner\Managers\TokenManager;
+use PHPScript\Compiler\Parser\Program;
+use PHPScript\Compiler\Parser\Factories\FactoryInitializer;
+use PHPScript\Compiler\Parser\Managers\TokenManager;
 
-class Parser2 {
+class Parser {
   private array $factories;
 
   public function __construct() {
@@ -14,6 +14,7 @@ class Parser2 {
   }
 
   public function parse($tokens): Program {
+
     $program = new Program();
     $tokenManager = new TokenManager('general', $tokens, 0);
 

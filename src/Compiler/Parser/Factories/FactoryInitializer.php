@@ -1,17 +1,17 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner\Factories;
+namespace PHPScript\Compiler\Parser\Factories;
 
 use Closure;
-use PHPScript\Compiler\Scanner\Node;
-use PHPScript\Compiler\Scanner\Program;
-use PHPScript\Compiler\Scanner\ClassDefinition;
-use PHPScript\Compiler\Scanner\Factories\EndOfLine;
-use PHPScript\Compiler\Scanner\Factories\Comment;
-use PHPScript\Compiler\Scanner\Factories\Keywords;
-use PHPScript\Compiler\Scanner\MethodDefinition;
-use PHPScript\Compiler\Scanner\PropertyDefinition;
-use PHPScript\Compiler\Scanner\GlobalStatement;
+use PHPScript\Compiler\Parser\Node;
+use PHPScript\Compiler\Parser\Program;
+use PHPScript\Compiler\Parser\ClassDefinition;
+use PHPScript\Compiler\Parser\Factories\EndOfLine;
+use PHPScript\Compiler\Parser\Factories\Comment;
+use PHPScript\Compiler\Parser\Factories\Keywords;
+use PHPScript\Compiler\Parser\MethodDefinition;
+use PHPScript\Compiler\Parser\PropertyDefinition;
+use PHPScript\Compiler\Parser\GlobalStatement;
 
 class FactoryInitializer {
   public static function getFactories(): array {

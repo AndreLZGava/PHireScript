@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner;
+namespace PHPScript\Compiler;
 class Program extends Node {
     public array $statements = [];
 }

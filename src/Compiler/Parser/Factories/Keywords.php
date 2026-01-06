@@ -1,9 +1,9 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner\Factories;
+namespace PHPScript\Compiler\Parser\Factories;
 
-use PHPScript\Compiler\Scanner\Factories\Keywords\Type;
-use PHPScript\Compiler\Scanner\Node;
+use PHPScript\Compiler\Parser\Factories\Keywords\Type;
+use PHPScript\Compiler\Parser\Node;
 
 class Keywords extends GlobalFactory {
 

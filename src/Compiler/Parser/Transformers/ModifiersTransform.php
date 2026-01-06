@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner\Transformers;
+namespace PHPScript\Compiler\Parser\Transformers;
 
 use PHPScript\Helper\Debug\Debug;
 
