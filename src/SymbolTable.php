@@ -6,11 +6,20 @@ class SymbolTable {
     private array $scopes = [[]];
 
     private array $functionReturns = [];
+    private array $typeDefinitions = [];
 
     private $functions = [];
 
     public function __construct() {
         $this->registerBuiltins();
+    }
+
+    public function registerTypeDefinition(string $name, $node) {
+        $this->typeDefinitions[$name] = $node;
+    }
+
+    public function getTypeDefinition(string $name) {
+        return $this->typeDefinitions[$name] ?? null;
     }
 
     public function enterScope() {

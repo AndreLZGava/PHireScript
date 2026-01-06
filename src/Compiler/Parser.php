@@ -2,8 +2,7 @@
 
 namespace PHPScript\Compiler;
 
-use PHPScript\Compiler\Parser\Program;
-use PHPScript\Compiler\Parser\Factories\FactoryInitializer;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
 use PHPScript\Compiler\Parser\Managers\TokenManager;
 
 class Parser {

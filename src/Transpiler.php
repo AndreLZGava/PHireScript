@@ -2,6 +2,9 @@
 
 namespace PHPScript;
 
+use PHPScript\Compiler\Binder;
+use PHPScript\Compiler\Checker;
+use PHPScript\Compiler\Emitter;
 use PHPScript\Compiler\Parser;
 use PHPScript\Compiler\Processors\AccessorHandler;
 use PHPScript\Compiler\Processors\FunctionBodyProcessor;
@@ -15,7 +18,7 @@ use PHPScript\Compiler\Processors\ReturnTypeHandler;
 use PHPScript\Compiler\Processors\SemicolonHandler;
 use PHPScript\Compiler\Processors\VariablesBeforeInitializationHandler;
 use PHPScript\Compiler\Processors\VariablesHandler;
-use PHPScript\Compiler\Scanner ;
+use PHPScript\Compiler\Scanner;
 use PHPScript\Helper\Debug\Debug;
 
 class Transpiler {
@@ -49,8 +52,17 @@ class Transpiler {
                 $parser = new Parser();
                 $ast = $parser->parse($tokens);
 
-                print_r($ast);
-                exit;
+                $symbolTable = new SymbolTable();
+                $binder = new Binder($symbolTable);
+                $result = $binder->bind($ast);
+
+                $checker = new Checker();
+                $checker->check($result, $symbolTable);
+
+                $emitter = new Emitter();
+                $result = $emitter->emit($result);
+
+                return $result;
             } catch (\Exception $e) {
                 Debug::show($e->getMessage(), $e->getTraceAsString());
                 exit;

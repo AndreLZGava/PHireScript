@@ -1,13 +1,10 @@
 <?php
 
-namespace PHPScript\Compiler\Parser\Factories;
+namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
-use PHPScript\Compiler\Parser\GlobalStatement;
-use PHPScript\Compiler\Parser\Node;
-use PHPScript\Compiler\Parser\PropertyDefinition;
+use PHPScript\Compiler\Parser\Ast\Node;
+use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHPScript\Compiler\Parser\Transformers\ModifiersTransform;
-use PHPScript\Helper\Debug\Debug;
-use TypeError;
 
 class Type extends GlobalFactory {
   public function process(): ?Node {

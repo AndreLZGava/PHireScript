@@ -1,9 +1,10 @@
 <?php
 
-namespace PHPScript\Compiler\Parser\Factories;
+namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
-use PHPScript\Compiler\Parser\Factories\Keywords\Type;
-use PHPScript\Compiler\Parser\Node;
+use PHPScript\Compiler\Parser\Ast\Node;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Type;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Variable;
 
 class Keywords extends GlobalFactory {
 

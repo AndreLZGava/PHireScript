@@ -1,11 +1,10 @@
 <?php
 
-namespace PHPScript\Compiler\Parser\Factories\Keywords;
+namespace PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
 
-use PHPScript\Compiler\Parser\ClassDefinition;
-use PHPScript\Compiler\Parser\Factories\ClassesFactory;
-use PHPScript\Compiler\Parser\Node;
-use PHPScript\Helper\Debug\Debug;
+use PHPScript\Compiler\Parser\Ast\ClassDefinition;
+use PHPScript\Compiler\Parser\Ast\Node;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
 
 class Type extends ClassesFactory {
   public function process(): ?Node {

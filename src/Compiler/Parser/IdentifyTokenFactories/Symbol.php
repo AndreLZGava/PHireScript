@@ -1,9 +1,9 @@
 <?php
 
-namespace PHPScript\Compiler\Parser\Factories;
+namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
-use PHPScript\Compiler\Parser\Node;
-use PHPScript\Compiler\Parser\PropertyDefinition;
+use PHPScript\Compiler\Parser\Ast\Node;
+use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHPScript\Compiler\Parser\Transformers\ModifiersTransform;
 
 class Symbol extends GlobalFactory {

@@ -1,17 +1,12 @@
 <?php
 
-namespace PHPScript\Compiler\Parser\Factories;
+namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
-use Closure;
-use PHPScript\Compiler\Parser\Node;
-use PHPScript\Compiler\Parser\Program;
-use PHPScript\Compiler\Parser\ClassDefinition;
-use PHPScript\Compiler\Parser\Factories\EndOfLine;
-use PHPScript\Compiler\Parser\Factories\Comment;
-use PHPScript\Compiler\Parser\Factories\Keywords;
-use PHPScript\Compiler\Parser\MethodDefinition;
-use PHPScript\Compiler\Parser\PropertyDefinition;
-use PHPScript\Compiler\Parser\GlobalStatement;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\Comment;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\EndOfLine;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\Symbol;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\Type;
 
 class FactoryInitializer {
   public static function getFactories(): array {

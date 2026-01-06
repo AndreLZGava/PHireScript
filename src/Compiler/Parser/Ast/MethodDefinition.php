@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner;
+namespace PHPScript\Compiler\Parser\Ast;
 
 class MethodDefinition extends Node {
     public string $name;

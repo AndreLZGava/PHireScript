@@ -3,8 +3,6 @@
 namespace PHPScript\Compiler\Parser\Managers;
 
 class TokenManager {
-
-
   private $tokens;
   private $tokenLookup;
   private $positionLookup;

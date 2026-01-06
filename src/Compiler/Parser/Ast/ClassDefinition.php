@@ -1,6 +1,8 @@
 <?php
 
-namespace PHPScript\Compiler\Scanner;
+namespace PHPScript\Compiler\Parser\Ast;
+
+
 class ClassDefinition extends Node {
     public string $type;
     public string $name;

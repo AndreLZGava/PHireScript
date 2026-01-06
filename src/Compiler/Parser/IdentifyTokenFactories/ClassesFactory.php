@@ -1,9 +1,9 @@
 <?php
 
-namespace PHPScript\Compiler\Parser\Factories;
+namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
 use PHPScript\Compiler\Parser\Managers\TokenManager;
-use PHPScript\Helper\Debug\Debug;
 
 abstract class ClassesFactory extends GlobalFactory {
   public function getContentBlock($context): array {

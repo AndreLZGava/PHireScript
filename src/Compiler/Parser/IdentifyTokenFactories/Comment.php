@@ -1,9 +1,9 @@
 <?php
 
-namespace PHPScript\Compiler\Parser\Factories;
+namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
-use PHPScript\Compiler\Parser\GlobalStatement;
-use PHPScript\Compiler\Parser\Node;
+use PHPScript\Compiler\Parser\Ast\GlobalStatement;
+use PHPScript\Compiler\Parser\Ast\Node;
 
 class Comment extends GlobalFactory {
   public function process(): ?Node {
