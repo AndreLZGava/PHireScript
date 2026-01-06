@@ -1,4 +1,4 @@
-PHPScript CLI Documentation
+# PHPScript CLI Documentation
 PHPScript is a powerful transpiler that converts .ps files into strictly typed PHP code. This guide covers how to initialize your project and use the built-in CLI tools to compile, debug, and monitor your source code.
 
 1. Project Initialization
@@ -53,8 +53,9 @@ Example
 # Uses paths from PHPScript.json
 php bin/build
 ```
-# Overrides paths for a specific build
+
 ```Bash
+# Overrides paths for a specific build
 php bin/build ./modules/auth ./build/auth
 ```
 4. Generating Snapshots (.pp files)
