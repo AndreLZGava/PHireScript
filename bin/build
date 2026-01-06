@@ -7,9 +7,10 @@ require_once('compilerHelper.php');
 use PHPScript\Transpiler;
 
 if ($argc < 3) {
-    echo "Use: php bin/build <origin_dir> <destiny_dir>\n";
-    echo "Example: php bin/build src dist\n";
-    exit(1);
+    //echo "You can use any time: php bin/build <origin_dir> <destiny_dir>\n";
+    $config = getConfigFile();
+    $argv[1] = $config['paths']['source'];
+    $argv[2] = $config['paths']['dist'];
 }
 
 $sourceDir = rtrim($argv[1], '/');
@@ -78,6 +79,5 @@ function compileFile($input, $output, $transpiler) {
     } catch (Exception $e) {
         echo "\033[1;31m✗ Error in $input: " . $e->getMessage() . "\033[0m\n";
         getErrorInterface($e, $transpiler, $sourceCode);
-
     }
 }

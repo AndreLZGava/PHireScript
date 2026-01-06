@@ -1,5 +1,10 @@
 <?php
 
+function getConfigFile()
+{
+    return json_decode(file_get_contents('PHPScript.json'), true);
+}
+
 function getErrorInterface($e, $transpiler, $code)
 {
     $maxLineWidth = 140;

@@ -1,0 +1,9 @@
+{
+    "dev": true,
+    "namespace": "PHPScript",
+    "paths": {
+        "source": "src/compile/test",
+        "dist": "src/compile/dist"
+    },
+    "generated_at": "2026-01-06 23:25:12"
+}

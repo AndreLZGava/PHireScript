@@ -10,10 +10,12 @@ $extension = 'ps';
 $filesHash = [];
 
 if ($argc < 3) {
-    echo "Use: php bin/watch <origin_dir> <destiny_dir>\n";
-    echo "Example: php bin/watch src dist\n";
-    exit(1);
+    //echo "You can use any time: php bin/watch <origin_dir> <destiny_dir>\n";
+    $config = getConfigFile();
+    $argv[1] = $config['paths']['source'];
+    $argv[2] = $config['paths']['dist'];
 }
+
 
 $sourceDir = rtrim($argv[1], '/');
 $distDir = rtrim($argv[2], '/');
