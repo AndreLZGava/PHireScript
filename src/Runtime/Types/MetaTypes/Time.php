@@ -1,10 +1,10 @@
 <?php
 
-namespace PHPScript\Runtime\Types\MetaType;
+namespace PHPScript\Runtime\Types\MetaTypes;
 
-use PHPScript\Runtime\Types\MetaType;
+use PHPScript\Runtime\Types\MetaTypes;
 
-class Time extends MetaType {
+class Time extends MetaTypes {
 
     protected int $secondsSinceMidnight;
 

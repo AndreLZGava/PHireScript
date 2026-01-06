@@ -1,10 +1,10 @@
 <?php
 
-namespace PHPScript\Runtime\Types\MetaType;
+namespace PHPScript\Runtime\Types\MetaTypes;
 
-use PHPScript\Runtime\Types\MetaType;
+use PHPScript\Runtime\Types\MetaTypes;
 
-class Password extends MetaType {
+class Password extends MetaTypes {
 
   protected string $hash;
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace PHPScript\Runtime\Types\MetaType;
+namespace PHPScript\Runtime\Types\MetaTypes;
 
-use PHPScript\Runtime\Types\MetaType;
-use PHPScript\Runtime\Types\SuperType\CardNumber;
-use PHPScript\Runtime\Types\SuperType\Cvv;
-use PHPScript\Runtime\Types\SuperType\ExpiryDate;
+use PHPScript\Runtime\Types\MetaTypes;
+use PHPScript\Runtime\Types\SuperTypes\CardNumber;
+use PHPScript\Runtime\Types\SuperTypes\Cvv;
+use PHPScript\Runtime\Types\SuperTypes\ExpiryDate;
 
-class Card extends MetaType {
+class Card extends MetaTypes {
   public CardNumber $number;
   public Cvv $cvv;
   public string $holderName;

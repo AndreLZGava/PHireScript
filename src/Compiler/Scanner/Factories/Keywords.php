@@ -11,8 +11,14 @@ class Keywords extends GlobalFactory {
 
   public function process(): ?Node {
     $this->factories = [
-      'type' => new Type($this->tokenManager),
+      'type' => Type::class,
+      'var' => Variable::class,
     ];
-    return $this->factories[$this->tokenManager->getCurrentToken()['value']]->process();
+
+    $tokenValue = $this->tokenManager->getCurrentToken()['value'];
+    $class = $this->factories[$tokenValue] ?? General::class;
+    $processor = new $class($this->tokenManager);
+
+    return $processor->process();
   }
 }

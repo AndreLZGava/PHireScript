@@ -1,20 +1,17 @@
 <?php
 
-namespace PHPScript\Runtime\Types\MetaType;
+namespace PHPScript\Runtime\Types\MetaTypes;
 
-use PHPScript\Runtime\Types\MetaType;
+use PHPScript\Runtime\Types\MetaTypes;
 
-class Date extends MetaType {
+class Date extends MetaTypes {
 
   protected \DateTimeImmutable $date;
 
   protected static array $formatAliases = [
     'iso'      => 'Y-m-d',
-    'iso_full' => 'Y-m-d H:i:s',
     'br'       => 'd/m/Y',
-    'br_time'  => 'd/m/Y H:i',
     'human'    => 'j \d\e F \d\e Y',
-    'atom'     => \DateTimeInterface::ATOM,
   ];
 
   public function __construct(mixed $value = 'now') {
@@ -64,16 +61,9 @@ class Date extends MetaType {
     };
   }
 
-  public function toPhpDateTime(): \DateTimeImmutable {
-    $datePart = (string) $this->date;
-    $timePart = (string) $this->time;
-
-    return new \DateTimeImmutable($datePart . ' ' . $timePart);
-  }
-
   public function format(string $style = 'iso'): string {
     $mask = self::$formatAliases[$style] ?? $style;
-    return $this->toPhpDateTime()->format($mask);
+    return $this->date->format($mask);
   }
 
   public function __toString(): string {

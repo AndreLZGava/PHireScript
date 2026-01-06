@@ -1,9 +1,10 @@
 <?php
-namespace PHPScript\Runtime\Types\MetaType;
 
-use PHPScript\Runtime\Types\MetaType;
+namespace PHPScript\Runtime\Types\MetaTypes;
 
-class Phone extends MetaType {
+use PHPScript\Runtime\Types\MetaTypes;
+
+class Phone extends MetaTypes {
     protected static function transform(mixed $value): mixed {
         return preg_replace('/\D/', '', $value);
     }

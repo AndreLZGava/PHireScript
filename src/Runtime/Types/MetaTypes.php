@@ -1,7 +1,7 @@
 <?php
 namespace PHPScript\Runtime\Types;
 
-abstract class MetaType {
+abstract class MetaTypes {
     protected mixed $innerValue;
 
     public function __construct(mixed $value) {
