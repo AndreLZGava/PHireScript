@@ -28,7 +28,7 @@ class Symbol extends GlobalFactory
             $this->tokenManager->getContext() === 'type'
         ) {
             $node = new PropertyDefinition();
-            Debug::show($node, $currentToken);
+            //Debug::show($node, $currentToken);
 
             $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($currentToken);
 

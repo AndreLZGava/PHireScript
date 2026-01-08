@@ -34,7 +34,6 @@ class GenericString extends ClassesFactory
             if ($this->tokenManager->getContext() === 'interface') {
                 $node->bodyCode = [];
             }
-          // $this->tokenManager->advance();
             return $node;
         }
 

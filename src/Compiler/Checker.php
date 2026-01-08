@@ -2,14 +2,18 @@
 
 namespace PHPScript\Compiler;
 
+use Exception;
 use PHPScript\SymbolTable;
 use PHPScript\Compiler\Parser\Ast\ClassDefinition;
+use PHPScript\Compiler\Parser\Ast\MethodDefinition;
 use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHPScript\Helper\Debug\Debug;
 
 class Checker
 {
     public function check(Program $ast, SymbolTable $table)
     {
+
         foreach ($ast->statements as $node) {
             if ($node instanceof ClassDefinition) {
                 $this->checkClassBody($node, $table);
@@ -25,8 +29,35 @@ class Checker
                   // $this->ensureTypeCompatibility($member, $member->defaultValue);
                 }
             }
+
+            if ($member instanceof MethodDefinition) {
+                $this->ensureReturnsForMethods($member);
+            }
         }
     }
+
+    private function ensureReturnsForMethods(MethodDefinition $prop)
+    {
+        $returnMethod = explode('|', $prop->returnType);
+        if (
+            $prop->mustBeBool && count($returnMethod) > 1 ||
+            $prop->mustBeBool && current($returnMethod) !== 'Bool'
+        ) {
+            throw new Exception('Method ' . $prop->name .
+            '? must return exclusively "Bool". Passed "' .
+            $prop->returnType . '"!');
+        }
+
+        if (
+            $prop->mustBeVoid && count($returnMethod) > 1 ||
+            $prop->mustBeVoid && current($returnMethod) !== 'Void'
+        ) {
+            throw new Exception('Method ' . $prop->name .
+            '! must return exclusively "Void". Passed "' .
+            $prop->returnType . '"!');
+        }
+    }
+
 
     private function ensureTypeCompatibility(PropertyDefinition $prop, $valueNode)
     {

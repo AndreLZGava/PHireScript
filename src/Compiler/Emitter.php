@@ -27,7 +27,7 @@ class Emitter
                 $classesCode .= $this->emitComment($node);
             }
 
-            if ($node instanceof ClassDefinition && $node->type === 'class' || $node->type === 'type') {
+            if ($node instanceof ClassDefinition && $node?->type === 'class' || $node?->type === 'type') {
                 $classesCode .= $this->emitClass($node);
             }
 
@@ -102,10 +102,23 @@ class Emitter
         return $modifiers ? implode(' ', $modifiers) : null;
     }
 
-    //@todo implement emitMethod
-    protected function emitMethod(MethodDefinition $prop): string
+    protected function emitMethod(MethodDefinition $method): string
     {
-        return '';
+        $modifiers = $this->joinAllModifiers($method->modifiers) ?? 'public';
+
+        $args = [];
+        foreach ($method->args as $arg) {
+            if ($arg instanceof PropertyDefinition) {
+                $type = $this->getPhpType($arg);
+                $args[] = "$type \${$arg->name}";
+            }
+        }
+
+        $argsList = implode(', ', $args);
+
+        $returnType = !empty($method->returnType) ? ": " . strtolower($method->returnType) : "";
+
+        return "    $modifiers function {$method->name}($argsList)$returnType;\n";
     }
 
     protected function emitProperty(PropertyDefinition $prop): string
@@ -141,17 +154,13 @@ class Emitter
         $types = $prop->resolvedTypeInfo;
         $var = $prop->name;
 
-        // Se houver mais de um tipo, tratamos como Union Type
         if (count($types) > 1) {
-            // Adicionamos o novo namespace ao cabeçalho de 'uses'
             $this->uses[] = "PHPScript\\Runtime\\Types\\UnionType";
 
             $typeClasses = [];
             foreach ($types as $t) {
-                // Adicionamos a classe específica (Ipv4, Ipv6, etc) para o cast funcionar
                 if (isset($t['class'])) {
                     $this->uses[] = $t['class'];
-                    // Pegamos apenas o nome curto da classe para o array de cast
                     $className = (new \ReflectionClass($t['class']))->getShortName();
                     $typeClasses[] = "$className::class";
                 }
@@ -161,7 +170,6 @@ class Emitter
             return "\$this->$var = UnionType::cast(\$$var, [$classList]);";
         }
 
-        // Lógica para tipo único (mantida)
         $typeInfo = $types[0];
         return match ($typeInfo['category']) {
             'supertype' => "\$this->$var = {$prop->type}::cast(\$$var);",

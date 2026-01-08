@@ -11,18 +11,14 @@ abstract class ClassesFactory extends GlobalFactory
     public function getReturnType(): ?string
     {
         $codeBlockToken = $this->returnType();
-        $result = [];
-        $newTokenManager = new TokenManager('return_type', array_values(array_filter($codeBlockToken)), 0);
-        //Debug::show($newTokenManager);
-        while (!$newTokenManager->isEndOfTokens()) {
-            $token = $newTokenManager->getCurrentToken();
-            //            Debug::show($token);
-            $result[] = $token['value'];
-            $newTokenManager->advance();
+        $result = '';
+        foreach ($codeBlockToken as $tokens) {
+            if (!empty($tokens)) {
+                $result .= $tokens['value'];
+            }
         }
         $this->tokenManager->walk(count($codeBlockToken));
-        // Debug::show([$this->tokenManager->getCurrentToken()]);exit;
-        return implode('|', $result);
+        return $result;
     }
 
     public function getArgs($context): array
