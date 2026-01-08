@@ -5,15 +5,22 @@ namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHPScript\Compiler\Parser\Transformers\ModifiersTransform;
+use PHPScript\Helper\Debug\Debug;
 
 class Type extends GlobalFactory
 {
     public function process(): ?Node
     {
-
         $node = new PropertyDefinition();
-
-        $node->modifiers[] = ModifiersTransform::map($this->tokenManager->getPreviousTokenBeforeCurrent());
+        if (
+            $this->tokenManager->getContext() !== 'arguments'
+        ) {
+            $node->modifiers[] = (
+                new ModifiersTransform($this->tokenManager))
+                ->map(
+                    $this->tokenManager->getPreviousTokenBeforeCurrent()
+                );
+        }
 
         while (!$this->tokenManager->isEndOfTokens()) {
             $currentToken = $this->tokenManager->getCurrentToken();

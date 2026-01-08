@@ -27,8 +27,9 @@ class Transpiler
     private PreprocessorInterface $generator;
     private string $codeBeforeGenerator;
 
-    public function __construct(private bool $debugMode = false)
+    public function __construct(private array $config)
     {
+
         $objectHandler = new ObjectsHandler();
         $this->preprocessors = [
         new PhpFileHandler(),
@@ -42,7 +43,7 @@ class Transpiler
         new VariablesBeforeInitializationHandler(),
         new SemicolonHandler($objectHandler),
         ];
-        $this->generator = new PhpFileGeneratorHandler($debugMode);
+        $this->generator = new PhpFileGeneratorHandler(false);
     }
 
     public function compile(string $code): string
@@ -62,9 +63,10 @@ class Transpiler
                 $checker = new Checker();
                 $checker->check($result, $symbolTable);
 
-                $emitter = new Emitter();
+                $emitter = new Emitter($this->config);
                 $result = $emitter->emit($result);
 
+                $result = $this->generator->process($result);
                 return $result;
             } catch (\Exception $e) {
                 Debug::show($e->getMessage(), $e->getTraceAsString());

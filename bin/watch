@@ -19,7 +19,7 @@ if ($argc < 3) {
 
 $sourceDir = rtrim($argv[1], '/');
 $distDir = rtrim($argv[2], '/');
-$transpiler = new Transpiler(true);
+$transpiler = new Transpiler(getConfigFile());
 echo "--- PHPScript started the process ---\n";
 echo "Watching files .$extension in: $targetDir\n";
 

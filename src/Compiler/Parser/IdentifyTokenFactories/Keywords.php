@@ -3,8 +3,10 @@
 namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHPScript\Compiler\Parser\Ast\Node;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\InterfaceKey;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Type;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Variable;
+use PHPScript\Helper\Debug\Debug;
 
 class Keywords extends GlobalFactory
 {
@@ -13,11 +15,16 @@ class Keywords extends GlobalFactory
     public function process(): ?Node
     {
         $this->factories = [
-        'type' => Type::class,
-        'var' => Variable::class,
+            'type' => Type::class,
+            'var' => Variable::class,
+            'interface' => InterfaceKey::class
         ];
-
         $tokenValue = $this->tokenManager->getCurrentToken()['value'];
+
+        if (!isset($this->factories[$tokenValue])) {
+            Debug::show($tokenValue);
+        }
+
         $class = $this->factories[$tokenValue] ?? General::class;
         $processor = new $class($this->tokenManager);
 

@@ -5,14 +5,21 @@ namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHPScript\Compiler\Parser\Transformers\ModifiersTransform;
+use PHPScript\Helper\Debug\Debug;
 
 class Symbol extends GlobalFactory
 {
     public function process(): ?Node
     {
         $currentToken = $this->tokenManager->getCurrentToken();
-
         if (in_array($currentToken['value'], ['{', '}'])) {
+            return null;
+        }
+
+        if (
+            in_array($currentToken['value'], ['!', '?', ':']) &&
+            in_array($this->tokenManager->getContext(), ['type', 'interface'])
+        ) {
             return null;
         }
 
@@ -21,8 +28,9 @@ class Symbol extends GlobalFactory
             $this->tokenManager->getContext() === 'type'
         ) {
             $node = new PropertyDefinition();
+            Debug::show($node, $currentToken);
 
-            $node->modifiers[] = ModifiersTransform::map($currentToken);
+            $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($currentToken);
 
             return $this->parsePropertyWithTypes($node);
         }

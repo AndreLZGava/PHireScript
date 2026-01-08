@@ -2,11 +2,16 @@
 
 namespace PHPScript\Compiler\Parser\Transformers;
 
+use PHPScript\Compiler\Parser\Managers\TokenManager;
 use PHPScript\Helper\Debug\Debug;
 
 class ModifiersTransform
 {
-    public static function map(array $accessor)
+    public function __construct(private TokenManager $tokenManager)
+    {
+    }
+
+    public function map(array $accessor)
     {
         $modifier = $accessor['type'] === 'T_EOL' ||
         $accessor['type'] === 'T_COMMENT'
@@ -23,6 +28,11 @@ class ModifiersTransform
         'async' => 'async'
         ];
 
-        return $map[$modifier] ?? Debug::show(debug_backtrace(2));
+        if (!isset($map[$modifier])) {
+            Debug::show($accessor, $this->tokenManager->getAll(), debug_backtrace(2));
+            exit;
+        }
+
+        return $map[$modifier];
     }
 }

@@ -5,6 +5,7 @@ namespace PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
 use PHPScript\Compiler\Parser\Ast\GlobalStatement;
 use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
+use PHPScript\Helper\Debug\Debug;
 
 class Variable extends ClassesFactory
 {

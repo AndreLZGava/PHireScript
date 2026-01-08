@@ -4,6 +4,7 @@ namespace PHPScript\Compiler;
 
 use PHPScript\Compiler\Parser\Ast\ClassDefinition;
 use PHPScript\Compiler\Parser\Ast\GlobalStatement;
+use PHPScript\Compiler\Parser\Ast\MethodDefinition;
 use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHPScript\Helper\Debug\Debug;
 
@@ -14,6 +15,10 @@ class Emitter
 {
     private array $uses = [];
 
+    public function __construct(private array $config)
+    {
+    }
+
     public function emit(Program $ast): string
     {
         $classesCode = "";
@@ -22,13 +27,17 @@ class Emitter
                 $classesCode .= $this->emitComment($node);
             }
 
-            if ($node instanceof ClassDefinition) {
+            if ($node instanceof ClassDefinition && $node->type === 'class' || $node->type === 'type') {
                 $classesCode .= $this->emitClass($node);
+            }
+
+            if ($node instanceof ClassDefinition && $node->type === 'interface') {
+                $classesCode .= $this->emitInterface($node);
             }
         }
 
         $code = "<?php\n\n";
-        $code .= "namespace App\Generated;\n\n";
+        $code .= "namespace " . $this->config['namespace'] . ";\n\n";
 
         foreach (array_unique($this->uses) as $use) {
             $code .= "use $use;\n";
@@ -58,14 +67,50 @@ class Emitter
         return $code;
     }
 
+    protected function emitInterface(ClassDefinition $interface): string
+    {
+        $name = $interface->name;
+        $code = "interface $name {\n";
+
+        foreach ($interface->body as $member) {
+            if ($member instanceof GlobalStatement) {
+                $code .= $this->emitComment($member);
+            }
+
+            if ($member instanceof PropertyDefinition) {
+                $code .= $this->emitProperty($member);
+            }
+
+            if ($member instanceof MethodDefinition) {
+                $code .= $this->emitMethod($member);
+            }
+        }
+
+
+        $code .= "}\n";
+        return $code;
+    }
+
     protected function emitComment(GlobalStatement $stmt): string
     {
         return "    " . trim($stmt->code) . "\n";
     }
 
+    //@todo one moment we will need to sort it before joining
+    private function joinAllModifiers(array $modifiers): string
+    {
+        return $modifiers ? implode(' ', $modifiers) : null;
+    }
+
+    //@todo implement emitMethod
+    protected function emitMethod(MethodDefinition $prop): string
+    {
+        return '';
+    }
+
     protected function emitProperty(PropertyDefinition $prop): string
     {
-        $modifier = $prop->modifiers[0] ?? 'public';
+        $modifier = $this->joinAllModifiers($prop->modifiers) ?? 'public';
         $phpType = $this->getPhpType($prop);
 
         return "    $modifier $phpType \${$prop->name};\n";
@@ -96,9 +141,9 @@ class Emitter
         $types = $prop->resolvedTypeInfo;
         $var = $prop->name;
 
-      // Se houver mais de um tipo, tratamos como Union Type
+        // Se houver mais de um tipo, tratamos como Union Type
         if (count($types) > 1) {
-          // Adicionamos o novo namespace ao cabeçalho de 'uses'
+            // Adicionamos o novo namespace ao cabeçalho de 'uses'
             $this->uses[] = "PHPScript\\Runtime\\Types\\UnionType";
 
             $typeClasses = [];
@@ -106,7 +151,7 @@ class Emitter
                 // Adicionamos a classe específica (Ipv4, Ipv6, etc) para o cast funcionar
                 if (isset($t['class'])) {
                     $this->uses[] = $t['class'];
-                  // Pegamos apenas o nome curto da classe para o array de cast
+                    // Pegamos apenas o nome curto da classe para o array de cast
                     $className = (new \ReflectionClass($t['class']))->getShortName();
                     $typeClasses[] = "$className::class";
                 }
@@ -116,7 +161,7 @@ class Emitter
             return "\$this->$var = UnionType::cast(\$$var, [$classList]);";
         }
 
-      // Lógica para tipo único (mantida)
+        // Lógica para tipo único (mantida)
         $typeInfo = $types[0];
         return match ($typeInfo['category']) {
             'supertype' => "\$this->$var = {$prop->type}::cast(\$$var);",

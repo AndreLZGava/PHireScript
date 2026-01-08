@@ -4,7 +4,7 @@ require_once('compilerHelper.php');
 
 use PHPScript\Transpiler;
 
-$transpiler = new Transpiler(true);
+$transpiler = new Transpiler(getConfigFile());
 
 $file = $argv[1];
 

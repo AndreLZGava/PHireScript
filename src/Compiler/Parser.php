@@ -4,6 +4,7 @@ namespace PHPScript\Compiler;
 
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
 use PHPScript\Compiler\Parser\Managers\TokenManager;
+use PHPScript\Helper\Debug\Debug;
 
 class Parser
 {
@@ -22,9 +23,8 @@ class Parser
 
         while (!$tokenManager->isEndOfTokens()) {
             $token = $tokenManager->getCurrentToken();
-
             $result =  (new $this->factories[$token['type']]($tokenManager))
-            ->process();
+                ->process();
 
             if ($result) {
                 $program->statements[] = $result;

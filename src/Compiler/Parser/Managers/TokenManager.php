@@ -6,9 +6,9 @@ class TokenManager
 {
     private $tokens;
     private $tokenLookup;
-    private $positionLookup;
+    public $positionLookup;
 
-    private $currentToken;
+    private array $currentToken;
     private $currentPosition;
 
     private $context;
@@ -35,6 +35,19 @@ class TokenManager
         ];
     }
 
+    public function getAll()
+    {
+        return [
+        'context' => $this->getContext(),
+        'currentPosition' => $this->getCurrentPosition(),
+        'positionLookup' => $this->positionLookup,
+        'previous' => $this->getPreviousTokenBeforeCurrent(),
+        'currentToken' => $this->getCurrentToken(),
+        'next' => $this->getNextTokenAfterCurrent(),
+        'tokens' => $this->getTokens()
+        ];
+    }
+
     public function getContext()
     {
         return $this->context;
@@ -53,6 +66,7 @@ class TokenManager
     public function advance()
     {
         $this->currentPosition++;
+      //$this->positionLookup++;
         if (!$this->isEndOfTokens() && isset($this->tokens[$this->currentPosition + 1])) {
             $this->currentToken = $this->tokens[$this->currentPosition];
             $this->tokenLookup = $this->currentToken;
@@ -63,7 +77,11 @@ class TokenManager
     public function walk($positions)
     {
         $this->currentPosition += $positions;
-        $this->positionLookup += $positions;
+        if (!$this->isEndOfTokens() && isset($this->tokens[$this->currentPosition + 1])) {
+            $this->currentToken = $this->tokens[$this->currentPosition];
+            $this->tokenLookup = $this->currentToken;
+            $this->positionLookup = $this->currentPosition;
+        }
     }
 
     public function isEndOfTokens(): bool

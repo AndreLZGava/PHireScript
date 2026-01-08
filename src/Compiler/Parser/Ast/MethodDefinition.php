@@ -8,5 +8,7 @@ class MethodDefinition extends Node
     public array $modifiers = [];
     public array $args = [];
     public ?string $returnType = null;
-    public string $bodyCode;
+    public array $bodyCode;
+    public bool $mustBeBool = false;
+    public bool $mustBeVoid = false;
 }

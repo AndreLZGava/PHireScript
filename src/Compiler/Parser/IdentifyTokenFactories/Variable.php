@@ -4,6 +4,7 @@ namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHPScript\Compiler\Parser\Ast\GlobalStatement;
 use PHPScript\Compiler\Parser\Ast\Node;
+use PHPScript\Helper\Debug\Debug;
 
 class Variable extends GlobalFactory
 {

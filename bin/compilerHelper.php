@@ -1,8 +1,16 @@
 <?php
 
+use PHPScript\Helper\Debug\Debug;
+use PHPScript\Runtime\Types\MetaTypes;
+use PHPScript\Runtime\Types\SuperTypes;
+
 function getConfigFile()
 {
-    return json_decode(file_get_contents('PHPScript.json'), true);
+    $configs = json_decode(file_get_contents('PHPScript.json'), true);
+    $configs['metatypes'] = listClassesExtending(__DIR__ . '/../src/Runtime/Types/MetaTypes/', MetaTypes::class);
+    $configs['supertypes'] = listClassesExtending(__DIR__ . '/../src/Runtime/Types/SuperTypes/', SuperTypes::class);
+
+    return $configs;
 }
 
 function getErrorInterface($e, $transpiler, $code)
@@ -66,4 +74,93 @@ function getErrorInterface($e, $transpiler, $code)
     echo "\n{$yellow}ERROR MESSAGE:{$reset}\n";
     echo "{$red}» {$e->getMessage()}{$reset}\n";
     echo "{$red}" . str_repeat('=', $maxLineWidth) . "{$reset}\n";
+}
+
+function listClassesExtending(
+    string $directory,
+    string $baseClass
+): array {
+    $directory = realpath($directory);
+
+    if ($directory === false || !is_dir($directory)) {
+        throw new RuntimeException("Invalid path: {$directory}");
+    }
+
+    if (!class_exists($baseClass)) {
+        throw new RuntimeException("Base class does not exists: {$baseClass}");
+    }
+
+    $classes = [];
+
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator(
+            $directory,
+            FilesystemIterator::SKIP_DOTS
+        )
+    );
+    foreach ($iterator as $file) {
+        if ($file->getExtension() !== 'php') {
+            continue;
+        }
+
+        $content = file_get_contents($file->getPathname());
+        $tokens  = token_get_all($content);
+
+        $namespace = '';
+        $class     = null;
+        $extends   = null;
+
+
+        for ($i = 0; $i < count($tokens); $i++) {
+            if ($tokens[$i][0] === T_NAMESPACE) {
+                $namespace = '';
+                for ($j = $i + 2; isset($tokens[$j]); $j++) {
+                    if ($tokens[$j] === ';') {
+                        break;
+                    }
+                    $namespace .= $tokens[$j][1];
+                }
+            }
+
+            if ($tokens[$i][0] === T_CLASS) {
+                $class = $tokens[$i + 2][1] ?? null;
+
+                for ($j = $i; isset($tokens[$j]); $j++) {
+                    if (is_array($tokens[$j]) && $tokens[$j][0] === T_EXTENDS) {
+                        $extends = '';
+                        for ($k = $j + 2; isset($tokens[$k]); $k++) {
+                            if (in_array($tokens[$k][0], [T_STRING, T_NS_SEPARATOR])) {
+                                $extends .= $tokens[$k][1];
+                            } else {
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        if (!$class) {
+            continue;
+        }
+
+        $fqcn = $namespace ? "$namespace\\$class" : $class;
+
+        if (!class_exists($fqcn)) {
+            require_once $file->getPathname();
+        }
+
+        if (!class_exists($fqcn)) {
+            continue;
+        }
+
+        $ref = new ReflectionClass($fqcn);
+
+        if ($ref->isSubclassOf($baseClass)) {
+            $classes[] = $fqcn;
+        }
+    }
+
+    return $classes;
 }
