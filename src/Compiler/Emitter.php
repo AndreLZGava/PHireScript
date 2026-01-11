@@ -135,25 +135,44 @@ class Emitter
 
         $bodyLines = "";
         foreach ($method->bodyCode as $node) {
-            $bodyLines .= "        " . $this->emitNode($node) . "\n";
+            $bodyLines .= "        " . $this->emitNode($node, $method->returnType) . "\n";
         }
 
         return "    $modifiers function {$method->name}($argsList)$returnType {\n" .
             $bodyLines .
-            "    }\n";
+            "    }\n\n";
     }
 
-    protected function emitNode($node): string
+
+    protected function emitNode($node, $returnType = null): string
     {
         return match (true) {
             $node instanceof \PHPScript\Compiler\Parser\Ast\ReturnNode =>
-            "return " . ($node->expression ? $this->emitExpression($node->expression) : "") . ";",
+            $this->emitReturn($node, $returnType),
 
             $node instanceof \PHPScript\Compiler\Parser\Ast\GlobalStatement =>
             trim($node->code),
 
             default => "// Unknown Node: " . get_class($node)
         };
+    }
+
+    protected function emitReturn(\PHPScript\Compiler\Parser\Ast\ReturnNode $node, $returnType): string
+    {
+        $expression = $node->expression ? $this->emitExpression($node->expression) : "";
+
+        $isTypedArray = is_string($returnType) && str_starts_with($returnType, '[');
+
+        if (!$this->config['dev'] || !$isTypedArray || empty($expression)) {
+            return "return $expression;";
+        }
+
+        $this->uses[] = "PHPScript\\Runtime\\Types\\TypeGuard";
+
+        $innerTypes = trim($returnType, '[]');
+        $typesArray = "['" . implode("', '", explode('|', $innerTypes)) . "']";
+
+        return "return TypeGuard::validateArray($expression, $typesArray);";
     }
 
     protected function emitExpression($expr): string
