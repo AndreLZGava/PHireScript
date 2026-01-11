@@ -27,7 +27,11 @@ class Emitter
                 $classesCode .= $this->emitComment($node);
             }
 
-            if ($node instanceof ClassDefinition && $node?->type === 'class' || $node?->type === 'type') {
+            if (
+                $node instanceof ClassDefinition &&
+                isset($node->type) &&
+                ($node?->type === 'class' || $node?->type === 'type')
+            ) {
                 $classesCode .= $this->emitClass($node);
             }
 
@@ -127,7 +131,8 @@ class Emitter
             $returnTypeRaw = 'array';
         }
 
-        $returnType = !empty($returnTypeRaw) ? ": " . strtolower($returnTypeRaw) : "";
+        $returnType = !empty($returnTypeRaw) ? ": " .
+            strtolower($returnTypeRaw) : "";
 
         if ($isInterface) {
             return "    $modifiers function {$method->name}($argsList)$returnType;\n";

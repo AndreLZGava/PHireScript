@@ -9,6 +9,10 @@ use PHPScript\Compiler\Parser\Ast\MethodDefinition;
 use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHPScript\Helper\Debug\Debug;
 
+/**
+ * @todo implement that interface may not have properties and
+ * methods must always be public
+ */
 class Checker
 {
     private $table;

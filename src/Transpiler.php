@@ -32,52 +32,49 @@ class Transpiler
 
         $objectHandler = new ObjectsHandler();
         $this->preprocessors = [
-        new PhpFileHandler(),
-        $objectHandler,
-        new NativeTypesHandler(),
-        new VariablesHandler(),
-        new FunctionsHandler(),
-        new ReturnTypeHandler(),
-        new FunctionBodyProcessor(),
-        new AccessorHandler(),
-        new VariablesBeforeInitializationHandler(),
-        new SemicolonHandler($objectHandler),
+            new PhpFileHandler(),
+            $objectHandler,
+            new NativeTypesHandler(),
+            new VariablesHandler(),
+            new FunctionsHandler(),
+            new ReturnTypeHandler(),
+            new FunctionBodyProcessor(),
+            new AccessorHandler(),
+            new VariablesBeforeInitializationHandler(),
+            new SemicolonHandler($objectHandler),
         ];
         $this->generator = new PhpFileGeneratorHandler(false);
     }
 
     public function compile(string $code): string
     {
-        if (true) {
-            try {
-                $scanner = new Scanner($code);
-                $tokens = $scanner->tokenize();
+        try {
+            $scanner = new Scanner($code);
+            $tokens = $scanner->tokenize();
 
-                $parser = new Parser();
-                $ast = $parser->parse($tokens);
-//Debug::show($ast);exit;
-                $symbolTable = new SymbolTable();
-                $binder = new Binder($symbolTable);
-                $result = $binder->bind($ast);
+            $parser = new Parser();
+            $ast = $parser->parse($tokens);
+            //Debug::show($ast);exit;
+            $symbolTable = new SymbolTable();
+            $binder = new Binder($symbolTable);
+            $result = $binder->bind($ast);
 
-                $checker = new Checker();
-                $checker->check($result, $symbolTable);
-//Debug::show($ast);exit;
-                $emitter = new Emitter($this->config);
-                $result = $emitter->emit($result);
-
-                $result = $this->generator->process($result);
-                return $result;
-            } catch (\Exception $e) {
-                Debug::show($e->getMessage(), $e->getTraceAsString());
-                exit;
-            }
+            $checker = new Checker();
+            $checker->check($result, $symbolTable);
+            //Debug::show($ast);exit;
+            $emitter = new Emitter($this->config);
+            $result = $emitter->emit($result);
+            $this->codeBeforeGenerator = $result;
+            $result = $this->generator->process($result);
+            return $result;
+        } catch (\Exception $e) {
+            Debug::show($e->getMessage(), $e->getTraceAsString());
+            exit;
         }
     }
 
     public function getCodeBeforeGenerator(): string
     {
-        return '';
-        $this->codeBeforeGenerator;
+        return $this->codeBeforeGenerator;
     }
 }

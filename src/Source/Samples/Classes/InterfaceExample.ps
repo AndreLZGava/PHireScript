@@ -1,9 +1,5 @@
 interface UserInterface {
-    Int id
-    +String name
-    #Bool active
-
     save?(Array data): Bool
     delete!(): Void
-    +getCompleteUserName(): String|Null
+    getCompleteUserName(): String|Null
 }
