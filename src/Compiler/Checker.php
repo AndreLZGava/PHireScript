@@ -11,9 +11,10 @@ use PHPScript\Helper\Debug\Debug;
 
 class Checker
 {
+    private $table;
     public function check(Program $ast, SymbolTable $table)
     {
-
+        $this->table = $table;
         foreach ($ast->statements as $node) {
             if ($node instanceof ClassDefinition) {
                 $this->checkClassBody($node, $table);
@@ -26,14 +27,54 @@ class Checker
         foreach ($classNode->body as $member) {
             if ($member instanceof PropertyDefinition) {
                 if ($member->defaultValue !== null) {
-                  // $this->ensureTypeCompatibility($member, $member->defaultValue);
+                    // $this->ensureTypeCompatibility($member, $member->defaultValue);
                 }
             }
 
             if ($member instanceof MethodDefinition) {
-                $this->ensureReturnsForMethods($member);
+                $this->validateMethodReturn($member);
             }
         }
+    }
+
+    private function validateMethodReturn(MethodDefinition $method)
+    {
+        $this->ensureReturnsForMethods($method);
+
+        foreach ($method->bodyCode as $node) {
+            if ($node instanceof \PHPScript\Compiler\Parser\Ast\ReturnNode) {
+                $this->checkTypeCompatibility($method->returnType, $node->expression, $method->name);
+            }
+        }
+    }
+
+    private function checkTypeCompatibility($declaredType, $expressionNode, $methodName)
+    {
+        if ($expressionNode instanceof \PHPScript\Compiler\Parser\Ast\ArrayLiteralNode) {
+            if ($declaredType === 'Array') {
+                return true;
+            }
+
+            if (str_starts_with($declaredType, '[') && str_ends_with($declaredType, ']')) {
+                $innerTypes = trim($declaredType, '[]');
+                $allowedTypes = explode('|', $innerTypes);
+
+                foreach ($expressionNode->elements as $index => $element) {
+                    $elementType = $this->getNodeType($element);
+
+                    if (!in_array($elementType, $allowedTypes)) {
+                        throw new \Exception(
+                            "Semantic Error in method '{$methodName}': " .
+                                "Element at index {$index} is of type '{$elementType}', " .
+                                "but the return array only accepts [" . implode('|', $allowedTypes) . "]."
+                        );
+                    }
+                }
+                return true;
+            }
+        }
+
+        return true;
     }
 
     private function ensureReturnsForMethods(MethodDefinition $prop)
@@ -44,8 +85,8 @@ class Checker
             $prop->mustBeBool && current($returnMethod) !== 'Bool'
         ) {
             throw new Exception('Method ' . $prop->name .
-            '? must return exclusively "Bool". Passed "' .
-            $prop->returnType . '"!');
+                '? must return exclusively "Bool". Passed "' .
+                $prop->returnType . '"!');
         }
 
         if (
@@ -53,8 +94,8 @@ class Checker
             $prop->mustBeVoid && current($returnMethod) !== 'Void'
         ) {
             throw new Exception('Method ' . $prop->name .
-            '! must return exclusively "Void". Passed "' .
-            $prop->returnType . '"!');
+                '! must return exclusively "Void". Passed "' .
+                $prop->returnType . '"!');
         }
     }
 
@@ -77,19 +118,14 @@ class Checker
 
     private function isCompatible(array $typeInfo, $valueNode): bool
     {
-      // Aqui você precisará de uma lógica que identifique o tipo do valor do nó
-      // Por agora, vamos assumir uma verificação básica de categoria
         switch ($typeInfo['category']) {
             case 'primitive':
                 return $this->checkPrimitive($typeInfo['native'], $valueNode);
             case 'supertype':
-              // SuperTypes validam em Runtime, mas aqui podemos checar se o valor base é string
                 return $this->checkPrimitive('string', $valueNode);
             case 'metatype':
-              // MetaTypes geralmente aceitam strings ou números para inicializar
                 return true;
             case 'custom':
-              // Checar se o valor é uma instância da classe customizada
                 return true;
             default:
                 return false;
@@ -98,19 +134,16 @@ class Checker
 
     private function checkPrimitive(string $nativeType, $valueNode): bool
     {
-      // 1. Primeiro, precisamos descobrir qual é o tipo do nó que estamos recebendo
         $nodeType = $this->getNodeType($valueNode);
 
-      // 2. Se o tipo do nó for 'unknown', o Checker não pode validar (ex: retorno de função desconhecida)
         if ($nodeType === 'unknown') {
-            return true; // Ou você pode ser rigoroso e retornar false
+            return true;
         }
 
-      // 3. Tabela de compatibilidade
         return match ($nativeType) {
             'string' => $nodeType === 'String',
             'int'    => $nodeType === 'Int',
-            'float'  => $nodeType === 'Float' || $nodeType === 'Int', // Int pode entrar em Float
+            'float'  => $nodeType === 'Float',
             'bool'   => $nodeType === 'Bool',
             'array'  => $nodeType === 'Array',
             'object' => $nodeType === 'Object' || $nodeType === 'Custom',
@@ -118,19 +151,19 @@ class Checker
         };
     }
 
-  /**
-   * Método auxiliar para identificar o tipo de um nó da AST
-   */
+
     private function getNodeType($node): string
     {
+
         if ($node instanceof \PHPScript\Compiler\Parser\Ast\LiteralNode) {
-          // Se o seu LiteralNode guarda se é string ou int
-            return $node->type;
+            return $node->rawType;
         }
 
-        if ($node instanceof \PHPScript\Compiler\Parser\Ast\VariableNode) {
-          // Se for uma variável, buscamos na SymbolTable o tipo dela
-          // para saber se ela pode ser atribuída à nova variável
+        if ($node instanceof \PHPScript\Compiler\Parser\Ast\ArrayLiteralNode) {
+            return 'Array';
+        }
+
+        if ($node instanceof \PHPScript\Compiler\Parser\Ast\VariableDeclarationNode) {
             return $this->table->getType($node->name, $node->line);
         }
 

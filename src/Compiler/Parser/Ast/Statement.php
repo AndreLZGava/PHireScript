@@ -2,7 +2,6 @@
 
 namespace PHPScript\Compiler\Parser\Ast;
 
-abstract class Node
+abstract class Statement extends Node
 {
-    public $line;
 }

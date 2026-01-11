@@ -2,15 +2,43 @@
 
 namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
+use Exception;
+use PHPScript\Compiler\Parser\Ast\MethodDefinition;
+use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
 use PHPScript\Compiler\Parser\Managers\TokenManager;
 use PHPScript\Helper\Debug\Debug;
 
 abstract class ClassesFactory extends GlobalFactory
 {
-    public function getReturnType(): ?string
+    public function getMethodBody(MethodDefinition $node): array
     {
-        $codeBlockToken = $this->returnType();
+        $codeBlockToken = $this->codeBlockToken();
+        $factories = FactoryInitializer::getFactories();
+        $result = [];
+        //Debug::show($this->tokenManager->getCurrentPosition(), $this->tokenManager->getCurrentToken());
+        $newTokenManager = new TokenManager('method', $codeBlockToken, 0);
+
+        while (!$newTokenManager->isEndOfTokens()) {
+            $token = $newTokenManager->getCurrentToken();
+            $returned = (new $factories[$token['type']]($newTokenManager))
+                ->process();
+
+            if ($returned) {
+                //  Debug::show($token);
+                $result[] = $returned;
+            }
+
+            $newTokenManager->advance();
+        }
+        //Debug::show($codeBlockToken, $this->tokenManager->getTokens());exit;
+        $this->tokenManager->walk(count($codeBlockToken));
+        return $result;
+    }
+
+    public function getReturnType(MethodDefinition $node): ?string
+    {
+        $codeBlockToken = $this->returnType($node);
         $result = '';
         foreach ($codeBlockToken as $tokens) {
             if (!empty($tokens)) {
@@ -98,9 +126,14 @@ abstract class ClassesFactory extends GlobalFactory
         return $tokensOfThisBlock;
     }
 
-    public function returnType(): array
+    public function returnType(MethodDefinition $node): array
     {
         $tokensOfThisBlock = array_slice($this->tokenManager->getTokens(), $this->tokenManager->getCurrentPosition());
+        if (in_array($this->tokenManager->getCurrentToken()['type'], ['T_EOL', 'T_COMMENT'])) {
+            throw new Exception('Method ' . $node->name . ' has no definition ' .
+                'of return. Please implement a return explicitly!');
+        }
+        $isClass = $this->tokenManager->getContext() === 'class';
 
         $result = [];
         $capture = false;
@@ -115,7 +148,12 @@ abstract class ClassesFactory extends GlobalFactory
                 continue;
             }
 
-            if ($capture && $token['type'] === 'T_EOL') {
+            if (
+                $capture &&
+                $token['type'] === 'T_EOL' ||
+                $isClass &&
+                $token['type'] === 'T_SYMBOL' && $token['value'] === '{'
+            ) {
                 break;
             }
 

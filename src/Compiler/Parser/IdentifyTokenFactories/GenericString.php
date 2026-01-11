@@ -25,15 +25,17 @@ class GenericString extends ClassesFactory
             $this->tokenManager->walk(in_array($nextToken['value'], ['?', '!']) ? 2 : 1);
             $node = new MethodDefinition();
             $node->name = trim($currentToken['value']);
-            $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($previousToken);
-            $node->args = $this->getArgs('arguments');
-            $node->returnType = $this->getReturnType();
+            $node->line = $currentToken['line'];
             $node->mustBeBool = $nextToken['value'] === '?';
             $node->mustBeVoid = $nextToken['value'] === '!';
-
-            if ($this->tokenManager->getContext() === 'interface') {
-                $node->bodyCode = [];
+            $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($previousToken);
+            $node->args = $this->getArgs('arguments');
+            $node->returnType = $this->getReturnType($node);
+            $node->bodyCode = [];
+            if ($this->tokenManager->getContext() === 'class') {
+                $node->bodyCode = $this->getMethodBody($node);
             }
+
             return $node;
         }
 

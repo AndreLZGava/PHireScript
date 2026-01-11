@@ -55,14 +55,14 @@ class Transpiler
 
                 $parser = new Parser();
                 $ast = $parser->parse($tokens);
-
+//Debug::show($ast);exit;
                 $symbolTable = new SymbolTable();
                 $binder = new Binder($symbolTable);
                 $result = $binder->bind($ast);
 
                 $checker = new Checker();
                 $checker->check($result, $symbolTable);
-
+//Debug::show($ast);exit;
                 $emitter = new Emitter($this->config);
                 $result = $emitter->emit($result);
 

@@ -2,6 +2,7 @@
 
 namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
+use PHPScript\Compiler\Parser\Ast\GlobalStatement;
 use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHPScript\Compiler\Parser\Transformers\ModifiersTransform;
@@ -12,29 +13,46 @@ class Symbol extends GlobalFactory
     public function process(): ?Node
     {
         $currentToken = $this->tokenManager->getCurrentToken();
+        $currentContext  = $this->tokenManager->getContext();
+
+        if (
+            in_array($currentToken['value'], ['(', ')'])
+            && $currentContext === 'arguments'
+        ) {
+            return null;
+        }
+
+        if (
+            in_array($currentToken['value'], ['[', ']', ','])
+            && $currentContext === 'method'
+        ) {
+            $node = new GlobalStatement();
+            $node->code = $currentToken['value'];
+            return $node;
+        }
+
         if (in_array($currentToken['value'], ['{', '}'])) {
             return null;
         }
 
         if (
             in_array($currentToken['value'], ['!', '?', ':']) &&
-            in_array($this->tokenManager->getContext(), ['type', 'interface'])
+            in_array($currentContext, ['type', 'interface'])
         ) {
             return null;
         }
 
         if (
             in_array($currentToken['value'], ['+', '#']) &&
-            $this->tokenManager->getContext() === 'type'
+            $currentContext === 'type'
         ) {
             $node = new PropertyDefinition();
-            //Debug::show($node, $currentToken);
 
             $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($currentToken);
 
             return $this->parsePropertyWithTypes($node);
         }
-
+        Debug::show(['currentToken' => $currentToken, 'context' => $currentContext]);
         return null;
     }
 

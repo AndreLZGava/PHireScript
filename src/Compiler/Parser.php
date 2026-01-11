@@ -19,6 +19,7 @@ class Parser
     {
 
         $program = new Program();
+        $program->line = 0;
         $tokenManager = new TokenManager('general', $tokens, 0);
 
         while (!$tokenManager->isEndOfTokens()) {

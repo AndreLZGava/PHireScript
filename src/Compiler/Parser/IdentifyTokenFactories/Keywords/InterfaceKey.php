@@ -13,6 +13,7 @@ class InterfaceKey extends ClassesFactory
     {
         $node = new ClassDefinition();
         $node->type = $this->tokenManager->getCurrentToken()['value'];
+        $node->line = $this->tokenManager->getCurrentToken()['line'];
         $this->tokenManager->advance();
 
         $node->name = $this->tokenManager->getCurrentToken()['value'];

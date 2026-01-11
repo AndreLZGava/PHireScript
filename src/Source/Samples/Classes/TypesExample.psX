@@ -1,6 +1,0 @@
-type Id = String | Int
-
-// use in functions
-findUser(Id id): Object {
-    // ...
-}

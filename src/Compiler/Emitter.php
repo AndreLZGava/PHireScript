@@ -51,6 +51,8 @@ class Emitter
         $name = $class->name;
         $code = "class $name {\n";
 
+        $code .= "\n" . $this->emitConstructor($class);
+
         foreach ($class->body as $member) {
             if ($member instanceof GlobalStatement) {
                 $code .= $this->emitComment($member);
@@ -59,9 +61,11 @@ class Emitter
             if ($member instanceof PropertyDefinition) {
                 $code .= $this->emitProperty($member);
             }
-        }
 
-        $code .= "\n" . $this->emitConstructor($class);
+            if ($member instanceof MethodDefinition) {
+                $code .= $this->emitMethod($member, false);
+            }
+        }
 
         $code .= "}\n";
         return $code;
@@ -82,7 +86,7 @@ class Emitter
             }
 
             if ($member instanceof MethodDefinition) {
-                $code .= $this->emitMethod($member);
+                $code .= $this->emitMethod($member, true);
             }
         }
 
@@ -102,7 +106,7 @@ class Emitter
         return $modifiers ? implode(' ', $modifiers) : null;
     }
 
-    protected function emitMethod(MethodDefinition $method): string
+    protected function emitMethod(MethodDefinition $method, bool $isInterface = false): string
     {
         $modifiers = $this->joinAllModifiers($method->modifiers) ?? 'public';
 
@@ -113,12 +117,60 @@ class Emitter
                 $args[] = "$type \${$arg->name}";
             }
         }
-
         $argsList = implode(', ', $args);
 
-        $returnType = !empty($method->returnType) ? ": " . strtolower($method->returnType) : "";
+        $returnTypeRaw = $method->returnType;
 
-        return "    $modifiers function {$method->name}($argsList)$returnType;\n";
+        if (is_array($returnTypeRaw)) {
+            $returnTypeRaw = 'array';
+        } elseif (str_starts_with((string)$returnTypeRaw, '[')) {
+            $returnTypeRaw = 'array';
+        }
+
+        $returnType = !empty($returnTypeRaw) ? ": " . strtolower($returnTypeRaw) : "";
+
+        if ($isInterface) {
+            return "    $modifiers function {$method->name}($argsList)$returnType;\n";
+        }
+
+        $bodyLines = "";
+        foreach ($method->bodyCode as $node) {
+            $bodyLines .= "        " . $this->emitNode($node) . "\n";
+        }
+
+        return "    $modifiers function {$method->name}($argsList)$returnType {\n" .
+            $bodyLines .
+            "    }\n";
+    }
+
+    protected function emitNode($node): string
+    {
+        return match (true) {
+            $node instanceof \PHPScript\Compiler\Parser\Ast\ReturnNode =>
+            "return " . ($node->expression ? $this->emitExpression($node->expression) : "") . ";",
+
+            $node instanceof \PHPScript\Compiler\Parser\Ast\GlobalStatement =>
+            trim($node->code),
+
+            default => "// Unknown Node: " . get_class($node)
+        };
+    }
+
+    protected function emitExpression($expr): string
+    {
+        if ($expr instanceof \PHPScript\Compiler\Parser\Ast\LiteralNode) {
+            return ($expr->rawType === 'String') ? "{$expr->value}" : $expr->value;
+        }
+
+        if ($expr instanceof \PHPScript\Compiler\Parser\Ast\ArrayLiteralNode) {
+            $elements = [];
+            foreach ($expr->elements as $el) {
+                $elements[] = $this->emitExpression($el);
+            }
+            return "[" . implode(', ', $elements) . "]";
+        }
+
+        return "";
     }
 
     protected function emitProperty(PropertyDefinition $prop): string
@@ -141,6 +193,10 @@ class Emitter
 
                 $assignments[] = $this->generateAssignmentLine($member);
             }
+        }
+
+        if (!$assignments) {
+            return '';
         }
 
         $code = "    public function __construct(\n        " . implode(",\n        ", $params) . "\n    ) {\n";
