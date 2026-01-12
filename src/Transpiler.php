@@ -19,6 +19,7 @@ use PHPScript\Compiler\Processors\SemicolonHandler;
 use PHPScript\Compiler\Processors\VariablesBeforeInitializationHandler;
 use PHPScript\Compiler\Processors\VariablesHandler;
 use PHPScript\Compiler\Scanner;
+use PHPScript\Compiler\Validator;
 use PHPScript\Helper\Debug\Debug;
 
 class Transpiler
@@ -52,8 +53,12 @@ class Transpiler
             $scanner = new Scanner($code);
             $tokens = $scanner->tokenize();
 
+            $validator = new Validator();
+            $validator->validate($tokens);
+
             $parser = new Parser();
             $ast = $parser->parse($tokens);
+
             // Debug::show($ast);exit;
             $symbolTable = new SymbolTable();
             $binder = new Binder($symbolTable);
