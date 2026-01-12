@@ -4,6 +4,7 @@ namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ClassKey;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Immutable;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\InterfaceKey;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ReturnKey;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Type;
@@ -18,6 +19,7 @@ class Keywords extends GlobalFactory
     {
         $this->factories = [
             'type' => Type::class,
+            'immutable' => Immutable::class,
             'var' => Variable::class,
             'interface' => InterfaceKey::class,
             'class' => ClassKey::class,

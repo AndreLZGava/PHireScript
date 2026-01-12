@@ -6,6 +6,8 @@ class ClassDefinition extends Node
 {
     public string $type;
     public string $name;
+    public bool $readOnly = false;
+    public array $modifiers = [];
     public ?string $docBlock;
     public ?string $extends = null;
     public array $mixins = [];

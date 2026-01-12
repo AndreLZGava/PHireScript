@@ -30,7 +30,7 @@ class Emitter
             if (
                 $node instanceof ClassDefinition &&
                 isset($node->type) &&
-                ($node?->type === 'class' || $node?->type === 'type')
+                in_array($node?->type, ['class', 'type', 'immutable'])
             ) {
                 $classesCode .= $this->emitClass($node);
             }
@@ -53,17 +53,20 @@ class Emitter
     protected function emitClass(ClassDefinition $class): string
     {
         $name = $class->name;
-        $code = "class $name {\n";
+        $code = $class->readOnly ? 'readonly ' : '';
+        $code .= "class $name {\n";
+
+        foreach ($class->body as $member) {
+            if ($member instanceof PropertyDefinition) {
+                $code .= $this->emitProperty($member);
+            }
+        }
 
         $code .= "\n" . $this->emitConstructor($class);
 
         foreach ($class->body as $member) {
             if ($member instanceof GlobalStatement) {
                 $code .= $this->emitComment($member);
-            }
-
-            if ($member instanceof PropertyDefinition) {
-                $code .= $this->emitProperty($member);
             }
 
             if ($member instanceof MethodDefinition) {
@@ -205,6 +208,17 @@ class Emitter
         return "    $modifier $phpType \${$prop->name};\n";
     }
 
+    private function getDefaultValue(PropertyDefinition $prop): string
+    {
+        if (empty($prop->defaultValue)) {
+            return '';
+        }
+        $propertyValue = $prop->defaultValue === 'Null' ? 'null' : $prop->defaultValue;
+        $propertyValue = $propertyValue === 'True' ? 'true' : $propertyValue;
+        $propertyValue = $propertyValue === 'False' ? 'false' : $propertyValue;
+        return ' = ' . $propertyValue;
+    }
+
     protected function emitConstructor(ClassDefinition $class): string
     {
         $params = [];
@@ -213,7 +227,8 @@ class Emitter
         foreach ($class->body as $member) {
             if ($member instanceof PropertyDefinition) {
                 $phpType = $this->getPhpType($member);
-                $params[] = "$phpType \${$member->name}";
+                $defaultValue = $this->getDefaultValue($member);
+                $params[] = "$phpType \${$member->name}{$defaultValue}";
 
                 $assignments[] = $this->generateAssignmentLine($member);
             }
@@ -232,9 +247,12 @@ class Emitter
     private function generateAssignmentLine(PropertyDefinition $prop): string
     {
         $types = $prop->resolvedTypeInfo;
+        $explicitTypes =  explode('|', $this->getPhpType($prop));
+        $itemsToVerify = in_array('null', $explicitTypes) ?
+            count($types) - 1 :
+            count($types);
         $var = $prop->name;
-
-        if (count($types) > 1) {
+        if ($itemsToVerify > 1) {
             $this->uses[] = "PHPScript\\Runtime\\Types\\UnionType";
 
             $typeClasses = [];
@@ -260,18 +278,28 @@ class Emitter
 
     private function getPhpType(PropertyDefinition $prop): string
     {
-        $typeInfo = $prop->resolvedTypeInfo[0];
+        $typeInfos = $prop->resolvedTypeInfo;
+        $types = [];
+        foreach ($typeInfos as $typeInfo) {
+            if ($typeInfo['category'] === 'supertype') {
+                $this->uses[] = $typeInfo['class'];
+                $types[] = "string";
+            }
 
-        if ($typeInfo['category'] === 'supertype') {
-            $this->uses[] = $typeInfo['class'];
-            return "string";
+            if ($typeInfo['category'] === 'metatype' || $typeInfo['category'] === 'custom') {
+                $this->uses[] = $typeInfo['class'] ?? $typeInfo['name'];
+                $types[] = $prop->type;
+            }
+
+            if ($typeInfo['category'] === 'primitive') {
+                $types[] = $typeInfo['native'];
+            }
+
+            if (isset($typeInfo['name']) && $typeInfo['name'] === 'Null') {
+                $types[] = 'null';
+            }
         }
 
-        if ($typeInfo['category'] === 'metatype' || $typeInfo['category'] === 'custom') {
-            $this->uses[] = $typeInfo['class'] ?? $typeInfo['name'];
-            return $prop->type;
-        }
-
-        return $typeInfo['native'] ?? 'mixed';
+        return implode('|', $types);
     }
 }

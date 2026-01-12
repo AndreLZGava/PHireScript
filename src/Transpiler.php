@@ -54,7 +54,7 @@ class Transpiler
 
             $parser = new Parser();
             $ast = $parser->parse($tokens);
-            //Debug::show($ast);exit;
+            // Debug::show($ast);exit;
             $symbolTable = new SymbolTable();
             $binder = new Binder($symbolTable);
             $result = $binder->bind($ast);
