@@ -2,10 +2,14 @@
 
 namespace PHPScript\Compiler;
 
+use PHPScript\Compiler\Parser\Ast\AssignmentNode;
 use PHPScript\Compiler\Parser\Ast\ClassDefinition;
 use PHPScript\Compiler\Parser\Ast\GlobalStatement;
 use PHPScript\Compiler\Parser\Ast\MethodDefinition;
+use PHPScript\Compiler\Parser\Ast\PropertyAccessNode;
 use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHPScript\Compiler\Parser\Ast\ThisExpressionNode;
+use PHPScript\Compiler\Parser\Ast\VariableNode;
 use PHPScript\Helper\Debug\Debug;
 
 // responsible to emmit a valid PHP code
@@ -57,6 +61,10 @@ class Emitter
         $code .= "class $name {\n";
 
         foreach ($class->body as $member) {
+            if ($member instanceof GlobalStatement) {
+                $code .= $this->emitComment($member);
+            }
+
             if ($member instanceof PropertyDefinition) {
                 $code .= $this->emitProperty($member);
             }
@@ -65,10 +73,6 @@ class Emitter
         $code .= "\n" . $this->emitConstructor($class);
 
         foreach ($class->body as $member) {
-            if ($member instanceof GlobalStatement) {
-                $code .= $this->emitComment($member);
-            }
-
             if ($member instanceof MethodDefinition) {
                 $code .= $this->emitMethod($member, false);
             }
@@ -158,6 +162,9 @@ class Emitter
             $node instanceof \PHPScript\Compiler\Parser\Ast\ReturnNode =>
             $this->emitReturn($node, $returnType),
 
+            $node instanceof \PHPScript\Compiler\Parser\Ast\AssignmentNode =>
+            $this->emitAssignment($node),
+
             $node instanceof \PHPScript\Compiler\Parser\Ast\GlobalStatement =>
             trim($node->code),
 
@@ -165,8 +172,40 @@ class Emitter
         };
     }
 
+    protected function emitAssignment(AssignmentNode $node): string
+    {
+        $left = $this->emitPropertyAssignment($node->left);
+        $right = $this->emitPropertyAssignment($node->right);
+
+        return "{$left} = {$right};";
+    }
+
+    public function emitPropertyAssignment($node): string
+    {
+        if ($node instanceof ThisExpressionNode) {
+            return '$this';
+        }
+
+        if ($node instanceof VariableNode) {
+            return '$' . $node->name;
+        }
+
+        if ($node instanceof PropertyAccessNode) {
+            $object = $this->emitPropertyAssignment($node->object);
+
+            $property = is_string($node->property)
+                ? $node->property
+                : $node->property->name;
+
+            return "{$object}->{$property}";
+        }
+
+        return '';
+    }
+
     protected function emitReturn(\PHPScript\Compiler\Parser\Ast\ReturnNode $node, $returnType): string
     {
+        //Debug::show($node);exit;
         $expression = $node->expression ? $this->emitExpression($node->expression) : "";
 
         $isTypedArray = is_string($returnType) && str_starts_with($returnType, '[');
@@ -189,6 +228,14 @@ class Emitter
             return ($expr->rawType === 'String') ? "{$expr->value}" : $expr->value;
         }
 
+        if ($expr instanceof \PHPScript\Compiler\Parser\Ast\PropertyAccessNode) {
+            $expression = '';
+            if ($expr->object instanceof ThisExpressionNode) {
+                $expression = '$this';
+            }
+            return "{$expression}->{$expr->property}";
+        }
+
         if ($expr instanceof \PHPScript\Compiler\Parser\Ast\ArrayLiteralNode) {
             $elements = [];
             foreach ($expr->elements as $el) {
@@ -197,7 +244,11 @@ class Emitter
             return "[" . implode(', ', $elements) . "]";
         }
 
-        return "";
+        if ($expr instanceof \PHPScript\Compiler\Parser\Ast\VoidExpressionNode) {
+            return "";
+        }
+
+        return "// Unknown Node: " . get_class($expr);
     }
 
     protected function emitProperty(PropertyDefinition $prop): string
@@ -300,6 +351,6 @@ class Emitter
             }
         }
 
-        return implode('|', $types);
+        return implode('|', array_unique($types));
     }
 }

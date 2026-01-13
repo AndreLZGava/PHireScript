@@ -12,6 +12,16 @@ class Validator
     ';' => 'Use break line instead!',
     '::' => 'Use ":" line instead!',
     '->' => 'Use "." line instead!',
+
+    '><' => 'Split like "< >" and follow the order!',
+    '#<' => 'Split like "# <" and follow the order!',
+    '*<' => 'Split like "* <" and follow the order!',
+    '+<' => 'Split like "+ <" and follow the order!',
+    '<>' => 'Split like "< >" and follow the order!',
+    '#>' => 'Split like "# >" and follow the order!',
+    '*>' => 'Split like "* >" and follow the order!',
+    '+>' => 'Split like "+ >" and follow the order!',
+
     'void' => 'Use "Void" instead!',
     'null' => 'Use "Null" instead!',
     'true' => 'Use "True" instead!',

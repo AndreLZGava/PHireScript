@@ -10,7 +10,7 @@ class TypedArrays {
         return [];
     }
 
-    public function testPrimitiveArray(): array {
+    public function testPrimitiveArray(string $test): array {
         return TypeGuard::validateArray([1, 15.2, 'test'], ['Int', 'Float', 'String']);
     }
 

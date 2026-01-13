@@ -45,6 +45,7 @@ class ReturnKey extends ClassesFactory
             $this->tokenManager->advance();
             return $literalNode;
         }
+
         if (
             in_array($currentToken['type'], ['T_IDENTIFIER', 'T_TYPE']) &&
             in_array($currentToken['value'], ['null', 'Null', 'Void', 'void'])

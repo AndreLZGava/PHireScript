@@ -35,6 +35,11 @@ class TokenManager
         ];
     }
 
+    public function getLeftTokens(): array
+    {
+        return array_slice($this->getTokens(), $this->getCurrentPosition());
+    }
+
     public function getAll()
     {
         return [

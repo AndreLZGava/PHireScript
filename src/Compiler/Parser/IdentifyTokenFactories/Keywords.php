@@ -27,7 +27,6 @@ class Keywords extends GlobalFactory
         ];
 
         $tokenValue = $this->tokenManager->getCurrentToken()['value'];
-
         if (!isset($this->factories[$tokenValue])) {
             Debug::show($tokenValue);
         }

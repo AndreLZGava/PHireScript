@@ -13,19 +13,17 @@ class ModifiersTransform
 
     public function map(array $accessor)
     {
-        $modifier = $accessor['type'] === 'T_EOL' ||
-        $accessor['type'] === 'T_COMMENT'
-        ? '*' : $accessor['value'];
+        $modifier = in_array($accessor['value'], ['>', '<']) ||
+            in_array($accessor['type'], ['T_EOL', 'T_COMMENT'])
+            ? '*' : $accessor['value'];
 
         $map = [
-        '>' => 'set',
-        '<' => 'get',
-        '+' => 'protected',
-        '#' => 'private',
-        '*' => 'public',
-        'readonly' => 'readonly',
-        'static' => 'static',
-        'async' => 'async'
+            '+' => 'protected',
+            '#' => 'private',
+            '*' => 'public',
+            'readonly' => 'readonly',
+            'static' => 'static',
+            'async' => 'async'
         ];
 
         if (!isset($map[$modifier])) {

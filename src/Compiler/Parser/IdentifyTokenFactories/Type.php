@@ -12,15 +12,16 @@ class Type extends GlobalFactory
     public function process(): ?Node
     {
         $node = new PropertyDefinition();
+        $allowNull = false;
         if (
             $this->tokenManager->getContext() !== 'arguments'
         ) {
             $token = $this->tokenManager->getPreviousTokenBeforeCurrent();
-            $allowNull = false;
             if ($token['value'] === '?') {
                 $token = $this->tokenManager->getPreviousToken();
                 $allowNull = true;
             }
+
             $node->modifiers[] = (
                 new ModifiersTransform($this->tokenManager))
                 ->map(

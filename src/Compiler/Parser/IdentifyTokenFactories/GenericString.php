@@ -35,7 +35,7 @@ class GenericString extends ClassesFactory
             if ($this->tokenManager->getContext() === 'class') {
                 $node->bodyCode = $this->getMethodBody($node);
             }
-
+//Debug::show($node);exit;
             return $node;
         }
 

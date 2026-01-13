@@ -19,7 +19,8 @@ class Scanner
         'T_BOOL'        => '/^\b(true|false)\b/',
         'T_EOL'         => '/^[\r\n]+/',
         'T_WHITESPACE'  => '/^[ \t]+/',
-        'T_MODIFIER'    => '/^(\+>|\<>|\#>|\->|=>|::|\.\.\.|\+\+|--|==|!=|<=|>=|&&|\|\|)/',
+        'T_ACCESSORS'   => '/^(\+>|<>|#>|\*>|\+<|><|#<|\*<)/',
+        'T_MODIFIER'    => '/^(\->|=>|::|\.\.\.|\+\+|--|==|!=|<=|>=|&&|\|\|)/',
         'T_TYPE'        => '/^\b(Int|String|Float|Bool|Object|Array|Void|' .
             'Null|Mixed|Any|Date|DateTime|Time|Email|Ipv4|Ipv6)\b/',
         'T_VARIABLE'    => '/^\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',

@@ -2,9 +2,17 @@
 
 namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
+use PHPScript\Compiler\Parser\Ast\AssignmentNode;
 use PHPScript\Compiler\Parser\Ast\GlobalStatement;
+use PHPScript\Compiler\Parser\Ast\MethodDefinition;
 use PHPScript\Compiler\Parser\Ast\Node;
+use PHPScript\Compiler\Parser\Ast\NullExpressionNode;
+use PHPScript\Compiler\Parser\Ast\PropertyAccessNode;
 use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHPScript\Compiler\Parser\Ast\ReturnNode;
+use PHPScript\Compiler\Parser\Ast\ThisExpressionNode;
+use PHPScript\Compiler\Parser\Ast\VariableNode;
+use PHPScript\Compiler\Parser\Ast\VoidExpressionNode;
 use PHPScript\Compiler\Parser\Transformers\ModifiersTransform;
 use PHPScript\Helper\Debug\Debug;
 
@@ -43,17 +51,107 @@ class Symbol extends GlobalFactory
         }
 
         if (
-            in_array($currentToken['value'], ['+', '#']) &&
-            $currentContext === 'type'
+            in_array($currentToken['value'], ['<', '>']) &&
+            in_array($currentContext, ['class', 'immutable', 'type'])
         ) {
+            $node = new MethodDefinition();
+            return $this->parseGetterAndSetter($node);
+        }
+
+        if (
+            in_array($currentToken['value'], ['+', '#', '*']) &&
+            in_array($currentContext, ['class', 'type', 'immutable'])
+        ) {
+            //Debug::show($this->tokenManager->getNextTokenAfterCurrent());exit;
+            if ($this->tokenManager->getNextTokenAfterCurrent()['type'] === 'T_SYMBOL') {
+                return null;
+            }
             $node = new PropertyDefinition();
-
+            $node->line = $currentToken['line'];
             $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($currentToken);
-
             return $this->parsePropertyWithTypes($node);
         }
         Debug::show(['currentToken' => $currentToken, 'context' => $currentContext]);
+        exit;
         return null;
+    }
+
+    private function parseGetterAndSetter(MethodDefinition $node)
+    {
+        $tokens = $this->tokenManager->getLeftTokens();
+        $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
+        $currentToken = $this->tokenManager->getCurrentToken();
+        $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($previous);
+        $toWalk = 0;
+        if (
+            $previous['type'] === 'T_EOL' ||
+            $previous['type'] === 'T_COMMENT'
+        ) {
+            $toWalk = 1;
+        }
+
+        $types = [];
+        $name = 'wrongCompilation';
+        $typeMethod = '';
+        $processBeforeAttribution = true;
+        $defaultValue = null;
+        foreach ($tokens as $key => $token) {
+            if ($processBeforeAttribution && $token['type'] === 'T_TYPE') {
+                $types[] = $token['value'];
+            }
+
+            if ($processBeforeAttribution && $token['type'] === 'T_IDENTIFIER') {
+                $name = trim($token['value']);
+            }
+
+            if ($token['type'] === 'T_SYMBOL' && $token['value'] === '=') {
+                $processBeforeAttribution = false;
+                $defaultValue = $tokens[$key + 1];
+            }
+
+            if ($token['type'] === 'T_EOL') {
+                break;
+            }
+        }
+
+        $node->line = $currentToken['line'];
+        if ($currentToken['value'] === '>') {
+            $typeMethod = 'set';
+            $arg = new PropertyDefinition();
+            $arg->line = $currentToken['line'];
+            $arg->name = $name;
+            $arg->type = implode("|", $types);
+            if ($defaultValue) {
+                $arg->defaultValue = $defaultValue;
+            }
+            $node->args[] = $arg;
+            $property = new PropertyAccessNode(
+                new ThisExpressionNode(),
+                $name
+            );
+            $assignment = new AssignmentNode($property, new VariableNode($name));
+            $node->bodyCode[] = $assignment;
+            $returnStatement = new ReturnNode(new VoidExpressionNode());
+            $node->bodyCode[] = $returnStatement;
+            $node->returnType = 'Void';
+        }
+
+        if ($currentToken['value'] === '<') {
+            $typeMethod = 'get';
+            $node->args = [];
+            $property = new PropertyAccessNode(
+                new ThisExpressionNode(),
+                $name
+            );
+            $returnStatement = new ReturnNode($property);
+            $node->bodyCode[] = $returnStatement;
+
+            $node->returnType = implode("|", $types);
+        }
+
+        $node->name = $typeMethod . ucfirst($name);
+        // $this->tokenManager->walk($toWalk);
+        return $node;
     }
 
     private function parsePropertyWithTypes(PropertyDefinition $node): PropertyDefinition
