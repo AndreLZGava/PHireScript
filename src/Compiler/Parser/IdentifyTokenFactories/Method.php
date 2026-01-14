@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHPScript\Compiler\Parser\Ast\GlobalStatement;
@@ -21,11 +23,11 @@ class Method extends ClassesFactory
 
         if (
             $nextToken['type'] === 'T_SYMBOL' &&
-            in_array($nextToken['value'], ['?', '!', '('])
+            in_array($nextToken['value'], ['?', '!', '('], true)
         ) {
-            $this->tokenManager->walk(in_array($nextToken['value'], ['?', '!']) ? 2 : 1);
+            $this->tokenManager->walk(in_array($nextToken['value'], ['?', '!'], true) ? 2 : 1);
             $node = new MethodDefinition();
-            $node->name = trim($currentToken['value']);
+            $node->name = trim((string) $currentToken['value']);
             $node->line = $currentToken['line'];
             $node->mustBeBool = $nextToken['value'] === '?';
             $node->mustBeVoid = $nextToken['value'] === '!';

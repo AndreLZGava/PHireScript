@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Emitter;
 
 final class UseRegistry
@@ -15,7 +17,7 @@ final class UseRegistry
     {
         ksort($this->uses);
         return implode("\n", array_map(
-            fn($u) => "use $u;",
+            fn ($u) => "use $u;",
             array_keys($this->uses)
         )) . "\n\n";
     }

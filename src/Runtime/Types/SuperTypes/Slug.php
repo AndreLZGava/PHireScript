@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Runtime\Types\SuperTypes;
 
 use PHPScript\Runtime\Types\SuperTypes;
@@ -17,9 +19,9 @@ class Slug extends SuperTypes
 
         $slug = preg_replace('/[^a-z0-9]+/', ' ', $slug);
 
-        $slug = preg_replace('/\s+/', '-', $slug);
+        $slug = preg_replace('/\s+/', '-', (string) $slug);
 
-        return trim($slug, '-');
+        return trim((string) $slug, '-');
     }
 
     protected static function validate(mixed $preparedValue): bool

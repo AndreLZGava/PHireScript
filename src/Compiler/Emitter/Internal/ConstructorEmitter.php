@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Emitter\Internal;
 
 use PHPScript\Compiler\Emitter\EmitContext;
@@ -18,7 +20,7 @@ class ConstructorEmitter implements NodeEmitter
     {
         $props = array_filter(
             $class->body,
-            fn($m) => $m instanceof PropertyDefinition
+            fn ($m) => $m instanceof PropertyDefinition
         );
 
         if (!$props) {
@@ -32,8 +34,7 @@ class ConstructorEmitter implements NodeEmitter
             $type = $ctx->types->phpType($prop);
             $params[] = "{$type} \${$prop->name},";
             $assignments[] = $ctx->types->assignment(
-                $prop,
-                "\${$prop->name}"
+                $prop
             );
         }
 
@@ -42,7 +43,7 @@ class ConstructorEmitter implements NodeEmitter
     public function __construct(
         {$this->join($params)}
     ) {
-        {$this->join($assignments, "\n        ")}
+        {$this->join($assignments)}
     }
 
 PHP;

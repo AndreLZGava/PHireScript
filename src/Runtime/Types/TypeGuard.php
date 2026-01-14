@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Runtime\Types;
 
 class TypeGuard
@@ -16,7 +18,7 @@ class TypeGuard
                 default   => $type
             };
 
-            if (!in_array($mappedType, $allowedTypes)) {
+            if (!in_array($mappedType, $allowedTypes, true)) {
                 throw new \TypeError("Runtime Error: Element at index $index expects [" .
                 implode('|', $allowedTypes) . "], but got $mappedType");
             }

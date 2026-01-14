@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler;
 
 class Scanner
 {
-    private string $code;
+    private readonly string $code;
     private int $cursor = 0;
     private int $line = 1;
     private int $lineStartOffset = 0;

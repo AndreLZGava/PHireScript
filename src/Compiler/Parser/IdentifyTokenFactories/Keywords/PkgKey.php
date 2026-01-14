@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
 
 use Exception;
@@ -35,13 +37,13 @@ class PkgKey extends ClassesFactory
         foreach ($leftTokens as $keyToken => $token) {
             if (
                 $token['type'] === 'T_KEYWORD' &&
-                in_array($token['value'], $objects) &&
+                in_array($token['value'], $objects, true) &&
                 $leftTokens[$keyToken + 1]['type'] === 'T_IDENTIFIER'
             ) {
                 return $leftTokens[$keyToken + 1]['value'];
             }
         }
-        throw new Exception('Could not load ', implode(', ', $$objects));
+        throw new Exception('Could not load ', implode(', ', ${$objects}));
     }
 
     private function getPkg()
@@ -67,7 +69,7 @@ class PkgKey extends ClassesFactory
                 $package .= $token['value'];
             }
         }
-      //$this->tokenManager->walk($walk);
+        //$this->tokenManager->walk($walk);
         return $package;
     }
 }

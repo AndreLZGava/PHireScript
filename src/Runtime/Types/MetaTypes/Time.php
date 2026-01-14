@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Runtime\Types\MetaTypes;
 
 use PHPScript\Runtime\Types\MetaTypes;

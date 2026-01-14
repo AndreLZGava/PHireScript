@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler;
 
 use PHPScript\SymbolTable;
@@ -10,11 +12,8 @@ use PHPScript\Helper\Debug\Debug;
 
 class Binder
 {
-    private SymbolTable $globalTable;
-
-    public function __construct(SymbolTable $symbolTable)
+    public function __construct(private readonly SymbolTable $globalTable)
     {
-        $this->globalTable = $symbolTable;
     }
 
     public function bind(Program $program)
@@ -60,7 +59,7 @@ class Binder
     protected function resolvePropertyTypes(PropertyDefinition $prop)
     {
         $typeString = $prop->type;
-        $types = str_contains($typeString, '|') ? explode('|', $typeString) : [$typeString];
+        $types = str_contains((string) $typeString, '|') ? explode('|', (string) $typeString) : [$typeString];
 
         $resolved = [];
         foreach ($types as $type) {
@@ -86,12 +85,12 @@ class Binder
         }
 
         $metaTypes = ['Date', 'Currency', 'Phone'];
-        if (in_array($typeName, $metaTypes)) {
+        if (in_array($typeName, $metaTypes, true)) {
             return ['category' => 'metatype', 'class' => "PHPScript\\Runtime\\Types\\MetaTypes\\$typeName"];
         }
 
         $superTypes = ['Email', 'Ipv4', 'Ipv6', 'Url'];
-        if (in_array($typeName, $superTypes)) {
+        if (in_array($typeName, $superTypes, true)) {
             return ['category' => 'supertype', 'class' => "PHPScript\\Runtime\\Types\\SuperTypes\\$typeName"];
         }
 

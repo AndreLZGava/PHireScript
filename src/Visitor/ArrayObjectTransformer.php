@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Visitor;
 
 use PhpParser\Node;
@@ -13,7 +15,6 @@ use PHPScript\SymbolTable;
 
 class ArrayObjectTransformer extends NodeVisitorAbstract
 {
-    private SymbolTable $symbolTable;
     private $map = [
     'push'    => 'array_push',
     'pop'     => 'array_pop',
@@ -24,9 +25,8 @@ class ArrayObjectTransformer extends NodeVisitorAbstract
     'count'   => 'count',
     ];
 
-    public function __construct(SymbolTable $symbolTable)
+    public function __construct(private readonly SymbolTable $symbolTable)
     {
-        $this->symbolTable = $symbolTable;
     }
 
     public function enterNode(Node $node)

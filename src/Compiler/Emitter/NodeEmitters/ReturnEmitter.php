@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Emitter\NodeEmitters;
 
 use PHPScript\Compiler\Emitter\EmitContext;
@@ -27,7 +29,7 @@ class ReturnEmitter implements NodeEmitter
             $inner = trim($ctx->currentMethodReturnType, '[]');
             $types = "['" . implode("','", explode('|', $inner)) . "']";
 
-            $ctx->uses->add('PHPScript\\Runtime\\Types\\TypeGuard');
+            $ctx->uses->add(\PHPScript\Runtime\Types\TypeGuard::class);
 
             return "return TypeGuard::validateArray($expr, $types);";
         }

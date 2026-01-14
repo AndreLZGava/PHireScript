@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler;
 
 use PHPScript\Compiler\Emitter\EmitContext;
@@ -28,7 +30,7 @@ use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
 
 class Emitter
 {
-    private EmitterDispatcher $dispatcher;
+    private readonly EmitterDispatcher $dispatcher;
 
     public function __construct(private array $config)
     {

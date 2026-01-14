@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Emitter\Type;
 
 use PHPScript\Compiler\Emitter\UseRegistry;
@@ -38,12 +40,12 @@ class PhpTypeResolver
     {
         $types = $prop->resolvedTypeInfo;
         $explicitTypes =  explode('|', $this->phpType($prop));
-        $itemsToVerify = in_array('null', $explicitTypes) ?
+        $itemsToVerify = in_array('null', $explicitTypes, true) ?
         count($types) - 1 :
         count($types);
         $var = $prop->name;
         if ($itemsToVerify > 1) {
-            $this->uses[] = "PHPScript\\Runtime\\Types\\UnionType";
+            $this->uses[] = \PHPScript\Runtime\Types\UnionType::class;
 
             $typeClasses = [];
             foreach ($types as $t) {

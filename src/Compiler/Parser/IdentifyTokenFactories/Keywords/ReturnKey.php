@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
 
 use PHPScript\Compiler\Parser\Ast\ArrayLiteralNode;
@@ -35,11 +37,11 @@ class ReturnKey extends ClassesFactory
             return $this->parseArrayLiteral();
         }
 
-        if (in_array($currentToken['type'], ['T_STRING_LIT', 'T_NUMBER', 'T_BOOL'])) {
+        if (in_array($currentToken['type'], ['T_STRING_LIT', 'T_NUMBER', 'T_BOOL'], true)) {
             $value = $currentToken['value'];
             $type = ($currentToken['type'] === 'T_NUMBER') ?
             (
-            str_contains($currentToken['value'], '.') ? 'Float' : 'Int'
+                str_contains((string) $currentToken['value'], '.') ? 'Float' : 'Int'
             ) : (($currentToken['type'] === 'T_BOOL') ? 'Bool' : 'String');
 
             $literalNode = new LiteralNode($value, $type);
@@ -49,8 +51,8 @@ class ReturnKey extends ClassesFactory
         }
 
         if (
-            in_array($currentToken['type'], ['T_IDENTIFIER', 'T_TYPE']) &&
-            in_array($currentToken['value'], ['null', 'Null', 'Void', 'void'])
+            in_array($currentToken['type'], ['T_IDENTIFIER', 'T_TYPE'], true) &&
+            in_array($currentToken['value'], ['null', 'Null', 'Void', 'void'], true)
         ) {
             $value = $currentToken['value'];
             $type = 'Null';
@@ -60,7 +62,7 @@ class ReturnKey extends ClassesFactory
             $this->tokenManager->advance();
             return $literalNode;
         }
-      //Debug::show($currentToken);exit;
+        //Debug::show($currentToken);exit;
         return null;
     }
 

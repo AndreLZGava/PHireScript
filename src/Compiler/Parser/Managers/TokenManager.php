@@ -1,28 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Parser\Managers;
 
 class TokenManager
 {
-    private $tokens;
     private $tokenLookup;
     public $positionLookup;
 
     private array $currentToken;
-    private $currentPosition;
-
-    private $context;
 
     private $endFileToken;
 
-    public function __construct(string $context, array $tokens, int $position)
+    public function __construct(private readonly string $context, private array $tokens, private int $currentPosition)
     {
-        $this->context = $context;
-
-        $this->tokens = $tokens;
-
-        $this->currentPosition = $position;
-        $this->currentToken = $tokens[$position];
+        $this->currentToken = $this->tokens[$this->currentPosition];
 
         $this->tokenLookup = $this->currentToken;
         $this->positionLookup = $this->currentPosition;

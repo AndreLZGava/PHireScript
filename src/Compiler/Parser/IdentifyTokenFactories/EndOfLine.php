@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHPScript\Compiler\Parser\Ast\Node;

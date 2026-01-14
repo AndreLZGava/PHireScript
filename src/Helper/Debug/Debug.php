@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Helper\Debug;
 
 class Debug
@@ -61,7 +63,7 @@ class Debug
             " font-family: monospace;'>";
         echo "<b style='color: #a52a2a;'>[$file : $line]</b> ";
         echo "<i style='opacity: 0.7;'>($type)</i> ";
-        echo htmlspecialchars($val);
+        echo htmlspecialchars((string) $val);
         echo "</pre>";
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Parser\Ast;
 
 use Exception;
@@ -34,7 +36,7 @@ class PackageStatement extends Statement
     {
         $namespace = '';
         $namespace = current(explode('/' . $this->object, $this->file));
-        $baseDir = rtrim($config['paths']['source'], '/') . '/';
+        $baseDir = rtrim((string) $config['paths']['source'], '/') . '/';
 
         if (str_starts_with($namespace, $baseDir)) {
             $namespace = substr($namespace, strlen($baseDir));

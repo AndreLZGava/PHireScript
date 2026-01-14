@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Runtime\Types\MetaTypes;
 
 use PHPScript\Runtime\Types\MetaTypes;
@@ -32,7 +34,7 @@ class DateTime extends MetaTypes
             'date' => new Date($dt->format('Y-m-d')),
             'time' => new Time($dt->format('H:i:s'))
             ];
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             if (
                 is_string($value) &&
                 preg_match(

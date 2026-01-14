@@ -1,31 +1,15 @@
 <?xml version="1.0"?>
-<ruleset name="PHPScriptStandard">
-  <description>PHPScript: Minimalist 2-space and Same-Line Braces</description>
+<ruleset name="PSR12">
+    <description>PSR-12 coding standard</description>
 
-  <rule ref="PSR12">
-    <exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
-    <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
-    <exclude name="PSR1.Classes.ClassDeclaration.OpenBraceNewLine"/>
-    <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/>
-    <exclude name="PSR2.Methods.FunctionClosingBrace.SpacingBeforeClose"/>
-    <exclude name="Generic.Files.LineLength.TooLong"/>
-  </rule>
+    <rule ref="PSR12"/>
 
-  <rule ref="Generic.WhiteSpace.ScopeIndent">
-    <properties>
-      <property name="indent" value="2"/>
-      <property name="tabIndent" value="false"/>
-    </properties>
-  </rule>
+    <file>src/</file>
+    <file>bin/</file>
+    <file>tests/</file>
 
-  <rule ref="Generic.Classes.OpeningBraceSameLine"/>
-  <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
 
-  <file>src/</file>
-  <file>bin/</file>
-  <file>tests/</file>
-  <exclude-pattern>*/vendor/*</exclude-pattern>
-
-  <arg name="colors"/>
-  <arg value="p"/>
+    <arg name="colors"/>
+    <arg value="p"/>
 </ruleset>

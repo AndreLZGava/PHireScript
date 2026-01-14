@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Visitor;
 
 use PhpParser\Node;
@@ -10,11 +12,8 @@ use PHPScript\SymbolTable;
 
 class TypeCollector extends NodeVisitorAbstract
 {
-    private SymbolTable $symbolTable;
-
-    public function __construct(SymbolTable $symbolTable)
+    public function __construct(private readonly SymbolTable $symbolTable)
     {
-        $this->symbolTable = $symbolTable;
     }
 
     public function enterNode(Node $node)

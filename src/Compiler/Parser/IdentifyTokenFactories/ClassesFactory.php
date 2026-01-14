@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
 use Exception;
@@ -132,7 +134,7 @@ abstract class ClassesFactory extends GlobalFactory
     public function returnType(MethodDefinition $node): array
     {
         $tokensOfThisBlock = array_slice($this->tokenManager->getTokens(), $this->tokenManager->getCurrentPosition());
-        if (in_array($this->tokenManager->getCurrentToken()['type'], ['T_EOL', 'T_COMMENT'])) {
+        if (in_array($this->tokenManager->getCurrentToken()['type'], ['T_EOL', 'T_COMMENT'], true)) {
             throw new Exception('Method ' . $node->name . ' has no definition ' .
                 'of return. Please implement a return explicitly!');
         }

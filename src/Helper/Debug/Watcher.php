@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Helper\Debug;
 
 class Watcher
@@ -11,7 +13,7 @@ class Watcher
     public static function track(string $name, &$variable): void
     {
         if (!self::$isRegistered) {
-            register_tick_function([self::class, 'handleTicks']);
+            register_tick_function(self::handleTicks(...));
             self::$isRegistered = true;
         }
 

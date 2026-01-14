@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHPScript\Compiler\Parser\Ast\AssignmentNode;
@@ -27,15 +29,15 @@ class Symbol extends GlobalFactory
         $currentContext  = $this->tokenManager->getContext();
 
         if (
-             in_array($currentToken['value'], ['.'])
-             && $currentContext === 'general'
+            in_array($currentToken['value'], ['.'], true)
+            && $currentContext === 'general'
         ) {
             // Getting pkg name probably;
             return null;
         }
 
         if (
-            in_array($currentToken['value'], RuntimeClass::START_END_ARGUMENTS)
+            in_array($currentToken['value'], RuntimeClass::START_END_ARGUMENTS, true)
             && $currentContext === RuntimeClass::CONTEXT_GET_ARGUMENTS
         ) {
             // Ignore () for getting arguments
@@ -43,7 +45,7 @@ class Symbol extends GlobalFactory
         }
 
         if (
-            in_array($currentToken['value'], ['[', ']', ','])
+            in_array($currentToken['value'], ['[', ']', ','], true)
             && $currentContext === 'method'
         ) {
             // Ignore for methods
@@ -52,28 +54,28 @@ class Symbol extends GlobalFactory
             return $node;
         }
 
-        if (in_array($currentToken['value'], RuntimeClass::BLOCK_DELIMITERS)) {
+        if (in_array($currentToken['value'], RuntimeClass::BLOCK_DELIMITERS, true)) {
             return null;
         }
 
         if (
-            in_array($currentToken['value'], RuntimeClass::CHARACTERS_ON_METHODS) &&
-            in_array($currentContext, RuntimeClass::OBJECT_AS_CLASS)
+            in_array($currentToken['value'], RuntimeClass::CHARACTERS_ON_METHODS, true) &&
+            in_array($currentContext, RuntimeClass::OBJECT_AS_CLASS, true)
         ) {
             return null;
         }
 
         if (
-            in_array($currentToken['value'], RuntimeClass::GETTER_AND_SETTER) &&
-            in_array($currentContext, RuntimeClass::OBJECT_AS_CLASS)
+            in_array($currentToken['value'], RuntimeClass::GETTER_AND_SETTER, true) &&
+            in_array($currentContext, RuntimeClass::OBJECT_AS_CLASS, true)
         ) {
             $node = new MethodDefinition();
             return $this->parseGetterAndSetter($node);
         }
 
         if (
-            in_array($currentToken['value'], RuntimeClass::ACCESSORS) &&
-            in_array($currentContext, RuntimeClass::OBJECT_AS_CLASS)
+            in_array($currentToken['value'], RuntimeClass::ACCESSORS, true) &&
+            in_array($currentContext, RuntimeClass::OBJECT_AS_CLASS, true)
         ) {
             //Debug::show($this->tokenManager->getNextTokenAfterCurrent());exit;
             if ($this->tokenManager->getNextTokenAfterCurrent()['type'] === 'T_SYMBOL') {
@@ -120,7 +122,7 @@ class Symbol extends GlobalFactory
             }
 
             if ($processBeforeAttribution && $token['type'] === 'T_IDENTIFIER') {
-                $name = trim($token['value']);
+                $name = trim((string) $token['value']);
             }
 
             if ($token['type'] === 'T_SYMBOL' && $token['value'] === '=') {
@@ -189,7 +191,7 @@ class Symbol extends GlobalFactory
             $this->tokenManager->advance();
 
             if ($nextToken['type'] === 'T_IDENTIFIER') {
-                $node->name = trim($nextToken['value']);
+                $node->name = trim((string) $nextToken['value']);
                 break;
             }
         }
@@ -204,7 +206,7 @@ class Symbol extends GlobalFactory
             return false;
         }
         $value = $token['value'];
-        $firstLetter = mb_substr($value, 0, 1);
+        $firstLetter = mb_substr((string) $value, 0, 1);
         return $firstLetter === mb_strtoupper($firstLetter);
     }
 }

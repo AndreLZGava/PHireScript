@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Runtime\Types\SuperTypes;
 
 use PHPScript\Runtime\Types\SuperTypes;
@@ -14,8 +16,8 @@ class ExpiryDate extends SuperTypes
 
         $clean = preg_replace('/[^0-9]/', '', $value);
 
-        if (strlen($clean) === 6) {
-            $clean = substr($clean, 0, 2) . substr($clean, 4, 2);
+        if (strlen((string) $clean) === 6) {
+            $clean = substr((string) $clean, 0, 2) . substr((string) $clean, 4, 2);
         }
 
         return $clean;

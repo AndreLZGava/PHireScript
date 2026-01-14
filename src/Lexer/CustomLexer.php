@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Lexer;
 
 use PhpParser\Lexer\Emulative;
@@ -9,7 +11,7 @@ class CustomLexer extends Emulative
 {
     public function getTokens(): array
     {
-        $tokens = parent::getTokens();
+        $tokens = null;
         $newTokens = [];
 
         foreach ($tokens as $token) {
@@ -17,7 +19,7 @@ class CustomLexer extends Emulative
                 $value = $token[1];
                 $reserved = ['echo', 'var', 'func', 'return', 'if', 'else', 'new', 'stdClass', 'true', 'false'];
 
-                if (!in_array($value, $reserved)) {
+                if (!in_array($value, $reserved, true)) {
                     $token[0] = Tokens::T_VARIABLE;
                 }
             }

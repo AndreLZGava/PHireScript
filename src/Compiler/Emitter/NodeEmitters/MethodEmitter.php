@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Emitter\NodeEmitters;
 
 use PHPScript\Compiler\Emitter\EmitContext;
@@ -17,9 +19,9 @@ class MethodEmitter implements NodeEmitter
     {
         $indent = '    ';
 
-      // --------------------
-      // modifiers
-      // --------------------
+        // --------------------
+        // modifiers
+        // --------------------
         $modifiers = [];
 
         if ($node->final ?? false) {
@@ -38,9 +40,9 @@ class MethodEmitter implements NodeEmitter
         $signature = implode(' ', $modifiers);
         $signature .= ' function ' . $node->name;
 
-      // --------------------
-      // params
-      // --------------------
+        // --------------------
+        // params
+        // --------------------
         $params = [];
         $ctx->insideMethodSignature = true;
 
@@ -51,9 +53,9 @@ class MethodEmitter implements NodeEmitter
 
         $signature .= '(' . implode(', ', $params) . ')';
 
-      // --------------------
-      // return type (PHP)
-      // --------------------
+        // --------------------
+        // return type (PHP)
+        // --------------------
         $returnType = $node->returnType;
         $phpReturnType = '';
 
@@ -65,16 +67,16 @@ class MethodEmitter implements NodeEmitter
             $phpReturnType = ': ' . strtolower($returnType);
         }
 
-      // --------------------
-      // abstract method
-      // --------------------
+        // --------------------
+        // abstract method
+        // --------------------
         if (($ctx->insideInterface ?? false) || ($node->abstract ?? false)) {
             return "{$indent}{$signature}{$phpReturnType};\n\n";
         }
 
-      // --------------------
-      // BODY (context magic 🔥)
-      // --------------------
+        // --------------------
+        // BODY (context magic 🔥)
+        // --------------------
         $previousReturnType = $ctx->currentMethodReturnType;
         $ctx->currentMethodReturnType = $node->returnType;
 
@@ -86,7 +88,7 @@ class MethodEmitter implements NodeEmitter
 
         $code .= "{$indent}}\n\n";
 
-      // restore context
+        // restore context
         $ctx->currentMethodReturnType = $previousReturnType;
 
         return $code;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Processors;
 
 class VariablesBeforeInitializationHandler implements PreprocessorInterface
@@ -52,14 +54,14 @@ class VariablesBeforeInitializationHandler implements PreprocessorInterface
 
             $word = $matches[1];
 
-            if (in_array(strtolower($word), $reserved) || is_numeric($word) || str_starts_with($word, '__OBJ_')) {
+            if (in_array(strtolower($word), $reserved, true) || is_numeric($word) || str_starts_with($word, '__OBJ_')) {
                 return $word;
             }
 
             return '$' . $word;
         }, $code);
 
-        $code = preg_replace('/<\?\s*\$php/', '<?php', $code);
+        $code = preg_replace('/<\?\s*\$php/', '<?php', (string) $code);
         $code = str_replace(
             ['($bool)', '($int)', '($string)', '($array)', '($object)', '($float)'],
             ['(bool)', '(int)', '(string)', '(array)', '(object)', '(float)'],

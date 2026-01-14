@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler;
 
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
@@ -10,7 +12,7 @@ class Parser
 {
     private array $factories;
 
-    public function __construct(private array $config)
+    public function __construct(private readonly array $config)
     {
         $this->factories = FactoryInitializer::getFactories();
     }

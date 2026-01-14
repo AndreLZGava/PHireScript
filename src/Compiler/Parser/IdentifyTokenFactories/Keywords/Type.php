@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
 
 use PHPScript\Compiler\Parser\Ast\ClassDefinition;
@@ -16,7 +18,7 @@ class Type extends ClassesFactory
         $node->type = $this->tokenManager->getCurrentToken()['value'];
         $node->line = $this->tokenManager->getCurrentToken()['line'];
         $this->tokenManager->advance();
-      // @todo implement validations to walk and validate its a name
+        // @todo implement validations to walk and validate its a name
         $node->name = $this->tokenManager->getCurrentToken()['value'];
         $this->tokenManager->advance();
         $node->body = $this->getContentBlock('type');

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Runtime\Types\MetaTypes;
 
 use NumberFormatter;
@@ -33,8 +35,8 @@ class Currency extends MetaTypes
         if (is_string($value)) {
             $formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
             $number = $formatter->formatCurrency($value, $this->currency);
-         // Debug::show($value, $number, $this->locale);exit;
-          //$clean = preg_replace('/[^\d.,-]/', '', $value);
+            // Debug::show($value, $number, $this->locale);exit;
+            //$clean = preg_replace('/[^\d.,-]/', '', $value);
             $formatter = new NumberFormatter($this->locale, NumberFormatter::TYPE_DOUBLE);
             $number = $formatter->parse($number);
             Debug::show($value, $number, (int) round($number * 100));

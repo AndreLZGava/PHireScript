@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler;
 
 use PHPScript\Compiler\Emitter\EmitContext;
@@ -48,7 +50,7 @@ class Emitter
             if (
                 $node instanceof ClassDefinition &&
                 isset($node->type) &&
-                in_array($node?->type, RuntimeClass::OBJECT_AS_CLASS)
+                in_array($node?->type, RuntimeClass::OBJECT_AS_CLASS, true)
             ) {
                 $classesCode .= $this->emitClass($node);
             }
@@ -177,7 +179,7 @@ class Emitter
             $node instanceof \PHPScript\Compiler\Parser\Ast\GlobalStatement =>
             trim($node->code),
 
-            default => "// Unknown Node: " . get_class($node)
+            default => "// Unknown Node: " . $node::class
         };
     }
 
@@ -223,7 +225,7 @@ class Emitter
             return "return $expression;";
         }
 
-        $this->uses[] = "PHPScript\\Runtime\\Types\\TypeGuard";
+        $this->uses[] = \PHPScript\Runtime\Types\TypeGuard::class;
 
         $innerTypes = trim($returnType, '[]');
         $typesArray = "['" . implode("', '", explode('|', $innerTypes)) . "']";
@@ -257,7 +259,7 @@ class Emitter
             return "";
         }
 
-        return "// Unknown Node: " . get_class($expr);
+        return "// Unknown Node: " . $expr::class;
     }
 
     protected function emitProperty(PropertyDefinition $prop): string
@@ -308,12 +310,12 @@ class Emitter
     {
         $types = $prop->resolvedTypeInfo;
         $explicitTypes =  explode('|', $this->getPhpType($prop));
-        $itemsToVerify = in_array('null', $explicitTypes) ?
+        $itemsToVerify = in_array('null', $explicitTypes, true) ?
             count($types) - 1 :
             count($types);
         $var = $prop->name;
         if ($itemsToVerify > 1) {
-            $this->uses[] = "PHPScript\\Runtime\\Types\\UnionType";
+            $this->uses[] = \PHPScript\Runtime\Types\UnionType::class;
 
             $typeClasses = [];
             foreach ($types as $t) {

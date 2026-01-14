@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Runtime\Types;
 
 class UnionType
@@ -9,12 +11,12 @@ class UnionType
         foreach ($types as $typeClass) {
             try {
                 return $typeClass::cast($value);
-            } catch (\TypeError $e) {
+            } catch (\TypeError) {
                 continue;
             }
         }
 
-        $typeNames = array_map(fn($c) => (new \ReflectionClass($c))->getShortName(), $types);
+        $typeNames = array_map(fn ($c) => (new \ReflectionClass($c))->getShortName(), $types);
         throw new \TypeError("Value is not valid for any of the types: " . implode('|', $typeNames));
     }
 }

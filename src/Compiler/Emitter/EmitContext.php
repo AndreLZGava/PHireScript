@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Emitter;
 
 use PHPScript\Compiler\Emitter\Type\PhpTypeResolver;

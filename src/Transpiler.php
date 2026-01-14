@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript;
 
 use PHPScript\Compiler\Binder;
@@ -14,10 +16,10 @@ use PHPScript\Helper\Debug\Debug;
 
 class Transpiler
 {
-    private PreprocessorInterface $generator;
+    private readonly PreprocessorInterface $generator;
     private string $codeBeforeGenerator;
 
-    public function __construct(private array $config)
+    public function __construct(private readonly array $config)
     {
         $this->generator = new PhpFileGeneratorHandler(false);
     }

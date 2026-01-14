@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Runtime\Types;
 
-abstract class MetaTypes
+abstract class MetaTypes implements \Stringable
 {
     protected mixed $innerValue;
 

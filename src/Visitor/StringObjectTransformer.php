@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Visitor;
 
 use PHPScript\SymbolTable;
@@ -20,11 +22,8 @@ class StringObjectTransformer extends NodeVisitorAbstract
         'contains'    => 'str_contains',
     ];
 
-    private SymbolTable $symbolTable;
-
-    public function __construct(SymbolTable $symbolTable)
+    public function __construct(private readonly SymbolTable $symbolTable)
     {
-        $this->symbolTable = $symbolTable;
     }
 
     public function leaveNode(Node $node)

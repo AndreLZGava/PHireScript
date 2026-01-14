@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Visitor;
 
 use PhpParser\Node;
@@ -11,11 +13,8 @@ use PHPScript\SymbolTable;
 
 class VariableResolver extends NodeVisitorAbstract
 {
-    private $symbolTable;
-
-    public function __construct(SymbolTable $symbolTable)
+    public function __construct(private readonly SymbolTable $symbolTable)
     {
-        $this->symbolTable = $symbolTable;
     }
 
     public function leaveNode(Node $node)
@@ -23,7 +22,7 @@ class VariableResolver extends NodeVisitorAbstract
         if ($node instanceof Node\Expr\ConstFetch) {
             $name = $node->name->toString();
             $reserved = ['true', 'false', 'null'];
-            if (!in_array(strtolower($name), $reserved)) {
+            if (!in_array(strtolower($name), $reserved, true)) {
                 return new Variable($name);
             }
         }

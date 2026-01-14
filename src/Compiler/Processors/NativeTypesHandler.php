@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Processors;
 
 class NativeTypesHandler implements PreprocessorInterface
@@ -17,11 +19,11 @@ class NativeTypesHandler implements PreprocessorInterface
         ];
 
         foreach ($typeMap as $psType => $phpType) {
-            $code = preg_replace('/\b' . $psType . '\s*\((.*?)\)/', '(' . $phpType . ')($1)', $code);
+            $code = preg_replace('/\b' . $psType . '\s*\((.*?)\)/', '(' . $phpType . ')($1)', (string) $code);
         }
 
         foreach ($typeMap as $psType => $phpType) {
-            $code = preg_replace('/:\s*' . $psType . '\b/', ': ' . $phpType, $code);
+            $code = preg_replace('/:\s*' . $psType . '\b/', ': ' . $phpType, (string) $code);
         }
 
         return $code;

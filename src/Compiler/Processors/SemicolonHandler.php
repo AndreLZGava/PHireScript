@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Processors;
 
 class SemicolonHandler implements PreprocessorInterface
 {
-    public function __construct(private ObjectsHandler $objectHandler)
+    public function __construct(private readonly ObjectsHandler $objectHandler)
     {
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Runtime\Types\SuperTypes;
 
 use PHPScript\Runtime\Types\SuperTypes;
@@ -20,6 +22,6 @@ class Cvv extends SuperTypes
             return false;
         }
 
-        return preg_match('/^\d{3,4}$/', $preparedValue) === 1;
+        return preg_match('/^\d{3,4}$/', (string) $preparedValue) === 1;
     }
 }

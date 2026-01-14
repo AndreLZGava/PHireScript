@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Processors;
 
 class ReturnTypeHandler implements PreprocessorInterface
@@ -20,7 +22,7 @@ class ReturnTypeHandler implements PreprocessorInterface
 
         $specialTypes = ['Email', 'Ipv4', 'Ipv6', 'Json', 'Date'];
 
-        if (in_array($type, $specialTypes)) {
+        if (in_array($type, $specialTypes, true)) {
             return 'string';
         }
 

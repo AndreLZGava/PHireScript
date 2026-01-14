@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Processors;
 
 class FunctionsHandler implements PreprocessorInterface
@@ -14,12 +16,12 @@ class FunctionsHandler implements PreprocessorInterface
         $pattern = '/(?<!function|func|if|while|for|foreach|switch|catch|return' .
         '|->)\b([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\s*\((.*?)\)\s*\{/s';
 
-        $code = preg_replace($pattern, 'function $1($2) {', $code);
+        $code = preg_replace($pattern, 'function $1($2) {', (string) $code);
 
         $code = str_replace('function eachfunction', 'each', $code);
         $code = str_replace('function mapfunction', 'each', $code);
         $code = preg_replace('/each\s*\(\s*\((.*?)\)\s*\{/', 'each(function($1) {', $code);
-        $code = preg_replace('/map\s*\(\s*\((.*?)\)\s*\{/', 'map(function($1) {', $code);
+        $code = preg_replace('/map\s*\(\s*\((.*?)\)\s*\{/', 'map(function($1) {', (string) $code);
         $code = str_replace('function fn(', 'fn(', $code);
         return $code;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Processors;
 
 use PhpParser\ParserFactory;
@@ -9,7 +11,7 @@ class PhpFileGeneratorHandler implements PreprocessorInterface
 {
     private $parser;
     private $printer;
-    public function __construct(private bool $strictDebugMode = false)
+    public function __construct(private readonly bool $strictDebugMode = false)
     {
         $this->parser = (new ParserFactory())->createForNewestSupportedVersion();
         $this->printer = new PrettyPrinter\Standard();

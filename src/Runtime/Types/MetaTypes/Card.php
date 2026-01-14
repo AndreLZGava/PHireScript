@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Runtime\Types\MetaTypes;
 
 use PHPScript\Runtime\Types\MetaTypes;
@@ -31,7 +33,7 @@ class Card extends MetaTypes
 
         $this->number = CardNumber::cast($source['number']);
         $this->cvv = Cvv::cast($source['cvv']);
-        $this->holderName = strtoupper(trim($source['holder_name']));
+        $this->holderName = strtoupper(trim((string) $source['holder_name']));
         $this->brand = $this->detectBrand((string) $this->number);
         $this->expiry = ExpiryDate::cast($source['expiry']);
     }
@@ -40,9 +42,9 @@ class Card extends MetaTypes
     {
         $n = preg_replace('/\D/', '', $number);
         return match (true) {
-            str_starts_with($n, '4') => 'Visa',
-            preg_match('/^5[1-5]/', $n) => 'Mastercard',
-            str_starts_with($n, '34') || str_starts_with($n, '37') => 'Amex',
+            str_starts_with((string) $n, '4') => 'Visa',
+            preg_match('/^5[1-5]/', (string) $n) => 'Mastercard',
+            str_starts_with((string) $n, '34') || str_starts_with((string) $n, '37') => 'Amex',
             default => 'Unknown'
         };
     }

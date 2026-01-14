@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Emitter\Internal;
 
 use PHPScript\Compiler\Emitter\EmitContext;
@@ -17,9 +19,9 @@ class PropertyAssignmentEmitter
         ? count($types) - 1
         : count($types);
 
-      // Union type
+        // Union type
         if ($itemsToVerify > 1) {
-            $ctx->uses->add('PHPScript\\Runtime\\Types\\UnionType');
+            $ctx->uses->add(\PHPScript\Runtime\Types\UnionType::class);
 
             $classRefs = [];
 

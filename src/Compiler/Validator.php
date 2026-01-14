@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler;
 
 use Exception;
@@ -73,7 +75,7 @@ class Validator
                 $hasPkg = true;
             }
 
-            if (in_array($tokenValue, $objectAllowed)) {
+            if (in_array($tokenValue, $objectAllowed, true)) {
                 $mustHavePkg  = true;
                 $hasMoreThanOneObjectByFile++;
                 if ($hasMoreThanOneObjectByFile > 1) {
@@ -92,12 +94,12 @@ class Validator
 
     private function getMessage(string $word): string
     {
-        return isset($this->forbidden[$word]) ? $this->forbidden[$word] : '';
+        return $this->forbidden[$word] ?? '';
     }
 
     private function isForbidden(string $word): bool
     {
         return array_key_exists($word, $this->forbidden) ||
-            in_array($word, $this->forbidden);
+            in_array($word, $this->forbidden, true);
     }
 }

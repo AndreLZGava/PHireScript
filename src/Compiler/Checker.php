@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler;
 
 use Exception;
@@ -21,7 +23,7 @@ class Checker
         $this->table = $table;
         foreach ($ast->statements as $node) {
             if ($node instanceof ClassDefinition) {
-                $this->checkClassBody($node, $table);
+                $this->checkClassBody($node);
             }
         }
     }
@@ -59,14 +61,14 @@ class Checker
                 return true;
             }
 
-            if (str_starts_with($declaredType, '[') && str_ends_with($declaredType, ']')) {
-                $innerTypes = trim($declaredType, '[]');
+            if (str_starts_with((string) $declaredType, '[') && str_ends_with((string) $declaredType, ']')) {
+                $innerTypes = trim((string) $declaredType, '[]');
                 $allowedTypes = explode('|', $innerTypes);
 
                 foreach ($expressionNode->elements as $index => $element) {
                     $elementType = $this->getNodeType($element);
 
-                    if (!in_array($elementType, $allowedTypes)) {
+                    if (!in_array($elementType, $allowedTypes, true)) {
                         throw new \Exception(
                             "Semantic Error in method '{$methodName}': " .
                                 "Element at index {$index} is of type '{$elementType}', " .
@@ -83,7 +85,7 @@ class Checker
 
     private function ensureReturnsForMethods(MethodDefinition $prop)
     {
-        $returnMethod = explode('|', $prop->returnType);
+        $returnMethod = explode('|', (string) $prop->returnType);
         if (
             $prop->mustBeBool && count($returnMethod) > 1 ||
             $prop->mustBeBool && current($returnMethod) !== 'Bool'
@@ -122,18 +124,13 @@ class Checker
 
     private function isCompatible(array $typeInfo, $valueNode): bool
     {
-        switch ($typeInfo['category']) {
-            case 'primitive':
-                return $this->checkPrimitive($typeInfo['native'], $valueNode);
-            case 'supertype':
-                return $this->checkPrimitive('string', $valueNode);
-            case 'metatype':
-                return true;
-            case 'custom':
-                return true;
-            default:
-                return false;
-        }
+        return match ($typeInfo['category']) {
+            'primitive' => $this->checkPrimitive($typeInfo['native'], $valueNode),
+            'supertype' => $this->checkPrimitive('string', $valueNode),
+            'metatype' => true,
+            'custom' => true,
+            default => false,
+        };
     }
 
     private function checkPrimitive(string $nativeType, $valueNode): bool

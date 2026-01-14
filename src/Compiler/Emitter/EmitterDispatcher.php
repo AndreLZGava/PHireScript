@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Emitter;
 
 use PHPScript\Helper\Debug\Debug;
 
 class EmitterDispatcher
 {
-  /** @var NodeEmitter[] */
+    /** @var NodeEmitter[] */
     private array $emitters = [];
 
     public function __construct(iterable $emitters)
@@ -25,6 +27,6 @@ class EmitterDispatcher
         }
         Debug::show($node);
         exit;
-      //return "// Unknown node: {$node::class}\n";
+        //return "// Unknown node: {$node::class}\n";
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPScript\Compiler\Emitter\NodeEmitters;
 
 use PHPScript\Compiler\Emitter\EmitContext;
@@ -21,19 +23,19 @@ class ClassEmitter implements NodeEmitter
     {
         $code = $node->readOnly ? 'readonly ' : '';
         $code .= "class {$node->name} {\n";
-      // ---- properties
+        // ---- properties
         foreach ($node->body as $member) {
             if ($member instanceof PropertyDefinition) {
                 $code .= $ctx->emitter->emit($member, $ctx) ;
             }
         }
 
-      // ---- constructor
+        // ---- constructor
         if ($this->shouldGenerateConstructor($node)) {
             $code .= (new ConstructorEmitter())->emit($node, $ctx);
         }
 
-      // ---- methods
+        // ---- methods
         foreach ($node->body as $member) {
             if ($member instanceof MethodDefinition) {
                 $code .= $ctx->emitter->emit($member, $ctx);
