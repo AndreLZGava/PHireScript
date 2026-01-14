@@ -14,19 +14,31 @@ use PHPScript\Compiler\Parser\Ast\ThisExpressionNode;
 use PHPScript\Compiler\Parser\Ast\VariableNode;
 use PHPScript\Compiler\Parser\Ast\VoidExpressionNode;
 use PHPScript\Compiler\Parser\Transformers\ModifiersTransform;
+use PHPScript\Compiler\Program;
 use PHPScript\Helper\Debug\Debug;
+use PHPScript\Runtime\RuntimeClass;
+use SebastianBergmann\Environment\Runtime;
 
 class Symbol extends GlobalFactory
 {
-    public function process(): ?Node
+    public function process(Program $program): ?Node
     {
         $currentToken = $this->tokenManager->getCurrentToken();
         $currentContext  = $this->tokenManager->getContext();
 
         if (
-            in_array($currentToken['value'], ['(', ')'])
-            && $currentContext === 'arguments'
+             in_array($currentToken['value'], ['.'])
+             && $currentContext === 'general'
         ) {
+            // Getting pkg name probably;
+            return null;
+        }
+
+        if (
+            in_array($currentToken['value'], RuntimeClass::START_END_ARGUMENTS)
+            && $currentContext === RuntimeClass::CONTEXT_GET_ARGUMENTS
+        ) {
+            // Ignore () for getting arguments
             return null;
         }
 
@@ -34,33 +46,34 @@ class Symbol extends GlobalFactory
             in_array($currentToken['value'], ['[', ']', ','])
             && $currentContext === 'method'
         ) {
+            // Ignore for methods
             $node = new GlobalStatement();
             $node->code = $currentToken['value'];
             return $node;
         }
 
-        if (in_array($currentToken['value'], ['{', '}'])) {
+        if (in_array($currentToken['value'], RuntimeClass::BLOCK_DELIMITERS)) {
             return null;
         }
 
         if (
-            in_array($currentToken['value'], ['!', '?', ':']) &&
-            in_array($currentContext, ['type', 'interface'])
+            in_array($currentToken['value'], RuntimeClass::CHARACTERS_ON_METHODS) &&
+            in_array($currentContext, RuntimeClass::OBJECT_AS_CLASS)
         ) {
             return null;
         }
 
         if (
-            in_array($currentToken['value'], ['<', '>']) &&
-            in_array($currentContext, ['class', 'immutable', 'type'])
+            in_array($currentToken['value'], RuntimeClass::GETTER_AND_SETTER) &&
+            in_array($currentContext, RuntimeClass::OBJECT_AS_CLASS)
         ) {
             $node = new MethodDefinition();
             return $this->parseGetterAndSetter($node);
         }
 
         if (
-            in_array($currentToken['value'], ['+', '#', '*']) &&
-            in_array($currentContext, ['class', 'type', 'immutable'])
+            in_array($currentToken['value'], RuntimeClass::ACCESSORS) &&
+            in_array($currentContext, RuntimeClass::OBJECT_AS_CLASS)
         ) {
             //Debug::show($this->tokenManager->getNextTokenAfterCurrent());exit;
             if ($this->tokenManager->getNextTokenAfterCurrent()['type'] === 'T_SYMBOL') {
@@ -71,7 +84,13 @@ class Symbol extends GlobalFactory
             $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($currentToken);
             return $this->parsePropertyWithTypes($node);
         }
-        Debug::show(['currentToken' => $currentToken, 'context' => $currentContext]);
+        Debug::show(
+            [
+            'currentToken' => $currentToken,
+            'context' => $currentContext,
+            'program' => $program],
+            debug_backtrace(2)
+        );
         exit;
         return null;
     }

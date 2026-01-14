@@ -3,10 +3,11 @@
 namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHPScript\Compiler\Parser\Ast\Node;
+use PHPScript\Compiler\Program;
 
 class EndOfLine extends GlobalFactory
 {
-    public function process(): ?Node
+    public function process(Program $program): ?Node
     {
         return null;
     }

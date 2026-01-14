@@ -5,12 +5,13 @@ namespace PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
 use PHPScript\Compiler\Parser\Ast\ClassDefinition;
 use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
+use PHPScript\Compiler\Program;
 
 class Type extends ClassesFactory
 {
-    public function process(): ?Node
+    public function process(Program $program): ?Node
     {
-
+        $this->program = $program;
         $node = new ClassDefinition();
         $node->type = $this->tokenManager->getCurrentToken()['value'];
         $node->line = $this->tokenManager->getCurrentToken()['line'];

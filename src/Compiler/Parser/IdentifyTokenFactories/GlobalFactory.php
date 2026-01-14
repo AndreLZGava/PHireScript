@@ -4,6 +4,7 @@ namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\Managers\TokenManager;
+use PHPScript\Compiler\Program;
 
 abstract class GlobalFactory
 {
@@ -11,5 +12,5 @@ abstract class GlobalFactory
     {
     }
 
-    abstract public function process(): ?Node;
+    abstract public function process(Program $program): ?Node;
 }

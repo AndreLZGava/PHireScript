@@ -1,0 +1,24 @@
+<?php
+
+namespace PHPScript\Compiler\Emitter\NodeEmitters;
+
+use PHPScript\Compiler\Emitter\EmitContext;
+use PHPScript\Compiler\Emitter\NodeEmitter;
+use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
+
+class PropertyEmitter implements NodeEmitter
+{
+    public function supports(object $node, EmitContext $ctx): bool
+    {
+        return $node instanceof PropertyDefinition;
+    }
+
+    public function emit(object $node, EmitContext $ctx): string
+    {
+        $visibility = $node->modifiers[0] ?? 'public';
+        $type = $ctx->types->phpType($node);
+        $name = '$' . $node->name;
+
+        return "    {$visibility} {$type} {$name};\n";
+    }
+}

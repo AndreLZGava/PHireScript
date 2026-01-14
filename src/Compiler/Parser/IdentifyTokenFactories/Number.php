@@ -4,11 +4,12 @@ namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHPScript\Compiler\Parser\Ast\GlobalStatement;
 use PHPScript\Compiler\Parser\Ast\Node;
+use PHPScript\Compiler\Program;
 use PHPScript\Helper\Debug\Debug;
 
 class Number extends GlobalFactory
 {
-    public function process(): ?Node
+    public function process(Program $program): ?Node
     {
         Debug::show($this->tokenManager->getCurrentToken());
         exit;

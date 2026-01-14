@@ -22,7 +22,7 @@ class Transpiler
         $this->generator = new PhpFileGeneratorHandler(false);
     }
 
-    public function compile(string $code): string
+    public function compile(string $code, string $path): string
     {
         try {
             $scanner = new Scanner($code);
@@ -31,9 +31,9 @@ class Transpiler
             $validator = new Validator();
             $validator->validate($tokens);
 
-            $parser = new Parser();
-            $ast = $parser->parse($tokens);
-
+            $parser = new Parser($this->config);
+            $ast = $parser->parse($tokens, $path);
+            //Debug::show($ast);exit;
             $symbolTable = new SymbolTable();
             $binder = new Binder($symbolTable);
             $updatedAst = $binder->bind($ast);
@@ -41,7 +41,7 @@ class Transpiler
             $checker = new Checker();
             $checker->check($updatedAst, $symbolTable);
 
-            //Debug::show($ast);exit;
+            //Debug::show($updatedAst);exit;
             $emitter = new Emitter($this->config);
             $preCompiledPhpCode = $emitter->emit($updatedAst);
 

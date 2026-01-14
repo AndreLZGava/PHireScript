@@ -6,16 +6,18 @@ use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ClassKey;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Immutable;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\InterfaceKey;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\PkgKey;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ReturnKey;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Type;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Variable;
+use PHPScript\Compiler\Program;
 use PHPScript\Helper\Debug\Debug;
 
 class Keywords extends GlobalFactory
 {
     private array $factories;
 
-    public function process(): ?Node
+    public function process(Program $program): ?Node
     {
         $this->factories = [
             'type' => Type::class,
@@ -24,6 +26,7 @@ class Keywords extends GlobalFactory
             'interface' => InterfaceKey::class,
             'class' => ClassKey::class,
             'return' => ReturnKey::class,
+            'pkg' => PkgKey::class,
         ];
 
         $tokenValue = $this->tokenManager->getCurrentToken()['value'];
@@ -34,6 +37,6 @@ class Keywords extends GlobalFactory
         $class = $this->factories[$tokenValue] ?? General::class;
         $processor = new $class($this->tokenManager);
 
-        return $processor->process();
+        return $processor->process($program);
     }
 }

@@ -22,7 +22,7 @@ class FactoryInitializer
             //'T_WHITESPACE'  => Comment::class,
             //'T_MODIFIER'    => Comment::class,
             //'T_VARIABLE'    => Comment::class,
-            'T_IDENTIFIER'  => GenericString::class,
+            'T_IDENTIFIER'  => Method::class,
             'T_SYMBOL'      => Symbol::class,
             'T_TYPE'        => Type::class,
         ];

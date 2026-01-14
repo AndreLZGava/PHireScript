@@ -62,7 +62,7 @@ function cleanDirectory($dir) {
 function compileFile($input, $output, $transpiler) {
     try {
         $sourceCode = file_get_contents($input);
-        $result = $transpiler->compile($sourceCode);
+        $result = $transpiler->compile($sourceCode, $input);
 
         file_put_contents($output, $result);
 

@@ -15,7 +15,7 @@ if (!file_exists($file)) {
 $code = file_get_contents($file);
 
 try {
-    $result = $transpiler->compile($code);
+    $result = $transpiler->compile($code, $file);
     echo "\n\033[1;32m✔ SUCCESSFUL PHP OUTPUT\033[0m\n";
     echo $result . "\n";
 } catch (\Exception $e) {

@@ -1,0 +1,31 @@
+<?php
+
+namespace PHPScript\Compiler\Emitter\NodeEmitters;
+
+use PHPScript\Compiler\Emitter\EmitContext;
+use PHPScript\Compiler\Emitter\NodeEmitter;
+use PHPScript\Compiler\Parser\Ast\GlobalStatement;
+
+class GlobalStatementEmitter implements NodeEmitter
+{
+    public function supports(object $node, EmitContext $ctx): bool
+    {
+        return $node instanceof GlobalStatement;
+    }
+
+    public function emit(object $node, EmitContext $ctx): string
+    {
+        $code = rtrim($node->code);
+
+        if (!str_ends_with($code, "\n")) {
+            $code .= "\n";
+        }
+
+        return $this->indent($code);
+    }
+
+    private function indent(string $code): string
+    {
+        return "    " . $code;
+    }
+}

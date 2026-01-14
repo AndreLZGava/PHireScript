@@ -28,10 +28,10 @@ class TokenManager
         $this->positionLookup = $this->currentPosition;
 
         $this->endFileToken = [
-        'type' => 'T_EOF',
-        'value' => '',
-        'line' => $this->line ?? 0,
-        'column' => 0
+            'type' => 'T_EOF',
+            'value' => '',
+            'line' => $this->line ?? 0,
+            'column' => 0
         ];
     }
 
@@ -43,13 +43,13 @@ class TokenManager
     public function getAll()
     {
         return [
-        'context' => $this->getContext(),
-        'currentPosition' => $this->getCurrentPosition(),
-        'positionLookup' => $this->positionLookup,
-        'previous' => $this->getPreviousTokenBeforeCurrent(),
-        'currentToken' => $this->getCurrentToken(),
-        'next' => $this->getNextTokenAfterCurrent(),
-        'tokens' => $this->getTokens()
+            'context' => $this->getContext(),
+            'currentPosition' => $this->getCurrentPosition(),
+            'positionLookup' => $this->positionLookup,
+            'previous' => $this->getPreviousTokenBeforeCurrent(),
+            'currentToken' => $this->getCurrentToken(),
+            'next' => $this->getNextTokenAfterCurrent(),
+            'tokens' => $this->getLeftTokens()
         ];
     }
 
@@ -71,7 +71,7 @@ class TokenManager
     public function advance()
     {
         $this->currentPosition++;
-      //$this->positionLookup++;
+        //$this->positionLookup++;
         if (!$this->isEndOfTokens() && isset($this->tokens[$this->currentPosition + 1])) {
             $this->currentToken = $this->tokens[$this->currentPosition];
             $this->tokenLookup = $this->currentToken;

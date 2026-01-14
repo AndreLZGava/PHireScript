@@ -7,22 +7,25 @@ use PHPScript\Compiler\Parser\Ast\MethodDefinition;
 use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
 use PHPScript\Compiler\Parser\Managers\TokenManager;
+use PHPScript\Compiler\Program;
 use PHPScript\Helper\Debug\Debug;
+use PHPScript\Runtime\RuntimeClass;
 
 abstract class ClassesFactory extends GlobalFactory
 {
+    protected Program $program;
     public function getMethodBody(MethodDefinition $node): array
     {
         $codeBlockToken = $this->codeBlockToken();
         $factories = FactoryInitializer::getFactories();
         $result = [];
         //Debug::show($this->tokenManager->getCurrentPosition(), $this->tokenManager->getCurrentToken());
-        $newTokenManager = new TokenManager('method', $codeBlockToken, 0);
+        $newTokenManager = new TokenManager(RuntimeClass::CONTEXT_GET_BODY_METHOD, $codeBlockToken, 0);
 
         while (!$newTokenManager->isEndOfTokens()) {
             $token = $newTokenManager->getCurrentToken();
             $returned = (new $factories[$token['type']]($newTokenManager))
-                ->process();
+                ->process($this->program);
 
             if ($returned) {
                 //  Debug::show($token);
@@ -61,7 +64,7 @@ abstract class ClassesFactory extends GlobalFactory
         while (!$newTokenManager->isEndOfTokens()) {
             $token = $newTokenManager->getCurrentToken();
             $returned = (new $factories[$token['type']]($newTokenManager))
-                ->process();
+                ->process($this->program);
 
             if ($returned) {
                 //  Debug::show($token);
@@ -88,7 +91,7 @@ abstract class ClassesFactory extends GlobalFactory
             $token = $newTokenManager->getCurrentToken();
             //Debug::show($token);
             $returned = (new $factories[$token['type']]($newTokenManager))
-                ->process();
+                ->process($this->program);
 
             if ($returned) {
                 $result[] = $returned;

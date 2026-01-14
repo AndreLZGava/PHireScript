@@ -7,12 +7,14 @@ use PHPScript\Compiler\Parser\Ast\LiteralNode;
 use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\Ast\ReturnNode;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
+use PHPScript\Compiler\Program;
 use PHPScript\Helper\Debug\Debug;
 
 class ReturnKey extends ClassesFactory
 {
-    public function process(): ?Node
+    public function process(Program $program): ?Node
     {
+        $this->program = $program;
         $this->tokenManager->advance();
 
         $expression = $this->parseExpression();

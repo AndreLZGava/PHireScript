@@ -4,6 +4,7 @@ namespace PHPScript\Compiler\Parser\Transformers;
 
 use PHPScript\Compiler\Parser\Managers\TokenManager;
 use PHPScript\Helper\Debug\Debug;
+use PHPScript\Runtime\RuntimeClass;
 
 class ModifiersTransform
 {
@@ -13,7 +14,7 @@ class ModifiersTransform
 
     public function map(array $accessor)
     {
-        $modifier = in_array($accessor['value'], ['>', '<']) ||
+        $modifier = in_array($accessor['value'], RuntimeClass::GETTER_AND_SETTER) ||
             in_array($accessor['type'], ['T_EOL', 'T_COMMENT'])
             ? '*' : $accessor['value'];
 
@@ -21,6 +22,7 @@ class ModifiersTransform
             '+' => 'protected',
             '#' => 'private',
             '*' => 'public',
+            'abstract' => 'abstract',
             'readonly' => 'readonly',
             'static' => 'static',
             'async' => 'async'

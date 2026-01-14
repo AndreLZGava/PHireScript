@@ -5,16 +5,18 @@ namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHPScript\Compiler\Parser\Transformers\ModifiersTransform;
+use PHPScript\Compiler\Program;
 use PHPScript\Helper\Debug\Debug;
+use PHPScript\Runtime\RuntimeClass;
 
 class Type extends GlobalFactory
 {
-    public function process(): ?Node
+    public function process(Program $program): ?Node
     {
         $node = new PropertyDefinition();
         $allowNull = false;
         if (
-            $this->tokenManager->getContext() !== 'arguments'
+            $this->tokenManager->getContext() !== RuntimeClass::CONTEXT_GET_ARGUMENTS
         ) {
             $token = $this->tokenManager->getPreviousTokenBeforeCurrent();
             if ($token['value'] === '?') {
