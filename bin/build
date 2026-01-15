@@ -4,7 +4,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 require_once('compilerHelper.php');
 
-use PHPScript\Transpiler;
+use PHPScript\Compiler;
 
 if ($argc < 3) {
     //echo "You can use any time: php bin/build <origin_dir> <destiny_dir>\n";
@@ -15,7 +15,6 @@ if ($argc < 3) {
 
 $sourceDir = rtrim($argv[1], '/');
 $distDir = rtrim($argv[2], '/');
-$transpiler = new Transpiler(getConfigFile());
 
 if (!is_dir($sourceDir)) {
     echo "Error: Directory '$sourceDir' not found.\n";
@@ -27,24 +26,6 @@ if (is_dir($distDir)) {
     cleanDirectory($distDir);
 } else {
     mkdir($distDir, 0755, true);
-}
-
-$directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
-$iterator = new RecursiveIteratorIterator($directory);
-
-foreach ($iterator as $file) {
-    if ($file->getExtension() === 'ps') {
-        $relativePath = substr($file->getPathname(), strlen($sourceDir) + 1);
-
-        $outputFile = $distDir . '/' . str_replace('.ps', '.php', $relativePath);
-
-        $outputSubDir = dirname($outputFile);
-        if (!is_dir($outputSubDir)) {
-            mkdir($outputSubDir, 0755, true);
-        }
-
-        compileFile($file->getPathname(), $outputFile, $transpiler);
-    }
 }
 
 function cleanDirectory($dir) {
@@ -59,25 +40,5 @@ function cleanDirectory($dir) {
     }
 }
 
-function compileFile($input, $output, $transpiler) {
-    try {
-        $sourceCode = file_get_contents($input);
-        $result = $transpiler->compile($sourceCode, $input);
-
-        file_put_contents($output, $result);
-
-        $output_text = [];
-        $return_var = 0;
-        exec("php -l " . escapeshellarg($output), $output_text, $return_var);
-
-        if ($return_var !== 0) {
-            echo "✗ Syntax Error in generated file $output:\n";
-            echo implode("\n", $output_text) . "\n";
-        } else {
-            echo "\n\033[1;32m✔ $input -> $output\033[0m\n";
-        }
-    } catch (Exception $e) {
-        echo "\033[1;31m✗ Error in $input: " . $e->getMessage() . "\033[0m\n";
-        getErrorInterface($e, $transpiler, $sourceCode);
-    }
-}
+$compiler = new Compiler();
+$compiler->compile($sourceDir, $distDir);

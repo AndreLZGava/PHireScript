@@ -45,6 +45,6 @@ class PackageStatement extends Statement
         $namespace = str_replace('/', '\\', $namespace);
 
         $this->namespace = $config['namespace'] . '\\' . $namespace;
-        $this->completeObjectReference = '\\' . $this->namespace . '::class';
+        $this->completeObjectReference = '\\' . $this->namespace . '\\' . $this->object . '::class';
     }
 }

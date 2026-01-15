@@ -14,47 +14,42 @@ use PHPScript\Compiler\Scanner;
 use PHPScript\Compiler\Validator;
 use PHPScript\Helper\Debug\Debug;
 
-class Transpiler
+class Transpiler implements TranspilerInterface
 {
     private readonly PreprocessorInterface $generator;
     private string $codeBeforeGenerator;
 
-    public function __construct(private readonly array $config)
+    public function __construct(private readonly array $config, private DependencyGraphBuilder $dependencyManager)
     {
         $this->generator = new PhpFileGeneratorHandler(false);
     }
 
     public function compile(string $code, string $path): string
     {
-        try {
-            $scanner = new Scanner($code);
-            $tokens = $scanner->tokenize();
+        $scanner = new Scanner($code);
+        $tokens = $scanner->tokenize();
 
-            $validator = new Validator();
-            $validator->validate($tokens);
+        $validator = new Validator();
+        $validator->validate($tokens);
 
-            $parser = new Parser($this->config);
-            $ast = $parser->parse($tokens, $path);
-            //Debug::show($ast);exit;
-            $symbolTable = new SymbolTable();
-            $binder = new Binder($symbolTable);
-            $updatedAst = $binder->bind($ast);
+        $parser = new Parser($this->config);
+        $ast = $parser->parse($tokens, $path);
+         //Debug::show($ast);exit;
+        $symbolTable = new SymbolTable();
+        $binder = new Binder($symbolTable);
+        $updatedAst = $binder->bind($ast);
 
-            $checker = new Checker();
-            $checker->check($updatedAst, $symbolTable);
+        $checker = new Checker();
+        $checker->check($updatedAst, $symbolTable);
 
-            //Debug::show($updatedAst);exit;
-            $emitter = new Emitter($this->config);
-            $preCompiledPhpCode = $emitter->emit($updatedAst);
+        //Debug::show($updatedAst);exit;
+        $emitter = new Emitter($this->config, $this->dependencyManager);
+        $preCompiledPhpCode = $emitter->emit($updatedAst);
 
-            $this->codeBeforeGenerator = $preCompiledPhpCode;
+        $this->codeBeforeGenerator = $preCompiledPhpCode;
 
-            $result = $this->generator->process($preCompiledPhpCode);
-            return $result;
-        } catch (\Exception $e) {
-            Debug::show($e->getMessage(), $e->getTraceAsString());
-            exit;
-        }
+        $result = $this->generator->process($preCompiledPhpCode);
+        return $result;
     }
 
     public function getCodeBeforeGenerator(): string

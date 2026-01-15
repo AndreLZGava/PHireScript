@@ -36,7 +36,6 @@ class PhpFileGeneratorHandler implements PreprocessorInterface
             return $this->printer->prettyPrintFile($ast);
         } catch (\PhpParser\Error $error) {
             if (!$this->strictDebugMode) {
-                echo "--- DEBUG (Generated Code) ---\n" . $code . "\n";
                 throw new \Exception("Compilation error: " . $error->getMessage());
             }
             throw new \Exception("Compilation error: " . $error->getMessage());

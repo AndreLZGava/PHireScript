@@ -17,7 +17,7 @@ class Scanner
         'T_NUMBER'      => '/^\d+(\.\d+)?/',
         'T_KEYWORD'     => '/^\b(class|interface|trait|type|extends|with|' .
             'implements|inject|async|var|constructor|function|return|echo|' .
-            'immutable|if|else|this|super|pkg)\b/',
+            'immutable|if|else|this|super|pkg|use|as)\b/',
         'T_BOOL'        => '/^\b(true|false)\b/',
         'T_EOL'         => '/^[\r\n]+/',
         'T_WHITESPACE'  => '/^[ \t]+/',

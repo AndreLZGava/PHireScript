@@ -2,9 +2,21 @@
 require 'vendor/autoload.php';
 require_once('compilerHelper.php');
 
+use PHPScript\Compiler\Loader;
+use PHPScript\DependencyGraphBuilder;
 use PHPScript\Transpiler;
+use PHPScript\TranspilerDependencyTree;
 
-$transpiler = new Transpiler(getConfigFile());
+$loader = new Loader();
+$dependencyManager = new DependencyGraphBuilder();
+
+$config = $loader->getConfigFile();
+$transpilerDependencyTree = new TranspilerDependencyTree($config);
+
+$listPrograms = $loader->load($config['paths']['source'], $transpilerDependencyTree);
+$dependencyManager->buildGraph($listPrograms);
+
+$transpiler = new Transpiler($config, $dependencyManager);
 
 $file = $argv[1];
 

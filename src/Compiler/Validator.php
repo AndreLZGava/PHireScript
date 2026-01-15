@@ -70,7 +70,7 @@ class Validator
 
             if ($tokenValue === RuntimeClass::KEYWORD_PACKAGE) {
                 if ($hasPkg) {
-                    throw new Exception('You must define pk only once per file!');
+                    throw new Exception('You must define pkg only once per file!');
                 }
                 $hasPkg = true;
             }

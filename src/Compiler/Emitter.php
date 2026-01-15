@@ -10,6 +10,7 @@ use PHPScript\Compiler\Emitter\NodeEmitters\ArrayLiteralEmitter;
 use PHPScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
 use PHPScript\Compiler\Emitter\NodeEmitters\PropertyEmitter;
 use PHPScript\Compiler\Emitter\NodeEmitters\ClassEmitter;
+use PHPScript\Compiler\Emitter\NodeEmitters\DependencyEmitter;
 use PHPScript\Compiler\Emitter\NodeEmitters\GlobalStatementEmitter;
 use PHPScript\Compiler\Emitter\NodeEmitters\InterfaceEmitter;
 use PHPScript\Compiler\Emitter\NodeEmitters\LiteralEmitter;
@@ -27,16 +28,18 @@ use PHPScript\Compiler\Emitter\NodeEmitters\VoidExpressionEmitter;
 use PHPScript\Compiler\Emitter\Type\PhpTypeResolver;
 use PHPScript\Compiler\Emitter\UseRegistry;
 use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHPScript\DependencyGraphBuilder;
 
 class Emitter
 {
     private readonly EmitterDispatcher $dispatcher;
 
-    public function __construct(private array $config)
+    public function __construct(private array $config, private DependencyGraphBuilder $dependencyManager)
     {
         $this->dispatcher = new EmitterDispatcher([
             new ProgramEmitter(),
             new PackageEmitter(),
+            new DependencyEmitter(),
             new InterfaceEmitter(),
             new ClassEmitter(),
             new MethodEmitter(),
@@ -67,7 +70,8 @@ class Emitter
             dev: $this->config['dev'] ?? false,
             uses: $useRegistry,
             emitter: $this->dispatcher,
-            types: new PhpTypeResolver($this->config)
+            types: new PhpTypeResolver($this->config),
+            dependencyManager: $this->dependencyManager,
         );
 
         return $this->dispatcher->emit($program, $context);

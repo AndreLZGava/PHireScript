@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PHPScript\Compiler\Emitter;
 
 use PHPScript\Compiler\Emitter\Type\PhpTypeResolver;
+use PHPScript\DependencyGraphBuilder;
 
 class EmitContext
 {
@@ -12,6 +13,7 @@ class EmitContext
         public readonly bool $dev,
         public readonly UseRegistry $uses,
         public PhpTypeResolver $types,
+        public DependencyGraphBuilder $dependencyManager,
         public readonly EmitterDispatcher $emitter,
         public bool $insideInterface = false,
         public bool $insideClass = false,

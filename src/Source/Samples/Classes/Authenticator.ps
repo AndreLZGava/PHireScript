@@ -1,5 +1,7 @@
 pkg PHPScript.Samples
 
+use PHPScript.Samples.UserCredentials
+
 interface Authenticator {
     authenticate(UserCredentials credentials): Bool
     logout(): Void

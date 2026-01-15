@@ -43,7 +43,7 @@ class PkgKey extends ClassesFactory
                 return $leftTokens[$keyToken + 1]['value'];
             }
         }
-        throw new Exception('Could not load ', implode(', ', ${$objects}));
+        throw new Exception('Could not load ' . implode(', ', $objects));
     }
 
     private function getPkg()
@@ -69,7 +69,6 @@ class PkgKey extends ClassesFactory
                 $package .= $token['value'];
             }
         }
-        //$this->tokenManager->walk($walk);
         return $package;
     }
 }
