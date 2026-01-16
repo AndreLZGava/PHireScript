@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace PHPScript\Compiler;
 
 use Exception;
+use PHPScript\Helper\Debug\Debug;
 use PHPScript\Runtime\RuntimeClass;
 
 class Validator
 {
+    private array $open = ['(' => 0, '{' => 0, '[' => 0];
+    private array $close = [')' => 0, '}' => 0, ']' => 0];
     private array $forbidden = [
         'namespace' => 'Use "pkg" to declare a package',
 
@@ -27,8 +30,6 @@ class Validator
 
         'void' => 'Use "Void" instead!',
         'null' => 'Use "Null" instead!',
-        'true' => 'Use "True" instead!',
-        'false' => 'Use "False" instead!',
         'string' => 'Use "String" instead!',
         'int' => 'Use "Int" instead!',
         'float' => 'Use "Float" instead!',
@@ -84,8 +85,15 @@ class Validator
                         'content from line ' . $line . ' to another file!');
                 }
             }
+
+            $this->countCounterPart($token, '(', ')');
+            $this->countCounterPart($token, '{', '}');
+            $this->countCounterPart($token, '[', ']');
         }
 
+        $this->validateCounting('(', ')');
+        $this->validateCounting('{', '}');
+        $this->validateCounting('[', ']');
         if ($mustHavePkg && !$hasPkg) {
             throw new Exception('You must define a pkg for file that contains '
                 . implode(', ', $objectAllowed));
@@ -101,5 +109,24 @@ class Validator
     {
         return array_key_exists($word, $this->forbidden) ||
             in_array($word, $this->forbidden, true);
+    }
+
+    private function countCounterPart($token, $open, $close)
+    {
+        if ($token['value'] === $open) {
+            $this->open[$open]++;
+        }
+
+        if ($token['value'] === $close) {
+            $this->close[$close]++;
+        }
+    }
+
+    private function validateCounting($open, $close)
+    {
+        if ($this->open[$open] !== $this->close[$close]) {
+            throw new Exception("Amount of {$open} ({$this->open[$open]}) " .
+                "diverge from {$close} ({$this->close[$close]})");
+        }
     }
 }

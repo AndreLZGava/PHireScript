@@ -2,12 +2,48 @@ pkg PHPScript.Samples
 
 use PHPScript.Samples.{UserCredentials, User as UserAccess}
 
+external Symfony\Component\DependencyInjection\Loader\GlobFileLoader
+
 class AuthenticatorClass {
     authenticate(UserCredentials credentials): Bool {
-      return True
+      return true
     }
 
     logout(): Void {
+      return
+    }
 
+    returnNull(): Null {
+      return Null
+    }
+
+    returnStringSingle(): String {
+      return 'single quotes'
+    }
+
+    returnStringDouble(): String {
+      return 'single quotes'
+    }
+
+    returnFloat(): Float {
+      return 15.2
+    }
+
+    returnInt(): Int {
+      return 10
+    }
+
+    returnArrayEmpty(): Array {
+      return []
+    }
+
+    returnObject(): Object {
+      // this are not compiling into a object
+      return {}
+    }
+
+    returnArrayComplete(): Array {
+      // This gets loop, todo implement support to it
+      // return ['example' => ['another', 'array']]
     }
 }

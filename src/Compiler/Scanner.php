@@ -17,7 +17,7 @@ class Scanner
         'T_NUMBER'      => '/^\d+(\.\d+)?/',
         'T_KEYWORD'     => '/^\b(class|interface|trait|type|extends|with|' .
             'implements|inject|async|var|constructor|function|return|echo|' .
-            'immutable|if|else|this|super|pkg|use|as)\b/',
+            'immutable|if|else|this|super|pkg|use|as|external)\b/',
         'T_BOOL'        => '/^\b(true|false)\b/',
         'T_EOL'         => '/^[\r\n]+/',
         'T_WHITESPACE'  => '/^[ \t]+/',
@@ -28,6 +28,7 @@ class Scanner
         'T_VARIABLE'    => '/^\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',
         'T_IDENTIFIER'  => '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',
         'T_SYMBOL'      => '/^([{}();,:=+<>\#!?\[\]\.$*\/%|-])/',
+        'T_BACKSLASH' => '/^\\\\/',
     ];
 
     public function __construct(string $code)

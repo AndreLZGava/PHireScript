@@ -11,6 +11,7 @@ use PHPScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
 use PHPScript\Compiler\Emitter\NodeEmitters\PropertyEmitter;
 use PHPScript\Compiler\Emitter\NodeEmitters\ClassEmitter;
 use PHPScript\Compiler\Emitter\NodeEmitters\DependencyEmitter;
+use PHPScript\Compiler\Emitter\NodeEmitters\ExternalEmitter;
 use PHPScript\Compiler\Emitter\NodeEmitters\GlobalStatementEmitter;
 use PHPScript\Compiler\Emitter\NodeEmitters\InterfaceEmitter;
 use PHPScript\Compiler\Emitter\NodeEmitters\LiteralEmitter;
@@ -40,6 +41,7 @@ class Emitter
             new ProgramEmitter(),
             new PackageEmitter(),
             new DependencyEmitter(),
+            new ExternalEmitter(),
             new InterfaceEmitter(),
             new ClassEmitter(),
             new MethodEmitter(),

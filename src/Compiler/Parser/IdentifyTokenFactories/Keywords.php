@@ -6,6 +6,7 @@ namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHPScript\Compiler\Parser\Ast\Node;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ClassKey;
+use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ExternalKey;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Immutable;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\InterfaceKey;
 use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\PkgKey;
@@ -31,6 +32,7 @@ class Keywords extends GlobalFactory
             'return' => ReturnKey::class,
             'pkg' => PkgKey::class,
             'use' => UseKey::class,
+            'external' => ExternalKey::class,
         ];
 
         $tokenValue = $this->tokenManager->getCurrentToken()['value'];
