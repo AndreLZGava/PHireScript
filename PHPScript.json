@@ -1,9 +1,11 @@
 {
     "dev": true,
     "namespace": "PHPScript",
+    "currency": "USD",
+    "resolver": "laravel",
     "paths": {
         "source": "src/Source/Samples",
         "dist": "src/Source/Compiled"
     },
-    "generated_at": "2026-01-06 23:25:12"
+    "generated_at": "2026-01-16 00:31:33"
 }

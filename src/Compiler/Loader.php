@@ -6,6 +6,7 @@ namespace PHPScript\Compiler;
 
 use Exception;
 use FilesystemIterator;
+use PHPScript\Helper\Debug\Debug;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use PHPScript\Runtime\Types\MetaTypes;
@@ -85,6 +86,7 @@ class Loader
     public function getConfigFile()
     {
         $configs = json_decode(file_get_contents('PHPScript.json'), true);
+        $configs['php'] = phpversion();
         $configs['metatypes'] = $this->listClassesExtending(
             __DIR__ . '/../../src/Runtime/Types/MetaTypes/',
             MetaTypes::class
@@ -93,6 +95,7 @@ class Loader
             __DIR__ . '/../../src/Runtime/Types/SuperTypes/',
             SuperTypes::class
         );
+
 
         return $configs;
     }
