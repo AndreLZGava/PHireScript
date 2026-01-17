@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
+namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
 use Exception;
-use PHPScript\Compiler\Parser\Ast\MethodDefinition;
-use PHPScript\Compiler\Parser\Ast\Node;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
-use PHPScript\Compiler\Parser\Managers\TokenManager;
-use PHPScript\Compiler\Program;
-use PHPScript\Helper\Debug\Debug;
-use PHPScript\Runtime\RuntimeClass;
+use PHireScript\Compiler\Parser\Ast\MethodDefinition;
+use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
+use PHireScript\Compiler\Parser\Managers\TokenManager;
+use PHireScript\Compiler\Program;
+use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\RuntimeClass;
 
 abstract class ClassesFactory extends GlobalFactory
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPScript\Classes;
+namespace PHireScript\Classes;
 
     // 1. The Type (Data Shape) can be converted into a class in the future
 class UserCredentials {

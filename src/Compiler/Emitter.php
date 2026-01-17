@@ -2,34 +2,34 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler;
+namespace PHireScript\Compiler;
 
-use PHPScript\Compiler\Emitter\EmitContext;
-use PHPScript\Compiler\Emitter\EmitterDispatcher;
-use PHPScript\Compiler\Emitter\NodeEmitters\ArrayLiteralEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\PropertyEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\ClassEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\DependencyEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\ExternalEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\GlobalStatementEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\InterfaceEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\LiteralEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\MethodEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\PackageEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\ParameterEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\ProgramEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\PropertyAccessEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\PropertyDeclarationEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\ReturnEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\ScalarLiteralEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\ThisExpressionEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\VariableEmitter;
-use PHPScript\Compiler\Emitter\NodeEmitters\VoidExpressionEmitter;
-use PHPScript\Compiler\Emitter\Type\PhpTypeResolver;
-use PHPScript\Compiler\Emitter\UseRegistry;
-use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
-use PHPScript\DependencyGraphBuilder;
+use PHireScript\Compiler\Emitter\EmitContext;
+use PHireScript\Compiler\Emitter\EmitterDispatcher;
+use PHireScript\Compiler\Emitter\NodeEmitters\ArrayLiteralEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\PropertyEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\ClassEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\DependencyEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\ExternalEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\GlobalStatementEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\InterfaceEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\LiteralEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\MethodEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\PackageEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\ParameterEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\ProgramEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\PropertyAccessEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\PropertyDeclarationEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\ReturnEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\ScalarLiteralEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\ThisExpressionEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\VariableEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\VoidExpressionEmitter;
+use PHireScript\Compiler\Emitter\Type\PhpTypeResolver;
+use PHireScript\Compiler\Emitter\UseRegistry;
+use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\DependencyGraphBuilder;
 
 class Emitter
 {

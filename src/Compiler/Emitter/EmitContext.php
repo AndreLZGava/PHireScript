@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Emitter;
+namespace PHireScript\Compiler\Emitter;
 
-use PHPScript\Compiler\Emitter\Type\PhpTypeResolver;
-use PHPScript\DependencyGraphBuilder;
+use PHireScript\Compiler\Emitter\Type\PhpTypeResolver;
+use PHireScript\DependencyGraphBuilder;
 
 class EmitContext
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPScript\Classes;
+namespace PHireScript\Classes;
 
 class ExampleGetterSetterClass {
     public int $id;

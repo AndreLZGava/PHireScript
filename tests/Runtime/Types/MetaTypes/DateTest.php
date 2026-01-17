@@ -1,14 +1,14 @@
 <?php
 
-namespace PHPScript\Tests\Runtime\Types\MetaTypes;
+namespace PHireScript\Tests\Runtime\Types\MetaTypes;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPScript\Runtime\Types\MetaTypes\Date;
+use PHireScript\Runtime\Types\MetaTypes\Date;
 use TypeError;
 use DateTimeImmutable;
 use DateTime;
-use PHPScript\Helper\Debug\Debug;
+use PHireScript\Helper\Debug\Debug;
 
 class DateTest extends TestCase
 {

@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
+namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
-use PHPScript\Compiler\Parser\Ast\Node;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ClassKey;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ExternalKey;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Immutable;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\InterfaceKey;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\PkgKey;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ReturnKey;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Type;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\UseKey;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Variable;
-use PHPScript\Compiler\Program;
-use PHPScript\Helper\Debug\Debug;
+use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ClassKey;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ExternalKey;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Immutable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\InterfaceKey;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\PkgKey;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ReturnKey;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Type;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\UseKey;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Variable;
+use PHireScript\Compiler\Program;
+use PHireScript\Helper\Debug\Debug;
 
 class Keywords extends GlobalFactory
 {

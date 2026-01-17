@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Visitor;
+namespace PHireScript\Visitor;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
-use PHPScript\SymbolTable;
+use PHireScript\SymbolTable;
 
 class VariableResolver extends NodeVisitorAbstract
 {

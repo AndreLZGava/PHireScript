@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Runtime\Types\MetaTypes;
+namespace PHireScript\Runtime\Types\MetaTypes;
 
-use PHPScript\Runtime\Types\MetaTypes;
-use PHPScript\Runtime\Types\SuperTypes\CardNumber;
-use PHPScript\Runtime\Types\SuperTypes\Cvv;
-use PHPScript\Runtime\Types\SuperTypes\ExpiryDate;
+use PHireScript\Runtime\Types\MetaTypes;
+use PHireScript\Runtime\Types\SuperTypes\CardNumber;
+use PHireScript\Runtime\Types\SuperTypes\Cvv;
+use PHireScript\Runtime\Types\SuperTypes\ExpiryDate;
 
 class Card extends MetaTypes
 {

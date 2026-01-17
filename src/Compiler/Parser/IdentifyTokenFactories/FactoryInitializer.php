@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
+namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Comment;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\EndOfLine;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Symbol;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Type;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Comment;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\EndOfLine;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbol;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Type;
 
 class FactoryInitializer
 {

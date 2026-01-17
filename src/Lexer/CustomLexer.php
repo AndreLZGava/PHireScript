@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Lexer;
+namespace PHireScript\Lexer;
 
 use PhpParser\Lexer\Emulative;
 use PhpParser\Parser\Tokens;

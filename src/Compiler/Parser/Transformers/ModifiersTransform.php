@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Parser\Transformers;
+namespace PHireScript\Compiler\Parser\Transformers;
 
-use PHPScript\Compiler\Parser\Managers\TokenManager;
-use PHPScript\Helper\Debug\Debug;
-use PHPScript\Runtime\RuntimeClass;
+use PHireScript\Compiler\Parser\Managers\TokenManager;
+use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\RuntimeClass;
 
 class ModifiersTransform
 {

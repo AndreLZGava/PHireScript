@@ -1,10 +1,10 @@
 <?php
 
-namespace PHPScript\Compiler\DependencyGraphBuilder\DependencyTree;
+namespace PHireScript\Compiler\DependencyGraphBuilder\DependencyTree;
 
-use PHPScript\Compiler\Parser\Managers\TokenManager;
-use PHPScript\Compiler\Program;
-use PHPScript\Runtime\RuntimeClass;
+use PHireScript\Compiler\Parser\Managers\TokenManager;
+use PHireScript\Compiler\Program;
+use PHireScript\Runtime\RuntimeClass;
 
 class Parser
 {

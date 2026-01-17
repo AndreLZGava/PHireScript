@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Core;
+namespace PHireScript\Core;
 
 enum CompileMode: string
 {

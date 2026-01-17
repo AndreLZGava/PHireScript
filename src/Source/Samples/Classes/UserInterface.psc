@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPScript\Classes;
+namespace PHireScript\Classes;
 
 interface UserInterface {
     public function save(array $data): bool;

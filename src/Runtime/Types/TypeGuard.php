@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Runtime\Types;
+namespace PHireScript\Runtime\Types;
 
 class TypeGuard
 {

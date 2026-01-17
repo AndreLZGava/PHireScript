@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PHPScript;
+namespace PHireScript;
 
-use PHPScript\Compiler\DependencyGraphBuilder\DependencyTree\Parser;
-use PHPScript\Compiler\Program;
-use PHPScript\Compiler\Scanner;
+use PHireScript\Compiler\DependencyGraphBuilder\DependencyTree\Parser;
+use PHireScript\Compiler\Program;
+use PHireScript\Compiler\Scanner;
 
 class TranspilerDependencyTree
 {

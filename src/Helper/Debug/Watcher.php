@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Helper\Debug;
+namespace PHireScript\Helper\Debug;
 
 class Watcher
 {

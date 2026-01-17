@@ -1,9 +1,9 @@
 <?php
 
-namespace PHPScript\Tests\Runtime\Types\SuperTypes;
+namespace PHireScript\Tests\Runtime\Types\SuperTypes;
 
 use PHPUnit\Framework\TestCase;
-use PHPScript\Runtime\Types\SuperTypes\Color;
+use PHireScript\Runtime\Types\SuperTypes\Color;
 use PHPUnit\Framework\Attributes\DataProvider;
 use TypeError;
 

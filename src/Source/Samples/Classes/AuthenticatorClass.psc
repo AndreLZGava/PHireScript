@@ -1,9 +1,9 @@
 <?php
 
-namespace PHPScript\Classes;
+namespace PHireScript\Classes;
 
-use PHPScript\Classes\UserCredentials;
-use PHPScript\Classes\User as UserAccess;
+use PHireScript\Classes\UserCredentials;
+use PHireScript\Classes\User as UserAccess;
 use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
 class AuthenticatorClass {
     public function authenticate(): bool {

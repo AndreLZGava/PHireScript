@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PHPScript;
+namespace PHireScript;
 
-use PHPScript\Compiler\FileManager;
-use PHPScript\Core\CompileMode;
-use PHPScript\Core\CompilerContext;
-use PHPScript\Transpiler;
-use PHPScript\TranspilerDependencyTree;
+use PHireScript\Compiler\FileManager;
+use PHireScript\Core\CompileMode;
+use PHireScript\Core\CompilerContext;
+use PHireScript\Transpiler;
+use PHireScript\TranspilerDependencyTree;
 
 class Compiler
 {

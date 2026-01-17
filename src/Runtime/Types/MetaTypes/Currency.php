@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Runtime\Types\MetaTypes;
+namespace PHireScript\Runtime\Types\MetaTypes;
 
 use NumberFormatter;
-use PHPScript\Helper\Debug\Debug;
-use PHPScript\Runtime\Types\MetaTypes;
+use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Types\MetaTypes;
 
 class Currency extends MetaTypes
 {

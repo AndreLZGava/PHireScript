@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\DependencyGraphBuilder\DependencyTree;
+namespace PHireScript\Compiler\DependencyGraphBuilder\DependencyTree;
 
-use PHPScript\Compiler\Parser\Managers\TokenManager;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\PkgKey;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords\UseKey;
-use PHPScript\Compiler\Program;
+use PHireScript\Compiler\Parser\Managers\TokenManager;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\PkgKey;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\UseKey;
+use PHireScript\Compiler\Program;
 
 class FactoryDependencies
 {

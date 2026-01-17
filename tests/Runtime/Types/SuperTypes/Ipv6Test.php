@@ -1,10 +1,10 @@
 <?php
 
-namespace PHPScript\Tests\Runtime\Types\SuperTypes;
+namespace PHireScript\Tests\Runtime\Types\SuperTypes;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPScript\Runtime\Types\SuperTypes\Ipv6;
+use PHireScript\Runtime\Types\SuperTypes\Ipv6;
 use TypeError;
 
 class Ipv6Test extends TestCase

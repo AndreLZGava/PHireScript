@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Parser\Managers;
+namespace PHireScript\Compiler\Parser\Managers;
 
 class TokenManager
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Core;
+namespace PHireScript\Core;
 
-use PHPScript\Runtime\RuntimeClass;
+use PHireScript\Runtime\RuntimeClass;
 
 class CompilerContext
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Processors;
+namespace PHireScript\Compiler\Processors;
 
 class FunctionBodyProcessor implements PreprocessorInterface
 {
@@ -41,7 +41,7 @@ class FunctionBodyProcessor implements PreprocessorInterface
         if (defined("PS_STRICT_MODE") && PS_STRICT_MODE) {
             foreach ($_onArrayValidate as $item) {
                 if (!(' . $check . ')) {
-                    throw new \TypeError("PHPScript Error: Return element must be of type [' . $rawTypes . ']");
+                    throw new \TypeError("PHireScript Error: Return element must be of type [' . $rawTypes . ']");
                 }
             }
         }';

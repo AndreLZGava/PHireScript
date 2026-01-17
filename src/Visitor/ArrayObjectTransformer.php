@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Visitor;
+namespace PHireScript\Visitor;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
@@ -11,7 +11,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Name;
 use PhpParser\Node\Identifier;
-use PHPScript\SymbolTable;
+use PHireScript\SymbolTable;
 
 class ArrayObjectTransformer extends NodeVisitorAbstract
 {

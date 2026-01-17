@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Visitor;
+namespace PHireScript\Visitor;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;

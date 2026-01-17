@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Emitter\Type;
+namespace PHireScript\Compiler\Emitter\Type;
 
-use PHPScript\Compiler\Emitter\UseRegistry;
-use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Emitter\UseRegistry;
+use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
 
 class PhpTypeResolver
 {
@@ -45,7 +45,7 @@ class PhpTypeResolver
         count($types);
         $var = $prop->name;
         if ($itemsToVerify > 1) {
-            $this->uses[] = \PHPScript\Runtime\Types\UnionType::class;
+            $this->uses[] = \PHireScript\Runtime\Types\UnionType::class;
 
             $typeClasses = [];
             foreach ($types as $t) {

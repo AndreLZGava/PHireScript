@@ -1,5 +1,5 @@
 {
-    "name": "phpscript/phpscript",
+    "name": "phire-scrip/phire-scrip",
     "description": "This is a custom PHP transpiler",
     "type": "project",
     "scripts": {
@@ -21,12 +21,12 @@
     },
     "autoload": {
         "psr-4": {
-            "PHPScript\\": "src/"
+            "PHireScript\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PHPScript\\Tests\\": "tests/"
+            "PHireScript\\Tests\\": "tests/"
         }
     },
     "authors": [

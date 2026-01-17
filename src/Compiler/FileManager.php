@@ -2,27 +2,30 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler;
+namespace PHireScript\Compiler;
 
 use Exception;
 use FilesystemIterator;
-use PHPScript\Core\CompileMode;
-use PHPScript\Core\CompilerContext;
-use PHPScript\Helper\Debug\Debug;
-use PHPScript\Runtime\RuntimeClass;
+use PHireScript\Core\CompileMode;
+use PHireScript\Core\CompilerContext;
+use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\RuntimeClass;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use PHPScript\Runtime\Types\MetaTypes;
-use PHPScript\Runtime\Types\SuperTypes;
+use PHireScript\Runtime\Types\MetaTypes;
+use PHireScript\Runtime\Types\SuperTypes;
 use ReflectionClass;
 use RuntimeException;
 use Throwable;
 
-class FileManager {
-    public function __construct(private readonly CompilerContext $context) {
+class FileManager
+{
+    public function __construct(private readonly CompilerContext $context)
+    {
     }
 
-    public function loadAndCompile($sourceDir, $distDir, $transpiler) {
+    public function loadAndCompile($sourceDir, $distDir, $transpiler)
+    {
         if ($this->context->mode === CompileMode::WATCH) {
             $this->watch($sourceDir, $distDir, $transpiler);
             return;
@@ -38,17 +41,22 @@ class FileManager {
             ) {
                 $relativePath = substr($file->getPathname(), strlen($sourceDir));
 
-                $outputFile = $distDir  . str_replace('.' . $this->context->getExtensionToPersist(), '.php', $relativePath);
+                $outputFile = $distDir  . str_replace(
+                    '.' . $this->context->getExtensionToPersist(),
+                    '.php',
+                    $relativePath
+                );
 
                 $this->compileFile($file->getPathname(), $outputFile, $transpiler);
             }
         }
     }
 
-    private function watch($sourceDir, $distDir, $transpiler) {
+    private function watch($sourceDir, $distDir, $transpiler)
+    {
         $extension = $this->context->getExtensionToPersist();
         $targetDir = $this->context->targetWatch;
-        echo "--- PHPScript started the process ---\n";
+        echo "--- PHireScript started the process ---\n";
         echo "Watching files .$extension in: $targetDir\n";
 
         while (true) {
@@ -63,7 +71,12 @@ class FileManager {
                             $relativePath = substr($file->getPathname(), strlen($sourceDir) + 1);
                             $currentHash = md5_file($filePath);
 
-                            $outputFile = $distDir . '/' . str_replace('.' . RuntimeClass::DEFAULT_FILE_EXTENSION, '.php', $relativePath);
+                            $outputFile = $distDir . '/' .
+                                str_replace(
+                                    '.' . RuntimeClass::DEFAULT_FILE_EXTENSION,
+                                    '.php',
+                                    $relativePath
+                                );
                             $outputSubDir = dirname($outputFile);
 
                             if (!is_dir($outputSubDir)) {
@@ -73,7 +86,7 @@ class FileManager {
                             if (!isset($filesHash[$filePath]) || $filesHash[$filePath] !== $currentHash) {
                                 if (isset($filesHash[$filePath])) {
                                     echo "[" . date('H:i:s') . "] Changes found in : " . $filePath . "\n";
-                                    $this->compileFile($file->getPathname(), $outputFile,  $transpiler);
+                                    $this->compileFile($file->getPathname(), $outputFile, $transpiler);
                                 } else {
                                     echo "[" . date('H:i:s') . "] Watching: " . $filePath . "\n";
                                 }
@@ -94,7 +107,8 @@ class FileManager {
         }
     }
 
-    public function load($sourceDir, $transpiler): array {
+    public function load($sourceDir, $transpiler): array
+    {
         $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
         $iterator = new RecursiveIteratorIterator($directory);
         $result = [];
@@ -113,12 +127,12 @@ class FileManager {
     }
 
 
-    private function compileFile($input, $output, $transpiler) {
+    private function compileFile($input, $output, $transpiler)
+    {
         try {
             $sourceCode = file_get_contents($input);
             $result = $transpiler->compile($sourceCode, $input);
             if ($this->context->shouldPersist()) {
-
                 $outputSubDir = dirname($output);
                 if (!is_dir($outputSubDir)) {
                     mkdir($outputSubDir, 0755, true);
@@ -127,7 +141,11 @@ class FileManager {
 
                 if ($this->context->persistSnapshot()) {
                     $preParserCode = $transpiler->getCodeBeforeGenerator();
-                    $preCompiledCode = str_replace('.' . RuntimeClass::DEFAULT_FILE_EXTENSION, '.' . RuntimeClass::DEFAULT_FILE_SNAPSHOT_EXTENSION, $input);
+                    $preCompiledCode = str_replace(
+                        '.' . RuntimeClass::DEFAULT_FILE_EXTENSION,
+                        '.' . RuntimeClass::DEFAULT_FILE_SNAPSHOT_EXTENSION,
+                        $input
+                    );
                     file_put_contents($preCompiledCode, $preParserCode);
                     echo "\n\033[1;32m✔ $input -> $preCompiledCode\033[0m\n";
                 }
@@ -154,8 +172,9 @@ class FileManager {
     }
 
 
-    public function getConfigFile() {
-        $configs = json_decode(file_get_contents('PHPScript.json'), true);
+    public function getConfigFile()
+    {
+        $configs = json_decode(file_get_contents('PHireScript.json'), true);
         $configs['php'] = phpversion();
         $configs['metatypes'] = $this->listClassesExtending(
             __DIR__ . '/../../src/Runtime/Types/MetaTypes/',
@@ -170,7 +189,8 @@ class FileManager {
         return $configs;
     }
 
-    private function getErrorInterface($e, $transpiler, $code) {
+    private function getErrorInterface($e, $transpiler, $code)
+    {
         $maxLineWidth = 140;
         $red    = "\033[1;31m";
         $blue   = "\033[1;34m";
@@ -186,13 +206,13 @@ class FileManager {
         $maxLines = max(count($originalLines), count($preParserLines));
 
         echo "\n{$red}" . str_repeat('=', $maxLineWidth) . "{$reset}\n";
-        echo "  {$red}PHPSCRIPT DEBUGGER - COMPILATION ERROR{$reset}\n";
+        echo "  {$red}PHire Script DEBUGGER - COMPILATION ERROR{$reset}\n";
         echo "{$red}" . str_repeat('=', $maxLineWidth) . "{$reset}\n\n";
 
         printf(
             " %-4s | %-71s | %-60s\n",
             "Line",
-            "{$blue}ORIGINAL PHPSCRIPT{$reset}",
+            "{$blue}ORIGINAL PHire Script{$reset}",
             "{$cyan}TRANSPILED PHP (PRE-PARSER){$reset}"
         );
 
@@ -321,7 +341,8 @@ class FileManager {
         return $classes;
     }
 
-    private function cleanDirectory($dir) {
+    private function cleanDirectory($dir)
+    {
         $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST

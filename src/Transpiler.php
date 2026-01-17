@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PHPScript;
+namespace PHireScript;
 
-use PHPScript\Compiler\Binder;
-use PHPScript\Compiler\Checker;
-use PHPScript\Compiler\Emitter;
-use PHPScript\Compiler\Parser;
-use PHPScript\Compiler\Processors\PhpFileGeneratorHandler;
-use PHPScript\Compiler\Processors\PreprocessorInterface;
-use PHPScript\Compiler\Scanner;
-use PHPScript\Compiler\Validator;
-use PHPScript\Core\CompilerContext;
-use PHPScript\Helper\Debug\Debug;
+use PHireScript\Compiler\Binder;
+use PHireScript\Compiler\Checker;
+use PHireScript\Compiler\Emitter;
+use PHireScript\Compiler\Parser;
+use PHireScript\Compiler\Processors\PhpFileGeneratorHandler;
+use PHireScript\Compiler\Processors\PreprocessorInterface;
+use PHireScript\Compiler\Scanner;
+use PHireScript\Compiler\Validator;
+use PHireScript\Core\CompilerContext;
+use PHireScript\Helper\Debug\Debug;
 use Symfony\Component\DependencyInjection\Compiler\Compiler;
 
 class Transpiler implements TranspilerInterface

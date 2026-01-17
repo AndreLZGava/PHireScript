@@ -1,8 +1,8 @@
-# PHPScript CLI Documentation
-PHPScript is a powerful transpiler that converts .ps files into strictly typed PHP code. This guide covers how to initialize your project and use the built-in CLI tools to compile, debug, and monitor your source code.
+# PHireScript CLI Documentation
+PHireScript is a powerful transpiler that converts .ps files into strictly typed PHP code. This guide covers how to initialize your project and use the built-in CLI tools to compile, debug, and monitor your source code.
 
 ## 1. Project Initialization
-To start using PHPScript, you must first initialize your project configuration. This creates a PHPScript.json file in your root directory, which stores your environment settings and default paths.
+To start using PHireScript, you must first initialize your project configuration. This creates a PHireScript.json file in your root directory, which stores your environment settings and default paths.
 
 Usage
 ```Bash
@@ -36,21 +36,21 @@ Example
 php bin/debug src/User.ps
 ```
 ## 3. Building the Project
-The build command compiles your PHPScript files into production-ready PHP files.
+The build command compiles your PHireScript files into production-ready PHP files.
 
 Usage
 ```Bash
 
 php bin/build [origin_dir] [destiny_dir]
 ```
-origin_dir: (Optional) Overrides the source path defined in PHPScript.json.
+origin_dir: (Optional) Overrides the source path defined in PHireScript.json.
 
-destiny_dir: (Optional) Overrides the distribution path defined in PHPScript.json.
+destiny_dir: (Optional) Overrides the distribution path defined in PHireScript.json.
 
 Example
 ```Bash
 
-# Uses paths from PHPScript.json
+# Uses paths from PHireScript.json
 php bin/build
 ```
 
@@ -59,7 +59,7 @@ php bin/build
 php bin/build ./modules/auth ./build/auth
 ```
 ## 4. Generating Snapshots (.pp files)
-The snapshot command generates a Pre-Processed PHP file (.pp). This represents the intermediate state of your code: it is mostly PHP but still contains PHPScript-specific metadata before the final treatment (formatting and final emitter cleanup).
+The snapshot command generates a Pre-Processed PHP file (.pp). This represents the intermediate state of your code: it is mostly PHP but still contains PHireScript-specific metadata before the final treatment (formatting and final emitter cleanup).
 
 Usage
 ```Bash
@@ -70,7 +70,7 @@ Purpose
 Use this to audit the logic conversion without the final PHP boilerplate or formatting being applied. It is the "raw" output of the transpilation engine.
 
 ## 5. File Watcher (Hot Reload)
-The watch command starts a persistent process that monitors your source directory for changes. When a .ps file is saved, PHPScript re-compiles only that specific file, ensuring high performance during development.
+The watch command starts a persistent process that monitors your source directory for changes. When a .ps file is saved, PHireScript re-compiles only that specific file, ensuring high performance during development.
 
 Usage
 ```Bash
@@ -87,7 +87,7 @@ php bin/watch
 # Output: [WATCHER] Monitoring src/...
 # Output: [COMPILED] User.ps -> User.php (12ms)
 ```
-Configuration Reference (PHPScript.json)
+Configuration Reference (PHireScript.json)
 You can manually edit your configuration file at any time. A typical structure looks like this:
 
 ```JSON

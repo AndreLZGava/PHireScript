@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
+namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
-use PHPScript\Compiler\Parser\Ast\Node;
-use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
-use PHPScript\Compiler\Parser\Transformers\ModifiersTransform;
-use PHPScript\Compiler\Program;
-use PHPScript\Helper\Debug\Debug;
-use PHPScript\Runtime\RuntimeClass;
+use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Transformers\ModifiersTransform;
+use PHireScript\Compiler\Program;
+use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\RuntimeClass;
 
 class Type extends GlobalFactory
 {

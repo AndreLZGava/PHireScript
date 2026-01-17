@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler;
+namespace PHireScript\Compiler;
 
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
-use PHPScript\Compiler\Parser\Managers\TokenManager;
-use PHPScript\Runtime\RuntimeClass;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
+use PHireScript\Compiler\Parser\Managers\TokenManager;
+use PHireScript\Runtime\RuntimeClass;
 
 class Parser
 {

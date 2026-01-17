@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Processors;
+namespace PHireScript\Compiler\Processors;
 
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter;
@@ -20,16 +20,16 @@ class PhpFileGeneratorHandler implements PreprocessorInterface
     {
         try {
             $ast = $this->parser->parse($code);
-            $symbolTable = new \PHPScript\SymbolTable();
+            $symbolTable = new \PHireScript\SymbolTable();
 
             $collector = new \PhpParser\NodeTraverser();
-            $collector->addVisitor(new \PHPScript\Visitor\TypeCollector($symbolTable));
+            $collector->addVisitor(new \PHireScript\Visitor\TypeCollector($symbolTable));
             $ast = $collector->traverse($ast);
 
             $traverser = new \PhpParser\NodeTraverser();
-            $traverser->addVisitor(new \PHPScript\Visitor\VariableResolver($symbolTable));
-            $traverser->addVisitor(new \PHPScript\Visitor\StringObjectTransformer($symbolTable));
-            $traverser->addVisitor(new \PHPScript\Visitor\ArrayObjectTransformer($symbolTable));
+            $traverser->addVisitor(new \PHireScript\Visitor\VariableResolver($symbolTable));
+            $traverser->addVisitor(new \PHireScript\Visitor\StringObjectTransformer($symbolTable));
+            $traverser->addVisitor(new \PHireScript\Visitor\ArrayObjectTransformer($symbolTable));
 
             $ast = $traverser->traverse($ast);
 

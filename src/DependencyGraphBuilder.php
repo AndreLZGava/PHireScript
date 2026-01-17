@@ -1,11 +1,11 @@
 <?php
 
-namespace PHPScript;
+namespace PHireScript;
 
-use PHPScript\Compiler\DependencyGraphBuilder\Node;
-use PHPScript\Compiler\Parser\Ast\PackageStatement;
-use PHPScript\Compiler\Parser\Ast\DependenciesStatement;
-use PHPScript\Compiler\Program;
+use PHireScript\Compiler\DependencyGraphBuilder\Node;
+use PHireScript\Compiler\Parser\Ast\PackageStatement;
+use PHireScript\Compiler\Parser\Ast\DependenciesStatement;
+use PHireScript\Compiler\Program;
 
 class DependencyGraphBuilder
 {

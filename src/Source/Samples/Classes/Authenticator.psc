@@ -1,8 +1,8 @@
 <?php
 
-namespace PHPScript\Classes;
+namespace PHireScript\Classes;
 
-use PHPScript\Classes\UserCredentials;
+use PHireScript\Classes\UserCredentials;
 interface Authenticator {
     public function authenticate(): bool;
 

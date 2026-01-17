@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Runtime\Types\MetaTypes;
+namespace PHireScript\Runtime\Types\MetaTypes;
 
-use PHPScript\Runtime\Types\MetaTypes;
+use PHireScript\Runtime\Types\MetaTypes;
 
 class Date extends MetaTypes
 {

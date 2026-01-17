@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Parser\Ast;
+namespace PHireScript\Compiler\Parser\Ast;
 
 use Exception;
-use PHPScript\Helper\Debug\Debug;
-use PHPScript\Runtime\RuntimeClass;
+use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\RuntimeClass;
 
 class PackageStatement extends Statement
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPScript\Compiler\DependencyGraphBuilder;
+namespace PHireScript\Compiler\DependencyGraphBuilder;
 
 class Node
 {

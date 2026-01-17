@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
+namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
 
 use Exception;
-use PHPScript\Compiler\Parser\Ast\ExternalsStatement;
-use PHPScript\Compiler\Parser\Ast\NamespaceStatement;
-use PHPScript\Compiler\Parser\Ast\Node;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
-use PHPScript\Compiler\Program;
+use PHireScript\Compiler\Parser\Ast\ExternalsStatement;
+use PHireScript\Compiler\Parser\Ast\NamespaceStatement;
+use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
+use PHireScript\Compiler\Program;
 
 class ExternalKey extends ClassesFactory
 {

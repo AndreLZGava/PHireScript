@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPScript\Classes;
+namespace PHireScript\Classes;
 
 class TypedArrays {
     public function testSimpleArray(): array {

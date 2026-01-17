@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
+namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
 
-use PHPScript\Compiler\Parser\Ast\ClassDefinition;
-use PHPScript\Compiler\Parser\Ast\Node;
-use PHPScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
-use PHPScript\Compiler\Program;
-use PHPScript\Helper\Debug\Debug;
+use PHireScript\Compiler\Parser\Ast\ClassDefinition;
+use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
+use PHireScript\Compiler\Program;
+use PHireScript\Helper\Debug\Debug;
 
 class InterfaceKey extends ClassesFactory
 {

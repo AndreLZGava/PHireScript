@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler;
+namespace PHireScript\Compiler;
 
-use PHPScript\SymbolTable;
-use PHPScript\Compiler\Parser\Ast\ClassDefinition;
-use PHPScript\Compiler\Parser\Ast\MethodDefinition;
-use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
-use PHPScript\Helper\Debug\Debug;
+use PHireScript\SymbolTable;
+use PHireScript\Compiler\Parser\Ast\ClassDefinition;
+use PHireScript\Compiler\Parser\Ast\MethodDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Helper\Debug\Debug;
 
 class Binder
 {
@@ -86,12 +86,12 @@ class Binder
 
         $metaTypes = ['Date', 'Currency', 'Phone'];
         if (in_array($typeName, $metaTypes, true)) {
-            return ['category' => 'metatype', 'class' => "PHPScript\\Runtime\\Types\\MetaTypes\\$typeName"];
+            return ['category' => 'metatype', 'class' => "PHireScript\\Runtime\\Types\\MetaTypes\\$typeName"];
         }
 
         $superTypes = ['Email', 'Ipv4', 'Ipv6', 'Url'];
         if (in_array($typeName, $superTypes, true)) {
-            return ['category' => 'supertype', 'class' => "PHPScript\\Runtime\\Types\\SuperTypes\\$typeName"];
+            return ['category' => 'supertype', 'class' => "PHireScript\\Runtime\\Types\\SuperTypes\\$typeName"];
         }
 
         // Se não for nada acima, verificamos se é uma classe que já registramos na Passagem 1

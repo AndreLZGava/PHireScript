@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler;
+namespace PHireScript\Compiler;
 
-use PHPScript\Compiler\Emitter\EmitContext;
-use PHPScript\Compiler\Parser\Ast\AssignmentNode;
-use PHPScript\Compiler\Parser\Ast\ClassDefinition;
-use PHPScript\Compiler\Parser\Ast\GlobalStatement;
-use PHPScript\Compiler\Parser\Ast\MethodDefinition;
-use PHPScript\Compiler\Parser\Ast\PackageStatement;
-use PHPScript\Compiler\Parser\Ast\PropertyAccessNode;
-use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
-use PHPScript\Compiler\Parser\Ast\ThisExpressionNode;
-use PHPScript\Compiler\Parser\Ast\VariableNode;
-use PHPScript\Helper\Debug\Debug;
-use PHPScript\Runtime\RuntimeClass;
+use PHireScript\Compiler\Emitter\EmitContext;
+use PHireScript\Compiler\Parser\Ast\AssignmentNode;
+use PHireScript\Compiler\Parser\Ast\ClassDefinition;
+use PHireScript\Compiler\Parser\Ast\GlobalStatement;
+use PHireScript\Compiler\Parser\Ast\MethodDefinition;
+use PHireScript\Compiler\Parser\Ast\PackageStatement;
+use PHireScript\Compiler\Parser\Ast\PropertyAccessNode;
+use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\ThisExpressionNode;
+use PHireScript\Compiler\Parser\Ast\VariableNode;
+use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\RuntimeClass;
 
 class Emitter
 {
@@ -170,13 +170,13 @@ class Emitter
     protected function emitNode($node, $returnType = null): string
     {
         return match (true) {
-            $node instanceof \PHPScript\Compiler\Parser\Ast\ReturnNode =>
+            $node instanceof \PHireScript\Compiler\Parser\Ast\ReturnNode =>
             $this->emitReturn($node, $returnType),
 
-            $node instanceof \PHPScript\Compiler\Parser\Ast\AssignmentNode =>
+            $node instanceof \PHireScript\Compiler\Parser\Ast\AssignmentNode =>
             $this->emitAssignment($node),
 
-            $node instanceof \PHPScript\Compiler\Parser\Ast\GlobalStatement =>
+            $node instanceof \PHireScript\Compiler\Parser\Ast\GlobalStatement =>
             trim($node->code),
 
             default => "// Unknown Node: " . $node::class
@@ -214,7 +214,7 @@ class Emitter
         return '';
     }
 
-    protected function emitReturn(\PHPScript\Compiler\Parser\Ast\ReturnNode $node, $returnType): string
+    protected function emitReturn(\PHireScript\Compiler\Parser\Ast\ReturnNode $node, $returnType): string
     {
         //Debug::show($node);exit;
         $expression = $node->expression ? $this->emitExpression($node->expression) : "";
@@ -225,7 +225,7 @@ class Emitter
             return "return $expression;";
         }
 
-        $this->uses[] = \PHPScript\Runtime\Types\TypeGuard::class;
+        $this->uses[] = \PHireScript\Runtime\Types\TypeGuard::class;
 
         $innerTypes = trim($returnType, '[]');
         $typesArray = "['" . implode("', '", explode('|', $innerTypes)) . "']";
@@ -235,11 +235,11 @@ class Emitter
 
     protected function emitExpression($expr): string
     {
-        if ($expr instanceof \PHPScript\Compiler\Parser\Ast\LiteralNode) {
+        if ($expr instanceof \PHireScript\Compiler\Parser\Ast\LiteralNode) {
             return ($expr->rawType === 'String') ? "{$expr->value}" : $expr->value;
         }
 
-        if ($expr instanceof \PHPScript\Compiler\Parser\Ast\PropertyAccessNode) {
+        if ($expr instanceof \PHireScript\Compiler\Parser\Ast\PropertyAccessNode) {
             $expression = '';
             if ($expr->object instanceof ThisExpressionNode) {
                 $expression = '$this';
@@ -247,7 +247,7 @@ class Emitter
             return "{$expression}->{$expr->property}";
         }
 
-        if ($expr instanceof \PHPScript\Compiler\Parser\Ast\ArrayLiteralNode) {
+        if ($expr instanceof \PHireScript\Compiler\Parser\Ast\ArrayLiteralNode) {
             $elements = [];
             foreach ($expr->elements as $el) {
                 $elements[] = $this->emitExpression($el);
@@ -255,7 +255,7 @@ class Emitter
             return "[" . implode(', ', $elements) . "]";
         }
 
-        if ($expr instanceof \PHPScript\Compiler\Parser\Ast\VoidExpressionNode) {
+        if ($expr instanceof \PHireScript\Compiler\Parser\Ast\VoidExpressionNode) {
             return "";
         }
 
@@ -315,7 +315,7 @@ class Emitter
             count($types);
         $var = $prop->name;
         if ($itemsToVerify > 1) {
-            $this->uses[] = \PHPScript\Runtime\Types\UnionType::class;
+            $this->uses[] = \PHireScript\Runtime\Types\UnionType::class;
 
             $typeClasses = [];
             foreach ($types as $t) {

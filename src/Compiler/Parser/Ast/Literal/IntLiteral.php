@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Parser\Ast\Literal;
+namespace PHireScript\Compiler\Parser\Ast\Literal;
 
 class IntLiteral
 {

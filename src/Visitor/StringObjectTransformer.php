@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Visitor;
+namespace PHireScript\Visitor;
 
-use PHPScript\SymbolTable;
+use PHireScript\SymbolTable;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node\Expr\MethodCall;

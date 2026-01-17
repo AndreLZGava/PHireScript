@@ -1,12 +1,12 @@
 <?php
 
-namespace PHPScript\Tests\Runtime\Types\MetaTypes;
+namespace PHireScript\Tests\Runtime\Types\MetaTypes;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPScript\Runtime\Types\MetaTypes\Currency;
+use PHireScript\Runtime\Types\MetaTypes\Currency;
 use Exception;
-use PHPScript\Helper\Debug\Debug;
+use PHireScript\Helper\Debug\Debug;
 
 class CurrencyTest extends TestCase
 {

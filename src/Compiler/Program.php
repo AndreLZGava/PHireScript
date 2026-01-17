@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler;
+namespace PHireScript\Compiler;
 
-use PHPScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\Node;
 
 class Program extends Node
 {

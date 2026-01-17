@@ -11,7 +11,7 @@ $currencies = [
 ];
 
 $diAdapters = [
-  'custom'   => 'PHPScript Native Container (default)',
+  'custom'   => 'PHireScript Native Container (default)',
   'laravel'  => 'Laravel Service Container',
   'symfony'  => 'Symfony DependencyInjection',
   'psr-11'   => 'PSR-11 Compatible Container'
@@ -21,7 +21,7 @@ $diAdapters = [
 if (function_exists('pcntl_signal')) {
   pcntl_async_signals(true);
   pcntl_signal(SIGINT, function () {
-    echo "\n\n[CANCELLED] PHPScript initialization aborted.\n";
+    echo "\n\n[CANCELLED] PHireScript initialization aborted.\n";
     exit;
   });
 }
@@ -32,7 +32,7 @@ function clearScreen() {
 
 function ask($question, $step, $total, $default = '') {
   clearScreen();
-  echo "\n--- PHPScript Initializer ---\n";
+  echo "\n--- PHireScript Initializer ---\n";
   echo "($step/$total answered)\n\n";
 
   $prompt = $default ? "{$question} [{$default}]: " : "{$question}: ";
@@ -49,7 +49,7 @@ function ask($question, $step, $total, $default = '') {
 
 function askConfirm($question, $step, $total) {
   clearScreen();
-  echo "\n--- PHPScript Initializer ---\n";
+  echo "\n--- PHireScript Initializer ---\n";
   echo "($step/$total answered)\n\n";
 
   echo "{$question} (y/n): ";
@@ -60,7 +60,7 @@ function askConfirm($question, $step, $total) {
 
 function askSelect($question, array $options, $step, $total, $defaultKey = null) {
   clearScreen();
-  echo "\n--- PHPScript Initializer ---\n";
+  echo "\n--- PHireScript Initializer ---\n";
   echo "($step/$total answered)\n\n";
 
   echo $question . "\n\n";
@@ -98,7 +98,7 @@ $appName = ask("What is the application's name or pattern? (Namespace)", 2, $tot
 
 $sourcePath = ask("What is the full path where the .ps files are located?", 3, $total, "src");
 
-$distPath = ask("Where should PHPScript send the compiled files?", 4, $total, "dist");
+$distPath = ask("Where should PHireScript send the compiled files?", 4, $total, "dist");
 
 $currency = askSelect(
   "What is the default currency for this project?",
@@ -129,14 +129,14 @@ $config = [
 ];
 
 clearScreen();
-echo "\n--- PHPScript Initializer ---\n";
+echo "\n--- PHireScript Initializer ---\n";
 echo "(Done!)\n\n";
 
 $jsonContent = json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
-if (file_put_contents('PHPScript.json', $jsonContent)) {
-  echo "[SUCCESS] PHPScript.json file created successfully in the project root! You can modify it anytime.\n";
+if (file_put_contents('PHireScript.json', $jsonContent)) {
+  echo "[SUCCESS] PHireScript.json file created successfully in the project root! You can modify it anytime.\n";
   echo "----------------------------------------------------------------------\n";
 } else {
-  echo "[ERROR] Could not create the PHPScript.json file.\n";
+  echo "[ERROR] Could not create the PHireScript.json file.\n";
 }

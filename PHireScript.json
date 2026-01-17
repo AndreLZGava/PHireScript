@@ -1,6 +1,6 @@
 {
     "dev": true,
-    "namespace": "PHPScript",
+    "namespace": "PHireScript",
     "currency": "USD",
     "resolver": "laravel",
     "paths": {

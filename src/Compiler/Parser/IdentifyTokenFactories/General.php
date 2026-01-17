@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
+namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
-use PHPScript\Compiler\Parser\Ast\GlobalStatement;
-use PHPScript\Compiler\Parser\Ast\Node;
-use PHPScript\Compiler\Program;
-use PHPScript\Helper\Debug\Debug;
+use PHireScript\Compiler\Parser\Ast\GlobalStatement;
+use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Program;
+use PHireScript\Helper\Debug\Debug;
 
 class General extends GlobalFactory
 {

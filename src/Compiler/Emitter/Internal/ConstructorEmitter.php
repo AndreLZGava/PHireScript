@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Emitter\Internal;
+namespace PHireScript\Compiler\Emitter\Internal;
 
-use PHPScript\Compiler\Emitter\EmitContext;
-use PHPScript\Compiler\Emitter\NodeEmitter;
-use PHPScript\Compiler\Parser\Ast\ClassDefinition;
-use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Emitter\EmitContext;
+use PHireScript\Compiler\Emitter\NodeEmitter;
+use PHireScript\Compiler\Parser\Ast\ClassDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
 
 class ConstructorEmitter implements NodeEmitter
 {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler;
+namespace PHireScript\Compiler;
 
 use Exception;
-use PHPScript\SymbolTable;
-use PHPScript\Compiler\Parser\Ast\ClassDefinition;
-use PHPScript\Compiler\Parser\Ast\MethodDefinition;
-use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
-use PHPScript\Helper\Debug\Debug;
+use PHireScript\SymbolTable;
+use PHireScript\Compiler\Parser\Ast\ClassDefinition;
+use PHireScript\Compiler\Parser\Ast\MethodDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Helper\Debug\Debug;
 
 /**
  * @todo implement that interface may not have properties and
@@ -48,7 +48,7 @@ class Checker
         $this->ensureReturnsForMethods($method);
 
         foreach ($method->bodyCode as $node) {
-            if ($node instanceof \PHPScript\Compiler\Parser\Ast\ReturnNode) {
+            if ($node instanceof \PHireScript\Compiler\Parser\Ast\ReturnNode) {
                 $this->checkTypeCompatibility($method->returnType, $node->expression, $method->name);
             }
         }
@@ -56,7 +56,7 @@ class Checker
 
     private function checkTypeCompatibility($declaredType, $expressionNode, $methodName)
     {
-        if ($expressionNode instanceof \PHPScript\Compiler\Parser\Ast\ArrayLiteralNode) {
+        if ($expressionNode instanceof \PHireScript\Compiler\Parser\Ast\ArrayLiteralNode) {
             if ($declaredType === 'Array') {
                 return true;
             }
@@ -156,15 +156,15 @@ class Checker
     private function getNodeType($node): string
     {
 
-        if ($node instanceof \PHPScript\Compiler\Parser\Ast\LiteralNode) {
+        if ($node instanceof \PHireScript\Compiler\Parser\Ast\LiteralNode) {
             return $node->rawType;
         }
 
-        if ($node instanceof \PHPScript\Compiler\Parser\Ast\ArrayLiteralNode) {
+        if ($node instanceof \PHireScript\Compiler\Parser\Ast\ArrayLiteralNode) {
             return 'Array';
         }
 
-        if ($node instanceof \PHPScript\Compiler\Parser\Ast\VariableDeclarationNode) {
+        if ($node instanceof \PHireScript\Compiler\Parser\Ast\VariableDeclarationNode) {
             return $this->table->getType($node->name, $node->line);
         }
 

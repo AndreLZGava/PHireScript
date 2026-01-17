@@ -1,9 +1,9 @@
 <?php
 
-namespace PHPScript\Tests\Runtime\Types\SuperTypes;
+namespace PHireScript\Tests\Runtime\Types\SuperTypes;
 
 use PHPUnit\Framework\TestCase;
-use PHPScript\Runtime\Types\SuperTypes\Uuid;
+use PHireScript\Runtime\Types\SuperTypes\Uuid;
 use TypeError;
 
 class UuidTest extends TestCase

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Emitter;
+namespace PHireScript\Compiler\Emitter;
 
 interface NodeEmitter
 {

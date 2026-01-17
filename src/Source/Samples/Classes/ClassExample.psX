@@ -15,7 +15,7 @@ class AdminUser extends BaseUser with Logger, PermissionChecker implements Authe
     // This will inject UserRepository as a constructor dependency without the need to implement it in .ps
     inject # readonly UserRepository userRepository
 
-    // Properties with PHPScript types
+    // Properties with PHireScript types
     // String is the variable type; class variables do not need to be declared with 'var'
     // Use of < and > before the variable type indicates the compiled class will generate a getter
     // and setter respectively. Since there is no # (private) or + (protected) before each character,
@@ -40,7 +40,7 @@ class AdminUser extends BaseUser with Logger, PermissionChecker implements Authe
         if (this.isSameLogin?(creds.login, this.credentials.login)) {
             // Only class variables, traits, interfaces, and types do not need a 'var' declaration;
             // all others require it.
-            // Automatically infers it is a String for PHPScript (.ps), but for PHP,
+            // Automatically infers it is a String for PHireScript (.ps), but for PHP,
             // it will be treated as a primitive string.
             var mensagem = "Login successful"
             this.log(mensagem)

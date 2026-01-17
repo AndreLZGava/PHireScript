@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Emitter\Internal;
+namespace PHireScript\Compiler\Emitter\Internal;
 
-use PHPScript\Compiler\Emitter\EmitContext;
-use PHPScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Emitter\EmitContext;
+use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
 
 class PropertyAssignmentEmitter
 {
@@ -21,7 +21,7 @@ class PropertyAssignmentEmitter
 
         // Union type
         if ($itemsToVerify > 1) {
-            $ctx->uses->add(\PHPScript\Runtime\Types\UnionType::class);
+            $ctx->uses->add(\PHireScript\Runtime\Types\UnionType::class);
 
             $classRefs = [];
 

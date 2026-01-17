@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Processors;
+namespace PHireScript\Compiler\Processors;
 
 class ReturnTypeHandler implements PreprocessorInterface
 {

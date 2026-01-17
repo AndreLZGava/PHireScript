@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Parser\IdentifyTokenFactories;
+namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
-use PHPScript\Compiler\Parser\Ast\Node;
-use PHPScript\Compiler\Program;
+use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Program;
 
 class EndOfLine extends GlobalFactory
 {

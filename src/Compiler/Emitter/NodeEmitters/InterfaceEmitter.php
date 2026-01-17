@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Emitter\NodeEmitters;
+namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
-use PHPScript\Compiler\Emitter\EmitContext;
-use PHPScript\Compiler\Emitter\NodeEmitter;
-use PHPScript\Compiler\Parser\Ast\ClassDefinition;
+use PHireScript\Compiler\Emitter\EmitContext;
+use PHireScript\Compiler\Emitter\NodeEmitter;
+use PHireScript\Compiler\Parser\Ast\ClassDefinition;
 
 class InterfaceEmitter implements NodeEmitter
 {

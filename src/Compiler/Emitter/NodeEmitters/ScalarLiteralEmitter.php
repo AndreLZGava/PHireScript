@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Emitter\NodeEmitters;
+namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
-use PHPScript\Compiler\Emitter\EmitContext;
-use PHPScript\Compiler\Emitter\NodeEmitter;
-use PHPScript\Compiler\Parser\Ast\Literal\BoolLiteral;
-use PHPScript\Compiler\Parser\Ast\Literal\FloatLiteral;
-use PHPScript\Compiler\Parser\Ast\Literal\IntLiteral;
-use PHPScript\Compiler\Parser\Ast\Literal\NullLiteral;
-use PHPScript\Compiler\Parser\Ast\Literal\StringLiteral;
+use PHireScript\Compiler\Emitter\EmitContext;
+use PHireScript\Compiler\Emitter\NodeEmitter;
+use PHireScript\Compiler\Parser\Ast\Literal\BoolLiteral;
+use PHireScript\Compiler\Parser\Ast\Literal\FloatLiteral;
+use PHireScript\Compiler\Parser\Ast\Literal\IntLiteral;
+use PHireScript\Compiler\Parser\Ast\Literal\NullLiteral;
+use PHireScript\Compiler\Parser\Ast\Literal\StringLiteral;
 
 class ScalarLiteralEmitter implements NodeEmitter
 {

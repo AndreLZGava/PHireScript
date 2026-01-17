@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PHPScript\Compiler\Emitter\NodeEmitters;
+namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
-use PHPScript\Compiler\Emitter\EmitContext;
-use PHPScript\Compiler\Emitter\NodeEmitter;
-use PHPScript\Compiler\Parser\Ast\ReturnNode;
+use PHireScript\Compiler\Emitter\EmitContext;
+use PHireScript\Compiler\Emitter\NodeEmitter;
+use PHireScript\Compiler\Parser\Ast\ReturnNode;
 
 class ReturnEmitter implements NodeEmitter
 {
@@ -29,7 +29,7 @@ class ReturnEmitter implements NodeEmitter
             $inner = trim($ctx->currentMethodReturnType, '[]');
             $types = "['" . implode("','", explode('|', $inner)) . "']";
 
-            $ctx->uses->add(\PHPScript\Runtime\Types\TypeGuard::class);
+            $ctx->uses->add(\PHireScript\Runtime\Types\TypeGuard::class);
 
             return "return TypeGuard::validateArray($expr, $types);";
         }

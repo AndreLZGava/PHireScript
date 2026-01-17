@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPScript;
+namespace PHireScript;
 
 interface TranspilerInterface
 {

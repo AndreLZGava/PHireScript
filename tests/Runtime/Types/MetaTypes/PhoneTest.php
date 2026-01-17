@@ -1,9 +1,9 @@
 <?php
 
-namespace PHPScript\Tests\Runtime\Types\MetaTypes;
+namespace PHireScript\Tests\Runtime\Types\MetaTypes;
 
 use PHPUnit\Framework\TestCase;
-use PHPScript\Runtime\Types\MetaTypes\Phone;
+use PHireScript\Runtime\Types\MetaTypes\Phone;
 
 class PhoneTest extends TestCase
 {
