@@ -1,106 +1,23 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
-require_once('compilerHelper.php');
 
-use PHPScript\Compiler\Loader;
-use PHPScript\DependencyGraphBuilder;
+use PHPScript\Compiler;
+use PHPScript\Core\CompileMode;
+use PHPScript\Core\CompilerContext;
 use PHPScript\Runtime\RuntimeClass;
-use PHPScript\Transpiler;
-use PHPScript\TranspilerDependencyTree;
 
 $targetDir = __DIR__ . '/src';
 $extension = RuntimeClass::DEFAULT_FILE_EXTENSION;
 $filesHash = [];
 
-if ($argc < 3) {
-  $config = getConfigFile();
-  $argv[1] = $config['paths']['source'];
-  $argv[2] = $config['paths']['dist'];
+if ($argc > 3) {
+    $sourceDir = rtrim($argv[1], '/');
+    $distDir = rtrim($argv[2], '/');
 }
 
 
-$sourceDir = rtrim($argv[1], '/');
-$distDir = rtrim($argv[2], '/');
+$context = new CompilerContext(CompileMode::WATCH, targetWatch: $targetDir);
 
-
-$loader = new Loader();
-$dependencyManager = new DependencyGraphBuilder();
-
-$config = $loader->getConfigFile();
-$transpilerDependencyTree = new TranspilerDependencyTree($config);
-
-$listPrograms = $loader->load($sourceDir, $transpilerDependencyTree);
-$dependencyManager->buildGraph($listPrograms);
-
-$transpiler = new Transpiler($config, $dependencyManager);
-
-
-echo "--- PHPScript started the process ---\n";
-echo "Watching files .$extension in: $targetDir\n";
-
-while (true) {
-  try {
-    $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
-    $iterator = new RecursiveIteratorIterator($directory);
-
-    foreach ($iterator as $file) {
-      if ($file->isFile() && $file->getExtension() === $extension) {
-        try {
-          $filePath = $file->getRealPath();
-          $relativePath = substr($file->getPathname(), strlen($sourceDir) + 1);
-          $currentHash = md5_file($filePath);
-
-          $outputFile = $distDir . '/' . str_replace('.ps', '.php', $relativePath);
-          $outputSubDir = dirname($outputFile);
-
-          if (!is_dir($outputSubDir)) {
-            mkdir($outputSubDir, 0755, true);
-          }
-
-          if (!isset($filesHash[$filePath]) || $filesHash[$filePath] !== $currentHash) {
-            if (isset($filesHash[$filePath])) {
-              echo "[" . date('H:i:s') . "] Changes found in : " . $filePath . "\n";
-              compileFile($file->getPathname(), $outputFile,  $transpiler);
-            } else {
-              echo "[" . date('H:i:s') . "] Watching: " . $filePath . "\n";
-            }
-
-            $filesHash[$filePath] = $currentHash;
-          }
-        } catch (Throwable $e) {
-          echo "\033[1;31m✗ Error processing $filePath: " . $e->getMessage() . "\033[0m\n";
-        }
-      }
-    }
-  } catch (Throwable $e) {
-    echo "\033[1;31m✗ Watcher error: " . $e->getMessage() . "\033[0m\n";
-  }
-
-  clearstatcache();
-  usleep(900000);
-}
-
-
-function compileFile($input, $output, $transpiler) {
-  try {
-    $sourceCode = file_get_contents($input);
-    $result = $transpiler->compile($sourceCode, $input);
-
-    file_put_contents($output, $result);
-
-    $output_text = [];
-    $return_var = 0;
-    exec("php -l " . escapeshellarg($output), $output_text, $return_var);
-
-    if ($return_var !== 0) {
-      echo "✗ Syntax Error in generated file $output:\n";
-      echo implode("\n", $output_text) . "\n";
-    } else {
-      echo "\n\033[1;32m✔ $input -> $output\033[0m\n";
-    }
-  } catch (Throwable $e) {
-    echo "\033[1;31m✗ Error in $input: " . $e->getMessage() . "\033[0m\n";
-    getErrorInterface($e, $transpiler, $sourceCode ?? '');
-  }
-}
+$compiler = new Compiler($context);
+$compiler->compile($sourceDir, $distDir);

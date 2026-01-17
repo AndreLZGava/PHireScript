@@ -1,8 +1,6 @@
 <?php
 
-namespace PHPScript;
-
-use PHPScript\Runtime\Types\SuperTypes\Email;
+namespace PHPScript\Classes;
 
 class User {
     public int $id;
@@ -15,8 +13,8 @@ class User {
         int $id,
         string $username,
         string $email,
-        bool $isAdmin = true,
-        null|array $metadata = null
+        bool $isAdmin,
+        null|array $metadata,
     ) {
         $this->id = $id;
         $this->username = $username;

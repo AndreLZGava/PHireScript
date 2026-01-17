@@ -33,4 +33,6 @@ class RuntimeClass
     public const DEFAULT_FILE_EXTENSION = 'ps'; // 'phs'
 
     public const DEFAULT_FILE_TEST_EXTENSION = 'pst';
+
+    public const DEFAULT_FILE_SNAPSHOT_EXTENSION = 'psc';
 }

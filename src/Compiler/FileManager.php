@@ -6,6 +6,8 @@ namespace PHPScript\Compiler;
 
 use Exception;
 use FilesystemIterator;
+use PHPScript\Core\CompileMode;
+use PHPScript\Core\CompilerContext;
 use PHPScript\Helper\Debug\Debug;
 use PHPScript\Runtime\RuntimeClass;
 use RecursiveDirectoryIterator;
@@ -14,33 +16,85 @@ use PHPScript\Runtime\Types\MetaTypes;
 use PHPScript\Runtime\Types\SuperTypes;
 use ReflectionClass;
 use RuntimeException;
+use Throwable;
 
-class Loader
-{
-    public function loadAndCompile($sourceDir, $distDir, $transpiler)
-    {
+class FileManager {
+    public function __construct(private readonly CompilerContext $context) {
+    }
 
+    public function loadAndCompile($sourceDir, $distDir, $transpiler) {
+        if ($this->context->mode === CompileMode::WATCH) {
+            $this->watch($sourceDir, $distDir, $transpiler);
+            return;
+        }
         $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
         $iterator = new RecursiveIteratorIterator($directory);
 
         foreach ($iterator as $file) {
-            if ($file->getExtension() === RuntimeClass::DEFAULT_FILE_EXTENSION) {
-                $relativePath = substr($file->getPathname(), strlen($sourceDir) + 1);
+            if (
+                empty($this->context->file) &&
+                $file->getExtension() === $this->context->getExtensionToPersist() ||
+                $this->context->file === $file->getPathname()
+            ) {
+                $relativePath = substr($file->getPathname(), strlen($sourceDir));
 
-                $outputFile = $distDir . '/' . str_replace('.ps', '.php', $relativePath);
-
-                $outputSubDir = dirname($outputFile);
-                if (!is_dir($outputSubDir)) {
-                    mkdir($outputSubDir, 0755, true);
-                }
+                $outputFile = $distDir  . str_replace('.' . $this->context->getExtensionToPersist(), '.php', $relativePath);
 
                 $this->compileFile($file->getPathname(), $outputFile, $transpiler);
             }
         }
     }
 
-    public function load($sourceDir, $transpiler): array
-    {
+    private function watch($sourceDir, $distDir, $transpiler) {
+        $extension = $this->context->getExtensionToPersist();
+        $targetDir = $this->context->targetWatch;
+        echo "--- PHPScript started the process ---\n";
+        echo "Watching files .$extension in: $targetDir\n";
+
+        while (true) {
+            try {
+                $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
+                $iterator = new RecursiveIteratorIterator($directory);
+
+                foreach ($iterator as $file) {
+                    if ($file->isFile() && $file->getExtension() === $extension) {
+                        try {
+                            $filePath = $file->getRealPath();
+                            $relativePath = substr($file->getPathname(), strlen($sourceDir) + 1);
+                            $currentHash = md5_file($filePath);
+
+                            $outputFile = $distDir . '/' . str_replace('.' . RuntimeClass::DEFAULT_FILE_EXTENSION, '.php', $relativePath);
+                            $outputSubDir = dirname($outputFile);
+
+                            if (!is_dir($outputSubDir)) {
+                                mkdir($outputSubDir, 0755, true);
+                            }
+
+                            if (!isset($filesHash[$filePath]) || $filesHash[$filePath] !== $currentHash) {
+                                if (isset($filesHash[$filePath])) {
+                                    echo "[" . date('H:i:s') . "] Changes found in : " . $filePath . "\n";
+                                    $this->compileFile($file->getPathname(), $outputFile,  $transpiler);
+                                } else {
+                                    echo "[" . date('H:i:s') . "] Watching: " . $filePath . "\n";
+                                }
+
+                                $filesHash[$filePath] = $currentHash;
+                            }
+                        } catch (Throwable $e) {
+                            echo "\033[1;31m✗ Error processing $filePath: " . $e->getMessage() . "\033[0m\n";
+                        }
+                    }
+                }
+            } catch (Throwable $e) {
+                echo "\033[1;31m✗ Watcher error: " . $e->getMessage() . "\033[0m\n";
+            }
+
+            clearstatcache();
+            usleep(900000);
+        }
+    }
+
+    public function load($sourceDir, $transpiler): array {
         $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
         $iterator = new RecursiveIteratorIterator($directory);
         $result = [];
@@ -59,33 +113,48 @@ class Loader
     }
 
 
-    private function compileFile($input, $output, $transpiler)
-    {
+    private function compileFile($input, $output, $transpiler) {
         try {
             $sourceCode = file_get_contents($input);
             $result = $transpiler->compile($sourceCode, $input);
+            if ($this->context->shouldPersist()) {
 
-            file_put_contents($output, $result);
+                $outputSubDir = dirname($output);
+                if (!is_dir($outputSubDir)) {
+                    mkdir($outputSubDir, 0755, true);
+                }
+                file_put_contents($output, $result);
 
-            $output_text = [];
-            $return_var = 0;
-            exec("php -l " . escapeshellarg($output), $output_text, $return_var);
+                if ($this->context->persistSnapshot()) {
+                    $preParserCode = $transpiler->getCodeBeforeGenerator();
+                    $preCompiledCode = str_replace('.' . RuntimeClass::DEFAULT_FILE_EXTENSION, '.' . RuntimeClass::DEFAULT_FILE_SNAPSHOT_EXTENSION, $input);
+                    file_put_contents($preCompiledCode, $preParserCode);
+                    echo "\n\033[1;32m✔ $input -> $preCompiledCode\033[0m\n";
+                }
 
-            if ($return_var !== 0) {
-                echo "✗ Syntax Error in generated file $output:\n";
-                echo implode("\n", $output_text) . "\n";
-            } else {
-                echo "\n\033[1;32m✔ $input -> $output\033[0m\n";
+                $output_text = [];
+                $return_var = 0;
+                exec("php -l " . escapeshellarg($output), $output_text, $return_var);
+                if ($return_var !== 0) {
+                    echo "✗ Syntax Error in generated file $output:\n";
+                    echo implode("\n", $output_text) . "\n";
+                } else {
+                    echo "\n\033[1;32m✔ $input -> $output\033[0m\n";
+                }
+            }
+
+            if ($this->context->inMemory) {
+                echo "\n\033[1;32m✔ SUCCESSFUL PHP OUTPUT\033[0m\n";
+                echo $result . "\n";
             }
         } catch (Exception $e) {
             echo "\033[1;31m✗ Error in $input: " . $e->getMessage() . "\033[0m\n";
-            getErrorInterface($e, $transpiler, $sourceCode);
+            $this->getErrorInterface($e, $transpiler, $sourceCode);
         }
     }
 
 
-    public function getConfigFile()
-    {
+    public function getConfigFile() {
         $configs = json_decode(file_get_contents('PHPScript.json'), true);
         $configs['php'] = phpversion();
         $configs['metatypes'] = $this->listClassesExtending(
@@ -101,8 +170,7 @@ class Loader
         return $configs;
     }
 
-    private function getErrorInterface($e, $transpiler, $code)
-    {
+    private function getErrorInterface($e, $transpiler, $code) {
         $maxLineWidth = 140;
         $red    = "\033[1;31m";
         $blue   = "\033[1;34m";
@@ -251,5 +319,17 @@ class Loader
         }
 
         return $classes;
+    }
+
+    private function cleanDirectory($dir) {
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($files as $fileinfo) {
+            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+            $todo($fileinfo->getRealPath());
+        }
     }
 }

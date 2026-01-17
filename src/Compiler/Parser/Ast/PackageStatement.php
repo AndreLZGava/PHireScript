@@ -6,6 +6,7 @@ namespace PHPScript\Compiler\Parser\Ast;
 
 use Exception;
 use PHPScript\Helper\Debug\Debug;
+use PHPScript\Runtime\RuntimeClass;
 
 class PackageStatement extends Statement
 {
@@ -25,7 +26,7 @@ class PackageStatement extends Statement
 
     private function validate()
     {
-        if (!str_contains($this->file, $this->object . '.ps')) {
+        if (!str_contains($this->file, $this->object . '.' . RuntimeClass::DEFAULT_FILE_EXTENSION)) {
             throw new Exception('File name must match class/interface/type/' .
             'immutable/trait name! File ' . $this->file . ' object name '
             . $this->object);

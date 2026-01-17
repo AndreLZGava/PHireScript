@@ -1,10 +1,8 @@
 <?php
 
-namespace PHPScript;
+namespace PHPScript\Classes;
 
-use PHPScript\Runtime\Types\SuperTypes\Email;
-
-readonly class User {
+readonly class UserImmutable {
     public int $id;
     public string $username;
     public string $email;
@@ -16,7 +14,7 @@ readonly class User {
         string $username,
         string $email,
         bool $isAdmin,
-        null|array $metadata = null
+        null|array $metadata,
     ) {
         $this->id = $id;
         $this->username = $username;

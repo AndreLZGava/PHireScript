@@ -1,8 +1,6 @@
 <?php
 
-namespace PHPScript;
-
-use PHPScript\Runtime\Types\SuperTypes\Email;
+namespace PHPScript\Classes;
 
 class ExampleGetterSetterClass {
     public int $id;
@@ -16,7 +14,7 @@ class ExampleGetterSetterClass {
         string $email,
         string $username,
         bool $isAdmin,
-        array $metadata
+        array $metadata,
     ) {
         $this->id = $id;
         $this->email = Email::cast($email);

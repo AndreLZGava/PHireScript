@@ -1,22 +1,9 @@
 <?php
 require 'vendor/autoload.php';
-require_once('compilerHelper.php');
 
-use PHPScript\Compiler\Loader;
-use PHPScript\DependencyGraphBuilder;
-use PHPScript\Transpiler;
-use PHPScript\TranspilerDependencyTree;
-
-$loader = new Loader();
-$dependencyManager = new DependencyGraphBuilder();
-
-$config = $loader->getConfigFile();
-$transpilerDependencyTree = new TranspilerDependencyTree($config);
-
-$listPrograms = $loader->load($config['paths']['source'], $transpilerDependencyTree);
-$dependencyManager->buildGraph($listPrograms);
-
-$transpiler = new Transpiler($config, $dependencyManager);
+use PHPScript\Compiler;
+use PHPScript\Core\CompileMode;
+use PHPScript\Core\CompilerContext;
 
 $file = $argv[1];
 
@@ -24,12 +11,12 @@ if (!file_exists($file)) {
     die("File not found: $file\n");
 }
 
-$code = file_get_contents($file);
 
-try {
-    $result = $transpiler->compile($code, $file);
-    echo "\n\033[1;32m✔ SUCCESSFUL PHP OUTPUT\033[0m\n";
-    echo $result . "\n";
-} catch (\Exception $e) {
-    getErrorInterface($e, $transpiler, $code);
-}
+$context = new CompilerContext(
+    CompileMode::DEBUG,
+    true,
+    file: $file
+);
+
+$compiler = new Compiler($context);
+$compiler->compile();

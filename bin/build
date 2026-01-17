@@ -2,43 +2,20 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
-require_once('compilerHelper.php');
 
 use PHPScript\Compiler;
+use PHPScript\Core\CompileMode;
+use PHPScript\Core\CompilerContext;
+$sourceDir = null;
+$distDir = null;
 
-if ($argc < 3) {
-    //echo "You can use any time: php bin/build <origin_dir> <destiny_dir>\n";
-    $config = getConfigFile();
-    $argv[1] = $config['paths']['source'];
-    $argv[2] = $config['paths']['dist'];
+if ($argc > 3) {
+    $sourceDir = rtrim($argv[1], '/');
+    $distDir = rtrim($argv[2], '/');
 }
 
-$sourceDir = rtrim($argv[1], '/');
-$distDir = rtrim($argv[2], '/');
 
-if (!is_dir($sourceDir)) {
-    echo "Error: Directory '$sourceDir' not found.\n";
-    exit(1);
-}
+$context = new CompilerContext(CompileMode::BUILD);
 
-if (is_dir($distDir)) {
-    echo "Cleaning destination directory: $distDir...\n";
-    cleanDirectory($distDir);
-} else {
-    mkdir($distDir, 0755, true);
-}
-
-function cleanDirectory($dir) {
-    $files = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
-        RecursiveIteratorIterator::CHILD_FIRST
-    );
-
-    foreach ($files as $fileinfo) {
-        $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
-        $todo($fileinfo->getRealPath());
-    }
-}
-
-$compiler = new Compiler();
+$compiler = new Compiler($context);
 $compiler->compile($sourceDir, $distDir);

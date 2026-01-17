@@ -1,17 +1,14 @@
 <?php
 
-namespace PHPScript;
-
-use PHPScript\Runtime\Types\TypeGuard;
+namespace PHPScript\Classes;
 
 class TypedArrays {
-
     public function testSimpleArray(): array {
         return [];
     }
 
     public function testPrimitiveArray(string $test): array {
-        return TypeGuard::validateArray([1, 15.2, 'test'], ['Int', 'Float', 'String']);
+        return TypeGuard::validateArray([1, 15.2, 'test'], ['Int','Float','String']);
     }
 
 }
