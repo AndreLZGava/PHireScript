@@ -37,13 +37,15 @@ class AuthenticatorClass {
       return []
     }
 
-    returnObject(): Object {
-      // this are not compiling into a object
+    returnArrayComplete(): Array {
+      return ['example' => ['another', 'array']]
+    }
+
+    returnObjectEmpty(): Object {
       return {}
     }
 
-    returnArrayComplete(): Array {
-      // This gets loop, todo implement support to it
-      // return ['example' => ['another', 'array']]
+    returnObject(): Object {
+      return { 'test': 1 }
     }
 }
