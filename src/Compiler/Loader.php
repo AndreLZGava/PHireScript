@@ -7,6 +7,7 @@ namespace PHPScript\Compiler;
 use Exception;
 use FilesystemIterator;
 use PHPScript\Helper\Debug\Debug;
+use PHPScript\Runtime\RuntimeClass;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use PHPScript\Runtime\Types\MetaTypes;
@@ -23,7 +24,7 @@ class Loader
         $iterator = new RecursiveIteratorIterator($directory);
 
         foreach ($iterator as $file) {
-            if ($file->getExtension() === 'ps') {
+            if ($file->getExtension() === RuntimeClass::DEFAULT_FILE_EXTENSION) {
                 $relativePath = substr($file->getPathname(), strlen($sourceDir) + 1);
 
                 $outputFile = $distDir . '/' . str_replace('.ps', '.php', $relativePath);
@@ -44,7 +45,7 @@ class Loader
         $iterator = new RecursiveIteratorIterator($directory);
         $result = [];
         foreach ($iterator as $file) {
-            if ($file->getExtension() === 'ps') {
+            if ($file->getExtension() === RuntimeClass::DEFAULT_FILE_EXTENSION) {
                 try {
                     $sourceCode = file_get_contents($file->getPathname());
                     $result[] = $transpiler->compile($sourceCode, $file->getPathname());

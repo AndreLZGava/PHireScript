@@ -77,7 +77,7 @@ class UseKey extends ClassesFactory
             throw new Exception('Use statement cannot be empty!');
         }
 
-        $this->tokenManager->walk($walk);
+        $this->tokenManager->walk($walk - 1);
         return $uses;
     }
 

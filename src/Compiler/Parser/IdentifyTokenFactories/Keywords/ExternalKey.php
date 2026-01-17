@@ -37,7 +37,6 @@ class ExternalKey extends ClassesFactory
         foreach ($leftTokens as $index => $token) {
             $walk++;
 
-            // 1. Se encontrar '{', processa o grupo e encerra o loop principal
             if ($token['value'] === '{') {
                 $groupResults = $this->parseExternalGroup($basePath, $leftTokens, $index);
                 $uses = array_merge($uses, $groupResults['uses']);
@@ -45,7 +44,6 @@ class ExternalKey extends ClassesFactory
                 break;
             }
 
-            // 2. Se encontrar 'as', captura o alias e para
             if ($token['value'] === 'as') {
                 $aliasToken = $leftTokens[$index + 1] ?? null;
                 if ($aliasToken && $aliasToken['type'] === 'T_IDENTIFIER') {
@@ -53,18 +51,15 @@ class ExternalKey extends ClassesFactory
                     $dependency->alias = $aliasToken['value'];
                     $dependency->line = $token['line'];
                     $uses[] = $dependency;
-                    $walk++; // Avança para cobrir o nome do alias
+                    $walk++;
                 }
-                break; // IMPORTANTE: Para aqui para não ler o resto da linha
+                break;
             }
 
-            // 3. Verifica se o PRÓXIMO token indica fim de instrução
-            // Isso evita que o 'walk' consuma o T_EOL ou o ';' que pertence ao sistema
             $nextToken = $leftTokens[$index + 1] ?? null;
             if (!$nextToken || $nextToken['type'] === 'T_EOL' || $nextToken['value'] === ';') {
-                // Se chegamos aqui, é um uso simples (sem 'as' e sem '{}')
                 if (empty($uses)) {
-                    $basePath .= $token['value']; // Adiciona o último identificador
+                    $basePath .= $token['value'];
                     $dependency = new NamespaceStatement(rtrim($basePath, '\\'));
                     $dependency->line = $token['line'];
                     $uses[] = $dependency;
@@ -72,7 +67,6 @@ class ExternalKey extends ClassesFactory
                 break;
             }
 
-            // 4. Constrói o path
             if ($token['type'] === 'T_IDENTIFIER' || $token['type'] === 'T_BACKSLASH') {
                 $basePath .= $token['value'];
             }

@@ -4,6 +4,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 require_once('compilerHelper.php');
 
+use PHPScript\Runtime\RuntimeClass;
 use PHPScript\Transpiler;
 
 if ($argc < 3) {
@@ -33,7 +34,7 @@ $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterat
 $iterator = new RecursiveIteratorIterator($directory);
 
 foreach ($iterator as $file) {
-    if ($file->getExtension() === 'ps') {
+    if ($file->getExtension() === RuntimeClass::DEFAULT_FILE_EXTENSION) {
         $inputPath = $file->getPathname();
         $relativePath = substr($inputPath, strlen($sourceDir) + 1);
         $outputFile = $distDir . '/' . str_replace('.ps', '.php', $relativePath);

@@ -29,4 +29,8 @@ class RuntimeClass
     public const GETTER_AND_SETTER = ['<', '>'];
 
     public const KEYWORD_PACKAGE = 'pkg';
+
+    public const DEFAULT_FILE_EXTENSION = 'ps'; // 'phs'
+
+    public const DEFAULT_FILE_TEST_EXTENSION = 'pst';
 }

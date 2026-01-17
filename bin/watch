@@ -5,11 +5,12 @@ require_once('compilerHelper.php');
 
 use PHPScript\Compiler\Loader;
 use PHPScript\DependencyGraphBuilder;
+use PHPScript\Runtime\RuntimeClass;
 use PHPScript\Transpiler;
 use PHPScript\TranspilerDependencyTree;
 
 $targetDir = __DIR__ . '/src';
-$extension = 'ps';
+$extension = RuntimeClass::DEFAULT_FILE_EXTENSION;
 $filesHash = [];
 
 if ($argc < 3) {
