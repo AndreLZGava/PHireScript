@@ -7,6 +7,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\DependenciesStatement;
+use PHireScript\Helper\Debug\Debug;
 
 class DependencyEmitter implements NodeEmitter
 {
@@ -19,6 +20,7 @@ class DependencyEmitter implements NodeEmitter
     {
         $code = '';
         $namespaces = $ctx->dependencyManager->getNodes();
+
         foreach ($node->packages as $package) {
             $code .= "use {$namespaces[$package->package]->namespace}";
             if ($package->alias) {

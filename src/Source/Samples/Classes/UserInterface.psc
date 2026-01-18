@@ -1,6 +1,9 @@
 <?php
 
+
 namespace PHireScript\Classes;
+
+
 
 interface UserInterface {
     public function save(array $data): bool;
@@ -10,4 +13,5 @@ interface UserInterface {
     public function getCompleteUserName(): string|null;
 
 }
+
 

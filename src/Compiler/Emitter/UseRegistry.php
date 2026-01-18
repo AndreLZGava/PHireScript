@@ -13,6 +13,11 @@ final class UseRegistry
         $this->uses[$fqcn] = true;
     }
 
+    public function getUses(): array
+    {
+        return $this->uses;
+    }
+
     public function render(): string
     {
         ksort($this->uses);

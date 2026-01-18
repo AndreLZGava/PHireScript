@@ -7,6 +7,7 @@ namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 use PHireScript\Compiler\Parser\Ast\GlobalStatement;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHireScript\Compiler\Parser\Transformers\ModifiersTransform;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
@@ -20,6 +21,15 @@ class Method extends ClassesFactory
         $previousToken = $this->tokenManager->getPreviousTokenBeforeCurrent();
         $currentToken = $this->tokenManager->getCurrentToken();
         $nextToken = $this->tokenManager->getNextTokenAfterCurrent();
+
+        if (
+            $currentToken['type'] === 'T_IDENTIFIER' &&
+            $previousToken['value'] === '(' &&
+            $nextToken['type'] === 'T_IDENTIFIER'
+        ) {
+            $type = new Type($this->tokenManager);
+            return $type->process($this->program);
+        }
 
         if (
             $nextToken['type'] === 'T_SYMBOL' &&

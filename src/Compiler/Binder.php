@@ -6,18 +6,22 @@ namespace PHireScript\Compiler;
 
 use PHireScript\SymbolTable;
 use PHireScript\Compiler\Parser\Ast\ClassDefinition;
+use PHireScript\Compiler\Parser\Ast\DependenciesStatement;
+use PHireScript\Compiler\Parser\Ast\DependencyStatement;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHireScript\Helper\Debug\Debug;
 
 class Binder
 {
+    private Program $program;
     public function __construct(private readonly SymbolTable $globalTable)
     {
     }
 
     public function bind(Program $program)
     {
+        $this->program = $program;
         // PASSAGEM 1: Registrar a existência de todas as classes
         // Isso permite que uma classe use outra como tipo, mesmo se definida depois
         foreach ($program->statements as $node) {
@@ -71,6 +75,7 @@ class Binder
 
     protected function categorizeType(string $typeName): array
     {
+
         $primitives = [
             'String' => 'string',
             'Int'    => 'int',
@@ -94,6 +99,9 @@ class Binder
             return ['category' => 'supertype', 'class' => "PHireScript\\Runtime\\Types\\SuperTypes\\$typeName"];
         }
 
+        if ($this->verifyUses($typeName)) {
+            return ['category' => 'custom', 'name' => $typeName];
+        }
         // Se não for nada acima, verificamos se é uma classe que já registramos na Passagem 1
         $isRegistered = $this->globalTable->getTypeDefinition($typeName);
 
@@ -101,5 +109,31 @@ class Binder
             'category' => $isRegistered ? 'custom' : 'unknown',
             'name' => $typeName
         ];
+    }
+
+    private function verifyUses(string $typeName): bool
+    {
+
+        $uses = [];
+
+        foreach ($this->program->statements as $statement) {
+            if ($statement instanceof DependenciesStatement) {
+                foreach ($statement->packages as $package) {
+                    if ($package instanceof DependencyStatement) {
+                        $usingPackage = explode('.', $package->package);
+                        $namedPackage  = !empty($package->alias) ?
+                            $package->alias :
+                            end($usingPackage);
+                        $uses[$namedPackage] = $package;
+                    }
+                }
+            }
+        }
+
+        if (array_key_exists($typeName, $uses)) {
+            return true;
+        }
+
+        return false;
     }
 }

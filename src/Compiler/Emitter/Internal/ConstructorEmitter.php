@@ -34,7 +34,8 @@ class ConstructorEmitter implements NodeEmitter
             $type = $ctx->types->phpType($prop);
             $params[] = "{$type} \${$prop->name},";
             $assignments[] = $ctx->types->assignment(
-                $prop
+                $prop,
+                $ctx->uses
             );
         }
 

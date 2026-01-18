@@ -7,6 +7,8 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\ReturnNode;
+use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Types\TypeGuard;
 
 class ReturnEmitter implements NodeEmitter
 {
@@ -29,8 +31,7 @@ class ReturnEmitter implements NodeEmitter
             $inner = trim($ctx->currentMethodReturnType, '[]');
             $types = "['" . implode("','", explode('|', $inner)) . "']";
 
-            $ctx->uses->add(\PHireScript\Runtime\Types\TypeGuard::class);
-
+            $ctx->uses->add(TypeGuard::class);
             return "return TypeGuard::validateArray($expr, $types);";
         }
 

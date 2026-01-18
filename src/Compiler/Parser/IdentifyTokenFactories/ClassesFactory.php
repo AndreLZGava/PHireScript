@@ -77,6 +77,7 @@ abstract class ClassesFactory extends GlobalFactory
         }
         //Debug::show($codeBlockToken, $this->tokenManager->getTokens());exit;
         $this->tokenManager->walk(count($codeBlockToken));
+
         return $result;
     }
 

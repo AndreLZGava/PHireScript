@@ -16,6 +16,7 @@ class Type extends GlobalFactory
     public function process(Program $program): ?Node
     {
         $node = new PropertyDefinition();
+        $node->line = $this->tokenManager->getCurrentToken()['line'];
         $allowNull = false;
         if (
             $this->tokenManager->getContext() !== RuntimeClass::CONTEXT_GET_ARGUMENTS

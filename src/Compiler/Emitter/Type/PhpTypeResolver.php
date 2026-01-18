@@ -6,9 +6,12 @@ namespace PHireScript\Compiler\Emitter\Type;
 
 use PHireScript\Compiler\Emitter\UseRegistry;
 use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Types\UnionType;
 
 class PhpTypeResolver
 {
+    private array $uses;
     public function resolve(PropertyDefinition $prop, UseRegistry $uses): string
     {
         $types = [];
@@ -36,31 +39,33 @@ class PhpTypeResolver
         return implode('|', array_unique($types));
     }
 
-    public function assignment(PropertyDefinition $prop): string
+    public function assignment(PropertyDefinition $prop, UseRegistry $uses): string
     {
         $types = $prop->resolvedTypeInfo;
         $explicitTypes =  explode('|', $this->phpType($prop));
         $itemsToVerify = in_array('null', $explicitTypes, true) ?
-        count($types) - 1 :
-        count($types);
+            count($types) - 1 :
+            count($types);
         $var = $prop->name;
         if ($itemsToVerify > 1) {
-            $this->uses[] = \PHireScript\Runtime\Types\UnionType::class;
+            $uses->add(UnionType::class);
 
             $typeClasses = [];
             foreach ($types as $t) {
                 if (isset($t['class'])) {
-                    $this->uses[] = $t['class'];
+                    $uses->add($t['class']);
                     $className = (new \ReflectionClass($t['class']))->getShortName();
                     $typeClasses[] = "$className::class";
                 }
             }
-
             $classList = implode(', ', $typeClasses);
             return "\$this->$var = UnionType::cast(\$$var, [$classList]);";
         }
 
         $typeInfo = $types[0];
+        if (isset($typeInfo['class'])) {
+            $uses->add($typeInfo['class']);
+        }
         return match ($typeInfo['category']) {
             'supertype' => "\$this->$var = {$prop->type}::cast(\$$var);",
             'metatype'  => "\$this->$var = \$$var instanceof {$prop->type} ? \$$var : new {$prop->type}(\$$var);",

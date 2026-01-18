@@ -1,12 +1,17 @@
 <?php
 
+
 namespace PHireScript\Classes;
+
 
 use PHireScript\Classes\UserCredentials;
 use PHireScript\Classes\User as UserAccess;
+
 use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
+
+
 class AuthenticatorClass {
-    public function authenticate(): bool {
+    public function authenticate(UserCredentials $credentials): bool {
         return true;
     }
 
@@ -38,17 +43,17 @@ class AuthenticatorClass {
         return [];
     }
 
-    public function returnObject(): object {
-            // this are not compiling into a object
-
-        return ;
+    public function returnArrayComplete(): array {
+        return ['example' => ['another', 'array']];
     }
 
-    public function returnArrayComplete(): array {
-            // This gets loop, todo implement support to it
+    public function returnObjectEmpty(): object {
+        return (object) [];
+    }
 
-            // return ['example' => ['another', 'array']]
-
+    public function returnObject(): object {
+        return (object) ['test' => 1];
     }
 
 }
+

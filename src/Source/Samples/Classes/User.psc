@@ -1,6 +1,11 @@
 <?php
 
+
 namespace PHireScript\Classes;
+
+
+use PHireScript\Runtime\Types\SuperTypes\Email;
+
 
 class User {
     public int $id;
@@ -23,3 +28,4 @@ class User {
         $this->metadata = $metadata;
     }
 }
+

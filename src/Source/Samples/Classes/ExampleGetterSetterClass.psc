@@ -1,6 +1,11 @@
 <?php
 
+
 namespace PHireScript\Classes;
+
+
+use PHireScript\Runtime\Types\SuperTypes\Email;
+
 
 class ExampleGetterSetterClass {
     public int $id;
@@ -59,3 +64,4 @@ class ExampleGetterSetterClass {
     }
 
 }
+
