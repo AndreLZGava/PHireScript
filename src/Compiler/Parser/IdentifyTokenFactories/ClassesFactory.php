@@ -44,6 +44,7 @@ abstract class ClassesFactory extends GlobalFactory
     public function getReturnType(MethodDefinition $node): ?string
     {
         $codeBlockToken = $this->returnType($node);
+//        Debug::show($codeBlockToken);exit;
         $result = '';
         foreach ($codeBlockToken as $tokens) {
             if (!empty($tokens)) {
@@ -139,8 +140,7 @@ abstract class ClassesFactory extends GlobalFactory
             throw new Exception('Method ' . $node->name . ' has no definition ' .
                 'of return. Please implement a return explicitly!');
         }
-        $isClass = $this->tokenManager->getContext() === 'class';
-
+        $isClass = in_array($this->tokenManager->getContext(), ['class', 'trait']);
         $result = [];
         $capture = false;
 

@@ -10,30 +10,24 @@ use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\ClassDefinition;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\TraitDefinition;
 use PHireScript\Helper\Debug\Debug;
 
-class ClassEmitter implements NodeEmitter
+class TraitEmitter implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {
-        return $node instanceof ClassDefinition;
+        return $node instanceof TraitDefinition;
     }
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        $code = $node->readOnly ? 'readonly ' : '';
-        $code .= implode(' ', $node->modifiers) . ' ';
-        $code .= "class {$node->name} {\n";
+        $code = "trait {$node->name} {\n";
         // ---- properties
         foreach ($node->body as $member) {
             if ($member instanceof PropertyDefinition) {
                 $code .= $ctx->emitter->emit($member, $ctx) ;
             }
-        }
-
-        // ---- constructor
-        if ($this->shouldGenerateConstructor($node)) {
-            $code .= (new ConstructorEmitter())->emit($node, $ctx);
         }
 
         // ---- methods
@@ -44,15 +38,5 @@ class ClassEmitter implements NodeEmitter
         }
 
         return $code . "}\n";
-    }
-
-    private function shouldGenerateConstructor(ClassDefinition $class): bool
-    {
-        foreach ($class->body as $member) {
-            if ($member instanceof PropertyDefinition) {
-                return true;
-            }
-        }
-        return false;
     }
 }

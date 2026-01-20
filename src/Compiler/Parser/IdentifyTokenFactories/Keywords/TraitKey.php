@@ -4,22 +4,18 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
 
-use PHireScript\Compiler\Parser\Ast\ClassDefinition;
 use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\TraitDefinition;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
-class ClassKey extends ClassesFactory
+class TraitKey extends ClassesFactory
 {
     public function process(Program $program): ?Node
     {
         $this->program = $program;
-        $node = new ClassDefinition();
-        $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
-        if (in_array($previous['value'], ['abstract', 'readonly', '*', '#', '+'])) {
-            $node->modifiers[] = $previous['value'];
-        }
+        $node = new TraitDefinition();
         $node->type = $this->tokenManager->getCurrentToken()['value'];
         $node->line = $this->tokenManager->getCurrentToken()['line'];
         $this->tokenManager->advance();

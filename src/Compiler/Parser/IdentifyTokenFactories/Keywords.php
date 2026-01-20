@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\AbstractKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ClassKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ExternalKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Immutable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\InterfaceKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\PkgKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ReturnKey;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\TraitKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Type;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\UseKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Variable;
@@ -33,6 +35,8 @@ class Keywords extends GlobalFactory
             'pkg' => PkgKey::class,
             'use' => UseKey::class,
             'external' => ExternalKey::class,
+            'trait' => TraitKey::class,
+            'abstract' => AbstractKey::class,
         ];
 
         $tokenValue = $this->tokenManager->getCurrentToken()['value'];

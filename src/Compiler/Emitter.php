@@ -26,6 +26,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\PropertyDeclarationEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ReturnEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ScalarLiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ThisExpressionEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\TraitEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VariableEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VoidExpressionEmitter;
 use PHireScript\Compiler\Emitter\Type\PhpTypeResolver;
@@ -46,6 +47,7 @@ class Emitter
             new ExternalEmitter(),
             new InterfaceEmitter(),
             new ClassEmitter(),
+            new TraitEmitter(),
             new MethodEmitter(),
 
             new ObjectLiteralEmitter(),
