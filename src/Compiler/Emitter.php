@@ -6,6 +6,11 @@ namespace PHireScript\Compiler;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\EmitterDispatcher;
+use PHireScript\Compiler\Emitter\Internal\IfStatementEmitter;
+use PHireScript\Compiler\Emitter\Internal\IssetOperatorEmitter;
+use PHireScript\Compiler\Emitter\Internal\NewExceptionEmitter;
+use PHireScript\Compiler\Emitter\Internal\NotOperatorEmitter;
+use PHireScript\Compiler\Emitter\Internal\ThrowStatementEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ArrayLiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyEmitter;
@@ -67,6 +72,11 @@ class Emitter
             new ParameterEmitter(),
             new PropertyEmitter(),
             new GlobalStatementEmitter(),
+            new IfStatementEmitter(),
+            new IssetOperatorEmitter(),
+            new NotOperatorEmitter(),
+            new ThrowStatementEmitter(),
+            new NewExceptionEmitter(),
             //new ScalarLiteralEmitter(),
         ]);
     }

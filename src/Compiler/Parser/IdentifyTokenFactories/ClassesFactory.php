@@ -5,8 +5,20 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
 use Exception;
+use PHireScript\Compiler\Parser\Ast\ClassDefinition;
+use PHireScript\Compiler\Parser\Ast\ComplexObjectDefinition;
+use PHireScript\Compiler\Parser\Ast\ConstructorDefinition;
+use PHireScript\Compiler\Parser\Ast\IfStatementNode;
+use PHireScript\Compiler\Parser\Ast\IssetOperatorNode;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
+use PHireScript\Compiler\Parser\Ast\NewExceptionNode;
 use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\NotOperatorNode;
+use PHireScript\Compiler\Parser\Ast\PropertyAccessNode;
+use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\ThisExpressionNode;
+use PHireScript\Compiler\Parser\Ast\ThrowStatementNode;
+use PHireScript\Compiler\Parser\Ast\TraitDefinition;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
 use PHireScript\Compiler\Parser\Managers\TokenManager;
 use PHireScript\Compiler\Program;
@@ -44,7 +56,7 @@ abstract class ClassesFactory extends GlobalFactory
     public function getReturnType(MethodDefinition $node): ?string
     {
         $codeBlockToken = $this->returnType($node);
-//        Debug::show($codeBlockToken);exit;
+        //        Debug::show($codeBlockToken);exit;
         $result = '';
         foreach ($codeBlockToken as $tokens) {
             if (!empty($tokens)) {
@@ -82,14 +94,14 @@ abstract class ClassesFactory extends GlobalFactory
         return $result;
     }
 
-    public function getContentBlock($context): array
+    public function getContentBlock(ComplexObjectDefinition $node): array
     {
         $codeBlockToken = $this->codeBlockToken();
 
         $factories = FactoryInitializer::getFactories();
         $result = [];
 
-        $newTokenManager = new TokenManager($context, $codeBlockToken, 0);
+        $newTokenManager = new TokenManager($node->type, $codeBlockToken, 0);
         //Debug::show($codeBlockToken);exit;
         while (!$newTokenManager->isEndOfTokens()) {
             $token = $newTokenManager->getCurrentToken();
@@ -98,6 +110,9 @@ abstract class ClassesFactory extends GlobalFactory
                 ->process($this->program);
 
             if ($returned) {
+                if ($node instanceof ClassDefinition) {
+                    $this->processConstruct($node, $returned);
+                }
                 $result[] = $returned;
             }
 
@@ -107,6 +122,38 @@ abstract class ClassesFactory extends GlobalFactory
         $this->tokenManager->walk(count($codeBlockToken));
 
         return $result;
+    }
+
+    private function processConstruct(ClassDefinition $node, mixed $processedNode)
+    {
+        if (
+            $processedNode instanceof PropertyDefinition &&
+            in_array('abstract', $processedNode->modifiers)
+        ) {
+            $constructor = $node->construct ?? new ConstructorDefinition();
+            $constructor->line = $processedNode->line;
+
+            $validationNode = new IfStatementNode(
+                condition: new NotOperatorNode(
+                    new IssetOperatorNode(
+                        new PropertyAccessNode(
+                            new ThisExpressionNode(),
+                            $processedNode->name
+                        )
+                    )
+                ),
+                statements: new ThrowStatementNode(
+                    new NewExceptionNode(
+                        'LogicException',
+                        "Property {$processedNode->name} must be initialized."
+                    )
+                )
+            );
+
+            $constructor->body[] = $validationNode;
+
+            $node->construct = $constructor;
+        }
     }
 
     public function codeBlockToken(): array

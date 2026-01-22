@@ -4,29 +4,13 @@
 namespace PHireScript\Classes;
 
 
-use PHireScript\Runtime\Types\SuperTypes\Email;
 
-
-class ExampleGetterSetterClass {
+ class ExampleGetterSetterClass {
     public int $id;
     public string $email;
     public string $username;
     public bool $isAdmin;
     private array $metadata;
-
-    public function __construct(
-        int $id,
-        string $email,
-        string $username,
-        bool $isAdmin,
-        array $metadata,
-    ) {
-        $this->id = $id;
-        $this->email = Email::cast($email);
-        $this->username = $username;
-        $this->isAdmin = $isAdmin;
-        $this->metadata = $metadata;
-    }
     public function getId(): int {
         return $this->id;
     }

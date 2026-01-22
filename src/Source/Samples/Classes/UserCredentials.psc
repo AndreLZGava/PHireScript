@@ -13,7 +13,7 @@ use PHireScript\Runtime\Types\SuperTypes\Ipv4;
 use PHireScript\Runtime\Types\SuperTypes\Ipv6;
 
 
-class UserCredentials {
+ class UserCredentials {
     public string $login;
     public string $userEmail;
     protected Date $dateBirth;
@@ -29,6 +29,7 @@ class UserCredentials {
         $this->userEmail = Email::cast($userEmail);
         $this->dateBirth = $dateBirth instanceof Date ? $dateBirth : new Date($dateBirth);
         $this->lastIp = UnionType::cast($lastIp, [Ipv4::class, Ipv6::class]);
+        
     }
 }
 

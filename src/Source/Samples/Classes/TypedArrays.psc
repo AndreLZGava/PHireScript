@@ -7,7 +7,7 @@ namespace PHireScript\Classes;
 use PHireScript\Runtime\Types\TypeGuard;
 
 
-class TypedArrays {
+ class TypedArrays {
     public function testSimpleArray(): array {
         return [];
     }

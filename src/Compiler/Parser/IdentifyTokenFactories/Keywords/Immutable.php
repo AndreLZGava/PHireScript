@@ -21,7 +21,7 @@ class Immutable extends ClassesFactory
         $this->tokenManager->advance();
         $node->name = $this->tokenManager->getCurrentToken()['value'];
         $this->tokenManager->advance();
-        $node->body = $this->getContentBlock('class');
+        $node->body = $this->getContentBlock($node);
         return $node;
     }
 }

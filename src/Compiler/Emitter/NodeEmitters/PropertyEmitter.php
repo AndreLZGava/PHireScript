@@ -7,6 +7,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Helper\Debug\Debug;
 
 class PropertyEmitter implements NodeEmitter
 {
@@ -17,10 +18,13 @@ class PropertyEmitter implements NodeEmitter
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        $visibility = $node->modifiers[0] ?? 'public';
+        $visibility = isset($node->modifiers[0]) &&
+            $node->modifiers[0] === 'abstract' ?
+            'public ' :
+            $node->modifiers[0] . ' ';
         $type = $ctx->types->phpType($node);
         $name = '$' . $node->name;
 
-        return "    {$visibility} {$type} {$name};\n";
+        return "    {$visibility}{$type} {$name};\n";
     }
 }

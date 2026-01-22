@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Ast;
 
-class TraitDefinition extends Node
+class TraitDefinition extends ComplexObjectDefinition
 {
-    public string $type;
-    public string $name;
-    public array $body = [];
 }

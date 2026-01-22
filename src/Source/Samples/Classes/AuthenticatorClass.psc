@@ -10,7 +10,7 @@ use PHireScript\Classes\User as UserAccess;
 use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
 
 
-class AuthenticatorClass {
+ class AuthenticatorClass {
     public function authenticate(UserCredentials $credentials): bool {
         return true;
     }

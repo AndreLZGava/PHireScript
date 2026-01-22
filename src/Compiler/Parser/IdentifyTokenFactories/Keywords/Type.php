@@ -21,7 +21,7 @@ class Type extends ClassesFactory
         // @todo implement validations to walk and validate its a name
         $node->name = $this->tokenManager->getCurrentToken()['value'];
         $this->tokenManager->advance();
-        $node->body = $this->getContentBlock('type');
+        $node->body = $this->getContentBlock($node);
         return $node;
     }
 }

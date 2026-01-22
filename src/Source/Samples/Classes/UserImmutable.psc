@@ -7,7 +7,7 @@ namespace PHireScript\Classes;
 use PHireScript\Runtime\Types\SuperTypes\Email;
 
 
-readonly class UserImmutable {
+readonly  class UserImmutable {
     public int $id;
     public string $username;
     public string $email;
@@ -26,6 +26,7 @@ readonly class UserImmutable {
         $this->email = Email::cast($email);
         $this->isAdmin = $isAdmin;
         $this->metadata = $metadata;
+        
     }
 }
 

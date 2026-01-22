@@ -18,8 +18,10 @@ class Type extends GlobalFactory
         $node = new PropertyDefinition();
         $node->line = $this->tokenManager->getCurrentToken()['line'];
         $allowNull = false;
+        $currentToken =  $this->tokenManager->getCurrentToken();
+        $context = $this->tokenManager->getContext();
         if (
-            $this->tokenManager->getContext() !== RuntimeClass::CONTEXT_GET_ARGUMENTS
+            $context !== RuntimeClass::CONTEXT_GET_ARGUMENTS
         ) {
             $token = $this->tokenManager->getPreviousTokenBeforeCurrent();
             if ($token['value'] === '?') {

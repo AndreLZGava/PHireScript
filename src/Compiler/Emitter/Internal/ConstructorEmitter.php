@@ -18,36 +18,36 @@ class ConstructorEmitter implements NodeEmitter
 
     public function emit(object $class, EmitContext $ctx): string
     {
-        $props = array_filter(
-            $class->body,
-            fn ($m) => $m instanceof PropertyDefinition
-        );
-
-        if (!$props) {
-            return '';
-        }
+        $props = array_filter($class->body, fn($m) => $m instanceof PropertyDefinition);
 
         $params = [];
         $assignments = [];
 
-        foreach ($props as $prop) {
-            $type = $ctx->types->phpType($prop);
-            $params[] = "{$type} \${$prop->name},";
-            $assignments[] = $ctx->types->assignment(
-                $prop,
-                $ctx->uses
-            );
+        if ($class->type !== 'class') {
+            foreach ($props as $prop) {
+                $type = $ctx->types->phpType($prop);
+                $params[] = "{$type} \${$prop->name},";
+                $assignments[] = $ctx->types->assignment($prop, $ctx->uses);
+            }
         }
 
-        return <<<PHP
+        $internalStatements = [];
+        if (!empty($class->construct->body)) {
+            foreach ($class->construct->body as $stmt) {
+                $internalStatements[] = $ctx->emitter->emit($stmt, $ctx);
+            }
+        }
 
-    public function __construct(
-        {$this->join($params)}
-    ) {
-        {$this->join($assignments)}
-    }
+        if (empty($params) && empty($assignments) && empty($internalStatements)) {
+            return '';
+        }
 
-PHP;
+        return sprintf(
+            "\n    public function __construct(\n        %s\n    ) {\n        %s\n        %s\n    }\n",
+            implode("\n        ", $params),
+            implode("\n        ", $assignments),
+            implode("\n        ", $internalStatements)
+        );
     }
     private function join($params)
     {

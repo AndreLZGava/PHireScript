@@ -7,7 +7,7 @@ namespace PHireScript\Classes;
 use PHireScript\Runtime\Types\SuperTypes\Email;
 
 
-class User {
+ class User {
     public int $id;
     public string $username;
     public string $email;
@@ -26,6 +26,7 @@ class User {
         $this->email = Email::cast($email);
         $this->isAdmin = $isAdmin;
         $this->metadata = $metadata;
+        
     }
 }
 
