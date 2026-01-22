@@ -32,8 +32,27 @@ class Checker
     {
         foreach ($classNode->body as $member) {
             if ($member instanceof PropertyDefinition) {
+                $propertyName = $member->name;
                 if ($member->defaultValue !== null) {
                     // $this->ensureTypeCompatibility($member, $member->defaultValue);
+                }
+
+                if ($classNode->readOnly && $member->defaultValue) {
+                    throw new \Exception(
+                        "Semantic error in property '{$propertyName}': " .
+                            "Readonly classes or immutable object its not" .
+                            " allowed to define a default value!"
+                    );
+                }
+
+                if (
+                    !in_array('abstract', $classNode->modifiers) &&
+                    in_array('abstract', $member->modifiers)
+                ) {
+                    throw new \Exception(
+                        "Semantic error in property '{$propertyName}': " .
+                            "Abstract properties are allowed only in abstract classes"
+                    );
                 }
             }
 

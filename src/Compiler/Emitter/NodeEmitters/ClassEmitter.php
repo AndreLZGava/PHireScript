@@ -23,7 +23,8 @@ class ClassEmitter implements NodeEmitter
     {
         $code = $node->readOnly ? 'readonly ' : '';
         $code .= implode(' ', $node->modifiers) . ' ';
-        $code .= "class {$node->name} {\n";
+        $extends = $node->extends ? ' extends ' . $node->extends . ' ' : ' ';
+        $code .= "class {$node->name}{$extends}{\n";
         // ---- properties
         foreach ($node->body as $member) {
             if ($member instanceof PropertyDefinition) {

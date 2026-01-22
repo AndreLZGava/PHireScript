@@ -94,6 +94,22 @@ abstract class ClassesFactory extends GlobalFactory
         return $result;
     }
 
+    public function getExtends(mixed $node): ?string
+    {
+        $extends = null;
+        $left = $this->tokenManager->getLeftTokens();
+        foreach ($left as $tokenId => $tokens) {
+            if (
+                $tokens['value'] === 'extends' &&
+                $left[$tokenId + 1]['type'] === 'T_IDENTIFIER'
+            ) {
+                $extends = $left[$tokenId + 1]['value'];
+                break;
+            }
+        }
+        return $extends;
+    }
+
     public function getContentBlock(ComplexObjectDefinition $node): array
     {
         $codeBlockToken = $this->codeBlockToken();

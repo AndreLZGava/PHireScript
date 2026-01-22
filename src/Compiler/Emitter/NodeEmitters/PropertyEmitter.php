@@ -24,7 +24,8 @@ class PropertyEmitter implements NodeEmitter
             $node->modifiers[0] . ' ';
         $type = $ctx->types->phpType($node);
         $name = '$' . $node->name;
+        $defaultValue = $node->defaultValue ? ' = ' . $node->defaultValue : '';
 
-        return "    {$visibility}{$type} {$name};\n";
+        return "    {$visibility}{$type} {$name}{$defaultValue};\n";
     }
 }

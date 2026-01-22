@@ -60,6 +60,6 @@ class Transpiler implements TranspilerInterface
 
     public function getCodeBeforeGenerator(): string
     {
-        return $this->codeBeforeGenerator;
+        return $this->codeBeforeGenerator ?? '';
     }
 }

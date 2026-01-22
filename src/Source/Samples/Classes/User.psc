@@ -11,8 +11,8 @@ use PHireScript\Runtime\Types\SuperTypes\Email;
     public int $id;
     public string $username;
     public string $email;
-    public bool $isAdmin;
-    public null|array $metadata;
+    public bool $isAdmin = True;
+    public null|array $metadata = Null;
 
     public function __construct(
         int $id,

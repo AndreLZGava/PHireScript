@@ -7,6 +7,7 @@ namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\AbstractKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ClassKey;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ExtendsKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\ExternalKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Immutable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\InterfaceKey;
@@ -37,6 +38,7 @@ class Keywords extends GlobalFactory
             'external' => ExternalKey::class,
             'trait' => TraitKey::class,
             'abstract' => AbstractKey::class,
+            'extends' => ExtendsKey::class,
         ];
 
         $tokenValue = $this->tokenManager->getCurrentToken()['value'];
