@@ -6,11 +6,15 @@ namespace PHireScript\Classes;
 
 use PHireScript\Classes\UserCredentials;
 use PHireScript\Classes\User as UserAccess;
+use PHireScript\Classes\Authenticator;
+use PHireScript\Classes\Another;
+use PHireScript\Classes\Logger;
 
 use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
 
 
- class AuthenticatorClass {
+ class AuthenticatorClass implements Authenticator, Another {
+    use Logger;
     public function authenticate(UserCredentials $credentials): bool {
         return true;
     }

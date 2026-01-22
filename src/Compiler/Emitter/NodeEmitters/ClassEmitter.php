@@ -23,12 +23,20 @@ class ClassEmitter implements NodeEmitter
     {
         $code = $node->readOnly ? 'readonly ' : '';
         $code .= implode(' ', $node->modifiers) . ' ';
-        $extends = $node->extends ? ' extends ' . $node->extends . ' ' : ' ';
-        $code .= "class {$node->name}{$extends}{\n";
+        $extends = $node->extends ? ' extends ' . $node->extends  : '';
+        $implements = $node->implements ?
+            ' implements ' . implode(', ', $node->implements) :
+            '';
+        $code .= "class {$node->name}{$extends}{$implements} {\n";
+
+        foreach ($node->traits as $trait) {
+            $code .= '    use ' . $trait . ";\n";
+        }
+
         // ---- properties
         foreach ($node->body as $member) {
             if ($member instanceof PropertyDefinition) {
-                $code .= $ctx->emitter->emit($member, $ctx) ;
+                $code .= $ctx->emitter->emit($member, $ctx);
             }
         }
 

@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
-class ExtendsKey extends ClassesFactory
+class ScheduleKey extends ClassesFactory
 {
     public function process(Program $program): ?Node
     {

@@ -25,6 +25,8 @@ class ClassKey extends ClassesFactory
         $this->tokenManager->advance();
         $node->name = $this->tokenManager->getCurrentToken()['value'];
         $this->tokenManager->advance();
+        $node->traits = $this->getWith($node);
+        $node->implements = $this->getImplements($node);
         $node->extends = $this->getExtends($node);
         $node->body = $this->getContentBlock($node);
         return $node;

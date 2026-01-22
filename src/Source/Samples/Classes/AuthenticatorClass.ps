@@ -1,51 +1,52 @@
 pkg PHireScript.Samples
 
-use PHireScript.Samples.{UserCredentials, User as UserAccess}
+use PHireScript.Samples.{UserCredentials, User as UserAccess, Authenticator, Another, Logger}
 
 external Symfony\Component\DependencyInjection\Loader\GlobFileLoader
 
-class AuthenticatorClass {
+class AuthenticatorClass with Logger implements Authenticator, Another {
+
     authenticate(UserCredentials credentials): Bool {
-      return true
+        return true
     }
 
     logout(): Void {
-      return
+        return
     }
 
     returnNull(): Null {
-      return Null
+        return Null
     }
 
     returnStringSingle(): String {
-      return 'single quotes'
+        return 'single quotes'
     }
 
     returnStringDouble(): String {
-      return 'single quotes'
+        return 'single quotes'
     }
 
     returnFloat(): Float {
-      return 15.2
+        return 15.2
     }
 
     returnInt(): Int {
-      return 10
+        return 10
     }
 
     returnArrayEmpty(): Array {
-      return []
+        return []
     }
 
     returnArrayComplete(): Array {
-      return ['example' => ['another', 'array']]
+        return ['example' => ['another', 'array']]
     }
 
     returnObjectEmpty(): Object {
-      return {}
+        return {}
     }
 
     returnObject(): Object {
-      return { 'test': 1 }
+        return { 'test': 1 }
     }
 }

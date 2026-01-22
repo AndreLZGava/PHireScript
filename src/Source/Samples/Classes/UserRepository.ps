@@ -5,4 +5,22 @@ use PHireScript.Database.Repository
 class UserRepository extends Repository{
 
     String tableName = 'user'
+    /**
+    Soon I will implement this annotations
+
+    inject{
+        singleton Database as database
+    }
+
+    cache {
+        getUser<Duration('5 m')>
+    }
+
+    schedule {
+        getUser<Cron('@daily')>
+    }
+    */
+    getUser(Uuid id): Null|Self {
+        return Null//this.database.get(this.tableName).first(id: id)
+    }
 }

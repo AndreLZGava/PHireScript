@@ -8,6 +8,7 @@ use PHireScript\SymbolTable;
 use PHireScript\Compiler\Parser\Ast\ClassDefinition;
 use PHireScript\Compiler\Parser\Ast\DependenciesStatement;
 use PHireScript\Compiler\Parser\Ast\DependencyStatement;
+use PHireScript\Compiler\Parser\Ast\InterfaceDefinition;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHireScript\Helper\Debug\Debug;
@@ -25,14 +26,20 @@ class Binder
         // PASSAGEM 1: Registrar a existência de todas as classes
         // Isso permite que uma classe use outra como tipo, mesmo se definida depois
         foreach ($program->statements as $node) {
-            if ($node instanceof ClassDefinition) {
+            if (
+                $node instanceof ClassDefinition ||
+                $node instanceof InterfaceDefinition
+            ) {
                 $this->globalTable->registerTypeDefinition($node->name, $node);
             }
         }
 
         // PASSAGEM 2: Resolver as propriedades e corpos
         foreach ($program->statements as $node) {
-            if ($node instanceof ClassDefinition) {
+            if (
+                $node instanceof ClassDefinition ||
+                $node instanceof InterfaceDefinition
+            ) {
                 $this->bindClassBody($node);
             }
         }
@@ -40,7 +47,7 @@ class Binder
         return $program;
     }
 
-    protected function bindClassBody(ClassDefinition $class)
+    protected function bindClassBody(ClassDefinition|InterfaceDefinition $class)
     {
         foreach ($class->body as $member) {
             if ($member instanceof PropertyDefinition) {

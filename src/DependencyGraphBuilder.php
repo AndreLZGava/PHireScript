@@ -3,8 +3,10 @@
 namespace PHireScript;
 
 use PHireScript\Compiler\DependencyGraphBuilder\Node;
+use PHireScript\Compiler\Parser\Ast\ClassDefinition;
 use PHireScript\Compiler\Parser\Ast\PackageStatement;
 use PHireScript\Compiler\Parser\Ast\DependenciesStatement;
+use PHireScript\Compiler\Parser\Ast\InterfaceDefinition;
 use PHireScript\Compiler\Program;
 
 class DependencyGraphBuilder
@@ -13,10 +15,10 @@ class DependencyGraphBuilder
     {
     }
 
-  /** @var array<string, Node> */
+    /** @var array<string, Node> */
     private array $nodes = [];
 
-  /** @var array<string, array<string>> */
+    /** @var array<string, array<string>> */
     private array $edges = [];
 
     public function buildGraph(array $astList): void
@@ -54,15 +56,21 @@ class DependencyGraphBuilder
     private function registerEdges(Program $ast): void
     {
         $currentPackage = null;
-
+        $shouldHavePackage = false;
         foreach ($ast->statements as $stmt) {
             if ($stmt instanceof PackageStatement) {
                 $currentPackage = $stmt->completePackage;
+            }
+            if (
+                $stmt instanceof ClassDefinition ||
+                $stmt instanceof InterfaceDefinition
+            ) {
+                $shouldHavePackage = true;
                 break;
             }
         }
 
-        if (!$currentPackage) {
+        if ($shouldHavePackage && !$currentPackage) {
             throw new \Exception("File does not have a package defined!");
         }
 
@@ -89,7 +97,7 @@ class DependencyGraphBuilder
 
     private function validateGraph(): void
     {
-      // Here i'll implement cycles check using DFS
+        // Here i'll implement cycles check using DFS
     }
 
     public function getCompilationOrder(): array

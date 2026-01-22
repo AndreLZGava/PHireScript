@@ -22,6 +22,7 @@ class TraitKey extends ClassesFactory
 
         $node->name = $this->tokenManager->getCurrentToken()['value'];
         $this->tokenManager->advance();
+        $node->traits = $this->getWith($node);
         $node->body = $this->getContentBlock($node);
         return $node;
     }

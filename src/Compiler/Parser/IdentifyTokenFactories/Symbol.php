@@ -28,6 +28,11 @@ class Symbol extends GlobalFactory
         $currentToken = $this->tokenManager->getCurrentToken();
         $currentContext  = $this->tokenManager->getContext();
 
+        if ($currentToken['value'] === '=') {
+           // echo 'something';exit;
+        }
+
+
         if (
             in_array($currentToken['value'], ['.'], true)
             && $currentContext === 'general'
@@ -41,6 +46,13 @@ class Symbol extends GlobalFactory
             && $currentContext === RuntimeClass::CONTEXT_GET_ARGUMENTS
         ) {
             // Ignore () for getting arguments
+            return null;
+        }
+
+        if (
+            in_array($currentToken['value'], [','], true)
+            && $currentContext === 'class'
+        ) {
             return null;
         }
 
@@ -86,11 +98,13 @@ class Symbol extends GlobalFactory
             $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($currentToken);
             return $this->parsePropertyWithTypes($node);
         }
+
         Debug::show(
             [
-            'currentToken' => $currentToken,
-            'context' => $currentContext,
-            'program' => $program],
+                'currentToken' => $currentToken,
+                'context' => $currentContext,
+                'program' => $program
+            ],
             debug_backtrace(2)
         );
         exit;

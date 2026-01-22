@@ -94,6 +94,107 @@ abstract class ClassesFactory extends GlobalFactory
         return $result;
     }
 
+    public function getWith(mixed $node): array
+    {
+        $with = [];
+        $left = $this->tokenManager->getLeftTokens();
+        $startGettingWith = false;
+        foreach ($left as $tokenId => $token) {
+            if (
+                $token['value'] === 'with'
+            ) {
+                $startGettingWith = true;
+                continue;
+            }
+
+            if (
+                $token['value'] === ','
+            ) {
+                continue;
+            }
+
+            if (
+                $startGettingWith &&
+                $token['type'] === 'T_IDENTIFIER'
+            ) {
+                $with[] = $token['value'];
+            }
+
+            if ($startGettingWith && in_array($token['type'], ['T_KEYWORD', 'T_SYMBOL', 'T_EOL'])) {
+                break;
+            }
+        }
+        return $with;
+    }
+
+
+    public function getExtendsInterface(mixed $node): array
+    {
+        $extends = [];
+        $left = $this->tokenManager->getLeftTokens();
+        $startGettingExtends = false;
+        foreach ($left as $tokenId => $token) {
+            if (
+                $token['value'] === 'extends'
+            ) {
+                $startGettingExtends = true;
+                continue;
+            }
+
+            if (
+                $token['value'] === ','
+            ) {
+                continue;
+            }
+
+            if (
+                $startGettingExtends &&
+                $token['type'] === 'T_IDENTIFIER'
+            ) {
+                $extends[] = $token['value'];
+            }
+
+            if ($startGettingExtends && in_array($token['type'], ['T_KEYWORD', 'T_SYMBOL', 'T_EOL'])) {
+                break;
+            }
+        }
+        return $extends;
+    }
+
+    public function getImplements(mixed $node): array
+    {
+        $implements = [];
+        $left = $this->tokenManager->getLeftTokens();
+        $startGettingImplements = false;
+        foreach ($left as $tokenId => $token) {
+            if (
+                $token['value'] === 'implements'
+            ) {
+                $startGettingImplements = true;
+                continue;
+            }
+
+            if (
+                $token['value'] === ','
+            ) {
+                continue;
+            }
+
+            if (
+                $startGettingImplements &&
+                $token['type'] === 'T_IDENTIFIER'
+            ) {
+                $implements[] = $token['value'];
+            }
+
+            if ($startGettingImplements && in_array($token['type'], ['T_KEYWORD', 'T_SYMBOL', 'T_EOL'])) {
+                break;
+            }
+        }
+        return $implements;
+    }
+
+
     public function getExtends(mixed $node): ?string
     {
         $extends = null;

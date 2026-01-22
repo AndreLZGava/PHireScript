@@ -26,10 +26,16 @@ class PackageStatement extends Statement
 
     private function validate()
     {
-        if (!str_contains($this->file, $this->object . '.' . RuntimeClass::DEFAULT_FILE_EXTENSION)) {
+        $basename = basename($this->file);
+        $ext = RuntimeClass::DEFAULT_FILE_EXTENSION;
+
+        if (
+            !str_starts_with($basename, $this->object) ||
+            !str_ends_with($basename, '.' . $ext)
+        ) {
             throw new Exception('File name must match class/interface/type/' .
-            'immutable/trait name! File ' . $this->file . ' object name '
-            . $this->object);
+                'immutable/trait name! File ' . $this->file . ' object name '
+                . $this->object);
         }
     }
 
