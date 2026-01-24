@@ -24,7 +24,6 @@ use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\TraitKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\TransientKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Type;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\UseKey;
-use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Variable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\WithKey;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
@@ -38,7 +37,6 @@ class Keywords extends GlobalFactory
         $this->factories = [
             'type' => Type::class,
             'immutable' => Immutable::class,
-            'var' => Variable::class,
             'interface' => InterfaceKey::class,
             'class' => ClassKey::class,
             'return' => ReturnKey::class,

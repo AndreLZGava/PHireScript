@@ -12,7 +12,6 @@ use PHireScript\Classes\Logger;
 
 use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
 
-
  class AuthenticatorClass implements Authenticator, Another {
     use Logger;
     public function authenticate(UserCredentials $credentials): bool {
@@ -32,7 +31,7 @@ use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
     }
 
     public function returnStringDouble(): string {
-        return 'single quotes';
+        return "double quotes";
     }
 
     public function returnFloat(): float {

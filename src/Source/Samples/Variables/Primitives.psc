@@ -1,27 +1,55 @@
 <?php
-// --- 1-> String Type ---
-$userName = "André"; // Inference: string
-$idAsString = (string)(12345); // Casting: becomes "12345"
 
-// --- 2-> Int Type ---
-$userAge = 25; // Inference: int
-$ageFromText = (int)("30"); // Casting: becomes 30
 
-// --- 3-> Float Type ---
-$productPrice = 250.99; // Inference: float
-$taxValue = (float)("0.15"); // Casting: becomes 0.15
+    // --- 1. String Type ---
 
-// --- 4-> Bool Type ---
-$isUserActive = true; // Inference: bool
-$statusFromBinary = (bool)(1); // Casting: becomes true
+$userName = "André";
 
-// --- 5-> Array Type ---
-$techStack = ["PHP", "PS", "TS"]; // Inference: array
-$singleItemArray = (array)($userName); // Casting: becomes ["André"]
+    // Inference: String
 
-// --- 6-> Object Type ---
-$dataContainer = ["id" => 1]; // Inference: object
-$objFromMap = (object)(['id' => 1]); // Casting: becomes object with property id
+    // --- 2. Int Type ---
 
-$myObject = ["test" => "test"];
+$userAge = 25;
+
+    // Inference: Int
+
+    // --- 3. Float Type ---
+
+$productPrice = 250.99;
+
+    // Inference: Float
+
+    // --- 4. Bool Type ---
+
+$isUserActive = true;
+
+    // Inference: Bool
+
+    // --- 5. Array Type ---
+
+$techStack = ["PHP", "PS", "TS"];
+
+    // --- 6. Object Type ---
+
+$dataContainer = (object) [id => 1];
+
+$myObject = (object) [test => "test"];
+
+    /**
+idAsString = String(12345)                 // Casting: becomes "12345"
+ageFromText = Int("30")                    // Casting: becomes 30
+taxValue = Float("0.15")                   // Casting: becomes 0.15
+statusFromBinary = Bool(1)                 // Casting: becomes true
+singleItemArray = Array(userName)          // Casting: becomes ["André"]
+objFromMap = Object(['id' => 1])           // Casting: becomes object with property id
+*/
+
+    /**
+idAsString = String(12345)                 // Casting: becomes "12345"
+ageFromText = Int("30")                    // Casting: becomes 30
+taxValue = Float("0.15")                   // Casting: becomes 0.15
+statusFromBinary = Bool(1)                 // Casting: becomes true
+singleItemArray = Array(userName)          // Casting: becomes ["André"]
+objFromMap = Object(['id' => 1])           // Casting: becomes object with property id
+*/
 

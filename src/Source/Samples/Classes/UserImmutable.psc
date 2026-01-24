@@ -4,9 +4,6 @@
 namespace PHireScript\Classes;
 
 
-use PHireScript\Runtime\Types\SuperTypes\Email;
-
-
 readonly  class UserImmutable {
     public int $id;
     public string $username;

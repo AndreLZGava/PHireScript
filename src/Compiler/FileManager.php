@@ -191,7 +191,11 @@ class FileManager
 
     private function getErrorInterface($e, $transpiler, $code)
     {
-        $maxLineWidth = 140;
+        $width = (int) shell_exec('tput cols') ?: 120;
+
+        $gutterWidth = 10;
+        $availableWidth = $width - $gutterWidth;
+
         $red    = "\033[1;31m";
         $blue   = "\033[1;34m";
         $cyan   = "\033[1;36m";
@@ -199,57 +203,75 @@ class FileManager
         $yellow = "\033[1;33m";
         $reset  = "\033[0m";
 
+        $codeGenerated = $transpiler->getCodeBeforeGenerator();
+
+        $hasTranspiled = !empty(trim($codeGenerated));
+
         $originalLines = explode("\n", rtrim($code));
-        $preParserLines = explode("\n", rtrim(
-            $transpiler->getCodeBeforeGenerator()
-        ));
+        $preParserLines = $hasTranspiled ? explode("\n", rtrim($codeGenerated)) : [];
         $maxLines = max(count($originalLines), count($preParserLines));
 
-        echo "\n{$red}" . str_repeat('=', $maxLineWidth) . "{$reset}\n";
-        echo "  {$red}PHire Script DEBUGGER - COMPILATION ERROR{$reset}\n";
-        echo "{$red}" . str_repeat('=', $maxLineWidth) . "{$reset}\n\n";
-
-        printf(
-            " %-4s | %-71s | %-60s\n",
-            "Line",
-            "{$blue}ORIGINAL PHire Script{$reset}",
-            "{$cyan}TRANSPILED PHP (PRE-PARSER){$reset}"
-        );
-
-        echo str_repeat('-', $maxLineWidth) . "\n";
         $message = $e->getMessage();
-        $items = explode('on line ', $message);
-        $line = (int) end($items);
+        $errorLine = str_contains($message, 'on line ') ? (int) end(explode('on line ', $message)) : $e->getLine();
+
+        echo "\n{$red}" . str_repeat('=', $width) . "{$reset}\n";
+        echo "  {$red}PHire Script DEBUGGER - COMPILATION ERROR{$reset}\n";
+        echo "{$red}" . str_repeat('=', $width) . "{$reset}\n\n";
+
+        if ($hasTranspiled) {
+            $colWidth = (int) ($availableWidth / 2) - 2;
+            printf(
+                " %-4s | %-{$colWidth}s | %s\n",
+                "Line",
+                "{$blue}ORIGINAL PHire Script{$reset}",
+                "{$cyan}TRANSPILED PHP{$reset}"
+            );
+        } else {
+            $colWidth = $availableWidth;
+            printf(" %-4s | %s\n", "Line", "{$blue}ORIGINAL PHire Script (Full View){$reset}");
+        }
+
+        echo str_repeat('-', $width) . "\n";
 
         for ($i = 0; $i < $maxLines; $i++) {
-            $lineNum = $i + 1;
+            $currentLineNum = $i + 1;
             $left  = $originalLines[$i] ?? '';
             $right = $preParserLines[$i] ?? '';
 
-            $originalColor = $blue;
-            $compiledColor = $cyan;
-            $lineNumColor  = $gray;
+            $indicator = ($currentLineNum === $errorLine) ? "{$red}→{$reset}" : " ";
+            $lineNumColor = ($currentLineNum === $errorLine) ? $red : $gray;
 
-            $indicator = $line === $lineNum ? $red . "→" . $gray : " ";
-
-            printf(
-                " %s%s%-3d%s | %s%-60s%s | %s%-60s%s\n",
-                $indicator,
-                $lineNumColor,
-                $lineNum,
-                $reset,
-                $originalColor,
-                mb_substr($left, 0, 60),
-                $reset,
-                $compiledColor,
-                mb_substr($right, 0, 60),
-                $reset
-            );
+            if ($hasTranspiled) {
+                printf(
+                    " %s %s%-3d%s | %s%-{$colWidth}s%s | %s%s%s\n",
+                    $indicator,
+                    $lineNumColor,
+                    $currentLineNum,
+                    $reset,
+                    $blue,
+                    mb_substr($left, 0, $colWidth),
+                    $reset,
+                    $cyan,
+                    mb_substr($right, 0, $colWidth),
+                    $reset
+                );
+            } else {
+                printf(
+                    " %s %s%-3d%s | %s%s%s\n",
+                    $indicator,
+                    $lineNumColor,
+                    $currentLineNum,
+                    $reset,
+                    $blue,
+                    $left,
+                    $reset
+                );
+            }
         }
 
         echo "\n{$yellow}ERROR MESSAGE:{$reset}\n";
-        echo "{$red}» {$e->getMessage()}{$reset}\n";
-        echo "{$red}" . str_repeat('=', $maxLineWidth) . "{$reset}\n";
+        echo "{$red}» {$message}{$reset}\n";
+        echo "{$red}" . str_repeat('=', $width) . "{$reset}\n";
     }
 
     private function listClassesExtending(

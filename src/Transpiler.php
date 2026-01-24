@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript;
 
+use Exception;
 use PHireScript\Compiler\Binder;
 use PHireScript\Compiler\Checker;
 use PHireScript\Compiler\Emitter;
@@ -58,8 +59,8 @@ class Transpiler implements TranspilerInterface
         return $result;
     }
 
-    public function getCodeBeforeGenerator(): string
+    public function getCodeBeforeGenerator(): ?string
     {
-        return $this->codeBeforeGenerator ?? '';
+        return $this->codeBeforeGenerator ?? null;
     }
 }

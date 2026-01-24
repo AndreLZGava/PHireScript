@@ -4,17 +4,24 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
+use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Ast\AssignmentNode;
+use PHireScript\Compiler\Parser\Ast\BoolNode;
 use PHireScript\Compiler\Parser\Ast\GlobalStatement;
+use PHireScript\Compiler\Parser\Ast\KeyValuePairNode;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\NullExpressionNode;
+use PHireScript\Compiler\Parser\Ast\NumberNode;
 use PHireScript\Compiler\Parser\Ast\PropertyAccessNode;
 use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHireScript\Compiler\Parser\Ast\ReturnNode;
+use PHireScript\Compiler\Parser\Ast\StringNode;
 use PHireScript\Compiler\Parser\Ast\ThisExpressionNode;
+use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\VariableNode;
 use PHireScript\Compiler\Parser\Ast\VoidExpressionNode;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataModelingTrait;
 use PHireScript\Compiler\Parser\Transformers\ModifiersTransform;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
@@ -23,13 +30,50 @@ use SebastianBergmann\Environment\Runtime;
 
 class Symbol extends GlobalFactory
 {
+    use DataModelingTrait;
+
     public function process(Program $program): ?Node
     {
         $currentToken = $this->tokenManager->getCurrentToken();
         $currentContext  = $this->tokenManager->getContext();
 
         if ($currentToken['value'] === '=') {
-           // echo 'something';exit;
+            $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
+            $next = $this->tokenManager->getNextTokenAfterCurrent();
+            $varValue = null;
+
+            if ($next['type'] === 'T_STRING_LIT') {
+                $this->tokenManager->advance();
+                $varValue = new StringNode($next['value']);
+            } elseif ($next['type'] === 'T_NUMBER') {
+                $this->tokenManager->advance();
+                $varValue = new NumberNode((float) $next['value']);
+            } elseif ($next['type'] === 'T_BOOL') {
+                $this->tokenManager->advance();
+                $varValue = new BoolNode((bool) $next['value']);
+            } elseif ($next['type'] === 'T_SYMBOL') {
+                $this->tokenManager->advance();
+                $varValue = $this->parseExpression();
+            } else {
+                Debug::show($next, $previous);
+                exit;
+            }
+            $varName = '';
+            if ($previous['type'] === 'T_IDENTIFIER') {
+                $varName = $previous['value'];
+            }
+            try {
+                $assignment = new VariableDeclarationNode(
+                    name: $varName,
+                    value: $varValue,
+                    type: null,
+                );
+            } catch (\Exception $e) {
+                Debug::show($next, $previous);
+                exit;
+            }
+
+            return $assignment;
         }
 
 

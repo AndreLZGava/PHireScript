@@ -19,9 +19,10 @@ class ProgramEmitter implements NodeEmitter
 
     public function emit(object $node, EmitContext $ctx): string
     {
+        //Debug::show($node->statements);exit;
         $code['init'] = "<?php\n\n";
-        foreach ($node->statements as $stmt) {
-            $code[get_class($stmt)] = $ctx->emitter->emit($stmt, $ctx);
+        foreach ($node->statements as $position => $stmt) {
+            $code[get_class($stmt) . '_' . $position] = $ctx->emitter->emit($stmt, $ctx);
         }
         $uses = $this->processUses($ctx);
         return $this->processEntireCode($code, $uses);

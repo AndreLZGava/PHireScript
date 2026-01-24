@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
+use Exception;
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;

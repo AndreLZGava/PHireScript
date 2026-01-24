@@ -13,6 +13,7 @@ use PHireScript\Compiler\Emitter\Internal\NotOperatorEmitter;
 use PHireScript\Compiler\Emitter\Internal\ThrowStatementEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ArrayLiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\BoolEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ClassEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\DependencyEmitter;
@@ -22,6 +23,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\InterfaceEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\KeyValuePairEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\LiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\MethodEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\NumberEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ObjectLiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PackageEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ParameterEmitter;
@@ -30,8 +32,10 @@ use PHireScript\Compiler\Emitter\NodeEmitters\PropertyAccessEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyDeclarationEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ReturnEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ScalarLiteralEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\StringEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ThisExpressionEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\TraitEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\VariableDeclarationEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VariableEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VoidExpressionEmitter;
 use PHireScript\Compiler\Emitter\Type\PhpTypeResolver;
@@ -61,10 +65,14 @@ class Emitter
             new KeyValuePairEmitter(),
             new ArrayLiteralEmitter(),
             new LiteralEmitter(),
+            new BoolEmitter(),
+            new StringEmitter(),
+            new NumberEmitter(),
 
             new PropertyDeclarationEmitter(),
             new VoidExpressionEmitter(),
             new VariableEmitter(),
+            new VariableDeclarationEmitter(),
             new AssignmentEmitter(),
             new ThisExpressionEmitter(),
             new PropertyAccessEmitter(),
