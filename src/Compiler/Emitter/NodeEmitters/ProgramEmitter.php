@@ -31,9 +31,10 @@ class ProgramEmitter implements NodeEmitter
     private function processEntireCode(array $code, string $uses)
     {
         $processedCode = "";
-
         foreach ($code as $key => $code) {
-            if ($key === "PHireScript\Compiler\Parser\Ast\ClassDefinition") {
+            if (
+                str_contains($key, "PHireScript\Compiler\Parser\Ast\ClassDefinition")
+            ) {
                 $processedCode .= $uses . "\n";
             }
             $processedCode .= $code . "\n";

@@ -7,7 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast;
 class ObjectLiteralNode extends Expression
 {
     public function __construct(
-        public array $properties = []
+        public array|ArrayLiteralNode $properties = []
     ) {
     }
 }

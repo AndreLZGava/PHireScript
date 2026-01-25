@@ -8,6 +8,8 @@ use PHireScript\Compiler\Parser\Ast\GlobalStatement;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\VariableNode;
 use PHireScript\Compiler\Parser\Transformers\ModifiersTransform;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
@@ -21,6 +23,15 @@ class Method extends ClassesFactory
         $previousToken = $this->tokenManager->getPreviousTokenBeforeCurrent();
         $currentToken = $this->tokenManager->getCurrentToken();
         $nextToken = $this->tokenManager->getNextTokenAfterCurrent();
+        $context = $this->tokenManager->getContext();
+        if (
+            $context === 'casting' &&
+            $currentToken['type'] === 'T_IDENTIFIER'
+        ) {
+            $variable = new VariableNode($currentToken['value']);
+            $variable->line = $currentToken['line'];
+            return $variable;
+        }
 
         if (
             $currentToken['type'] === 'T_IDENTIFIER' &&
@@ -50,7 +61,6 @@ class Method extends ClassesFactory
             }
             return $node;
         }
-
         return null;
     }
 }

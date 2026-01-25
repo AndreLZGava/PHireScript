@@ -4,6 +4,7 @@
 namespace PHireScript\Classes;
 
 
+
 abstract class Repository {
     public string $tableName;
 

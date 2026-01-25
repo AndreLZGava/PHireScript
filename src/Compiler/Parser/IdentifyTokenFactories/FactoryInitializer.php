@@ -16,7 +16,7 @@ class FactoryInitializer
     {
         return [
             'T_COMMENT'     => Comment::class,
-            //'T_STRING_LIT'  => Comment::class,
+            'T_STRING_LIT'  => StringLiteral::class,
             'T_NUMBER'      => Number::class,
             'T_KEYWORD'     => Keywords::class,
             //'T_BOOL'        => Comment::class,

@@ -20,6 +20,7 @@ use PHireScript\Compiler\Parser\Ast\ThisExpressionNode;
 use PHireScript\Compiler\Parser\Ast\ThrowStatementNode;
 use PHireScript\Compiler\Parser\Ast\TraitDefinition;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
 use PHireScript\Compiler\Parser\Managers\TokenManager;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
@@ -27,6 +28,8 @@ use PHireScript\Runtime\RuntimeClass;
 
 abstract class ClassesFactory extends GlobalFactory
 {
+    use DataParamsModelingTrait;
+
     protected Program $program;
     public function getMethodBody(MethodDefinition $node): array
     {
@@ -67,32 +70,7 @@ abstract class ClassesFactory extends GlobalFactory
         return $result;
     }
 
-    public function getArgs($context): array
-    {
-        $codeBlockToken = $this->codeArgs();
 
-        $factories = FactoryInitializer::getFactories();
-        $result = [];
-        //Debug::show($this->tokenManager->getCurrentPosition(), $this->tokenManager->getCurrentToken());
-        $newTokenManager = new TokenManager($context, $codeBlockToken, 0);
-
-        while (!$newTokenManager->isEndOfTokens()) {
-            $token = $newTokenManager->getCurrentToken();
-            $returned = (new $factories[$token['type']]($newTokenManager))
-                ->process($this->program);
-
-            if ($returned) {
-                //  Debug::show($token);
-                $result[] = $returned;
-            }
-
-            $newTokenManager->advance();
-        }
-        //Debug::show($codeBlockToken, $this->tokenManager->getTokens());exit;
-        $this->tokenManager->walk(count($codeBlockToken));
-
-        return $result;
-    }
 
     public function getWith(mixed $node): array
     {
@@ -332,28 +310,5 @@ abstract class ClassesFactory extends GlobalFactory
             }
         }
         return $result;
-    }
-
-    public function codeArgs(): array
-    {
-        $openParenthesis = [];
-        $closeParenthesis = [];
-        $tokensOfThisBlock = array_slice($this->tokenManager->getTokens(), $this->tokenManager->getCurrentPosition());
-        foreach ($tokensOfThisBlock as $keyToken => $token) {
-            if ($token['value'] === '(') {
-                $openParenthesis[] = $token;
-            }
-
-            if ($token['value'] === ')') {
-                $closeParenthesis[] = $token;
-                if (count($openParenthesis) === count($closeParenthesis)) {
-                    break;
-                }
-            }
-        }
-
-        $tokensOfThisBlock = array_slice($tokensOfThisBlock, 0, $keyToken + 1);
-
-        return $tokensOfThisBlock;
     }
 }

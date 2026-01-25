@@ -12,6 +12,7 @@ use PHireScript\Classes\Logger;
 
 use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
 
+
  class AuthenticatorClass implements Authenticator, Another {
     use Logger;
     public function authenticate(UserCredentials $credentials): bool {
@@ -55,7 +56,7 @@ use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
     }
 
     public function returnObject(): object {
-        return (object) ['test' => 1];
+        return (object) ["test" => 1];
     }
 
 }

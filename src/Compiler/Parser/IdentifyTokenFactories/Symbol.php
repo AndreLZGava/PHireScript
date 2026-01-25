@@ -13,6 +13,7 @@ use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\NullExpressionNode;
 use PHireScript\Compiler\Parser\Ast\NumberNode;
+use PHireScript\Compiler\Parser\Ast\ObjectLiteralNode;
 use PHireScript\Compiler\Parser\Ast\PropertyAccessNode;
 use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHireScript\Compiler\Parser\Ast\ReturnNode;
@@ -21,21 +22,30 @@ use PHireScript\Compiler\Parser\Ast\ThisExpressionNode;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\VariableNode;
 use PHireScript\Compiler\Parser\Ast\VoidExpressionNode;
-use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataModelingTrait;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
 use PHireScript\Compiler\Parser\Transformers\ModifiersTransform;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\RuntimeClass;
 use SebastianBergmann\Environment\Runtime;
+use Symfony\Component\Config\Definition\IntegerNode;
 
 class Symbol extends GlobalFactory
 {
-    use DataModelingTrait;
+    use DataArrayObjectModelingTrait;
+    use DataParamsModelingTrait;
+
+    public Program $program;
 
     public function process(Program $program): ?Node
     {
+        $this->program = $program;
         $currentToken = $this->tokenManager->getCurrentToken();
         $currentContext  = $this->tokenManager->getContext();
+        if ($currentToken['value'] === '(') {
+            return null;
+        }
 
         if ($currentToken['value'] === '=') {
             $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
@@ -54,6 +64,51 @@ class Symbol extends GlobalFactory
             } elseif ($next['type'] === 'T_SYMBOL') {
                 $this->tokenManager->advance();
                 $varValue = $this->parseExpression();
+            } elseif (
+                $next['type'] === 'T_TYPE' &&
+                $next['value'] === 'String'
+            ) {
+                $this->tokenManager->walk(2);
+                $value = current($this->getArgs('casting'))->value;
+                $varValue = new StringNode((string) "'" . $value . "'");
+            } elseif (
+                $next['type'] === 'T_TYPE' &&
+                $next['value'] === 'Int'
+            ) {
+                $this->tokenManager->walk(2);
+                $value = current($this->getArgs('casting'))->value;
+                $value = trim($value, '"');
+                $value = trim($value, "'");
+                $varValue = new NumberNode((int) $value);
+            } elseif (
+                $next['type'] === 'T_TYPE' &&
+                $next['value'] === 'Float'
+            ) {
+                $this->tokenManager->walk(2);
+                $value = current($this->getArgs('casting'))->value;
+                $value = trim($value, '"');
+                $value = trim($value, "'");
+                $varValue = new NumberNode((float) $value);
+            } elseif (
+                $next['type'] === 'T_TYPE' &&
+                $next['value'] === 'Bool'
+            ) {
+                $this->tokenManager->walk(2);
+                $value = current($this->getArgs('casting'))->value;
+                $varValue = new BoolNode((bool) $value);
+            } elseif (
+                $next['type'] === 'T_TYPE' &&
+                $next['value'] === 'Array'
+            ) {
+                $this->tokenManager->walk(2);
+                $value = current($this->getArgs('casting'));
+                $varValue = new ArrayLiteralNode([$value]);
+            } elseif (
+                $next['type'] === 'T_TYPE' &&
+                $next['value'] === 'Object'
+            ) {
+                $this->tokenManager->walk(3);
+                $varValue = new ObjectLiteralNode($this->parseExpression());
             } else {
                 Debug::show($next, $previous);
                 exit;

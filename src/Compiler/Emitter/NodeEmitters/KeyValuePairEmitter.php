@@ -7,6 +7,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\KeyValuePairNode;
+use PHireScript\Helper\Debug\Debug;
 
 class KeyValuePairEmitter implements NodeEmitter
 {
@@ -19,7 +20,6 @@ class KeyValuePairEmitter implements NodeEmitter
     {
         $key = $ctx->emitter->emit($node->key, $ctx);
         $value = $ctx->emitter->emit($node->value, $ctx);
-
         return "{$key} => {$value}";
     }
 }

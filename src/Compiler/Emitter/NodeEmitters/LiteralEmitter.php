@@ -7,6 +7,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\LiteralNode;
+use PHireScript\Helper\Debug\Debug;
 
 class LiteralEmitter implements NodeEmitter
 {
@@ -19,7 +20,15 @@ class LiteralEmitter implements NodeEmitter
     {
         return match ($node->rawType) {
             'String' => $node->value,
+            'Property' => $this->clearAsString($node->value),
             default  => (string) $node->value
         };
+    }
+
+    private function clearAsString($found)
+    {
+        $found = trim($found, '"');
+        $found = trim($found, "'");
+        return '"' . $found . '"';
     }
 }

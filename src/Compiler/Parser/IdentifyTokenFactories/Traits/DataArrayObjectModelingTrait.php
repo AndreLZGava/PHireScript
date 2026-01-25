@@ -9,12 +9,12 @@ use PHireScript\Compiler\Parser\Ast\KeyValuePairNode;
 use PHireScript\Compiler\Parser\Ast\LiteralNode;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\ObjectLiteralNode;
+use PHireScript\Helper\Debug\Debug;
 
-trait DataModelingTrait
-{
-    private function parseExpression(): ?Node
-    {
+trait DataArrayObjectModelingTrait {
+    private function parseExpression(): ?Node {
         $currentToken = $this->tokenManager->getCurrentToken();
+        $nextToken = $this->tokenManager->getNextTokenAfterCurrent();
         if (!$currentToken) {
             return null;
         }
@@ -30,10 +30,10 @@ trait DataModelingTrait
         if (in_array($currentToken['type'], ['T_STRING_LIT', 'T_NUMBER', 'T_BOOL', 'T_IDENTIFIER'], true)) {
             $value = $currentToken['value'];
             $type = ($currentToken['type'] === 'T_NUMBER') ?
-            (
-            str_contains((string) $currentToken['value'], '.') ? 'Float' : 'Int'
-            ) : (($currentToken['type'] === 'T_BOOL') ? 'Bool' : 'String');
-
+                (
+                    str_contains((string) $currentToken['value'], '.') ? 'Float' : 'Int'
+                ) : (($currentToken['type'] === 'T_BOOL') ? 'Bool' : ($nextToken['value'] === ':' ? 'Property' : 'String')
+                );
             $literalNode = new LiteralNode($value, $type);
             $literalNode->line = $this->tokenManager->getCurrentToken()['line'];
             $this->tokenManager->advance();
@@ -52,12 +52,11 @@ trait DataModelingTrait
             $this->tokenManager->advance();
             return $literalNode;
         }
-      //Debug::show($currentToken);exit;
+        //Debug::show($currentToken);exit;
         return null;
     }
 
-    private function parseObjectLiteral(): ObjectLiteralNode
-    {
+    private function parseObjectLiteral(): ObjectLiteralNode {
         $this->tokenManager->advance();
         $properties = [];
 
@@ -90,8 +89,7 @@ trait DataModelingTrait
         return $objectNode;
     }
 
-    private function parseArrayLiteral(): ArrayLiteralNode
-    {
+    private function parseArrayLiteral(): ArrayLiteralNode {
         $this->tokenManager->advance(); // Pula o '['
         $elements = [];
 
