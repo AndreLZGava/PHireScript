@@ -9,7 +9,6 @@ class ArrayLiteral
     public function __construct(
         /** @var object[] */
         public array $items,
-        public int $line = null
     ) {
     }
 }

@@ -7,18 +7,19 @@ namespace PHireScript\Compiler\DependencyGraphBuilder\DependencyTree;
 use PHireScript\Compiler\Parser\Managers\TokenManager;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\PkgKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\UseKey;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 
 class FactoryDependencies
 {
-    public static function getFactories(TokenManager $tokenManager, Program $program): mixed
+    public static function getFactories(TokenManager $tokenManager, Program $program, ParseContext $parseContext): mixed
     {
         $factories = [
-        'pkg' => PkgKey::class,
-        'use' => UseKey::class,
+            'pkg' => PkgKey::class,
+            'use' => UseKey::class,
         ];
 
-        $tokenValue = $tokenManager->getCurrentToken()['value'];
+        $tokenValue = $tokenManager->getCurrentToken()->value;
 
         if (!isset($factories[$tokenValue])) {
             return null;
@@ -26,6 +27,6 @@ class FactoryDependencies
 
         $processor = new $factories[$tokenValue]($tokenManager);
 
-        return $processor->process($program);
+        return $processor->process($program, $parseContext);
     }
 }

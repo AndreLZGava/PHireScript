@@ -25,6 +25,7 @@ use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\TransientKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\Type;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\UseKey;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords\WithKey;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
@@ -32,7 +33,7 @@ class Keywords extends GlobalFactory
 {
     private array $factories;
 
-    public function process(Program $program): ?Node
+    public function process(Program $program, ParseContext $parseContext): ?Node
     {
         $this->factories = [
             'type' => Type::class,
@@ -59,7 +60,7 @@ class Keywords extends GlobalFactory
             'as' => AsKey::class
         ];
 
-        $tokenValue = $this->tokenManager->getCurrentToken()['value'];
+        $tokenValue = $this->tokenManager->getCurrentToken()->value;
         if (!isset($this->factories[$tokenValue])) {
             Debug::show($tokenValue);
         }
@@ -67,6 +68,6 @@ class Keywords extends GlobalFactory
         $class = $this->factories[$tokenValue] ?? General::class;
         $processor = new $class($this->tokenManager);
 
-        return $processor->process($program);
+        return $processor->process($program, $parseContext);
     }
 }

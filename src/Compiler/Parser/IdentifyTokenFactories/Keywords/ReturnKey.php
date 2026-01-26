@@ -12,6 +12,7 @@ use PHireScript\Compiler\Parser\Ast\ObjectLiteralNode;
 use PHireScript\Compiler\Parser\Ast\ReturnNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
@@ -19,14 +20,13 @@ class ReturnKey extends ClassesFactory
 {
     use DataArrayObjectModelingTrait;
 
-    public function process(Program $program): ?Node
+    public function process(Program $program, ParseContext $parseContext): ?Node
     {
         $this->program = $program;
         $this->tokenManager->advance();
         $expression = $this->parseExpression();
 
-        $returnNode = new ReturnNode($expression);
-        $returnNode->line = $this->tokenManager->getCurrentToken()['line'];
+        $returnNode = new ReturnNode($this->tokenManager->getCurrentToken(), $expression);
         return $returnNode;
     }
 }

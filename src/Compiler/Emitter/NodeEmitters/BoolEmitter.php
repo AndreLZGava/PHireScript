@@ -7,8 +7,10 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\BoolNode;
-use PHireScript\Compiler\Parser\Ast\Literal\BoolLiteral;
 
+/**
+ * Apparently not used.
+ */
 class BoolEmitter implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool

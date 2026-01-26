@@ -27,19 +27,19 @@ class Watcher
     public static function handleTicks(): void
     {
         foreach (self::$watchedVariables as $name => &$data) {
-            if ($data['ref'] !== $data['value']) {
+            if ($data['ref'] !== $data->value) {
                 $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
                 $caller = $trace[1] ?? $trace[0];
 
                 $data['history'][] = [
-                'from' => $data['value'],
+                'from' => $data->value,
                 'to'   => $data['ref'],
                 'file' => $caller['file'] ?? 'unknown',
-                'line' => $caller['line'] ?? 0,
+                'line' => $caller->line ?? 0,
                 'time' => microtime(true)
                 ];
 
-                $data['value'] = $data['ref'];
+                $data->value = $data['ref'];
             }
         }
     }

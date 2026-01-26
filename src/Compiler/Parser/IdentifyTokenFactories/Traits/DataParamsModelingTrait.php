@@ -11,6 +11,8 @@ use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\ObjectLiteralNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
 use PHireScript\Compiler\Parser\Managers\TokenManager;
+use PHireScript\Compiler\Parser\ParseContext;
+use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
 trait DataParamsModelingTrait
@@ -21,13 +23,13 @@ trait DataParamsModelingTrait
 
         $factories = FactoryInitializer::getFactories();
         $result = [];
-      //Debug::show($this->tokenManager->getCurrentPosition(), $this->tokenManager->getCurrentToken());
+        //Debug::show($this->tokenManager->getCurrentPosition(), $this->tokenManager->getCurrentToken());
         $newTokenManager = new TokenManager($context, $codeBlockToken, 0);
 
         while (!$newTokenManager->isEndOfTokens()) {
             $token = $newTokenManager->getCurrentToken();
-            $returned = (new $factories[$token['type']]($newTokenManager))
-            ->process($this->program);
+            $returned = (new $factories[$token->type]($newTokenManager))
+                ->process($this->program, $this->parseContext);
 
             if ($returned) {
                 $result[] = $returned;
@@ -45,11 +47,11 @@ trait DataParamsModelingTrait
         $closeParenthesis = [];
         $tokensOfThisBlock = array_slice($this->tokenManager->getTokens(), $this->tokenManager->getCurrentPosition());
         foreach ($tokensOfThisBlock as $keyToken => $token) {
-            if ($token['value'] === '(') {
+            if ($token->value === '(') {
                 $openParenthesis[] = $token;
             }
 
-            if ($token['value'] === ')') {
+            if ($token->value === ')') {
                 $closeParenthesis[] = $token;
                 if (count($openParenthesis) === count($closeParenthesis)) {
                     break;

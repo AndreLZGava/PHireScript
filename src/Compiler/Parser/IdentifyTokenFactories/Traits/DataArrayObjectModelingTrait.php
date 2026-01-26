@@ -11,44 +11,44 @@ use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\ObjectLiteralNode;
 use PHireScript\Helper\Debug\Debug;
 
-trait DataArrayObjectModelingTrait {
-    private function parseExpression(): ?Node {
+trait DataArrayObjectModelingTrait
+{
+    private function parseExpression(): ?Node
+    {
         $currentToken = $this->tokenManager->getCurrentToken();
         $nextToken = $this->tokenManager->getNextTokenAfterCurrent();
         if (!$currentToken) {
             return null;
         }
 
-        if ($currentToken['value'] === '{') {
+        if ($currentToken->value === '{') {
             return $this->parseObjectLiteral();
         }
 
-        if ($currentToken['value'] === '[') {
+        if ($currentToken->value === '[') {
             return $this->parseArrayLiteral();
         }
 
-        if (in_array($currentToken['type'], ['T_STRING_LIT', 'T_NUMBER', 'T_BOOL', 'T_IDENTIFIER'], true)) {
-            $value = $currentToken['value'];
-            $type = ($currentToken['type'] === 'T_NUMBER') ?
+        if (in_array($currentToken->type, ['T_STRING_LIT', 'T_NUMBER', 'T_BOOL', 'T_IDENTIFIER'], true)) {
+            $value = $currentToken->value;
+            $type = ($currentToken->isNumber()) ?
                 (
-                    str_contains((string) $currentToken['value'], '.') ? 'Float' : 'Int'
-                ) : (($currentToken['type'] === 'T_BOOL') ? 'Bool' : ($nextToken['value'] === ':' ? 'Property' : 'String')
+                    str_contains((string) $currentToken->value, '.') ? 'Float' : 'Int'
+                ) : (($currentToken->isBool()) ? 'Bool' : ($nextToken->value === ':' ? 'Property' : 'String')
                 );
-            $literalNode = new LiteralNode($value, $type);
-            $literalNode->line = $this->tokenManager->getCurrentToken()['line'];
+            $literalNode = new LiteralNode($this->tokenManager->getCurrentToken(), $value, $type);
             $this->tokenManager->advance();
             return $literalNode;
         }
 
         if (
-            in_array($currentToken['type'], ['T_IDENTIFIER', 'T_TYPE'], true) &&
-            in_array($currentToken['value'], ['null', 'Null', 'Void', 'void'], true)
+            in_array($currentToken->type, ['T_IDENTIFIER', 'T_TYPE'], true) &&
+            in_array($currentToken->value, ['null', 'Null', 'Void', 'void'], true)
         ) {
-            $value = $currentToken['value'];
+            $value = $currentToken->value;
             $type = 'Null';
 
-            $literalNode = new LiteralNode($value, $type);
-            $literalNode->line = $this->tokenManager->getCurrentToken()['line'];
+            $literalNode = new LiteralNode($this->tokenManager->getCurrentToken(), $value, $type);
             $this->tokenManager->advance();
             return $literalNode;
         }
@@ -56,68 +56,68 @@ trait DataArrayObjectModelingTrait {
         return null;
     }
 
-    private function parseObjectLiteral(): ObjectLiteralNode {
+    private function parseObjectLiteral(): ObjectLiteralNode
+    {
         $this->tokenManager->advance();
         $properties = [];
 
         while (
             $this->tokenManager->getCurrentToken() &&
-            $this->tokenManager->getCurrentToken()['value'] !== '}'
+            $this->tokenManager->getCurrentToken()->value !== '}'
         ) {
             $keyNode = $this->parseExpression();
             $currentToken = $this->tokenManager->getCurrentToken();
-            if ($currentToken && $currentToken['value'] === ':') {
+            if ($currentToken && $currentToken->value === ':') {
                 $this->tokenManager->advance();
                 $valueNode = $this->parseExpression();
 
-                $properties[] = new KeyValuePairNode($keyNode, $valueNode);
+                $properties[] = new KeyValuePairNode($currentToken, $keyNode, $valueNode);
             }
 
-            if ($currentToken && $currentToken['value'] === ',') {
+            if ($currentToken && $currentToken->value === ',') {
                 $this->tokenManager->advance();
-            } elseif ($currentToken && $currentToken['value'] !== '}') {
+            } elseif ($currentToken && $currentToken->value !== '}') {
                 break;
             }
         }
-        $objectNode = new ObjectLiteralNode($properties);
+        $objectNode = new ObjectLiteralNode($this->tokenManager->getCurrentToken(), $properties);
 
         if ($this->tokenManager->getCurrentToken()) {
-            $objectNode->line = $this->tokenManager->getCurrentToken()['line'];
             $this->tokenManager->advance();
         }
 
         return $objectNode;
     }
 
-    private function parseArrayLiteral(): ArrayLiteralNode {
+    private function parseArrayLiteral(): ArrayLiteralNode
+    {
         $this->tokenManager->advance(); // Pula o '['
         $elements = [];
 
-        while ($this->tokenManager->getCurrentToken() && $this->tokenManager->getCurrentToken()['value'] !== ']') {
+        while ($this->tokenManager->getCurrentToken() && $this->tokenManager->getCurrentToken()->value !== ']') {
             $expression = $this->parseExpression();
 
-            if ($this->tokenManager->getCurrentToken() && $this->tokenManager->getCurrentToken()['value'] === '=>') {
+            if ($this->tokenManager->getCurrentToken() && $this->tokenManager->getCurrentToken()->value === '=>') {
                 $this->tokenManager->advance(); // Pula '=>'
                 $value = $this->parseExpression();
 
-                $elements[] = new KeyValuePairNode($expression, $value);
+                $elements[] = new KeyValuePairNode($this->tokenManager->getCurrentToken(), $expression, $value);
             } else {
                 $elements[] = $expression;
             }
 
-            if ($this->tokenManager->getCurrentToken() && $this->tokenManager->getCurrentToken()['value'] === ',') {
+            if ($this->tokenManager->getCurrentToken() && $this->tokenManager->getCurrentToken()->value === ',') {
                 $this->tokenManager->advance();
             } else {
-                if ($this->tokenManager->getCurrentToken()['value'] !== ']') {
+                if ($this->tokenManager->getCurrentToken()->value !== ']') {
                     break;
                 }
             }
         }
 
-        $arrayLiteralNode = new ArrayLiteralNode($elements);
+        $arrayLiteralNode = new ArrayLiteralNode($this->tokenManager->getCurrentToken(), $elements);
 
         if ($this->tokenManager->getCurrentToken()) {
-            $arrayLiteralNode->line = $this->tokenManager->getCurrentToken()['line'];
             $this->tokenManager->advance();
         }
 

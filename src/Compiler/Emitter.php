@@ -16,6 +16,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\BoolEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ClassEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\CommentStatementEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\DependencyEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ExternalEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\GlobalStatementEmitter;
@@ -79,6 +80,7 @@ class Emitter
 
             new ParameterEmitter(),
             new PropertyEmitter(),
+            new CommentStatementEmitter(),
             new GlobalStatementEmitter(),
             new IfStatementEmitter(),
             new IssetOperatorEmitter(),

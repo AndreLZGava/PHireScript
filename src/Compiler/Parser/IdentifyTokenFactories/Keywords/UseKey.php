@@ -9,21 +9,22 @@ use PHireScript\Compiler\Parser\Ast\DependenciesStatement;
 use PHireScript\Compiler\Parser\Ast\DependencyStatement;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
 class UseKey extends ClassesFactory
 {
-    public function process(Program $program): ?Node
+    public function process(Program $program, ParseContext $parseContext): ?Node
     {
         $this->program = $program;
         $currentToken = $this->tokenManager->getCurrentToken();
         $this->tokenManager->advance();
         $packages = $this->buildUseNamespaces();
         $packages = new DependenciesStatement(
+            $currentToken,
             $packages,
         );
-        $packages->line = $currentToken['line'];
         return $packages;
     }
 
@@ -37,39 +38,37 @@ class UseKey extends ClassesFactory
         foreach ($leftTokens as $index => $token) {
             $walk++;
 
-            if ($token['value'] === '{') {
+            if ($token->value === '{') {
                 $groupResults = $this->parseGroup($basePath, $leftTokens, $index);
                 $uses = array_merge($uses, $groupResults['uses']);
                 $walk += $groupResults['walked'];
                 break;
             }
 
-            if ($token['value'] === 'as') {
+            if ($token->value === 'as') {
                 $aliasToken = $leftTokens[$index + 1] ?? null;
-                if ($aliasToken && $aliasToken['type'] === 'T_IDENTIFIER') {
-                    $dependency = new DependencyStatement(rtrim($basePath, '.'));
-                    $dependency->alias = $aliasToken['value'];
-                    $dependency->line = $token['line'];
+                if ($aliasToken && $aliasToken->isIdentifier()) {
+                    $dependency = new DependencyStatement($token, rtrim($basePath, '.'));
+                    $dependency->alias = $aliasToken->value;
                     $uses[] = $dependency;
                     $walk++;
                 }
                 break;
             }
 
-            if ($token['type'] === 'T_EOL' || $token['value'] === ';') {
+            if ($token->isEndOfLine() || $token->value === ';') {
                 break;
             }
 
-            if ($token['type'] === 'T_IDENTIFIER' || $token['type'] === 'T_SYMBOL' || $token['type'] === 'T_SYMBOL') {
-                if (!in_array($token['value'], ['as', '{', '}'])) {
-                    $basePath .= $token['value'];
+            if ($token->isIdentifier() || $token->isSymbol() || $token->isSymbol()) {
+                if (!in_array($token->value, ['as', '{', '}'])) {
+                    $basePath .= $token->value;
                 }
             }
         }
 
         if (empty($uses) && !empty($basePath)) {
-            $dependency = new DependencyStatement(rtrim($basePath, '.'));
-            $dependency->line = $leftTokens[0]['line'];
+            $dependency = new DependencyStatement($leftTokens[0], rtrim($basePath, '.'));
             $uses[] = $dependency;
         }
 
@@ -92,17 +91,16 @@ class UseKey extends ClassesFactory
             $walked++;
             $token = $tokens[$i];
 
-            if ($token['value'] === '}') {
+            if ($token->value === '}') {
                 break;
             }
 
-            if ($token['type'] === 'T_IDENTIFIER') {
-                $currentPath = $token['value'];
-                $dependency = new DependencyStatement($basePath . $currentPath);
-                $dependency->line = $token['line'];
+            if ($token->isIdentifier()) {
+                $currentPath = $token->value;
+                $dependency = new DependencyStatement($token, $basePath . $currentPath);
 
-                if (($tokens[$i + 1]['value'] ?? '') === 'as') {
-                    $dependency->alias = $tokens[$i + 2]['value'] ?? null;
+                if (($tokens[$i + 1]->value ?? '') === 'as') {
+                    $dependency->alias = $tokens[$i + 2]->value ?? null;
                     $i += 2;
                     $walked += 2;
                 }

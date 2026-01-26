@@ -1,0 +1,42 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols;
+
+use PHireScript\Compiler\Parser\Ast\BoolNode;
+use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\NumberNode;
+use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
+use PHireScript\Compiler\Program;
+use PHireScript\Compiler\Parser\ParseContext;
+
+class ObjectArrayLiteralVariable extends GlobalFactory
+{
+    use DataArrayObjectModelingTrait;
+
+    public function isTheCase()
+    {
+        return $this->tokenManager->getCurrentToken()->value === '=' &&
+        $this->tokenManager->getNextTokenAfterCurrent()->isSymbol();
+    }
+
+    public function process(Program $program, ParseContext $parseContext): ?Node
+    {
+        $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
+        $currentToken = $this->tokenManager->getCurrentToken();
+        $this->tokenManager->advance();
+        $varValue = $this->parseExpression();
+
+        $assignment = new VariableDeclarationNode(
+            token: $currentToken,
+            name: $previous->value,
+            value: $varValue,
+            type: null,
+        );
+
+        return $assignment;
+    }
+}

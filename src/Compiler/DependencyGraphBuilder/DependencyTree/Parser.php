@@ -3,6 +3,7 @@
 namespace PHireScript\Compiler\DependencyGraphBuilder\DependencyTree;
 
 use PHireScript\Compiler\Parser\Managers\TokenManager;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Runtime\RuntimeClass;
 
@@ -14,16 +15,17 @@ class Parser
 
     public function parse($tokens, $path): Program
     {
-        $program = new Program();
+        $tokenManager = new TokenManager(RuntimeClass::CONTEXT_GENERAL, $tokens, 0);
+        $program = new Program($tokenManager->getCurrentToken());
         $program->config = $this->config;
         $program->path = $path;
         $program->line = 0;
-        $tokenManager = new TokenManager(RuntimeClass::CONTEXT_GENERAL, $tokens, 0);
-
+        $parseContext = new ParseContext();
         while (!$tokenManager->isEndOfTokens()) {
             $result = FactoryDependencies::getFactories(
                 $tokenManager,
-                $program
+                $program,
+                $parseContext
             );
 
             if ($result) {

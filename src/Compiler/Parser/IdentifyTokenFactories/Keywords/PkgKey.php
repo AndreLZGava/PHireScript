@@ -8,24 +8,25 @@ use Exception;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\PackageStatement;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\RuntimeClass;
 
 class PkgKey extends ClassesFactory
 {
-    public function process(Program $program): ?Node
+    public function process(Program $program, ParseContext $parseContext): ?Node
     {
         $this->program = $program;
         $currentToken = $this->tokenManager->getCurrentToken();
         $object = $this->getObjectAssign();
         $package = $this->getPkg();
         $package = new PackageStatement(
+            $currentToken,
             $package,
             $object,
             $program->path,
         );
-        $package->line = $currentToken['line'];
         $package->generateNamespace($program->config);
         return $package;
     }
@@ -36,11 +37,11 @@ class PkgKey extends ClassesFactory
         $objects = RuntimeClass::OBJECT_AS_CLASS;
         foreach ($leftTokens as $keyToken => $token) {
             if (
-                $token['type'] === 'T_KEYWORD' &&
-                in_array($token['value'], $objects, true) &&
-                $leftTokens[$keyToken + 1]['type'] === 'T_IDENTIFIER'
+                $token->isKeyword() &&
+                in_array($token->value, $objects, true) &&
+                $leftTokens[$keyToken + 1]->isIdentifier()
             ) {
-                return $leftTokens[$keyToken + 1]['value'];
+                return $leftTokens[$keyToken + 1]->value;
             }
         }
         throw new Exception('Could not load ' . implode(', ', $objects));
@@ -54,19 +55,19 @@ class PkgKey extends ClassesFactory
         foreach ($leftTokens as $keyToken => $token) {
             $walk++;
             if (
-                $token['type'] === 'T_EOL' ||
-                $token['type'] === 'T_SYMBOL' &&
-                $leftTokens[$keyToken + 1]['type'] === 'T_EOL'
+                $token->isEndOfLine() ||
+                $token->isSymbol() &&
+                $leftTokens[$keyToken + 1]->isEndOfLine()
             ) {
                 break;
             }
 
-            if ($token['type'] === 'T_IDENTIFIER') {
-                $package .= $token['value'];
+            if ($token->isIdentifier()) {
+                $package .= $token->value;
             }
 
-            if ($token['type'] === 'T_SYMBOL' && $token['value'] === '.') {
-                $package .= $token['value'];
+            if ($token->isSymbol() && $token->value === '.') {
+                $package .= $token->value;
             }
         }
         return $package;

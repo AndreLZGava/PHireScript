@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast;
 
 use Exception;
+use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\RuntimeClass;
 
@@ -16,6 +17,7 @@ class PackageStatement extends Statement
     public readonly string $completePackage;
 
     public function __construct(
+        public Token $token,
         public readonly string $package,
         public readonly string $object,
         public readonly string $file,

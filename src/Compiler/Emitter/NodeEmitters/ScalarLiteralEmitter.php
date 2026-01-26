@@ -11,7 +11,11 @@ use PHireScript\Compiler\Parser\Ast\Literal\FloatLiteral;
 use PHireScript\Compiler\Parser\Ast\Literal\IntLiteral;
 use PHireScript\Compiler\Parser\Ast\Literal\NullLiteral;
 use PHireScript\Compiler\Parser\Ast\Literal\StringLiteral;
+use PHireScript\Helper\Debug\Debug;
 
+/**
+ * Apparently not used.
+ */
 class ScalarLiteralEmitter implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool

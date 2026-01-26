@@ -60,8 +60,8 @@ class Validator
         $hasPkg = false;
         $hasMoreThanOneObjectByFile = 0;
         foreach ($tokens as $token) {
-            $tokenValue = $token['value'];
-            $line = $token['line'];
+            $tokenValue = $token->value;
+            $line = $token->line;
             if ($this->isForbidden($tokenValue)) {
                 $message = $this->getMessage($tokenValue);
                 throw new \Exception(
@@ -113,11 +113,11 @@ class Validator
 
     private function countCounterPart($token, $open, $close)
     {
-        if ($token['value'] === $open) {
+        if ($token->value === $open) {
             $this->open[$open]++;
         }
 
-        if ($token['value'] === $close) {
+        if ($token->value === $close) {
             $this->close[$close]++;
         }
     }

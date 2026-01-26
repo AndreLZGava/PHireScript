@@ -9,11 +9,12 @@ use PHireScript\Compiler\Parser\Ast\ExternalsStatement;
 use PHireScript\Compiler\Parser\Ast\NamespaceStatement;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 
 class ExternalKey extends ClassesFactory
 {
-    public function process(Program $program): ?Node
+    public function process(Program $program, ParseContext $parseContext): ?Node
     {
         $this->program = $program;
         $currentToken = $this->tokenManager->getCurrentToken();
@@ -21,9 +22,9 @@ class ExternalKey extends ClassesFactory
         $namespaces = $this->buildUseNamespaces();
 
         $namespaces = new ExternalsStatement(
+            $currentToken,
             $namespaces,
         );
-        $namespaces->line = $currentToken['line'];
         return $namespaces;
     }
 
@@ -37,19 +38,18 @@ class ExternalKey extends ClassesFactory
         foreach ($leftTokens as $index => $token) {
             $walk++;
 
-            if ($token['value'] === '{') {
+            if ($token->value === '{') {
                 $groupResults = $this->parseExternalGroup($basePath, $leftTokens, $index);
                 $uses = array_merge($uses, $groupResults['uses']);
                 $walk += $groupResults['walked'];
                 break;
             }
 
-            if ($token['value'] === 'as') {
+            if ($token->value === 'as') {
                 $aliasToken = $leftTokens[$index + 1] ?? null;
-                if ($aliasToken && $aliasToken['type'] === 'T_IDENTIFIER') {
-                    $dependency = new NamespaceStatement(rtrim($basePath, '\\'));
-                    $dependency->alias = $aliasToken['value'];
-                    $dependency->line = $token['line'];
+                if ($aliasToken && $aliasToken->isIdentifier()) {
+                    $dependency = new NamespaceStatement($token, rtrim($basePath, '\\'));
+                    $dependency->alias = $aliasToken->value;
                     $uses[] = $dependency;
                     $walk++;
                 }
@@ -57,18 +57,17 @@ class ExternalKey extends ClassesFactory
             }
 
             $nextToken = $leftTokens[$index + 1] ?? null;
-            if (!$nextToken || $nextToken['type'] === 'T_EOL' || $nextToken['value'] === ';') {
+            if (!$nextToken || $nextToken->isEndOfLine() || $nextToken->value === ';') {
                 if (empty($uses)) {
-                    $basePath .= $token['value'];
-                    $dependency = new NamespaceStatement(rtrim($basePath, '\\'));
-                    $dependency->line = $token['line'];
+                    $basePath .= $token->value;
+                    $dependency = new NamespaceStatement($token, rtrim($basePath, '\\'));
                     $uses[] = $dependency;
                 }
                 break;
             }
 
-            if ($token['type'] === 'T_IDENTIFIER' || $token['type'] === 'T_BACKSLASH') {
-                $basePath .= $token['value'];
+            if ($token->isIdentifier() || $token->type === 'T_BACKSLASH') {
+                $basePath .= $token->value;
             }
         }
 
@@ -89,16 +88,15 @@ class ExternalKey extends ClassesFactory
             $walked++;
             $token = $tokens[$i];
 
-            if ($token['value'] === '}') {
+            if ($token->value === '}') {
                 break;
             }
 
-            if ($token['type'] === 'T_IDENTIFIER') {
-                $dependency = new NamespaceStatement($basePath . $token['value']);
-                $dependency->line = $token['line'];
+            if ($token->isIdentifier()) {
+                $dependency = new NamespaceStatement($token, $basePath . $token->value);
 
-                if (($tokens[$i + 1]['value'] ?? '') === 'as') {
-                    $dependency->alias = $tokens[$i + 2]['value'] ?? null;
+                if (($tokens[$i + 1]->value ?? '') === 'as') {
+                    $dependency->alias = $tokens[$i + 2]->value ?? null;
                     $i += 2;
                     $walked += 2;
                 }

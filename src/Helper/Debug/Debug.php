@@ -15,7 +15,7 @@ class Debug
 
         $backtrace = debug_backtrace();
         $file = $backtrace[0]['file'] ?? 'unknown';
-        $line = $backtrace[0]['line'] ?? 0;
+        $line = $backtrace[0]->line ?? 0;
 
         $isAlt = self::$callCount % 2 === 0;
 

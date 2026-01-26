@@ -1,0 +1,53 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols;
+
+use PHireScript\Compiler\Parser\Ast\BoolNode;
+use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\NumberNode;
+use PHireScript\Compiler\Parser\Ast\StringNode;
+use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataStringModelingTrait;
+use PHireScript\Compiler\Program;
+use PHireScript\Compiler\Parser\ParseContext;
+
+class BoolCastVariable extends GlobalFactory
+{
+    use DataArrayObjectModelingTrait;
+    use DataParamsModelingTrait;
+    use DataStringModelingTrait;
+
+    public function isTheCase()
+    {
+        return $this->tokenManager->getCurrentToken()->value === '=' &&
+        $this->tokenManager->getNextTokenAfterCurrent()->isType() &&
+        $this->tokenManager->getNextTokenAfterCurrent()->value === 'Bool';
+    }
+
+    public function process(Program $program, ParseContext $parseContext): ?Node
+    {
+        $this->program = $program;
+        $this->parseContext = $parseContext;
+        $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
+        $currentToken = $this->tokenManager->getCurrentToken();
+
+        $this->tokenManager->walk(2);
+        $value = current($this->getArgs('casting'))->value;
+        $value = $this->clearQuotes($value);
+        $varValue = new BoolNode($this->tokenManager->getCurrentToken(), (bool) $value);
+
+        $assignment = new VariableDeclarationNode(
+            token: $currentToken,
+            name: $previous->value,
+            value: $varValue,
+            type: null,
+        );
+
+        return $assignment;
+    }
+}

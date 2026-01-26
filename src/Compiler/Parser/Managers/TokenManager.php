@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Managers;
 
+use PHireScript\Compiler\Parser\Managers\Token\Token;
+
 class TokenManager
 {
     private $tokenLookup;
     public $positionLookup;
 
-    private array $currentToken;
+    private Token $currentToken;
 
     private $endFileToken;
 
@@ -20,12 +22,12 @@ class TokenManager
         $this->tokenLookup = $this->currentToken;
         $this->positionLookup = $this->currentPosition;
 
-        $this->endFileToken = [
-            'type' => 'T_EOF',
-            'value' => '',
-            'line' => $this->line ?? 0,
-            'column' => 0
-        ];
+        $this->endFileToken = new Token(
+            type: 'T_EOF',
+            value: '',
+            line: $this->line ?? 0,
+            column: 0,
+        );
     }
 
     public function getLeftTokens(): array

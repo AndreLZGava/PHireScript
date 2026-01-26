@@ -6,6 +6,7 @@ namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Parser\Transformers\ModifiersTransform;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
@@ -13,18 +14,17 @@ use PHireScript\Runtime\RuntimeClass;
 
 class Type extends GlobalFactory
 {
-    public function process(Program $program): ?Node
+    public function process(Program $program, ParseContext $parseContext): ?Node
     {
-        $node = new PropertyDefinition();
-        $node->line = $this->tokenManager->getCurrentToken()['line'];
-        $allowNull = false;
         $currentToken =  $this->tokenManager->getCurrentToken();
+        $node = new PropertyDefinition($currentToken);
+        $allowNull = false;
         $context = $this->tokenManager->getContext();
         if (
             $context !== RuntimeClass::CONTEXT_GET_ARGUMENTS
         ) {
             $token = $this->tokenManager->getPreviousTokenBeforeCurrent();
-            if ($token['value'] === '?') {
+            if ($token->value === '?') {
                 $token = $this->tokenManager->getPreviousToken();
                 $allowNull = true;
             }
@@ -40,13 +40,13 @@ class Type extends GlobalFactory
             $currentToken = $this->tokenManager->getCurrentToken();
             $nextToken = $this->tokenManager->getNextTokenAfterCurrent();
             $this->tokenManager->advance();
-            $node->type = $currentToken['value'];
-            if ($nextToken['type'] === 'T_IDENTIFIER') {
-                $node->name = $nextToken['value'];
+            $node->type = $currentToken->value;
+            if ($nextToken->isIdentifier()) {
+                $node->name = $nextToken->value;
                 $nextAfterVariableName = $this->tokenManager->getNextToken();
-                if ($nextAfterVariableName['value'] == '=') {
+                if ($nextAfterVariableName->value == '=') {
                     $nextAfterEqual = $this->tokenManager->getNextToken();
-                    $node->defaultValue = $nextAfterEqual['value'];
+                    $node->defaultValue = $nextAfterEqual->value;
                     $this->tokenManager->walk(2);
                 }
                 break;

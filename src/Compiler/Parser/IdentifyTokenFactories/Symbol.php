@@ -4,322 +4,80 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
-use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
-use PHireScript\Compiler\Parser\Ast\AssignmentNode;
-use PHireScript\Compiler\Parser\Ast\BoolNode;
-use PHireScript\Compiler\Parser\Ast\GlobalStatement;
-use PHireScript\Compiler\Parser\Ast\KeyValuePairNode;
-use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\Node;
-use PHireScript\Compiler\Parser\Ast\NullExpressionNode;
-use PHireScript\Compiler\Parser\Ast\NumberNode;
-use PHireScript\Compiler\Parser\Ast\ObjectLiteralNode;
-use PHireScript\Compiler\Parser\Ast\PropertyAccessNode;
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
-use PHireScript\Compiler\Parser\Ast\ReturnNode;
-use PHireScript\Compiler\Parser\Ast\StringNode;
-use PHireScript\Compiler\Parser\Ast\ThisExpressionNode;
-use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
-use PHireScript\Compiler\Parser\Ast\VariableNode;
-use PHireScript\Compiler\Parser\Ast\VoidExpressionNode;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\ArrayCastVariable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\BlockBracketsCommaOnMethod;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\BlockBrackets;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\BlockParenthesisOnMethod;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\BoolCastVariable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\BoolLiteralVariable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\CharactersOnMethods;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\ComplexObject;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\DotOnGeneral;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\FloatCastVariable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\GetterAndSetters;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\GettingArguments;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\IntCastVariable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\NumberLiteralVariable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\ObjectArrayLiteralVariable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\ObjectCastVariable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\SingleCommaOnClass;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\SingleOpenParenthesisOperator;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\StringCastVariable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\StringLiteralVariable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
-use PHireScript\Compiler\Parser\Transformers\ModifiersTransform;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
-use PHireScript\Runtime\RuntimeClass;
-use SebastianBergmann\Environment\Runtime;
-use Symfony\Component\Config\Definition\IntegerNode;
 
 class Symbol extends GlobalFactory
 {
-    use DataArrayObjectModelingTrait;
-    use DataParamsModelingTrait;
-
     public Program $program;
+    public ParseContext $parseContext;
 
-    public function process(Program $program): ?Node
+    public function process(Program $program, ParseContext $parseContext): ?Node
     {
         $this->program = $program;
-        $currentToken = $this->tokenManager->getCurrentToken();
-        $currentContext  = $this->tokenManager->getContext();
-        if ($currentToken['value'] === '(') {
-            return null;
-        }
+        $this->parseContext = $parseContext;
 
-        if ($currentToken['value'] === '=') {
-            $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
-            $next = $this->tokenManager->getNextTokenAfterCurrent();
-            $varValue = null;
+        $factories = [
+            new ArrayCastVariable($this->tokenManager),
+            new BlockBrackets($this->tokenManager),
+            new BlockBracketsCommaOnMethod($this->tokenManager),
+            new BlockParenthesisOnMethod($this->tokenManager),
+            new BoolCastVariable($this->tokenManager),
+            new BoolLiteralVariable($this->tokenManager),
+            new CharactersOnMethods($this->tokenManager),
+            new ComplexObject($this->tokenManager),
+            new DotOnGeneral($this->tokenManager),
+            new FloatCastVariable($this->tokenManager),
+            new GetterAndSetters($this->tokenManager),
+            new GettingArguments($this->tokenManager),
+            new IntCastVariable($this->tokenManager),
+            new NumberLiteralVariable($this->tokenManager),
+            new ObjectArrayLiteralVariable($this->tokenManager),
+            new ObjectCastVariable($this->tokenManager),
+            new SingleCommaOnClass($this->tokenManager),
+            new SingleOpenParenthesisOperator($this->tokenManager),
+            new StringCastVariable($this->tokenManager),
+            new StringLiteralVariable($this->tokenManager),
+        ];
 
-            if ($next['type'] === 'T_STRING_LIT') {
-                $this->tokenManager->advance();
-                $varValue = new StringNode($next['value']);
-            } elseif ($next['type'] === 'T_NUMBER') {
-                $this->tokenManager->advance();
-                $varValue = new NumberNode((float) $next['value']);
-            } elseif ($next['type'] === 'T_BOOL') {
-                $this->tokenManager->advance();
-                $varValue = new BoolNode((bool) $next['value']);
-            } elseif ($next['type'] === 'T_SYMBOL') {
-                $this->tokenManager->advance();
-                $varValue = $this->parseExpression();
-            } elseif (
-                $next['type'] === 'T_TYPE' &&
-                $next['value'] === 'String'
-            ) {
-                $this->tokenManager->walk(2);
-                $value = current($this->getArgs('casting'))->value;
-                $varValue = new StringNode((string) "'" . $value . "'");
-            } elseif (
-                $next['type'] === 'T_TYPE' &&
-                $next['value'] === 'Int'
-            ) {
-                $this->tokenManager->walk(2);
-                $value = current($this->getArgs('casting'))->value;
-                $value = trim($value, '"');
-                $value = trim($value, "'");
-                $varValue = new NumberNode((int) $value);
-            } elseif (
-                $next['type'] === 'T_TYPE' &&
-                $next['value'] === 'Float'
-            ) {
-                $this->tokenManager->walk(2);
-                $value = current($this->getArgs('casting'))->value;
-                $value = trim($value, '"');
-                $value = trim($value, "'");
-                $varValue = new NumberNode((float) $value);
-            } elseif (
-                $next['type'] === 'T_TYPE' &&
-                $next['value'] === 'Bool'
-            ) {
-                $this->tokenManager->walk(2);
-                $value = current($this->getArgs('casting'))->value;
-                $varValue = new BoolNode((bool) $value);
-            } elseif (
-                $next['type'] === 'T_TYPE' &&
-                $next['value'] === 'Array'
-            ) {
-                $this->tokenManager->walk(2);
-                $value = current($this->getArgs('casting'));
-                $varValue = new ArrayLiteralNode([$value]);
-            } elseif (
-                $next['type'] === 'T_TYPE' &&
-                $next['value'] === 'Object'
-            ) {
-                $this->tokenManager->walk(3);
-                $varValue = new ObjectLiteralNode($this->parseExpression());
-            } else {
-                Debug::show($next, $previous);
-                exit;
+        foreach ($factories as $parser) {
+            if ($parser->isTheCase()) {
+                return $parser->process($program, $parseContext);
             }
-            $varName = '';
-            if ($previous['type'] === 'T_IDENTIFIER') {
-                $varName = $previous['value'];
-            }
-            try {
-                $assignment = new VariableDeclarationNode(
-                    name: $varName,
-                    value: $varValue,
-                    type: null,
-                );
-            } catch (\Exception $e) {
-                Debug::show($next, $previous);
-                exit;
-            }
-
-            return $assignment;
-        }
-
-
-        if (
-            in_array($currentToken['value'], ['.'], true)
-            && $currentContext === 'general'
-        ) {
-            // Getting pkg name probably;
-            return null;
-        }
-
-        if (
-            in_array($currentToken['value'], RuntimeClass::START_END_ARGUMENTS, true)
-            && $currentContext === RuntimeClass::CONTEXT_GET_ARGUMENTS
-        ) {
-            // Ignore () for getting arguments
-            return null;
-        }
-
-        if (
-            in_array($currentToken['value'], [','], true)
-            && $currentContext === 'class'
-        ) {
-            return null;
-        }
-
-        if (
-            in_array($currentToken['value'], ['[', ']', ','], true)
-            && $currentContext === 'method'
-        ) {
-            // Ignore for methods
-            $node = new GlobalStatement();
-            $node->code = $currentToken['value'];
-            return $node;
-        }
-
-        if (in_array($currentToken['value'], RuntimeClass::BLOCK_DELIMITERS, true)) {
-            return null;
-        }
-
-        if (
-            in_array($currentToken['value'], RuntimeClass::CHARACTERS_ON_METHODS, true) &&
-            in_array($currentContext, RuntimeClass::OBJECT_AS_CLASS, true)
-        ) {
-            return null;
-        }
-
-        if (
-            in_array($currentToken['value'], RuntimeClass::GETTER_AND_SETTER, true) &&
-            in_array($currentContext, RuntimeClass::OBJECT_AS_CLASS, true)
-        ) {
-            $node = new MethodDefinition();
-            return $this->parseGetterAndSetter($node);
-        }
-
-        if (
-            in_array($currentToken['value'], RuntimeClass::ACCESSORS, true) &&
-            in_array($currentContext, RuntimeClass::OBJECT_AS_CLASS, true)
-        ) {
-            //Debug::show($this->tokenManager->getNextTokenAfterCurrent());exit;
-            if ($this->tokenManager->getNextTokenAfterCurrent()['type'] === 'T_SYMBOL') {
-                return null;
-            }
-            $node = new PropertyDefinition();
-            $node->line = $currentToken['line'];
-            $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($currentToken);
-            return $this->parsePropertyWithTypes($node);
         }
 
         Debug::show(
             [
-                'currentToken' => $currentToken,
-                'context' => $currentContext,
+                'currentToken' => $this->tokenManager->getCurrentToken(),
+                'context' => $this->tokenManager->getContext(),
                 'program' => $program
             ],
             debug_backtrace(2)
         );
         exit;
-        return null;
-    }
-
-    private function parseGetterAndSetter(MethodDefinition $node)
-    {
-        $tokens = $this->tokenManager->getLeftTokens();
-        $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
-        $currentToken = $this->tokenManager->getCurrentToken();
-        $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($previous);
-        $toWalk = 0;
-        if (
-            $previous['type'] === 'T_EOL' ||
-            $previous['type'] === 'T_COMMENT'
-        ) {
-            $toWalk = 1;
-        }
-
-        $types = [];
-        $name = 'wrongCompilation';
-        $typeMethod = '';
-        $processBeforeAttribution = true;
-        $defaultValue = null;
-        foreach ($tokens as $key => $token) {
-            if ($processBeforeAttribution && $token['type'] === 'T_TYPE') {
-                $types[] = $token['value'];
-            }
-
-            if ($processBeforeAttribution && $token['type'] === 'T_IDENTIFIER') {
-                $name = trim((string) $token['value']);
-            }
-
-            if ($token['type'] === 'T_SYMBOL' && $token['value'] === '=') {
-                $processBeforeAttribution = false;
-                $defaultValue = $tokens[$key + 1];
-            }
-
-            if ($token['type'] === 'T_EOL') {
-                break;
-            }
-        }
-
-        $node->line = $currentToken['line'];
-        if ($currentToken['value'] === '>') {
-            $typeMethod = 'set';
-            $arg = new PropertyDefinition();
-            $arg->line = $currentToken['line'];
-            $arg->name = $name;
-            $arg->type = implode("|", $types);
-            if ($defaultValue) {
-                $arg->defaultValue = $defaultValue;
-            }
-            $node->args[] = $arg;
-            $property = new PropertyAccessNode(
-                new ThisExpressionNode(),
-                $name
-            );
-            $assignment = new AssignmentNode($property, new VariableNode($name));
-            $node->bodyCode[] = $assignment;
-            $returnStatement = new ReturnNode(new VoidExpressionNode());
-            $node->bodyCode[] = $returnStatement;
-            $node->returnType = 'Void';
-        }
-
-        if ($currentToken['value'] === '<') {
-            $typeMethod = 'get';
-            $node->args = [];
-            $property = new PropertyAccessNode(
-                new ThisExpressionNode(),
-                $name
-            );
-            $returnStatement = new ReturnNode($property);
-            $node->bodyCode[] = $returnStatement;
-
-            $node->returnType = implode("|", $types);
-        }
-
-        $node->name = $typeMethod . ucfirst($name);
-        // $this->tokenManager->walk($toWalk);
-        return $node;
-    }
-
-    private function parsePropertyWithTypes(PropertyDefinition $node): PropertyDefinition
-    {
-        $types = [];
-
-        while (!$this->tokenManager->isEndOfTokens()) {
-            $token = $this->tokenManager->getCurrentToken();
-
-            if ($token['type'] === 'T_TYPE' || $this->isTypeFormat($token)) {
-                $types[] = $token['value'];
-            }
-
-            $nextToken = $this->tokenManager->getNextTokenAfterCurrent();
-
-            $this->tokenManager->advance();
-
-            if ($nextToken['type'] === 'T_IDENTIFIER') {
-                $node->name = trim((string) $nextToken['value']);
-                break;
-            }
-        }
-
-        $node->type = implode('|', $types);
-        return $node;
-    }
-
-    private function isTypeFormat(array $token): bool
-    {
-        if ($token['type'] !== 'T_IDENTIFIER') {
-            return false;
-        }
-        $value = $token['value'];
-        $firstLetter = mb_substr((string) $value, 0, 1);
-        return $firstLetter === mb_strtoupper($firstLetter);
     }
 }

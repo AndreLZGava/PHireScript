@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler;
 
+use PHireScript\Compiler\Parser\Managers\Token\Token;
+
 class Scanner
 {
     private readonly string $code;
@@ -53,12 +55,12 @@ class Scanner
                     $column = $this->cursor - $this->lineStartOffset + 1;
 
                     if ($type !== 'T_WHITESPACE') {
-                        $tokens[] = [
-                            'type'   => $type,
-                            'value'  => $value,
-                            'line'   => $this->line,
-                            'column' => $column
-                        ];
+                        $tokens[] = new Token(
+                            type: $type,
+                            value: $value,
+                            line: $this->line,
+                            column: $column,
+                        );
                     }
 
                     $lastNewlinePos = strrpos($value, "\n");

@@ -22,6 +22,7 @@ use PHireScript\Compiler\Parser\Ast\TraitDefinition;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
 use PHireScript\Compiler\Parser\Managers\TokenManager;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\RuntimeClass;
@@ -30,7 +31,8 @@ abstract class ClassesFactory extends GlobalFactory
 {
     use DataParamsModelingTrait;
 
-    protected Program $program;
+    public Program $program;
+    public ParseContext $parseContext;
     public function getMethodBody(MethodDefinition $node): array
     {
         $codeBlockToken = $this->codeBlockToken();
@@ -41,8 +43,8 @@ abstract class ClassesFactory extends GlobalFactory
 
         while (!$newTokenManager->isEndOfTokens()) {
             $token = $newTokenManager->getCurrentToken();
-            $returned = (new $factories[$token['type']]($newTokenManager))
-                ->process($this->program);
+            $returned = (new $factories[$token->type]($newTokenManager))
+                ->process($this->program, $this->parseContext);
 
             if ($returned) {
                 //  Debug::show($token);
@@ -63,7 +65,7 @@ abstract class ClassesFactory extends GlobalFactory
         $result = '';
         foreach ($codeBlockToken as $tokens) {
             if (!empty($tokens)) {
-                $result .= $tokens['value'];
+                $result .= $tokens->value;
             }
         }
         $this->tokenManager->walk(count($codeBlockToken));
@@ -79,26 +81,26 @@ abstract class ClassesFactory extends GlobalFactory
         $startGettingWith = false;
         foreach ($left as $tokenId => $token) {
             if (
-                $token['value'] === 'with'
+                $token->value === 'with'
             ) {
                 $startGettingWith = true;
                 continue;
             }
 
             if (
-                $token['value'] === ','
+                $token->value === ','
             ) {
                 continue;
             }
 
             if (
                 $startGettingWith &&
-                $token['type'] === 'T_IDENTIFIER'
+                $token->isIdentifier()
             ) {
-                $with[] = $token['value'];
+                $with[] = $token->value;
             }
 
-            if ($startGettingWith && in_array($token['type'], ['T_KEYWORD', 'T_SYMBOL', 'T_EOL'])) {
+            if ($startGettingWith && in_array($token->type, ['T_KEYWORD', 'T_SYMBOL', 'T_EOL'])) {
                 break;
             }
         }
@@ -113,26 +115,26 @@ abstract class ClassesFactory extends GlobalFactory
         $startGettingExtends = false;
         foreach ($left as $tokenId => $token) {
             if (
-                $token['value'] === 'extends'
+                $token->value === 'extends'
             ) {
                 $startGettingExtends = true;
                 continue;
             }
 
             if (
-                $token['value'] === ','
+                $token->value === ','
             ) {
                 continue;
             }
 
             if (
                 $startGettingExtends &&
-                $token['type'] === 'T_IDENTIFIER'
+                $token->isIdentifier()
             ) {
-                $extends[] = $token['value'];
+                $extends[] = $token->value;
             }
 
-            if ($startGettingExtends && in_array($token['type'], ['T_KEYWORD', 'T_SYMBOL', 'T_EOL'])) {
+            if ($startGettingExtends && in_array($token->type, ['T_KEYWORD', 'T_SYMBOL', 'T_EOL'])) {
                 break;
             }
         }
@@ -146,26 +148,26 @@ abstract class ClassesFactory extends GlobalFactory
         $startGettingImplements = false;
         foreach ($left as $tokenId => $token) {
             if (
-                $token['value'] === 'implements'
+                $token->value === 'implements'
             ) {
                 $startGettingImplements = true;
                 continue;
             }
 
             if (
-                $token['value'] === ','
+                $token->value === ','
             ) {
                 continue;
             }
 
             if (
                 $startGettingImplements &&
-                $token['type'] === 'T_IDENTIFIER'
+                $token->isIdentifier()
             ) {
-                $implements[] = $token['value'];
+                $implements[] = $token->value;
             }
 
-            if ($startGettingImplements && in_array($token['type'], ['T_KEYWORD', 'T_SYMBOL', 'T_EOL'])) {
+            if ($startGettingImplements && in_array($token->type, ['T_KEYWORD', 'T_SYMBOL', 'T_EOL'])) {
                 break;
             }
         }
@@ -179,10 +181,10 @@ abstract class ClassesFactory extends GlobalFactory
         $left = $this->tokenManager->getLeftTokens();
         foreach ($left as $tokenId => $tokens) {
             if (
-                $tokens['value'] === 'extends' &&
-                $left[$tokenId + 1]['type'] === 'T_IDENTIFIER'
+                $tokens->value === 'extends' &&
+                $left[$tokenId + 1]->isIdentifier()
             ) {
-                $extends = $left[$tokenId + 1]['value'];
+                $extends = $left[$tokenId + 1]->value;
                 break;
             }
         }
@@ -201,8 +203,8 @@ abstract class ClassesFactory extends GlobalFactory
         while (!$newTokenManager->isEndOfTokens()) {
             $token = $newTokenManager->getCurrentToken();
             //Debug::show($token);
-            $returned = (new $factories[$token['type']]($newTokenManager))
-                ->process($this->program);
+            $returned = (new $factories[$token->type]($newTokenManager))
+                ->process($this->program, $this->parseContext);
 
             if ($returned) {
                 if ($node instanceof ClassDefinition) {
@@ -221,24 +223,30 @@ abstract class ClassesFactory extends GlobalFactory
 
     private function processConstruct(ClassDefinition $node, mixed $processedNode)
     {
+        $currentToken = $this->tokenManager->getCurrentToken();
         if (
             $processedNode instanceof PropertyDefinition &&
             in_array('abstract', $processedNode->modifiers)
         ) {
-            $constructor = $node->construct ?? new ConstructorDefinition();
-            $constructor->line = $processedNode->line;
+            $constructor = $node->construct ?? new ConstructorDefinition(modifiers: $processedNode->modifiers);
 
             $validationNode = new IfStatementNode(
+                $currentToken,
                 condition: new NotOperatorNode(
+                    $currentToken,
                     new IssetOperatorNode(
+                        $currentToken,
                         new PropertyAccessNode(
-                            new ThisExpressionNode(),
+                            $currentToken,
+                            new ThisExpressionNode($currentToken),
                             $processedNode->name
                         )
                     )
                 ),
                 statements: new ThrowStatementNode(
+                    $currentToken,
                     new NewExceptionNode(
+                        $currentToken,
                         'LogicException',
                         "Property {$processedNode->name} must be initialized."
                     )
@@ -258,11 +266,11 @@ abstract class ClassesFactory extends GlobalFactory
         $tokensOfThisBlock = array_slice($this->tokenManager->getTokens(), $this->tokenManager->getCurrentPosition());
 
         foreach ($tokensOfThisBlock as $keyToken => $token) {
-            if ($token['value'] === '{') {
+            if ($token->value === '{') {
                 $openBrackets[] = $token;
             }
 
-            if ($token['value'] === '}') {
+            if ($token->value === '}') {
                 $closeBrackets[] = $token;
                 if (count($openBrackets) === count($closeBrackets)) {
                     break;
@@ -278,7 +286,7 @@ abstract class ClassesFactory extends GlobalFactory
     public function returnType(MethodDefinition $node): array
     {
         $tokensOfThisBlock = array_slice($this->tokenManager->getTokens(), $this->tokenManager->getCurrentPosition());
-        if (in_array($this->tokenManager->getCurrentToken()['type'], ['T_EOL', 'T_COMMENT'], true)) {
+        if (in_array($this->tokenManager->getCurrentToken()->type, ['T_EOL', 'T_COMMENT'], true)) {
             throw new Exception('Method ' . $node->name . ' has no definition ' .
                 'of return. Please implement a return explicitly!');
         }
@@ -291,16 +299,16 @@ abstract class ClassesFactory extends GlobalFactory
                 $result[] = false;
             }
 
-            if ($token['type'] === 'T_SYMBOL' && $token['value'] === ':') {
+            if ($token->isSymbol() && $token->value === ':') {
                 $capture = true;
                 continue;
             }
 
             if (
                 $capture &&
-                $token['type'] === 'T_EOL' ||
+                $token->isEndOfLine() ||
                 $isClass &&
-                $token['type'] === 'T_SYMBOL' && $token['value'] === '{'
+                $token->isSymbol() && $token->value === '{'
             ) {
                 break;
             }

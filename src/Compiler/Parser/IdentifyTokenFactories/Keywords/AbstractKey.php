@@ -7,12 +7,13 @@ namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\TraitDefinition;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
 class AbstractKey extends ClassesFactory
 {
-    public function process(Program $program): ?Node
+    public function process(Program $program, ParseContext $parseContext): ?Node
     {
         return null;
     }

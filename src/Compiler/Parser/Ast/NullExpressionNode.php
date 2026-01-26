@@ -6,7 +6,4 @@ namespace PHireScript\Compiler\Parser\Ast;
 
 class NullExpressionNode extends Expression
 {
-    public function __construct()
-    {
-    }
 }
