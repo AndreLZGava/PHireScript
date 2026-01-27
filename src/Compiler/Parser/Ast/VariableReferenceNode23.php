@@ -6,14 +6,11 @@ namespace PHireScript\Compiler\Parser\Ast;
 
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 
-class VariableDeclarationNode extends Statement
+class ArrayLiteralNode extends Expression
 {
     public function __construct(
         public Token $token,
-        public string $name,
-        public ?string $type,
-        public Node $value,
-        public bool $isConst = false
+        public array $elements
     ) {
     }
 }

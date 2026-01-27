@@ -42,6 +42,7 @@ class ArrayCastVariable extends GlobalFactory
             value: $varValue,
             type: null,
         );
+        $parseContext->variables->addVariable($assignment);
         return $assignment;
     }
 }

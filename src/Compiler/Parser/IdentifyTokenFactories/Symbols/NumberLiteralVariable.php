@@ -16,7 +16,7 @@ class NumberLiteralVariable extends GlobalFactory
     public function isTheCase()
     {
         return $this->tokenManager->getCurrentToken()->value === '=' &&
-        $this->tokenManager->getNextTokenAfterCurrent()->isNumber();
+            $this->tokenManager->getNextTokenAfterCurrent()->isNumber();
     }
 
     public function process(Program $program, ParseContext $parseContext): ?Node
@@ -24,7 +24,7 @@ class NumberLiteralVariable extends GlobalFactory
         $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
         $currentToken = $this->tokenManager->getCurrentToken();
         $next = $this->tokenManager->getNextTokenAfterCurrent();
-        $this->tokenManager->advance();
+        $this->tokenManager->walk(2);
         $varValue = new NumberNode($next, (float) $next->value);
 
         $assignment = new VariableDeclarationNode(
@@ -33,6 +33,7 @@ class NumberLiteralVariable extends GlobalFactory
             value: $varValue,
             type: null,
         );
+        $parseContext->variables->addVariable($assignment);
 
         return $assignment;
     }

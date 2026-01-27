@@ -10,6 +10,7 @@ use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
 use PHireScript\Compiler\Program;
 use PHireScript\Compiler\Parser\ParseContext;
+use PHireScript\Helper\Debug\Debug;
 
 class StringLiteralVariable extends GlobalFactory
 {
@@ -24,7 +25,7 @@ class StringLiteralVariable extends GlobalFactory
         $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
         $currentToken = $this->tokenManager->getCurrentToken();
         $next = $this->tokenManager->getNextTokenAfterCurrent();
-        $this->tokenManager->advance();
+        $this->tokenManager->walk(2);
         $varValue = new StringNode($next, $next->value);
 
         $assignment = new VariableDeclarationNode(
@@ -33,7 +34,7 @@ class StringLiteralVariable extends GlobalFactory
             value: $varValue,
             type: null,
         );
-
+        $parseContext->variables->addVariable($assignment);
         return $assignment;
     }
 }

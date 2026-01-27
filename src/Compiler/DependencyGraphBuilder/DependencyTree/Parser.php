@@ -3,6 +3,7 @@
 namespace PHireScript\Compiler\DependencyGraphBuilder\DependencyTree;
 
 use PHireScript\Compiler\Parser\Managers\TokenManager;
+use PHireScript\Compiler\Parser\Managers\VariableManager;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Runtime\RuntimeClass;
@@ -20,7 +21,7 @@ class Parser
         $program->config = $this->config;
         $program->path = $path;
         $program->line = 0;
-        $parseContext = new ParseContext();
+        $parseContext = new ParseContext(variables: new VariableManager());
         while (!$tokenManager->isEndOfTokens()) {
             $result = FactoryDependencies::getFactories(
                 $tokenManager,
@@ -29,7 +30,7 @@ class Parser
             );
 
             if ($result) {
-                  $program->statements[] = $result;
+                $program->statements[] = $result;
             }
 
             $tokenManager->advance();

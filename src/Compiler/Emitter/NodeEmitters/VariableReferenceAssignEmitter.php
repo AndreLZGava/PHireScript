@@ -6,20 +6,18 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\VariableReferenceNode;
 use PHireScript\Helper\Debug\Debug;
 
-class VariableDeclarationEmitter implements NodeEmitter
+class VariableReferenceAssignEmitter implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {
-        return $node instanceof VariableDeclarationNode ;
+        return $node instanceof VariableReferenceNode;
     }
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        $name = '$' . $node->name;
-        $value = $ctx->emitter->emit($node->value, $ctx);
-        return "{$name} = {$value};\n";
+        return $node->value;
     }
 }

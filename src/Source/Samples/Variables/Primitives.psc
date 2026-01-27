@@ -5,15 +5,11 @@
 
 $userName = "André";
 
-    // Inference: String
-
 $idAsString = '12345';
 
     // --- 2. Int Type ---
 
 $userAge = 25;
-
-    // Inference: Int
 
 $ageFromText = 30;
 
@@ -21,15 +17,11 @@ $ageFromText = 30;
 
 $productPrice = 250.99;
 
-    // Inference: Float
-
 $taxValue = 0.15;
 
     // --- 4. Bool Type ---
 
 $isUserActive = true;
-
-    // Inference: Bool
 
 $statusFromBinary = true;
 
@@ -48,10 +40,6 @@ $myObject = (object) ["test" => "test"];
 $objFromMap = (object) ['id' => 1];
 
     // Casting: becomes object with property id
-
-    /**
- * Example comment
- */
 
     /**
  * Example comment

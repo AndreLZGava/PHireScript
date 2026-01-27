@@ -40,7 +40,10 @@ class ComplexObject extends GlobalFactory
         }
         $node = new PropertyDefinition($this->tokenManager->getCurrentToken());
         $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($this->tokenManager->getCurrentToken());
-        return $this->parsePropertyWithTypes($node);
+
+        $node = $this->parsePropertyWithTypes($node);
+        $parseContext->variables->addProperty($node);
+        return $node;
     }
 
     private function parsePropertyWithTypes(PropertyDefinition $node): PropertyDefinition

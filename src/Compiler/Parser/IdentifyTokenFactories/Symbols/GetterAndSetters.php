@@ -34,6 +34,7 @@ class GetterAndSetters extends GlobalFactory
 
     public function process(Program $program, ParseContext $parseContext): ?Node
     {
+        $this->parseContext = $parseContext;
         $node = new MethodDefinition($this->tokenManager->getCurrentToken());
         return $this->parseGetterAndSetter($node);
     }
@@ -77,6 +78,7 @@ class GetterAndSetters extends GlobalFactory
             if ($defaultValue) {
                 $arg->defaultValue = $defaultValue;
             }
+            $this->parseContext->variables->addProperty($arg);
             $node->args[] = $arg;
             $property = new PropertyAccessNode(
                 $currentToken,

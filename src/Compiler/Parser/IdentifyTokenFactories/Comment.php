@@ -16,6 +16,7 @@ class Comment extends GlobalFactory
     {
         $node = new CommentStatement($this->tokenManager->getCurrentToken());
         $node->code = trim((string) $this->tokenManager->getCurrentToken()->value);
+        $this->tokenManager->advance();
         return $node;
     }
 }

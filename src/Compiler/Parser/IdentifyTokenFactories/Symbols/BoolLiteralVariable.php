@@ -17,7 +17,7 @@ class BoolLiteralVariable extends GlobalFactory
     public function isTheCase()
     {
         return $this->tokenManager->getCurrentToken()->value === '=' &&
-        $this->tokenManager->getNextTokenAfterCurrent()->isBool();
+            $this->tokenManager->getNextTokenAfterCurrent()->isBool();
     }
 
     public function process(Program $program, ParseContext $parseContext): ?Node
@@ -25,7 +25,7 @@ class BoolLiteralVariable extends GlobalFactory
         $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
         $currentToken = $this->tokenManager->getCurrentToken();
         $next = $this->tokenManager->getNextTokenAfterCurrent();
-        $this->tokenManager->advance();
+        $this->tokenManager->walk(2);
         $varValue = new BoolNode($currentToken, (bool) $next->value);
 
         $assignment = new VariableDeclarationNode(
@@ -34,7 +34,7 @@ class BoolLiteralVariable extends GlobalFactory
             value: $varValue,
             type: null,
         );
-
+        $parseContext->variables->addVariable($assignment);
         return $assignment;
     }
 }

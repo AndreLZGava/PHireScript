@@ -4,48 +4,48 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols;
 
+use Exception;
 use PHireScript\Compiler\Parser\Ast\Node;
-use PHireScript\Compiler\Parser\Ast\NumberNode;
-use PHireScript\Compiler\Parser\Ast\StringNode;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\VariableReferenceNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
-use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
-use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
-use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataStringModelingTrait;
 use PHireScript\Compiler\Program;
 use PHireScript\Compiler\Parser\ParseContext;
+use PHireScript\Helper\Debug\Debug;
 
-class FloatCastVariable extends GlobalFactory
+class VariableLiteralVariable extends GlobalFactory
 {
-    use DataArrayObjectModelingTrait;
-    use DataParamsModelingTrait;
-    use DataStringModelingTrait;
-
     public function isTheCase()
     {
         return $this->tokenManager->getCurrentToken()->value === '=' &&
-        $this->tokenManager->getNextTokenAfterCurrent()->isType() &&
-        $this->tokenManager->getNextTokenAfterCurrent()->value === 'Float';
+        $this->tokenManager->getNextTokenAfterCurrent()->isIdentifier() &&
+        $this->tokenManager->getNextToken()->isEndOfLine();
     }
 
     public function process(Program $program, ParseContext $parseContext): ?Node
     {
-        $this->program = $program;
-        $this->parseContext = $parseContext;
         $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
         $currentToken = $this->tokenManager->getCurrentToken();
-
+        $next = $this->tokenManager->getNextTokenAfterCurrent();
         $this->tokenManager->walk(2);
-        $value = current($this->getArgs('casting'))->value;
-        $value = $this->clearQuotes($value);
-        $varValue = new NumberNode($this->tokenManager->getCurrentToken(), (float) $value);
+        if (empty($parseContext->variables->getVariable($next->value))) {
+            throw new Exception("Variable {$next->value} is not defined yet!");
+        }
+
+        $reference = new VariableReferenceNode(
+            token: $currentToken,
+            name: $previous->value,
+            value: $next->value,
+            type: null,
+        );
 
         $assignment = new VariableDeclarationNode(
             token: $currentToken,
             name: $previous->value,
-            value: $varValue,
+            value: $reference,
             type: null,
         );
+
         $parseContext->variables->addVariable($assignment);
 
         return $assignment;

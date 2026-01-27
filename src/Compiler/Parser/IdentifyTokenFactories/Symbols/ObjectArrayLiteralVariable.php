@@ -36,6 +36,7 @@ class ObjectArrayLiteralVariable extends GlobalFactory
             value: $varValue,
             type: null,
         );
+        $parseContext->variables->addVariable($assignment);
 
         return $assignment;
     }

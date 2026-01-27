@@ -25,8 +25,8 @@ class BoolCastVariable extends GlobalFactory
     public function isTheCase()
     {
         return $this->tokenManager->getCurrentToken()->value === '=' &&
-        $this->tokenManager->getNextTokenAfterCurrent()->isType() &&
-        $this->tokenManager->getNextTokenAfterCurrent()->value === 'Bool';
+            $this->tokenManager->getNextTokenAfterCurrent()->isType() &&
+            $this->tokenManager->getNextTokenAfterCurrent()->value === 'Bool';
     }
 
     public function process(Program $program, ParseContext $parseContext): ?Node
@@ -47,7 +47,7 @@ class BoolCastVariable extends GlobalFactory
             value: $varValue,
             type: null,
         );
-
+        $parseContext->variables->addVariable($assignment);
         return $assignment;
     }
 }

@@ -25,6 +25,8 @@ use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\SingleCommaOnClas
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\SingleOpenParenthesisOperator;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\StringCastVariable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\StringLiteralVariable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\VariableAssignmentFactory;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\VariableLiteralVariable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -62,6 +64,8 @@ class Symbol extends GlobalFactory
             new SingleOpenParenthesisOperator($this->tokenManager),
             new StringCastVariable($this->tokenManager),
             new StringLiteralVariable($this->tokenManager),
+            new VariableLiteralVariable($this->tokenManager),
+            new VariableAssignmentFactory($this->tokenManager),
         ];
 
         foreach ($factories as $parser) {
@@ -69,6 +73,9 @@ class Symbol extends GlobalFactory
                 return $parser->process($program, $parseContext);
             }
         }
+
+        Debug::show($this->tokenManager->getLeftTokens());
+        exit;
 
         Debug::show(
             [

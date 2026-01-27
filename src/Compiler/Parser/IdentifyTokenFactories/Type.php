@@ -56,6 +56,7 @@ class Type extends GlobalFactory
         if ($allowNull) {
             $node->type = "Null|" . $node->type;
         }
+        $parseContext->variables->addProperty($node);
         return $node;
     }
 }

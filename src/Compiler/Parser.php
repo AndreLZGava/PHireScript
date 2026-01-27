@@ -6,7 +6,9 @@ namespace PHireScript\Compiler;
 
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
 use PHireScript\Compiler\Parser\Managers\TokenManager;
+use PHireScript\Compiler\Parser\Managers\VariableManager;
 use PHireScript\Compiler\Parser\ParseContext;
+use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\RuntimeClass;
 
 class Parser
@@ -22,16 +24,15 @@ class Parser
     {
         $tokenManager = new TokenManager(RuntimeClass::CONTEXT_GENERAL, $tokens, 0);
         $program = new Program($tokenManager->getCurrentToken());
-        $parseContext = new ParseContext();
+        $variableManager = new VariableManager();
+        $parseContext = new ParseContext(variables: $variableManager);
+
         $program->path = $path;
         $program->config = $this->config;
-        $program->line = 0;
-
         while (!$tokenManager->isEndOfTokens()) {
             $token = $tokenManager->getCurrentToken();
             $result = (new $this->factories[$token->type]($tokenManager))
-                ->process($program, $parseContext);
-
+            ->process($program, $parseContext);
             if ($result) {
                 $program->statements[] = $result;
             }

@@ -212,7 +212,8 @@ class FileManager
         $maxLines = max(count($originalLines), count($preParserLines));
 
         $message = $e->getMessage();
-        $errorLine = str_contains($message, 'on line ') ? (int) end(explode('on line ', $message)) : $e->getLine();
+        $exploded = explode('on line ', $message);
+        $errorLine = str_contains($message, 'on line ') ? (int) end($exploded) : $e->getLine();
 
         echo "\n{$red}" . str_repeat('=', $width) . "{$reset}\n";
         echo "  {$red}PHire Script DEBUGGER - COMPILATION ERROR{$reset}\n";
