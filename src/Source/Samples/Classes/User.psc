@@ -4,11 +4,10 @@
 namespace PHireScript\Classes;
 
 
-use PHireScript\Classes\UserCredentials;
-use PHireScript\Classes\Another;
-
 use PHireScript\Runtime\Types\SuperTypes\Email;
 
+use PHireScript\Classes\UserCredentials;
+use PHireScript\Classes\Another;
 
  class User {
     public int $id;

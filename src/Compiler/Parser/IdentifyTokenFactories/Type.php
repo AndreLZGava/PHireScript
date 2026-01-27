@@ -14,7 +14,7 @@ use PHireScript\Runtime\RuntimeClass;
 
 class Type extends GlobalFactory
 {
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $currentToken =  $this->tokenManager->getCurrentToken();
         $node = new PropertyDefinition($currentToken);
@@ -56,7 +56,7 @@ class Type extends GlobalFactory
         if ($allowNull) {
             $node->type = "Null|" . $node->type;
         }
-        $parseContext->variables->addProperty($node);
+        $this->parseContext->variables->addProperty($node);
         return $node;
     }
 }

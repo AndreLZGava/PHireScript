@@ -22,7 +22,7 @@ class SingleCommaOnClass extends GlobalFactory
         $this->tokenManager->getCurrentToken()->value === ',';
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         return null;
     }

@@ -28,8 +28,8 @@ trait DataParamsModelingTrait
 
         while (!$newTokenManager->isEndOfTokens()) {
             $token = $newTokenManager->getCurrentToken();
-            $returned = (new $factories[$token->type]($newTokenManager))
-                ->process($this->program, $this->parseContext);
+            $returned = (new $factories[$token->type]($newTokenManager, $this->parseContext))
+                ->process($this->program);
 
             if ($returned) {
                 $result[] = $returned;

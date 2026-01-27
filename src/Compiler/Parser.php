@@ -31,8 +31,8 @@ class Parser
         $program->config = $this->config;
         while (!$tokenManager->isEndOfTokens()) {
             $token = $tokenManager->getCurrentToken();
-            $result = (new $this->factories[$token->type]($tokenManager))
-            ->process($program, $parseContext);
+            $result = (new $this->factories[$token->type]($tokenManager, $parseContext))
+            ->process($program);
             if ($result) {
                 $program->statements[] = $result;
             }

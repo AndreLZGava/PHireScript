@@ -25,21 +25,26 @@ class ProgramEmitter implements NodeEmitter
             $code[get_class($stmt) . '_' . $position] = $ctx->emitter->emit($stmt, $ctx);
         }
         $uses = $this->processUses($ctx);
+
         return $this->processEntireCode($code, $uses);
     }
 
-    private function processEntireCode(array $code, string $uses)
+    private function processEntireCode(array $arrayCode, string $uses)
     {
-        $processedCode = "";
-        foreach ($code as $key => $code) {
+        $processedCodeBeforeUses = "";
+        $processedCodeAfterUses = "";
+        foreach ($arrayCode as $key => $code) {
             if (
-                str_contains($key, "PHireScript\Compiler\Parser\Ast\ClassDefinition")
+                $key === 'init' ||
+                str_contains($key, "PHireScript\Compiler\Parser\Ast\PackageStatement")
             ) {
-                $processedCode .= $uses . "\n";
+                $processedCodeBeforeUses .= $code . "\n";
+                continue;
             }
-            $processedCode .= $code . "\n";
+            $processedCodeAfterUses .= $code . "\n";
         }
-        return $processedCode;
+
+        return $processedCodeBeforeUses . $uses . $processedCodeAfterUses;
     }
 
     private function processUses(EmitContext $ctx)

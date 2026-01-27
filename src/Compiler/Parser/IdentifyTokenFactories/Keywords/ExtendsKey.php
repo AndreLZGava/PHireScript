@@ -12,7 +12,7 @@ use PHireScript\Helper\Debug\Debug;
 
 class ExtendsKey extends ClassesFactory
 {
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         return null;
     }

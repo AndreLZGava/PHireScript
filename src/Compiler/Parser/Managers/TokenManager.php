@@ -30,9 +30,9 @@ class TokenManager
         );
     }
 
-    public function getLeftTokens(): array
+    public function getLeftTokens(int $limit = 100): array
     {
-        return array_slice($this->getTokens(), $this->getCurrentPosition());
+        return array_slice($this->getTokens(), $this->getCurrentPosition(), $limit);
     }
 
     public function getAll()

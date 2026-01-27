@@ -12,8 +12,11 @@ use PHireScript\Compiler\Program;
 
 class FactoryDependencies
 {
-    public static function getFactories(TokenManager $tokenManager, Program $program, ParseContext $parseContext): mixed
-    {
+    public static function getFactories(
+        TokenManager $tokenManager,
+        Program $program,
+        ParseContext $parseContext
+    ): mixed {
         $factories = [
             'pkg' => PkgKey::class,
             'use' => UseKey::class,
@@ -25,8 +28,8 @@ class FactoryDependencies
             return null;
         }
 
-        $processor = new $factories[$tokenValue]($tokenManager);
+        $processor = new $factories[$tokenValue]($tokenManager, $parseContext);
 
-        return $processor->process($program, $parseContext);
+        return $processor->process($program);
     }
 }

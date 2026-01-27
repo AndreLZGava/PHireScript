@@ -13,6 +13,7 @@ use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectMod
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
 use PHireScript\Compiler\Program;
 use PHireScript\Compiler\Parser\ParseContext;
+use PHireScript\Helper\Debug\Debug;
 
 class DotOnGeneral extends GlobalFactory
 {
@@ -22,7 +23,7 @@ class DotOnGeneral extends GlobalFactory
         $this->tokenManager->getCurrentToken()->value === '.';
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         return null;
     }

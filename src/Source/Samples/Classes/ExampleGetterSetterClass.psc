@@ -4,7 +4,6 @@
 namespace PHireScript\Classes;
 
 
-
  class ExampleGetterSetterClass {
     public int $id;
     public string $email;

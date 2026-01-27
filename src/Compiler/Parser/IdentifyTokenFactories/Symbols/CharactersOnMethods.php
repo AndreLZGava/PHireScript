@@ -18,7 +18,7 @@ class CharactersOnMethods extends GlobalFactory
         in_array($this->tokenManager->getContext(), RuntimeClass::OBJECT_AS_CLASS, true);
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         return null;
     }

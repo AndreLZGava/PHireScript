@@ -4,14 +4,13 @@
 namespace PHireScript\Classes;
 
 
-    // 1. The Type (Data Shape) can be converted into a class in the future
-
 use PHireScript\Runtime\Types\SuperTypes\Email;
 use PHireScript\Runtime\Types\MetaTypes\Date;
 use PHireScript\Runtime\Types\UnionType;
 use PHireScript\Runtime\Types\SuperTypes\Ipv4;
 use PHireScript\Runtime\Types\SuperTypes\Ipv6;
 
+    // 1. The Type (Data Shape) can be converted into a class in the future
 
  class UserCredentials {
     public string $login;

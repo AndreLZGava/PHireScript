@@ -10,7 +10,7 @@ use PHireScript\Compiler\Program;
 
 class EndOfLine extends GlobalFactory
 {
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         return null;
     }

@@ -12,7 +12,7 @@ use PHireScript\Helper\Debug\Debug;
 
 class Variable extends GlobalFactory
 {
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $node = new GlobalStatement();
         $node->code = trim((string) $this->tokenManager->getCurrentToken()->value);

@@ -12,7 +12,7 @@ use PHireScript\Compiler\Program;
 
 class Comment extends GlobalFactory
 {
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $node = new CommentStatement($this->tokenManager->getCurrentToken());
         $node->code = trim((string) $this->tokenManager->getCurrentToken()->value);

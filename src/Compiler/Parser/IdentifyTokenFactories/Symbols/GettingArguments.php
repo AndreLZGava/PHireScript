@@ -23,7 +23,7 @@ class GettingArguments extends GlobalFactory
             && $this->tokenManager->getContext() === RuntimeClass::CONTEXT_GET_ARGUMENTS;
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         return null;
     }

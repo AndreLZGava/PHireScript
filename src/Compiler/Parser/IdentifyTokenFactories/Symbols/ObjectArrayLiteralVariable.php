@@ -23,7 +23,7 @@ class ObjectArrayLiteralVariable extends GlobalFactory
         $this->tokenManager->getNextTokenAfterCurrent()->isSymbol();
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
         $currentToken = $this->tokenManager->getCurrentToken();
@@ -36,7 +36,7 @@ class ObjectArrayLiteralVariable extends GlobalFactory
             value: $varValue,
             type: null,
         );
-        $parseContext->variables->addVariable($assignment);
+        $this->parseContext->variables->addVariable($assignment);
 
         return $assignment;
     }

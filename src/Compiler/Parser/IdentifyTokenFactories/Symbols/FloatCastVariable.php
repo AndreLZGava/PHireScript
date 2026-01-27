@@ -28,10 +28,9 @@ class FloatCastVariable extends GlobalFactory
         $this->tokenManager->getNextTokenAfterCurrent()->value === 'Float';
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $this->program = $program;
-        $this->parseContext = $parseContext;
         $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
         $currentToken = $this->tokenManager->getCurrentToken();
 
@@ -46,7 +45,7 @@ class FloatCastVariable extends GlobalFactory
             value: $varValue,
             type: null,
         );
-        $parseContext->variables->addVariable($assignment);
+        $this->parseContext->variables->addVariable($assignment);
 
         return $assignment;
     }

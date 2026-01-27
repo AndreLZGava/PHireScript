@@ -12,7 +12,6 @@ use PHireScript\Classes\Logger;
 
 use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
 
-
  class AuthenticatorClass implements Authenticator, Another {
     use Logger;
     public function authenticate(UserCredentials $credentials): bool {

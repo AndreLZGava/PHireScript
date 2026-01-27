@@ -12,13 +12,14 @@ use PHireScript\Compiler\Program;
 abstract class GlobalFactory
 {
     public Program $program;
-    public ParseContext $parseContext;
 
-    public function __construct(protected TokenManager $tokenManager)
-    {
+    public function __construct(
+        protected TokenManager $tokenManager,
+        protected ParseContext $parseContext
+    ) {
     }
 
     // abstract public function isTheCase(ParseContext $parseContext): bool;
 
-    abstract public function process(Program $program, ParseContext $parseContext): ?Node;
+    abstract public function process(Program $program): ?Node;
 }

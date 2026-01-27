@@ -13,7 +13,7 @@ use PHireScript\Helper\Debug\Debug;
 
 class Number extends GlobalFactory
 {
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $currentToken = $this->tokenManager->getCurrentToken();
         $node = new NumberNode($currentToken, (float)$currentToken->value);

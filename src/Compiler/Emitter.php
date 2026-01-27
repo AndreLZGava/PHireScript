@@ -36,6 +36,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\ReturnEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ScalarLiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VariableReferenceAssignEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\StringEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\SuperTypeEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ThisExpressionEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\TraitEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VariableDeclarationEmitter;
@@ -74,6 +75,7 @@ class Emitter
             new NumberEmitter(),
             new BinaryExpressionEmitter(),
             new VariableReferenceAssignEmitter(),
+            new SuperTypeEmitter(),
 
             new PropertyDeclarationEmitter(),
             new VoidExpressionEmitter(),

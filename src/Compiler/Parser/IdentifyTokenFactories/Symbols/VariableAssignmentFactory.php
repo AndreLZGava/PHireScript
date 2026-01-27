@@ -10,6 +10,7 @@ use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\NumberNode;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactoryInterface;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
@@ -23,12 +24,12 @@ class VariableAssignmentFactory extends GlobalFactory
         return $current->value === '=' && ($prev && $prev->isIdentifier());
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $varName = $this->tokenManager->getPreviousTokenBeforeCurrent()->value;
         $this->tokenManager->advance();
 
-        $expressionTree = $this->parseExpression($parseContext);
+        $expressionTree = $this->parseExpression($this->parseContext);
 
         $assignment = new VariableDeclarationNode(
             token: $this->tokenManager->getCurrentToken(),
@@ -37,7 +38,7 @@ class VariableAssignmentFactory extends GlobalFactory
             type: 'expression'
         );
 
-        $parseContext->variables->addVariable($assignment);
+        $this->parseContext->variables->addVariable($assignment);
         return $assignment;
     }
 

@@ -18,7 +18,7 @@ class BlockBracketsCommaOnMethod extends GlobalFactory
         $this->tokenManager->getContext() === 'method';
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $node = new GlobalStatement($this->tokenManager->getCurrentToken());
         $node->code = $this->tokenManager->getCurrentToken()->value;

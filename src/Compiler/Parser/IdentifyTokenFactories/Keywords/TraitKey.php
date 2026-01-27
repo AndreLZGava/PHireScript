@@ -13,10 +13,9 @@ use PHireScript\Helper\Debug\Debug;
 
 class TraitKey extends ClassesFactory
 {
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $this->program = $program;
-        $this->parseContext = $parseContext;
         $node = new TraitDefinition($this->tokenManager->getCurrentToken());
         $node->type = $this->tokenManager->getCurrentToken()->value;
         $this->tokenManager->advance();

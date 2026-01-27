@@ -17,7 +17,7 @@ class BlockBrackets extends GlobalFactory
         return in_array($this->tokenManager->getCurrentToken()->value, RuntimeClass::BLOCK_DELIMITERS, true);
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         return null;
     }

@@ -8,7 +8,6 @@ use PHireScript\Classes\Repository;
 
 use PHireScript\Classes\User;
 
-
  class UserRepository extends Repository {
     public string $tableName = 'user';
     public function getUser( $id): null|self {

@@ -22,13 +22,13 @@ class VariableLiteralVariable extends GlobalFactory
         $this->tokenManager->getNextToken()->isEndOfLine();
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
         $currentToken = $this->tokenManager->getCurrentToken();
         $next = $this->tokenManager->getNextTokenAfterCurrent();
         $this->tokenManager->walk(2);
-        if (empty($parseContext->variables->getVariable($next->value))) {
+        if (empty($this->parseContext->variables->getVariable($next->value))) {
             throw new Exception("Variable {$next->value} is not defined yet!");
         }
 
@@ -46,7 +46,7 @@ class VariableLiteralVariable extends GlobalFactory
             type: null,
         );
 
-        $parseContext->variables->addVariable($assignment);
+        $this->parseContext->variables->addVariable($assignment);
 
         return $assignment;
     }

@@ -8,6 +8,7 @@ use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactoryInterface;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
 use PHireScript\Compiler\Program;
@@ -19,18 +20,17 @@ class ArrayCastVariable extends GlobalFactory
     use DataArrayObjectModelingTrait;
     use DataParamsModelingTrait;
 
-    public function isTheCase()
+    public function isTheCase(): bool
     {
         return $this->tokenManager->getCurrentToken()->value === '=' &&
         $this->tokenManager->getNextTokenAfterCurrent()->isType() &&
         $this->tokenManager->getNextTokenAfterCurrent()->value === 'Array';
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
 
         $this->program = $program;
-        $this->parseContext = $parseContext;
         $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
         $currentToken = $this->tokenManager->getCurrentToken();
         $this->tokenManager->walk(2);
@@ -42,7 +42,7 @@ class ArrayCastVariable extends GlobalFactory
             value: $varValue,
             type: null,
         );
-        $parseContext->variables->addVariable($assignment);
+        $this->parseContext->variables->addVariable($assignment);
         return $assignment;
     }
 }

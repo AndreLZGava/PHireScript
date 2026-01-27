@@ -14,10 +14,9 @@ use PHireScript\Helper\Debug\Debug;
 
 class InterfaceKey extends ClassesFactory
 {
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $this->program = $program;
-        $this->parseContext = $parseContext;
 
         $node = new InterfaceDefinition($this->tokenManager->getCurrentToken());
         $node->type = $this->tokenManager->getCurrentToken()->value;

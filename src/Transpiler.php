@@ -31,6 +31,7 @@ class Transpiler implements TranspilerInterface
 
     public function compile(string $code, string $path): string
     {
+        $this->codeBeforeGenerator = '';
         $scanner = new Scanner($code);
         $tokens = $scanner->tokenize();
 
@@ -59,8 +60,8 @@ class Transpiler implements TranspilerInterface
         return $result;
     }
 
-    public function getCodeBeforeGenerator(): ?string
+    public function getCodeBeforeGenerator(): string
     {
-        return $this->codeBeforeGenerator ?? null;
+        return $this->codeBeforeGenerator ?? '';
     }
 }

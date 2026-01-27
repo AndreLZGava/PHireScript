@@ -21,7 +21,7 @@ class SingleOpenParenthesisOperator extends GlobalFactory
         return $this->tokenManager->getCurrentToken()->value === '(';
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         return null;
     }

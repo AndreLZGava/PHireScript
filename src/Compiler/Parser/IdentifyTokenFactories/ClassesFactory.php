@@ -32,7 +32,6 @@ abstract class ClassesFactory extends GlobalFactory
     use DataParamsModelingTrait;
 
     public Program $program;
-    public ParseContext $parseContext;
     public function getMethodBody(MethodDefinition $node): array
     {
         $codeBlockToken = $this->codeBlockToken();
@@ -43,8 +42,8 @@ abstract class ClassesFactory extends GlobalFactory
 
         while (!$newTokenManager->isEndOfTokens()) {
             $token = $newTokenManager->getCurrentToken();
-            $returned = (new $factories[$token->type]($newTokenManager))
-                ->process($this->program, $this->parseContext);
+            $returned = (new $factories[$token->type]($newTokenManager, $this->parseContext))
+                ->process($this->program);
 
             if ($returned) {
                 //  Debug::show($token);
@@ -203,8 +202,8 @@ abstract class ClassesFactory extends GlobalFactory
         while (!$newTokenManager->isEndOfTokens()) {
             $token = $newTokenManager->getCurrentToken();
             //Debug::show($token);
-            $returned = (new $factories[$token->type]($newTokenManager))
-                ->process($this->program, $this->parseContext);
+            $returned = (new $factories[$token->type]($newTokenManager, $this->parseContext))
+                ->process($this->program);
 
             if ($returned) {
                 if ($node instanceof ClassDefinition) {

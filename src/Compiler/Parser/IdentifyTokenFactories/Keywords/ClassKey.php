@@ -13,10 +13,9 @@ use PHireScript\Helper\Debug\Debug;
 
 class ClassKey extends ClassesFactory
 {
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $this->program = $program;
-        $this->parseContext = $parseContext;
         $node = new ClassDefinition($this->tokenManager->getCurrentToken());
         $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
         if (in_array($previous->value, ['abstract', 'readonly', '*', '#', '+'])) {

@@ -13,6 +13,7 @@ use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\BoolCastVariable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\BoolLiteralVariable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\CharactersOnMethods;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\ComplexObject;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\DotAsPointer;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\DotOnGeneral;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\FloatCastVariable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\GetterAndSetters;
@@ -25,6 +26,8 @@ use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\SingleCommaOnClas
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\SingleOpenParenthesisOperator;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\StringCastVariable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\StringLiteralVariable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\SuperTypeCastVariable;
+use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\UuidCastVariable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\VariableAssignmentFactory;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\VariableLiteralVariable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
@@ -36,41 +39,42 @@ use PHireScript\Helper\Debug\Debug;
 class Symbol extends GlobalFactory
 {
     public Program $program;
-    public ParseContext $parseContext;
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $this->program = $program;
-        $this->parseContext = $parseContext;
 
         $factories = [
-            new ArrayCastVariable($this->tokenManager),
-            new BlockBrackets($this->tokenManager),
-            new BlockBracketsCommaOnMethod($this->tokenManager),
-            new BlockParenthesisOnMethod($this->tokenManager),
-            new BoolCastVariable($this->tokenManager),
-            new BoolLiteralVariable($this->tokenManager),
-            new CharactersOnMethods($this->tokenManager),
-            new ComplexObject($this->tokenManager),
-            new DotOnGeneral($this->tokenManager),
-            new FloatCastVariable($this->tokenManager),
-            new GetterAndSetters($this->tokenManager),
-            new GettingArguments($this->tokenManager),
-            new IntCastVariable($this->tokenManager),
-            new NumberLiteralVariable($this->tokenManager),
-            new ObjectArrayLiteralVariable($this->tokenManager),
-            new ObjectCastVariable($this->tokenManager),
-            new SingleCommaOnClass($this->tokenManager),
-            new SingleOpenParenthesisOperator($this->tokenManager),
-            new StringCastVariable($this->tokenManager),
-            new StringLiteralVariable($this->tokenManager),
-            new VariableLiteralVariable($this->tokenManager),
-            new VariableAssignmentFactory($this->tokenManager),
+            new ArrayCastVariable($this->tokenManager, $this->parseContext),
+            new BlockBrackets($this->tokenManager, $this->parseContext),
+            new BlockBracketsCommaOnMethod($this->tokenManager, $this->parseContext),
+            new BlockParenthesisOnMethod($this->tokenManager, $this->parseContext),
+            new BoolCastVariable($this->tokenManager, $this->parseContext),
+            new BoolLiteralVariable($this->tokenManager, $this->parseContext),
+            new CharactersOnMethods($this->tokenManager, $this->parseContext),
+            new ComplexObject($this->tokenManager, $this->parseContext),
+            new DotAsPointer($this->tokenManager, $this->parseContext),
+            new DotOnGeneral($this->tokenManager, $this->parseContext),
+            new FloatCastVariable($this->tokenManager, $this->parseContext),
+            new GetterAndSetters($this->tokenManager, $this->parseContext),
+            new GettingArguments($this->tokenManager, $this->parseContext),
+            new IntCastVariable($this->tokenManager, $this->parseContext),
+            new NumberLiteralVariable($this->tokenManager, $this->parseContext),
+            new ObjectArrayLiteralVariable($this->tokenManager, $this->parseContext),
+            new ObjectCastVariable($this->tokenManager, $this->parseContext),
+            new SingleCommaOnClass($this->tokenManager, $this->parseContext),
+            new SingleOpenParenthesisOperator($this->tokenManager, $this->parseContext),
+            new StringCastVariable($this->tokenManager, $this->parseContext),
+            new StringLiteralVariable($this->tokenManager, $this->parseContext),
+            new SuperTypeCastVariable($this->tokenManager, $this->parseContext),
+            new VariableLiteralVariable($this->tokenManager, $this->parseContext),
+            new VariableAssignmentFactory($this->tokenManager, $this->parseContext),
+
         ];
 
         foreach ($factories as $parser) {
             if ($parser->isTheCase()) {
-                return $parser->process($program, $parseContext);
+                return $parser->process($program);
             }
         }
 

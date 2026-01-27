@@ -15,6 +15,7 @@ use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModeling
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataStringModelingTrait;
 use PHireScript\Compiler\Program;
 use PHireScript\Compiler\Parser\ParseContext;
+use PHireScript\Helper\Debug\Debug;
 
 class BoolCastVariable extends GlobalFactory
 {
@@ -29,10 +30,9 @@ class BoolCastVariable extends GlobalFactory
             $this->tokenManager->getNextTokenAfterCurrent()->value === 'Bool';
     }
 
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         $this->program = $program;
-        $this->parseContext = $parseContext;
         $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
         $currentToken = $this->tokenManager->getCurrentToken();
 
@@ -47,7 +47,7 @@ class BoolCastVariable extends GlobalFactory
             value: $varValue,
             type: null,
         );
-        $parseContext->variables->addVariable($assignment);
+        $this->parseContext->variables->addVariable($assignment);
         return $assignment;
     }
 }

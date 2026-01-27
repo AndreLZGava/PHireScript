@@ -12,7 +12,7 @@ use PHireScript\Helper\Debug\Debug;
 
 class ScheduleKey extends ClassesFactory
 {
-    public function process(Program $program, ParseContext $parseContext): ?Node
+    public function process(Program $program): ?Node
     {
         return null;
     }
