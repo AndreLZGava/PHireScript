@@ -28,7 +28,8 @@ class Scanner
         'T_MODIFIER'    => '/^(\->|=>|::|\.\.\.|\+\+|--|==|!=|<=|>=|&&|\|\|)/',
         'T_TYPE'        => '/^\b(Int|String|Float|Bool|Object|Array|Void|' .
             'Null|Mixed|Any|Date|DateTime|Time|Email|Ipv4|Ipv6|Uuid|Color|' .
-            'CardNumber|Cron|Cvv|Duration|ExpiryDate|Json|Mac|Slug|Url)\b/',
+            'CardNumber|Cron|Cvv|Duration|ExpiryDate|Json|Mac|Slug|Url|Queue|' .
+            'List|Stack|Map)\b/',
         'T_VARIABLE'    => '/^\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',
         'T_IDENTIFIER'  => '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',
         'T_SYMBOL'      => '/^([{}();,:=+<>\#!?\[\]\.$*\/%|-])/',

@@ -10,8 +10,8 @@ use PHireScript\Runtime\RuntimeClass;
 
 class Validator
 {
-    private array $open = ['(' => 0, '{' => 0, '[' => 0];
-    private array $close = [')' => 0, '}' => 0, ']' => 0];
+    private array $open = ['(' => 0, '{' => 0, '[' => 0 , '<' => 0];
+    private array $close = [')' => 0, '}' => 0, ']' => 0, '>' => 0];
     private array $forbidden = [
         'namespace' => 'Use "pkg" to declare a package',
 
@@ -89,11 +89,13 @@ class Validator
             $this->countCounterPart($token, '(', ')');
             $this->countCounterPart($token, '{', '}');
             $this->countCounterPart($token, '[', ']');
+            $this->countCounterPart($token, '<', '>');
         }
 
         $this->validateCounting('(', ')');
         $this->validateCounting('{', '}');
         $this->validateCounting('[', ']');
+        $this->validateCounting('<', '>');
         if ($mustHavePkg && !$hasPkg) {
             throw new Exception('You must define a pkg for file that contains '
                 . implode(', ', $objectAllowed));

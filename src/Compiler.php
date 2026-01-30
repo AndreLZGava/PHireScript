@@ -28,8 +28,8 @@ class Compiler
 
         $transpilerDependencyTree = new TranspilerDependencyTree($config);
 
-        $listPrograms = $this->loader->load($sourceDir, $transpilerDependencyTree);
-        $this->dependencyManager->buildGraph($listPrograms);
+        //$listPrograms = $this->loader->load($sourceDir, $transpilerDependencyTree);
+        // $this->dependencyManager->buildGraph($listPrograms);
 
         $transpiler = new Transpiler($config, $this->dependencyManager);
 

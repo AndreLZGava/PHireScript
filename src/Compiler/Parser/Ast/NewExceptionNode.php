@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class NewExceptionNode extends Expression
 {
     public function __construct(
-        public Token $token,
+        Token $token,
         public string $className,
         public string $message,
     ) {

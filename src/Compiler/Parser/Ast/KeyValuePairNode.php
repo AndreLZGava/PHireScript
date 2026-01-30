@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class KeyValuePairNode extends Node
 {
     public function __construct(
-        public Token $token,
+        Token $token,
         public ?Node $key,
         public ?Node $value
     ) {

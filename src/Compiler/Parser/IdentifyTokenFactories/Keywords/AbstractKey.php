@@ -13,7 +13,7 @@ use PHireScript\Helper\Debug\Debug;
 
 class AbstractKey extends ClassesFactory
 {
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
         return null;
     }

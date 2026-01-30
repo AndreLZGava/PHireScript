@@ -18,7 +18,7 @@ use PHireScript\Runtime\RuntimeClass;
 
 class Method extends ClassesFactory
 {
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $this->program = $program;
 

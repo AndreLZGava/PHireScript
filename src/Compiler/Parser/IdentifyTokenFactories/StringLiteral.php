@@ -12,7 +12,7 @@ use PHireScript\Compiler\Program;
 
 class StringLiteral extends GlobalFactory
 {
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $currentToken = $this->tokenManager->getCurrentToken();
         $node = new StringNode($currentToken, $currentToken->value);

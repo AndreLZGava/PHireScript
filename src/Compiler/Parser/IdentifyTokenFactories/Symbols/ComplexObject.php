@@ -27,39 +27,41 @@ use PHireScript\Runtime\RuntimeClass;
 
 class ComplexObject extends GlobalFactory
 {
-    public function isTheCase()
+    public function isTheCase(Token $token, ParseContext $parseContext): bool
     {
-        return  in_array($this->tokenManager->getCurrentToken()->value, RuntimeClass::ACCESSORS, true) &&
-        in_array($this->tokenManager->getContext(), RuntimeClass::OBJECT_AS_CLASS, true);
+        return  in_array($parseContext->tokenManager->getCurrentToken()->value, RuntimeClass::ACCESSORS, true) &&
+            in_array($parseContext->tokenManager->getContext(), RuntimeClass::OBJECT_AS_CLASS, true);
     }
 
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
-        if ($this->tokenManager->getNextTokenAfterCurrent()->isSymbol()) {
+        if ($parseContext->tokenManager->getNextTokenAfterCurrent()->isSymbol()) {
             return null;
         }
-        $node = new PropertyDefinition($this->tokenManager->getCurrentToken());
-        $node->modifiers[] = (new ModifiersTransform($this->tokenManager))->map($this->tokenManager->getCurrentToken());
+        $node = new PropertyDefinition($parseContext->tokenManager->getCurrentToken());
+        $node->modifiers[] = (
+            new ModifiersTransform($parseContext->tokenManager)
+        )->map($parseContext->tokenManager->getCurrentToken());
 
-        $node = $this->parsePropertyWithTypes($node);
-        $this->parseContext->variables->addProperty($node);
+        $node = $this->parsePropertyWithTypes($node, $parseContext);
+        $parseContext->variables->addProperty($node);
         return $node;
     }
 
-    private function parsePropertyWithTypes(PropertyDefinition $node): PropertyDefinition
+    private function parsePropertyWithTypes(PropertyDefinition $node, ParseContext $parseContext): PropertyDefinition
     {
         $types = [];
 
-        while (!$this->tokenManager->isEndOfTokens()) {
-            $token = $this->tokenManager->getCurrentToken();
+        while (!$parseContext->tokenManager->isEndOfTokens()) {
+            $token = $parseContext->tokenManager->getCurrentToken();
 
             if ($token->isType() || $this->isTypeFormat($token)) {
                 $types[] = $token->value;
             }
 
-            $nextToken = $this->tokenManager->getNextTokenAfterCurrent();
+            $nextToken = $parseContext->tokenManager->getNextTokenAfterCurrent();
 
-            $this->tokenManager->advance();
+            $parseContext->tokenManager->advance();
 
             if ($nextToken->isIdentifier()) {
                 $node->name = trim((string) $nextToken->value);

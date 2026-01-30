@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class PropertyAccessNode extends Expression
 {
     public function __construct(
-        public Token $token,
+        Token $token,
         public Node $object,
         public Node|string $property
     ) {

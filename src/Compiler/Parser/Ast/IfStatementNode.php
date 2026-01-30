@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class IfStatementNode extends Statement
 {
     public function __construct(
-        public Token $token,
+        Token $token,
         public mixed $condition,
         public mixed $statements,
         public array $elseStatements = []

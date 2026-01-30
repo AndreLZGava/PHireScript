@@ -12,7 +12,7 @@ use PHireScript\Compiler\Program;
 
 class Type extends ClassesFactory
 {
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $this->program = $program;
         $node = new ClassDefinition($this->tokenManager->getCurrentToken());

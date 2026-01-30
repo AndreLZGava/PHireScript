@@ -10,7 +10,7 @@ class SuperTypeNode extends Expression
 {
     public string $type;
     public function __construct(
-        public Token $token,
+        Token $token,
         public mixed $value,
     ) {
         $this->type = $token->value;

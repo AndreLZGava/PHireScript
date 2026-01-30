@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class ObjectLiteralNode extends Expression
 {
     public function __construct(
-        public Token $token,
+        Token $token,
         public array|ArrayLiteralNode $properties = []
     ) {
     }

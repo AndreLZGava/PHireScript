@@ -11,17 +11,18 @@ use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
+use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Program;
 use PHireScript\Compiler\Parser\ParseContext;
 
 class SingleOpenParenthesisOperator extends GlobalFactory
 {
-    public function isTheCase()
+    public function isTheCase(Token $token, ParseContext $parseContext): bool
     {
-        return $this->tokenManager->getCurrentToken()->value === '(';
+        return $token->value === '(';
     }
 
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
         return null;
     }

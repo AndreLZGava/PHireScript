@@ -38,43 +38,44 @@ use PHireScript\Helper\Debug\Debug;
 
 class Symbol extends GlobalFactory
 {
-    public Program $program;
+public Program $program;
 
-    public function process(Program $program): ?Node
-    {
-        $this->program = $program;
+public function process(Token $token, ParseContext $parseContext): ?Node
+{
+    $this->program = $program;
 
-        $factories = [
-            new ArrayCastVariable($this->tokenManager, $this->parseContext),
-            new BlockBrackets($this->tokenManager, $this->parseContext),
-            new BlockBracketsCommaOnMethod($this->tokenManager, $this->parseContext),
-            new BlockParenthesisOnMethod($this->tokenManager, $this->parseContext),
-            new BoolCastVariable($this->tokenManager, $this->parseContext),
-            new BoolLiteralVariable($this->tokenManager, $this->parseContext),
-            new CharactersOnMethods($this->tokenManager, $this->parseContext),
-            new ComplexObject($this->tokenManager, $this->parseContext),
-            new DotAsPointer($this->tokenManager, $this->parseContext),
-            new DotOnGeneral($this->tokenManager, $this->parseContext),
-            new FloatCastVariable($this->tokenManager, $this->parseContext),
-            new GetterAndSetters($this->tokenManager, $this->parseContext),
-            new GettingArguments($this->tokenManager, $this->parseContext),
-            new IntCastVariable($this->tokenManager, $this->parseContext),
-            new NumberLiteralVariable($this->tokenManager, $this->parseContext),
-            new ObjectArrayLiteralVariable($this->tokenManager, $this->parseContext),
-            new ObjectCastVariable($this->tokenManager, $this->parseContext),
-            new SingleCommaOnClass($this->tokenManager, $this->parseContext),
-            new SingleOpenParenthesisOperator($this->tokenManager, $this->parseContext),
-            new StringCastVariable($this->tokenManager, $this->parseContext),
-            new StringLiteralVariable($this->tokenManager, $this->parseContext),
-            new SuperTypeCastVariable($this->tokenManager, $this->parseContext),
-            new VariableLiteralVariable($this->tokenManager, $this->parseContext),
-            new VariableAssignmentFactory($this->tokenManager, $this->parseContext),
+    $factories = [
+        new ArrayCastVariable($this->tokenManager, $this->parseContext),
+        new BlockBrackets($this->tokenManager, $this->parseContext),
+        new BlockBracketsCommaOnMethod($this->tokenManager, $this->parseContext),
+        new BlockParenthesisOnMethod($this->tokenManager, $this->parseContext),
+        new BoolCastVariable($this->tokenManager, $this->parseContext),
+        new BoolLiteralVariable($this->tokenManager, $this->parseContext),
+        new CharactersOnMethods($this->tokenManager, $this->parseContext),
+        new ComplexObject($this->tokenManager, $this->parseContext),
+        new DotAsPointer($this->tokenManager, $this->parseContext),
+        new DotOnGeneral($this->tokenManager, $this->parseContext),
+        new FloatCastVariable($this->tokenManager, $this->parseContext),
+        new GetterAndSetters($this->tokenManager, $this->parseContext),
+        new GettingArguments($this->tokenManager, $this->parseContext),
+        new IntCastVariable($this->tokenManager, $this->parseContext),
+        new NumberLiteralVariable($this->tokenManager, $this->parseContext),
+        new ObjectArrayLiteralVariable($this->tokenManager, $this->parseContext),
+        new ObjectCastVariable($this->tokenManager, $this->parseContext),
+        new SingleCommaOnClass($this->tokenManager, $this->parseContext),
+        new SingleOpenParenthesisOperator($this->tokenManager, $this->parseContext),
+        new StringCastVariable($this->tokenManager, $this->parseContext),
+        new StringLiteralVariable($this->tokenManager, $this->parseContext),
+        new SuperTypeCastVariable($this->tokenManager, $this->parseContext),
+        new VariableLiteralVariable($this->tokenManager, $this->parseContext),
+        new VariableAssignmentFactory($this->tokenManager, $this->parseContext),
 
-        ];
+    ];
 
-        foreach ($factories as $parser) {
-            if ($parser->isTheCase()) {
-                return $parser->process($program);
+    foreach ($factories as $parser) {
+        if ($parser->Token $token, ParseContext $parseContext) :
+            bool) {
+            return $parser->process($program);
             }
         }
 
@@ -83,9 +84,9 @@ class Symbol extends GlobalFactory
 
         Debug::show(
             [
-                'currentToken' => $this->tokenManager->getCurrentToken(),
-                'context' => $this->tokenManager->getContext(),
-                'program' => $program
+            'currentToken' => $this->tokenManager->getCurrentToken(),
+            'context' => $this->tokenManager->getContext(),
+            'program' => $program
             ],
             debug_backtrace(2)
         );

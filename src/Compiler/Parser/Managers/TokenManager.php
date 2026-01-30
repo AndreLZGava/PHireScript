@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Managers;
 
+use Exception;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 
 class TokenManager
@@ -66,12 +67,16 @@ class TokenManager
     public function advance()
     {
         $this->currentPosition++;
-        //$this->positionLookup++;
-        if (!$this->isEndOfTokens() && isset($this->tokens[$this->currentPosition + 1])) {
+
+        if ($this->currentPosition < count($this->tokens)) {
             $this->currentToken = $this->tokens[$this->currentPosition];
-            $this->tokenLookup = $this->currentToken;
-            $this->positionLookup = $this->currentPosition;
+        } else {
+            $this->currentToken = $this->endFileToken;
         }
+
+        // Sincroniza o lookup (se você ainda estiver usando ele)
+        $this->tokenLookup = $this->currentToken;
+        $this->positionLookup = $this->currentPosition;
     }
 
     public function walk($positions)

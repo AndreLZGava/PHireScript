@@ -9,9 +9,9 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class AssignmentNode extends Statement
 {
     public function __construct(
-        public Token $token,
+        Token $token,
         public Node $left,
-        public Node $right
+        public ?Node $right = null
     ) {
     }
 }

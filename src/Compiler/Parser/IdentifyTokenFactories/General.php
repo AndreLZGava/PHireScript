@@ -12,7 +12,7 @@ use PHireScript\Helper\Debug\Debug;
 
 class General extends GlobalFactory
 {
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $node = new GlobalStatement($this->tokenManager->getCurrentToken());
 

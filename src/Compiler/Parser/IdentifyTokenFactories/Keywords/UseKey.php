@@ -15,7 +15,7 @@ use PHireScript\Helper\Debug\Debug;
 
 class UseKey extends ClassesFactory
 {
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $this->program = $program;
         $currentToken = $this->tokenManager->getCurrentToken();

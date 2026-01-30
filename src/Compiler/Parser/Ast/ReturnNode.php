@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class ReturnNode extends Statement
 {
     public function __construct(
-        public Token $token,
+        Token $token,
         public ?Expression $expression = null
     ) {
     }

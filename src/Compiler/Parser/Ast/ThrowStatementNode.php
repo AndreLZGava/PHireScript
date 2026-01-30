@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class ThrowStatementNode extends Statement
 {
     public function __construct(
-        public Token $token,
+        Token $token,
         public mixed $exceptionExpression
     ) {
     }

@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class DependenciesStatement extends Statement
 {
     public function __construct(
-        public Token $token,
+        Token $token,
         public readonly array $packages = [],
     ) {
     }

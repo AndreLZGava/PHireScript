@@ -33,7 +33,7 @@ class Keywords extends GlobalFactory
 {
     private array $factories;
 
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $this->factories = [
             'type' => Type::class,

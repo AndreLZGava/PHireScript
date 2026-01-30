@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class ConstructorDefinition extends Node
 {
     public function __construct(
-        public Token $token,
+        Token $token,
         public array $modifiers = [],
         public array $params = [],
         public array $body = [],

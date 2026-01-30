@@ -11,6 +11,7 @@ use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
+use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Program;
 use PHireScript\Compiler\Parser\ParseContext;
 
@@ -19,20 +20,20 @@ class ObjectCastVariable extends GlobalFactory
     use DataArrayObjectModelingTrait;
     use DataParamsModelingTrait;
 
-    public function isTheCase()
+    public function isTheCase(Token $token, ParseContext $parseContext): bool
     {
-        return $this->tokenManager->getCurrentToken()->value === '=' &&
-        $this->tokenManager->getNextTokenAfterCurrent()->isType() &&
-        $this->tokenManager->getNextTokenAfterCurrent()->value === 'Object';
+        return $parseContext->tokenManager->getCurrentToken()->value === '=' &&
+            $parseContext->tokenManager->getNextTokenAfterCurrent()->isType() &&
+            $parseContext->tokenManager->getNextTokenAfterCurrent()->value === 'Object';
     }
 
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
-        $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
-        $currentToken = $this->tokenManager->getCurrentToken();
+        $previous = $parseContext->tokenManager->getPreviousTokenBeforeCurrent();
+        $currentToken = $parseContext->tokenManager->getCurrentToken();
 
-        $this->tokenManager->walk(3);
-        $varValue = new ObjectLiteralNode($this->tokenManager->getCurrentToken(), $this->parseExpression());
+        $parseContext->tokenManager->walk(3);
+        $varValue = new ObjectLiteralNode($parseContext->tokenManager->getCurrentToken(), $this->parseExpression());
 
         $assignment = new VariableDeclarationNode(
             token: $currentToken,
@@ -40,7 +41,7 @@ class ObjectCastVariable extends GlobalFactory
             value: $varValue,
             type: null,
         );
-        $this->parseContext->variables->addVariable($assignment);
+        $parseContext->variables->addVariable($assignment);
 
         return $assignment;
     }

@@ -20,7 +20,7 @@ class ReturnKey extends ClassesFactory
 {
     use DataArrayObjectModelingTrait;
 
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $this->program = $program;
         $this->tokenManager->advance();

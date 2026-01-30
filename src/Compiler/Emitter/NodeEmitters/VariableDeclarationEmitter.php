@@ -19,7 +19,6 @@ class VariableDeclarationEmitter implements NodeEmitter
     public function emit(object $node, EmitContext $ctx): string
     {
         $name = '$' . $node->name;
-        $value = $ctx->emitter->emit($node->value, $ctx);
-        return "{$name} = {$value};\n";
+        return "{$name}";
     }
 }

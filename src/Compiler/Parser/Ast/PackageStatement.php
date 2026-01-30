@@ -17,7 +17,7 @@ class PackageStatement extends Statement
     public readonly string $completePackage;
 
     public function __construct(
-        public Token $token,
+        Token $token,
         public readonly string $package,
         public readonly string $object,
         public readonly string $file,

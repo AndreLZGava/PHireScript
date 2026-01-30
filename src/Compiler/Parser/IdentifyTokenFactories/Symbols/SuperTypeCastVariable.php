@@ -11,6 +11,8 @@ use PHireScript\Compiler\Parser\Ast\VariableNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
+use PHireScript\Compiler\Parser\Managers\Token\Token;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 
 class SuperTypeCastVariable extends GlobalFactory
@@ -18,38 +20,37 @@ class SuperTypeCastVariable extends GlobalFactory
     use DataArrayObjectModelingTrait;
     use DataParamsModelingTrait;
 
-    public function isTheCase()
+    public function isTheCase(Token $token, ParseContext $parseContext): bool
     {
-        return $this->tokenManager->getCurrentToken()->value === '=' &&
-        $this->tokenManager->getNextTokenAfterCurrent()->isType() &&
-        in_array(
-            $this->tokenManager->getNextTokenAfterCurrent()->value,
-            [
-            'Uuid',
-            'CardNumber',
-            'Color',
-            'Cron',
-            'Cvv',
-            'Duration',
-            'Email',
-            'ExpiryDate',
-            'Ipv4',
-            'Ipv6',
-            'Json',
-            'Mac',
-            'Slug',
-            'Url'
-            ]
-        );
+        return $parseContext->tokenManager->getCurrentToken()->value === '=' &&
+            $parseContext->tokenManager->getNextTokenAfterCurrent()->isType() &&
+            in_array(
+                $parseContext->tokenManager->getNextTokenAfterCurrent()->value,
+                [
+                    'Uuid',
+                    'CardNumber',
+                    'Color',
+                    'Cron',
+                    'Cvv',
+                    'Duration',
+                    'Email',
+                    'ExpiryDate',
+                    'Ipv4',
+                    'Ipv6',
+                    'Json',
+                    'Mac',
+                    'Slug',
+                    'Url'
+                ]
+            );
     }
 
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
-        $this->program = $program;
-        $previous = $this->tokenManager->getPreviousTokenBeforeCurrent();
-        $currentToken = $this->tokenManager->getCurrentToken();
-        $next = $this->tokenManager->getNextTokenAfterCurrent();
-        $this->tokenManager->walk(2);
+        $previous = $parseContext->tokenManager->getPreviousTokenBeforeCurrent();
+        $currentToken = $parseContext->tokenManager->getCurrentToken();
+        $next = $parseContext->tokenManager->getNextTokenAfterCurrent();
+        $parseContext->tokenManager->walk(2);
         $argument = current($this->getArgs('casting')) ?: (object) ['value' => null];
         $value = $argument instanceof VariableNode ? $argument->name : $argument->value;
         $varValue = new SuperTypeNode($next, $value);
@@ -59,7 +60,7 @@ class SuperTypeCastVariable extends GlobalFactory
             value: $varValue,
             type: null,
         );
-        $this->parseContext->variables->addVariable($assignment);
+        $parseContext->variables->addVariable($assignment);
 
         return $assignment;
     }

@@ -41,7 +41,8 @@ class Transpiler implements TranspilerInterface
 
         $parser = new Parser($this->config);
         $ast = $parser->parse($tokens, $path);
-        // Debug::show($ast);exit;
+         Debug::show($ast);
+        exit;
         $symbolTable = new SymbolTable();
         $binder = new Binder($symbolTable);
         $updatedAst = $binder->bind($ast);

@@ -11,34 +11,35 @@ use PHireScript\Compiler\Parser\Ast\NumberNode;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactoryInterface;
+use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
 class VariableAssignmentFactory extends GlobalFactory
 {
-    public function isTheCase()
+    public function isTheCase(Token $token, ParseContext $parseContext): bool
     {
-        $current = $this->tokenManager->getCurrentToken();
-        $prev = $this->tokenManager->getPreviousTokenBeforeCurrent();
+        $current = $parseContext->tokenManager->getCurrentToken();
+        $prev = $parseContext->tokenManager->getPreviousTokenBeforeCurrent();
         return $current->value === '=' && ($prev && $prev->isIdentifier());
     }
 
-    public function process(Program $program): ?Node
+    public function process(Token $token, ParseContext $parseContext): ?Node
     {
-        $varName = $this->tokenManager->getPreviousTokenBeforeCurrent()->value;
-        $this->tokenManager->advance();
+        $varName = $parseContext->tokenManager->getPreviousTokenBeforeCurrent()->value;
+        $parseContext->tokenManager->advance();
 
-        $expressionTree = $this->parseExpression($this->parseContext);
+        $expressionTree = $this->parseExpression($parseContext);
 
         $assignment = new VariableDeclarationNode(
-            token: $this->tokenManager->getCurrentToken(),
+            token: $parseContext->tokenManager->getCurrentToken(),
             name: $varName,
             value: $expressionTree,
             type: 'expression'
         );
 
-        $this->parseContext->variables->addVariable($assignment);
+        $parseContext->variables->addVariable($assignment);
         return $assignment;
     }
 
@@ -52,11 +53,11 @@ class VariableAssignmentFactory extends GlobalFactory
         $left = $this->parseMultiplication($ctx);
 
         while (
-            $this->tokenManager->getCurrentToken()->value === '+' ||
-            $this->tokenManager->getCurrentToken()->value === '-'
+            $ctx->tokenManager->getCurrentToken()->value === '+' ||
+            $ctx->tokenManager->getCurrentToken()->value === '-'
         ) {
-            $op = $this->tokenManager->getCurrentToken()->value;
-            $this->tokenManager->advance();
+            $op = $ctx->tokenManager->getCurrentToken()->value;
+            $ctx->tokenManager->advance();
             $right = $this->parseMultiplication($ctx);
             $left = new BinaryExpressionNode($left, $op, $right);
         }
@@ -68,11 +69,11 @@ class VariableAssignmentFactory extends GlobalFactory
         $left = $this->parsePrimary($ctx);
 
         while (
-            $this->tokenManager->getCurrentToken()->value === '*' ||
-            $this->tokenManager->getCurrentToken()->value === '/'
+            $ctx->tokenManager->getCurrentToken()->value === '*' ||
+            $ctx->tokenManager->getCurrentToken()->value === '/'
         ) {
-            $op = $this->tokenManager->getCurrentToken()->value;
-            $this->tokenManager->advance();
+            $op = $ctx->tokenManager->getCurrentToken()->value;
+            $ctx->tokenManager->advance();
             $right = $this->parsePrimary($ctx);
             $left = new BinaryExpressionNode($left, $op, $right);
         }
@@ -81,12 +82,12 @@ class VariableAssignmentFactory extends GlobalFactory
 
     private function parsePrimary($ctx)
     {
-        $token = $this->tokenManager->getCurrentToken();
+        $token = $ctx->tokenManager->getCurrentToken();
 
         if ($token->value === '(') {
-            $this->tokenManager->advance();
+            $ctx->tokenManager->advance();
             $expr = $this->parseExpression($ctx);
-            $this->tokenManager->advance();
+            $ctx->tokenManager->advance();
             return $expr;
         }
 
@@ -95,7 +96,7 @@ class VariableAssignmentFactory extends GlobalFactory
             if (!$var) {
                 throw new \Exception("Variable {$token->value} not defined!");
             }
-            $this->tokenManager->advance();
+            $ctx->tokenManager->advance();
             return new VariableReferenceNode(
                 token: $token,
                 name: $token->value,
@@ -104,8 +105,8 @@ class VariableAssignmentFactory extends GlobalFactory
             );
         }
 
-      // Se for número (T_NUMBER ou similar)
-        $this->tokenManager->advance();
+        // Se for número (T_NUMBER ou similar)
+        $ctx->tokenManager->advance();
         return new NumberNode($token, (float) $token->value);
     }
 }

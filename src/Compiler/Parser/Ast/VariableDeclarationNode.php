@@ -9,10 +9,10 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class VariableDeclarationNode extends Statement
 {
     public function __construct(
-        public Token $token,
+        Token $token,
         public string $name,
-        public ?string $type,
-        public Node $value,
+        public ?Node $value = null,
+        public ?string $type = null,
         public bool $isConst = false
     ) {
     }
