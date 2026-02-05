@@ -22,6 +22,8 @@ enum Context: String
     case List = 'list';
     case ExplicitlyTyped = 'explicitly typed';
     case Assignment = 'assignment';
+    case Casting = 'casting';
+    case Bool = 'bool';
 
     public static function values(): array
     {

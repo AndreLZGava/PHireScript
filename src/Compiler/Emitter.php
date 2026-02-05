@@ -15,6 +15,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\ArrayLiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\BinaryExpressionEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\BoolEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\CastingEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ClassEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\CommentStatementEmitter;
@@ -94,6 +95,7 @@ class Emitter
             new NotOperatorEmitter(),
             new ThrowStatementEmitter(),
             new NewExceptionEmitter(),
+            new CastingEmitter(),
             //new ScalarLiteralEmitter(),
         ]);
     }

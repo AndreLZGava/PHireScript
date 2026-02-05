@@ -25,6 +25,7 @@ class MapValue extends Collections
         $current = $parseContext->context->getCurrentContextElement();
         if ($current instanceof AssignmentNode) {
             $current->right = $map;
+            $current->left->type = $map;
         }
 
         $parseContext->context->enterContext(Context::Map, $map);

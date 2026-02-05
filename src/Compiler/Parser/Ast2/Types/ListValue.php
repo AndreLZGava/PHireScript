@@ -25,6 +25,7 @@ class ListValue extends Collections
         $current = $parseContext->context->getCurrentContextElement();
         if ($current instanceof AssignmentNode) {
             $current->right = $list;
+            $current->left->type = $list;
         }
 
         $parseContext->context->enterContext(Context::List, $list);

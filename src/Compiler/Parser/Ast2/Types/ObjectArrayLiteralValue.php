@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols;
+namespace PHireScript\Compiler\Parser\Ast2\Types;
 
+use PHireScript\Compiler\Parser\Ast2\GlobalFactory;
+use PHireScript\Compiler\Parser\Ast\AssignmentNode;
 use PHireScript\Compiler\Parser\Ast\BoolNode;
+use PHireScript\Compiler\Parser\Ast\CastingNode;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\NumberNode;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
-use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Program;
@@ -25,7 +27,18 @@ class ObjectArrayLiteralValue extends GlobalFactory
 
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
-        //$parseContext->tokenManager->advance();
-        return $this->parseExpression($parseContext);
+        $arrayOrObject = $this->parseExpression($parseContext);
+
+        $current = $parseContext->context->getCurrentContextElement();
+        if ($current instanceof AssignmentNode) {
+            $current->right = $arrayOrObject;
+            $current->left->type = $arrayOrObject;
+        }
+
+        if ($current instanceof CastingNode) {
+            $current->value = $arrayOrObject;
+        }
+
+        return null;
     }
 }

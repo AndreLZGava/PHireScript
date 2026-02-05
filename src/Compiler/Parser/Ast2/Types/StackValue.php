@@ -25,6 +25,7 @@ class StackValue extends Collections
         $current = $parseContext->context->getCurrentContextElement();
         if ($current instanceof AssignmentNode) {
             $current->right = $stack;
+            $current->left->type = $stack;
         }
 
         $parseContext->context->enterContext(Context::Stack, $stack);

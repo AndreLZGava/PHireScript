@@ -12,10 +12,21 @@ use PHireScript\Compiler\Parser\Ast2\Types\QueueValue;
 use PHireScript\Compiler\Parser\Ast2\Types\StackValue;
 use PHireScript\Compiler\Parser\Ast2\Statement\Comment;
 use PHireScript\Compiler\Parser\Ast2\Statement\EndOfLine;
+use PHireScript\Compiler\Parser\Ast2\Statement\LeftParenthesisTyping;
 use PHireScript\Compiler\Parser\Ast2\Statement\LeftWingTyping;
 use PHireScript\Compiler\Parser\Ast2\Statement\Pipe;
+use PHireScript\Compiler\Parser\Ast2\Statement\RightParenthesisTyping;
 use PHireScript\Compiler\Parser\Ast2\Statement\RightWingTyping;
 use PHireScript\Compiler\Parser\Ast2\Statement\Variable;
+use PHireScript\Compiler\Parser\Ast2\Types\BoolCastVariable;
+use PHireScript\Compiler\Parser\Ast2\Types\BoolLiteralValue;
+use PHireScript\Compiler\Parser\Ast2\Types\FloatCastVariable;
+use PHireScript\Compiler\Parser\Ast2\Types\IntCastVariable;
+use PHireScript\Compiler\Parser\Ast2\Types\NumberLiteralValue;
+use PHireScript\Compiler\Parser\Ast2\Types\ObjectArrayLiteralValue;
+use PHireScript\Compiler\Parser\Ast2\Types\StringCastValue;
+use PHireScript\Compiler\Parser\Ast2\Types\StringLiteralValue;
+use PHireScript\Compiler\Parser\Ast2\Types\VariableLiteralReference;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
 use PHireScript\Compiler\Parser\Managers\TokenManager;
 use PHireScript\Compiler\Parser\Managers\VariableManager;
@@ -43,15 +54,30 @@ class Parser
             new StackValue(),
             new ListValue(),
             new MapValue(),
+
+            new BoolLiteralValue(),
+            new BoolCastVariable(),
+            new StringLiteralValue(),
+            new StringCastValue(),
+            new NumberLiteralValue(),
+            new FloatCastVariable(),
+            new IntCastVariable(),
+            new ObjectArrayLiteralValue(),
+
             new LeftWingTyping(),
             new Pipe(),
-            new GenericType(),
             new RightWingTyping(),
             new EndOfLine(),
 
+            new LeftParenthesisTyping(),
+            new RightParenthesisTyping(),
+
+
+            new VariableLiteralReference(),
+
+            new GenericType(),
             /*
             new StringLiteralValue(),
-            new BoolLiteralValue(),
             new NumberLiteralValue(),
             new ObjectArrayLiteralValue(),
             new VariableLiteralReference(),
@@ -62,7 +88,6 @@ class Parser
             new BlockBrackets(),
             new BlockBracketsCommaOnMethod(),
             new BlockParenthesisOnMethod(),
-            new BoolCastVariable(),
             new CharactersOnMethods(),
             new ComplexObject(),
             new DotAsPointer(),

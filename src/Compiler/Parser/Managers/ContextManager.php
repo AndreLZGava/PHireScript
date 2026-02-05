@@ -32,7 +32,6 @@ class ContextManager
     public function enterContext(Context $context, Node $element): void
     {
         $this->stack[] = $this->current;
-
         $this->current = new ContextState($context, $element);
     }
 
