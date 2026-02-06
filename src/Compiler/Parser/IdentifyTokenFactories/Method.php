@@ -46,7 +46,7 @@ class Method extends ClassesFactory
               //  throw new Exception("Variable {$currentToken->value} not defined yet!");
             }
             $property = $this->tokenManager->getNextToken()->value;
-            $this->tokenManager->walk(3);
+            //$this->tokenManager->walk(3);
             return new PropertyAccessNode($currentToken, $variable, $property);
         }
 
@@ -63,7 +63,7 @@ class Method extends ClassesFactory
             $nextToken->isSymbol() &&
             in_array($nextToken->value, ['?', '!', '('], true)
         ) {
-            $this->tokenManager->walk(in_array($nextToken->value, ['?', '!'], true) ? 2 : 1);
+           // $this->tokenManager->walk(in_array($nextToken->value, ['?', '!'], true) ? 2 : 1);
             $node = new MethodDefinition($this->tokenManager->getCurrentToken());
             $node->name = trim((string) $currentToken->value);
             $node->mustBeBool = $nextToken->value === '?';

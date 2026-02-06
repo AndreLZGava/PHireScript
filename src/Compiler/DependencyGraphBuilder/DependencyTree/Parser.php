@@ -33,7 +33,7 @@ class Parser
                 $program->statements[] = $result;
             }
 
-            $tokenManager->advance();
+            //$tokenManager->advance();
         }
 
         return $program;

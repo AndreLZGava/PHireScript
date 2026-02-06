@@ -17,10 +17,10 @@ class Type extends ClassesFactory
         $this->program = $program;
         $node = new ClassDefinition($this->tokenManager->getCurrentToken());
         $node->type = $this->tokenManager->getCurrentToken()->value;
-        $this->tokenManager->advance();
+        //$this->tokenManager->advance();
         // @todo implement validations to walk and validate its a name
         $node->name = $this->tokenManager->getCurrentToken()->value;
-        $this->tokenManager->advance();
+        //$this->tokenManager->advance();
         $node->body = $this->getContentBlock($node);
         return $node;
     }

@@ -28,7 +28,6 @@ class Variable extends Statements
 
         $parseContext->context->definingVariable($variable);
         $parseContext->variables->addVariable($variable);
-        //$parseContext->tokenManager->advance();
         return null;
     }
 }

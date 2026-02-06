@@ -50,10 +50,10 @@ abstract class ClassesFactory extends GlobalFactory
                 $result[] = $returned;
             }
 
-            $newTokenManager->advance();
+            //$newTokenManager->advance();
         }
         //Debug::show($codeBlockToken, $this->tokenManager->getTokens());exit;
-        $this->tokenManager->walk(count($codeBlockToken));
+        //$this->tokenManager->walk(count($codeBlockToken));
         return $result;
     }
 
@@ -67,7 +67,7 @@ abstract class ClassesFactory extends GlobalFactory
                 $result .= $tokens->value;
             }
         }
-        $this->tokenManager->walk(count($codeBlockToken));
+       // $this->tokenManager->walk(count($codeBlockToken));
         return $result;
     }
 
@@ -212,10 +212,10 @@ abstract class ClassesFactory extends GlobalFactory
                 $result[] = $returned;
             }
 
-            $newTokenManager->advance();
+            //$newTokenManager->advance();
         }
 
-        $this->tokenManager->walk(count($codeBlockToken));
+       // $this->tokenManager->walk(count($codeBlockToken));
 
         return $result;
     }

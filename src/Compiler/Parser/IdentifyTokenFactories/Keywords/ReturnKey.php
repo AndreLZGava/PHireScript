@@ -23,7 +23,7 @@ class ReturnKey extends ClassesFactory
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $this->program = $program;
-        $this->tokenManager->advance();
+        //$this->tokenManager->advance();
         $expression = $this->parseExpression();
 
         $returnNode = new ReturnNode($this->tokenManager->getCurrentToken(), $expression);

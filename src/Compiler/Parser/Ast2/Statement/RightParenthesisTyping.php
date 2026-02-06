@@ -30,7 +30,6 @@ class RightParenthesisTyping extends Statements
         ) {
             $parseContext->context->exitContext();
         }
-
         if ($currentElement instanceof CastingNode) {
             $casting = $parseContext->context->getCurrentContextElement();
             $parseContext->context->exitContext();

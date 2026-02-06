@@ -18,10 +18,10 @@ class TraitKey extends ClassesFactory
         $this->program = $program;
         $node = new TraitDefinition($this->tokenManager->getCurrentToken());
         $node->type = $this->tokenManager->getCurrentToken()->value;
-        $this->tokenManager->advance();
+        //$this->tokenManager->advance();
 
         $node->name = $this->tokenManager->getCurrentToken()->value;
-        $this->tokenManager->advance();
+        //$this->tokenManager->advance();
         $node->traits = $this->getWith($node);
         $node->body = $this->getContentBlock($node);
         return $node;

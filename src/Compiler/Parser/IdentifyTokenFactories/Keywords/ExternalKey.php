@@ -18,7 +18,7 @@ class ExternalKey extends ClassesFactory
     {
         $this->program = $program;
         $currentToken = $this->tokenManager->getCurrentToken();
-        $this->tokenManager->advance();
+        //$this->tokenManager->advance();
         $namespaces = $this->buildUseNamespaces();
 
         $namespaces = new ExternalsStatement(
@@ -75,7 +75,7 @@ class ExternalKey extends ClassesFactory
             throw new Exception('External statement cannot be empty!');
         }
 
-        $this->tokenManager->walk($walk);
+        // $this->tokenManager->walk($walk);
         return $uses;
     }
 

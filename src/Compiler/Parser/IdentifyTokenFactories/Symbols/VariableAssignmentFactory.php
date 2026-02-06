@@ -28,7 +28,7 @@ class VariableAssignmentFactory extends GlobalFactory
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $varName = $parseContext->tokenManager->getPreviousTokenBeforeCurrent()->value;
-        $parseContext->tokenManager->advance();
+        //$parseContext->tokenManager->advance();
 
         $expressionTree = $this->parseExpression($parseContext);
 
@@ -57,7 +57,7 @@ class VariableAssignmentFactory extends GlobalFactory
             $ctx->tokenManager->getCurrentToken()->value === '-'
         ) {
             $op = $ctx->tokenManager->getCurrentToken()->value;
-            $ctx->tokenManager->advance();
+            //$ctx->tokenManager->advance();
             $right = $this->parseMultiplication($ctx);
             $left = new BinaryExpressionNode($left, $op, $right);
         }
@@ -73,7 +73,7 @@ class VariableAssignmentFactory extends GlobalFactory
             $ctx->tokenManager->getCurrentToken()->value === '/'
         ) {
             $op = $ctx->tokenManager->getCurrentToken()->value;
-            $ctx->tokenManager->advance();
+            //$ctx->tokenManager->advance();
             $right = $this->parsePrimary($ctx);
             $left = new BinaryExpressionNode($left, $op, $right);
         }
@@ -85,9 +85,9 @@ class VariableAssignmentFactory extends GlobalFactory
         $token = $ctx->tokenManager->getCurrentToken();
 
         if ($token->value === '(') {
-            $ctx->tokenManager->advance();
+            //$ctx->tokenManager->advance();
             $expr = $this->parseExpression($ctx);
-            $ctx->tokenManager->advance();
+            //$ctx->tokenManager->advance();
             return $expr;
         }
 
@@ -96,7 +96,7 @@ class VariableAssignmentFactory extends GlobalFactory
             if (!$var) {
                 throw new \Exception("Variable {$token->value} not defined!");
             }
-            $ctx->tokenManager->advance();
+            //$ctx->tokenManager->advance();
             return new VariableReferenceNode(
                 token: $token,
                 name: $token->value,
@@ -106,7 +106,7 @@ class VariableAssignmentFactory extends GlobalFactory
         }
 
         // Se for número (T_NUMBER ou similar)
-        $ctx->tokenManager->advance();
+        //$ctx->tokenManager->advance();
         return new NumberNode($token, (float) $token->value);
     }
 }

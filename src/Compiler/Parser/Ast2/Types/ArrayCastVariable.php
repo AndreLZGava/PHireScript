@@ -6,12 +6,14 @@ namespace PHireScript\Compiler\Parser\Ast2\Types;
 
 use PHireScript\Compiler\Parser\Ast2\GlobalFactory;
 use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
+use PHireScript\Compiler\Parser\Ast\AssignmentNode;
+use PHireScript\Compiler\Parser\Ast\CastingNode;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
-
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactoryInterface;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
+use PHireScript\Compiler\Parser\Managers\Context\Context;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Program;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -25,14 +27,22 @@ class ArrayCastVariable extends GlobalFactory
     public function isTheCase(Token $token, ParseContext $parseContext): bool
     {
         return $token->isType() &&
-        $token->value === 'Array';
+            $token->value === 'Array';
     }
 
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
-        $object = current($this->getArgs('casting'));
-        $varValue = new ArrayLiteralNode($parseContext->tokenManager->getCurrentToken(), [$object]);
+        $varValue = new ArrayLiteralNode($parseContext->tokenManager->getCurrentToken(), []);
 
-        return $varValue;
+        $casting = new CastingNode($token, 'array');
+        $current = $parseContext->context->getCurrentContextElement();
+        if ($current instanceof AssignmentNode) {
+            $current->right = $varValue;
+            $current->left->type = $varValue;
+        }
+
+        $parseContext->context->enterContext(Context::Casting, $casting);
+
+        return null;
     }
 }

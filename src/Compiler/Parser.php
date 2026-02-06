@@ -18,12 +18,14 @@ use PHireScript\Compiler\Parser\Ast2\Statement\Pipe;
 use PHireScript\Compiler\Parser\Ast2\Statement\RightParenthesisTyping;
 use PHireScript\Compiler\Parser\Ast2\Statement\RightWingTyping;
 use PHireScript\Compiler\Parser\Ast2\Statement\Variable;
+use PHireScript\Compiler\Parser\Ast2\Types\ArrayCastVariable;
 use PHireScript\Compiler\Parser\Ast2\Types\BoolCastVariable;
 use PHireScript\Compiler\Parser\Ast2\Types\BoolLiteralValue;
 use PHireScript\Compiler\Parser\Ast2\Types\FloatCastVariable;
 use PHireScript\Compiler\Parser\Ast2\Types\IntCastVariable;
 use PHireScript\Compiler\Parser\Ast2\Types\NumberLiteralValue;
 use PHireScript\Compiler\Parser\Ast2\Types\ObjectArrayLiteralValue;
+use PHireScript\Compiler\Parser\Ast2\Types\ObjectCastVariable;
 use PHireScript\Compiler\Parser\Ast2\Types\StringCastValue;
 use PHireScript\Compiler\Parser\Ast2\Types\StringLiteralValue;
 use PHireScript\Compiler\Parser\Ast2\Types\VariableLiteralReference;
@@ -37,6 +39,7 @@ use PHireScript\Compiler\Parser\Managers\Context\Context;
 use PHireScript\Compiler\Parser\Managers\Context\ContextState;
 use PHireScript\Compiler\Parser\Managers\ContextManager;
 use PHireScript\Compiler\Program;
+use PHireScript\Helper\Debug\Debug;
 
 class Parser
 {
@@ -63,6 +66,8 @@ class Parser
             new FloatCastVariable(),
             new IntCastVariable(),
             new ObjectArrayLiteralValue(),
+            new ObjectCastVariable(),
+            new ArrayCastVariable(),
 
             new LeftWingTyping(),
             new Pipe(),

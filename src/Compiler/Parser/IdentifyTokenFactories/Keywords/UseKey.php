@@ -17,9 +17,9 @@ class UseKey extends ClassesFactory
 {
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
-        $this->program = $program;
+        //$this->program = $program;
         $currentToken = $this->tokenManager->getCurrentToken();
-        $this->tokenManager->advance();
+        //$this->tokenManager->advance();
         $packages = $this->buildUseNamespaces();
         $packages = new DependenciesStatement(
             $currentToken,
@@ -76,7 +76,7 @@ class UseKey extends ClassesFactory
             throw new Exception('Use statement cannot be empty!');
         }
 
-        $this->tokenManager->walk($walk - 1);
+        // $this->tokenManager->walk($walk - 1);
         return $uses;
     }
 

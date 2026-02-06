@@ -61,7 +61,7 @@ class ComplexObject extends GlobalFactory
 
             $nextToken = $parseContext->tokenManager->getNextTokenAfterCurrent();
 
-            $parseContext->tokenManager->advance();
+            //$parseContext->tokenManager->advance();
 
             if ($nextToken->isIdentifier()) {
                 $node->name = trim((string) $nextToken->value);

@@ -9,6 +9,7 @@ use PHireScript\Compiler\Parser\Ast\KeyValuePairNode;
 use PHireScript\Compiler\Parser\Ast\LiteralNode;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\ObjectLiteralNode;
+use PHireScript\Compiler\Parser\Managers\Context\Context;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 
@@ -83,7 +84,7 @@ trait DataArrayObjectModelingTrait
         }
         $objectNode = new ObjectLiteralNode($parseContext->tokenManager->getCurrentToken(), $properties);
 
-        if ($parseContext->tokenManager->getCurrentToken()) {
+        if ($parseContext->context->getCurrentContext() === Context::Casting) {
             $parseContext->tokenManager->advance();
         }
 
@@ -130,11 +131,18 @@ trait DataArrayObjectModelingTrait
         }
 
         $arrayLiteralNode = new ArrayLiteralNode($parseContext->tokenManager->getCurrentToken(), $elements);
-
-        if ($parseContext->tokenManager->getCurrentToken()) {
+        if (
+            $parseContext->context->getCurrentContext() === Context::Casting
+        ) {
+            $parseContext->context->exitContext();
             $parseContext->tokenManager->advance();
         }
 
+        if (
+            $parseContext->context->getCurrentContext() === Context::Assignment
+        ) {
+            $parseContext->tokenManager->advance();
+        }
         return $arrayLiteralNode;
     }
 }

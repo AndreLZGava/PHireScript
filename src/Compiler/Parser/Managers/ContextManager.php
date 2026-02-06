@@ -24,9 +24,9 @@ class ContextManager
         return $this->current->element;
     }
 
-    public function getCurrentContext(): string
+    public function getCurrentContext(): Context
     {
-        return $this->current->context->value;
+        return $this->current->context;
     }
 
     public function enterContext(Context $context, Node $element): void

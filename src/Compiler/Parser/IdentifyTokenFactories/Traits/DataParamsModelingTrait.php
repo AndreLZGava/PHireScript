@@ -35,9 +35,9 @@ trait DataParamsModelingTrait
                 $result[] = $returned;
             }
 
-            $newTokenManager->advance();
+            //$newTokenManager->advance();
         }
-        $this->tokenManager->walk(count($codeBlockToken));
+        // $this->tokenManager->walk(count($codeBlockToken));
         return $result;
     }
 

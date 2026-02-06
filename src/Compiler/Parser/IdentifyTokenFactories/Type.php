@@ -39,7 +39,7 @@ class Type extends GlobalFactory
         while (!$this->tokenManager->isEndOfTokens()) {
             $currentToken = $this->tokenManager->getCurrentToken();
             $nextToken = $this->tokenManager->getNextTokenAfterCurrent();
-            $this->tokenManager->advance();
+            // $this->tokenManager->advance();
             $node->type = $currentToken->value;
             if ($nextToken->isIdentifier()) {
                 $node->name = $nextToken->value;
@@ -47,7 +47,7 @@ class Type extends GlobalFactory
                 if ($nextAfterVariableName->value == '=') {
                     $nextAfterEqual = $this->tokenManager->getNextToken();
                     $node->defaultValue = $nextAfterEqual->value;
-                    $this->tokenManager->walk(2);
+                    // $this->tokenManager->walk(2);
                 }
                 break;
             }
