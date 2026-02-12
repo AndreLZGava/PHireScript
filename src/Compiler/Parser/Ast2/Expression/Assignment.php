@@ -22,11 +22,11 @@ class Assignment extends Expressions
     }
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
-        $left = $parseContext->context->getCurrentContextElement();
+        $left = $parseContext->context->current()->element;
 
         $assignment = new AssignmentNode(token: $token, left: $left);
 
-        $parseContext->context->enterContext(Context::Assignment, $assignment);
+        $parseContext->context->enter(Context::Assignment, $assignment);
         return null;
     }
 }

@@ -22,7 +22,7 @@ class StackValue extends Collections
     {
         $stack = new StackNode($token);
 
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $stack;
             $current->left->type = $stack;

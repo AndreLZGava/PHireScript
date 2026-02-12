@@ -20,7 +20,7 @@ class RightWingTyping extends Statements
     }
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
-        $currentElement = $parseContext->context->getCurrentContextElement();
+        $currentElement = $parseContext->context->current()->element;
         if ($currentElement instanceof Collection) {
             $parseContext->context->exitContext();
         }

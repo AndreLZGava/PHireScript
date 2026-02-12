@@ -25,13 +25,13 @@ class StringLiteralValue extends GlobalFactory
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $stringNode = new StringNode($token, $token->value);
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $stringNode;
             $current->left->type = $stringNode;
         }
 
-        if($current instanceof CastingNode) {
+        if ($current instanceof CastingNode) {
             $current->value = $stringNode;
         }
 

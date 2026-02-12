@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler;
 
+use PHireScript\Compiler\Parser\Ast2\Declarations\Variable as DeclarationVariable;
 use PHireScript\Compiler\Parser\Ast2\Expression\Assignment;
 use PHireScript\Compiler\Parser\Ast2\Expression\GenericType;
+use PHireScript\Compiler\Parser\Ast2\Expression\Method as AccessingMethod;
+use PHireScript\Compiler\Parser\Ast2\Expression\Variable as ExpressionVariable;
+use PHireScript\Compiler\Parser\Ast2\Statement\AccessVariable;
 use PHireScript\Compiler\Parser\Ast2\Types\ListValue;
 use PHireScript\Compiler\Parser\Ast2\Types\MapValue;
 use PHireScript\Compiler\Parser\Ast2\Types\QueueValue;
@@ -17,7 +21,8 @@ use PHireScript\Compiler\Parser\Ast2\Statement\LeftWingTyping;
 use PHireScript\Compiler\Parser\Ast2\Statement\Pipe;
 use PHireScript\Compiler\Parser\Ast2\Statement\RightParenthesisTyping;
 use PHireScript\Compiler\Parser\Ast2\Statement\RightWingTyping;
-use PHireScript\Compiler\Parser\Ast2\Statement\Variable;
+use PHireScript\Compiler\Parser\Ast2\Statement\DefineVariable;
+use PHireScript\Compiler\Parser\Ast2\Statement\Dot;
 use PHireScript\Compiler\Parser\Ast2\Types\ArrayCastVariable;
 use PHireScript\Compiler\Parser\Ast2\Types\BoolCastVariable;
 use PHireScript\Compiler\Parser\Ast2\Types\BoolLiteralValue;
@@ -38,19 +43,19 @@ use PHireScript\Runtime\RuntimeClass;
 use PHireScript\Compiler\Parser\Managers\Context\Context;
 use PHireScript\Compiler\Parser\Managers\Context\ContextState;
 use PHireScript\Compiler\Parser\Managers\ContextManager;
+use PHireScript\Compiler\Parser\Managers\SymbolTableManager;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
 class Parser
 {
-    private array $factories;
     private readonly ParserDispatcher $parserDispatcher;
 
     public function __construct(private readonly array $config)
     {
-        $this->factories = FactoryInitializer::getFactories();
         $this->parserDispatcher = new ParserDispatcher([
-            new Variable(),
+            new DeclarationVariable(),
+            new ExpressionVariable(),
             new Assignment(),
             new Comment(),
             new QueueValue(),
@@ -70,26 +75,20 @@ class Parser
             new ArrayCastVariable(),
 
             new LeftWingTyping(),
-            new Pipe(),
             new RightWingTyping(),
+            new Pipe(),
+            new Dot(),
             new EndOfLine(),
 
             new LeftParenthesisTyping(),
             new RightParenthesisTyping(),
 
+            new AccessingMethod(),
 
             new VariableLiteralReference(),
 
             new GenericType(),
             /*
-            new StringLiteralValue(),
-            new NumberLiteralValue(),
-            new ObjectArrayLiteralValue(),
-            new VariableLiteralReference(),
-            new StringCastValue(),
-
-            //
-            new ArrayCastVariable(),
             new BlockBrackets(),
             new BlockBracketsCommaOnMethod(),
             new BlockParenthesisOnMethod(),
@@ -97,11 +96,8 @@ class Parser
             new ComplexObject(),
             new DotAsPointer(),
             new DotOnGeneral(),
-            new FloatCastVariable(),
             new GetterAndSetters(),
             new GettingArguments(),
-            new IntCastVariable(),
-            new ObjectCastVariable(),
             new SingleCommaOnClass(),
             new SingleOpenParenthesisOperator(),
             new SuperTypeCastVariable(),
@@ -124,6 +120,7 @@ class Parser
             emitter: $this->parserDispatcher,
             tokenManager: $tokenManager,
             context: $context,
+            symbolTable: new SymbolTableManager(),
         );
 
         while (!$tokenManager->isEndOfTokens()) {
@@ -131,6 +128,13 @@ class Parser
             $result = $this->parserDispatcher->emit($token, $parseContext);
             if ($result) {
                 $program->statements[] = $result;
+                $target = $context->current()->element;
+
+                if (method_exists($target, 'addChild')) {
+                    $target->addChild($result);
+                } else {
+                    $program->statements[] = $result;
+                }
             }
         }
 

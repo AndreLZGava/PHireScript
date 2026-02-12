@@ -13,4 +13,9 @@ class ArrayLiteralNode extends Expression
         public array $elements
     ) {
     }
+
+    public function addChild(Node $node): void
+    {
+        $this->elements[] = $node;
+    }
 }

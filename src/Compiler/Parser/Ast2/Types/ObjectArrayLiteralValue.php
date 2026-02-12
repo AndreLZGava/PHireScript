@@ -36,7 +36,7 @@ class ObjectArrayLiteralValue extends GlobalFactory
     {
 
         $arrayOrObject = $this->parseExpression($parseContext);
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $arrayOrObject;
             $current->left->type = $arrayOrObject;

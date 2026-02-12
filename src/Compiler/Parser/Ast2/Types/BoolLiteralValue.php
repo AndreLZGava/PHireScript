@@ -26,7 +26,7 @@ class BoolLiteralValue extends GlobalFactory
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $boolNode = new BoolNode($token, filter_var($token->value, FILTER_VALIDATE_BOOLEAN));
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $boolNode;
             $current->left->type = $boolNode;

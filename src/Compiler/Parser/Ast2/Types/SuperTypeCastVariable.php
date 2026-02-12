@@ -15,7 +15,7 @@ use PHireScript\Compiler\Parser\ParseContext;
 
 class SuperTypeCastVariable extends GlobalFactory
 {
-   // use DataArrayObjectModelingTrait;
+    // use DataArrayObjectModelingTrait;
     //use DataParamsModelingTrait;
 
     public function isTheCase(Token $token, ParseContext $parseContext): bool

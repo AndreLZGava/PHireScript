@@ -25,7 +25,7 @@ class NumberLiteralValue extends GlobalFactory
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $nodeValue = new NumberNode($token, filter_var($token->value, FILTER_VALIDATE_FLOAT));
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $nodeValue;
             $current->left->type = $nodeValue;

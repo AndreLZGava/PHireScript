@@ -22,7 +22,7 @@ class ListValue extends Collections
     {
         $list = new ListNode($token);
 
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $list;
             $current->left->type = $list;

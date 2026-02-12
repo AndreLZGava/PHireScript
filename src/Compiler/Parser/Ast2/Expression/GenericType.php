@@ -21,7 +21,7 @@ class GenericType extends Expressions
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $typed = new ExplicitTypedNode($token);
-        $element = $parseContext->context->getCurrentContextElement();
+        $element = $parseContext->context->current()->element;
         if (isset($element->types)) {
             $element->types[] = $typed;
         }

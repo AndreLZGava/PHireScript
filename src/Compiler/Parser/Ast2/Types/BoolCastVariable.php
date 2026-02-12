@@ -26,7 +26,7 @@ class BoolCastVariable extends GlobalFactory
     {
         $varValue = new BoolNode($token, (bool) $token->value);
         $casting = new CastingNode($token, 'bool');
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $varValue;
             $current->left->type = $varValue;

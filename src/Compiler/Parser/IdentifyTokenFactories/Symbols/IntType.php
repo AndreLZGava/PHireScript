@@ -26,7 +26,7 @@ class IntType extends GlobalFactory
     {
 
         $typed = new ExplicitTypedNode($token);
-        $element = $parseContext->context->getCurrentContextElement();
+        $element = $parseContext->context->current()->element;
         if (isset($element->types)) {
             $element->types[] = $typed;
         }

@@ -35,7 +35,7 @@ class ObjectCastVariable extends GlobalFactory
     {
         $varValue = new ObjectLiteralNode($token, []);
         $casting = new CastingNode($token, 'object');
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $varValue;
             $current->left->type = $varValue;

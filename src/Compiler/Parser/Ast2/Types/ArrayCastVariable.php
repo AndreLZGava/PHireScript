@@ -35,7 +35,7 @@ class ArrayCastVariable extends GlobalFactory
         $varValue = new ArrayLiteralNode($parseContext->tokenManager->getCurrentToken(), []);
 
         $casting = new CastingNode($token, 'array');
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $varValue;
             $current->left->type = $varValue;

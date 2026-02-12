@@ -23,7 +23,7 @@ class QueueValue extends Collections
     {
         $queue = new QueueNode($token);
 
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $queue;
             $current->left->type = $queue;

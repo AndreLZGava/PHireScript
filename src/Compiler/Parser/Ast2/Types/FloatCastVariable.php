@@ -32,7 +32,7 @@ class FloatCastVariable extends GlobalFactory
     {
         $nodeValue = new NumberNode($token, 0);
         $casting = new CastingNode($token, 'float');
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $nodeValue;
             $current->left->type = $nodeValue;

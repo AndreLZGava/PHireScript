@@ -11,7 +11,19 @@ class ContextState
 {
     public function __construct(
         public Context $context,
-        public Node $element
+        public Node $element,
+        public ?ContextState $parent = null,
+        public array $children = [],
     ) {
+    }
+
+    public function addChild(ContextState $child): void
+    {
+        $this->children[] = $child;
+    }
+
+    public function is(Context $context): bool
+    {
+        return $this->context === $context;
     }
 }

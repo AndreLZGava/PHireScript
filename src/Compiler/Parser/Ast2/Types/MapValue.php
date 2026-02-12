@@ -22,7 +22,7 @@ class MapValue extends Collections
     {
         $map = new MapNode($token);
 
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $map;
             $current->left->type = $map;

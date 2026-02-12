@@ -14,4 +14,9 @@ class AssignmentNode extends Statement
         public ?Node $right = null
     ) {
     }
+
+    public function addChild(Node $node): void
+    {
+        $this->right = $node;
+    }
 }

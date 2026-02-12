@@ -13,65 +13,51 @@ class ContextManager
 {
     public array $config;
     public string $path;
-    private array $stack = [];
+    private ContextState $current;
 
-    public function __construct(private ContextState $current)
+    public function __construct(ContextState $root)
     {
+        $this->current = $root;
     }
 
-    public function getCurrentContextElement(): Node
+    public function current(): ContextState
     {
-        return $this->current->element;
+        return $this->current;
     }
 
-    public function getCurrentContext(): Context
+    public function enter(Context $context, Node $element): ContextState
     {
-        return $this->current->context;
-    }
+        $state = new ContextState($context, $element, $this->current);
+        $this->current->addChild($state);
 
-    public function enterContext(Context $context, Node $element): void
-    {
-        $this->stack[] = $this->current;
-        $this->current = new ContextState($context, $element);
+        $this->current = $state;
+
+        return $state;
     }
 
     public function exitContext(): void
     {
-        if (!empty($this->stack)) {
-            $this->current = array_pop($this->stack);
+        if ($this->current->parent !== null) {
+            $this->current = $this->current->parent;
         }
     }
 
-    public function contextAsClass(Node $classNode): void
+    public function exitUntil(Context $context): void
     {
-        $this->enterContext(Context::ClassType, $classNode);
-    }
-
-    public function contextAsMethod(Node $methodNode): void
-    {
-        $this->enterContext(Context::Method, $methodNode);
-    }
-
-    public function definingVariable(Node $variable): void
-    {
-        $this->enterContext(Context::Variable, $variable);
-    }
-
-    public function definingQueue(Node $nodeParam): void
-    {
-        $this->enterContext(Context::Queue, $nodeParam);
-    }
-
-    public function isInContext(Context $context): bool
-    {
-        if ($this->current?->context === $context) {
-            return true;
+        while ($this->current->parent !== null && !$this->current->is($context)) {
+            $this->current = $this->current->parent;
         }
+    }
 
-        foreach ($this->stack as $state) {
-            if ($state->context === $context) {
+    public function isIn(Context $context): bool
+    {
+        $cursor = $this->current;
+
+        while ($cursor !== null) {
+            if ($cursor->is($context)) {
                 return true;
             }
+            $cursor = $cursor->parent;
         }
 
         return false;

@@ -24,16 +24,17 @@ class RightParenthesisTyping extends Statements
 
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
-        $currentElement = $parseContext->context->getCurrentContextElement();
+        $currentElement = $parseContext->context->current()->element;
         if (
             $currentElement instanceof Collection
         ) {
             $parseContext->context->exitContext();
         }
+
         if ($currentElement instanceof CastingNode) {
-            $casting = $parseContext->context->getCurrentContextElement();
+            $casting = $parseContext->context->current()->element;
             $parseContext->context->exitContext();
-            $toCast = $parseContext->context->getCurrentContextElement();
+            $toCast = $parseContext->context->current()->element;
             $toCast->right = $casting;
             $toCast->left->type = $casting;
         }

@@ -14,13 +14,16 @@ use PHireScript\Compiler\Program;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 
-class VariableLiteralReference extends GlobalFactory {
-    public function isTheCase(Token $token, ParseContext $parseContext): bool {
+class VariableLiteralReference extends GlobalFactory
+{
+    public function isTheCase(Token $token, ParseContext $parseContext): bool
+    {
         return $token->isIdentifier() &&
             $parseContext->tokenManager->getNextTokenAfterCurrent()->isEndOfLine();
     }
 
-    public function process(Token $token, ParseContext $parseContext): ?Node {
+    public function process(Token $token, ParseContext $parseContext): ?Node
+    {
         if (empty($parseContext->variables->getVariable($token->value))) {
             throw new Exception("Variable {$token->value} is not defined yet!");
         }
@@ -32,7 +35,7 @@ class VariableLiteralReference extends GlobalFactory {
             type: null,
         );
 
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
         if ($current instanceof AssignmentNode) {
             $current->right = $variableReference;
             $current->left->type = $variableReference;

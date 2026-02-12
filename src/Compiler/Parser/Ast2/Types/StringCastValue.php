@@ -10,7 +10,6 @@ use PHireScript\Compiler\Parser\Ast\CastingNode;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\StringNode;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
-
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
 use PHireScript\Compiler\Parser\Managers\Context\Context;
@@ -31,7 +30,9 @@ class StringCastValue extends GlobalFactory
     {
         $varValue = new StringNode($token, (string) $token->value);
         $casting = new CastingNode($token, 'string');
-        $current = $parseContext->context->getCurrentContextElement();
+        $current = $parseContext->context->current()->element;
+        Debug::show($current);
+        exit;
         if ($current instanceof AssignmentNode) {
             $current->right = $varValue;
             $current->left->type = $varValue;

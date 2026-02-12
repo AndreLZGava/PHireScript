@@ -24,6 +24,7 @@ enum Context: String
     case Assignment = 'assignment';
     case Casting = 'casting';
     case Bool = 'bool';
+    case ArrayLiteral = 'array literal';
 
     public static function values(): array
     {
