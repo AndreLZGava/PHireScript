@@ -4,62 +4,89 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Managers;
 
-use PHireScript\Compiler\Parser\Ast\Node;
-use PHireScript\Compiler\Parser\Managers\Context\Context;
-use PHireScript\Compiler\Parser\Managers\Context\ContextState;
+use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
+use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Helper\Debug\Debug;
 
 class ContextManager
 {
-    public array $config;
-    public string $path;
-    private ContextState $current;
+    private AbstractContext $current;
+    private $path;
+    private $config;
 
-    public function __construct(ContextState $root)
+    public function __construct(AbstractContext $root)
     {
         $this->current = $root;
     }
 
-    public function current(): ContextState
+    public function current(): AbstractContext
     {
         return $this->current;
     }
 
-    public function enter(Context $context, Node $element): ContextState
+    public function enter(AbstractContext $context): AbstractContext
     {
-        $state = new ContextState($context, $element, $this->current);
-        $this->current->addChild($state);
+        //Debug::show('entering context ' . get_class($context));
+        $context->setParent($this->current);
+        $this->current = $context;
 
-        $this->current = $state;
-
-        return $state;
+        return $context;
     }
 
-    public function exitContext(): void
+    public function exit(): void
     {
-        if ($this->current->parent !== null) {
-            $this->current = $this->current->parent;
+        //Debug::show('closing context ' . get_class($this->current));
+        if ($this->current->getParent() !== null) {
+            $this->current = $this->current->getParent();
         }
     }
 
-    public function exitUntil(Context $context): void
+    public function exitUntil(string $contextClass): void
     {
-        while ($this->current->parent !== null && !$this->current->is($context)) {
-            $this->current = $this->current->parent;
+        while (
+            $this->current->getParent() !== null &&
+            !$this->current instanceof $contextClass
+        ) {
+            $this->current = $this->current->getParent();
         }
     }
 
-    public function isIn(Context $context): bool
+    public function isIn(string $contextClass): bool
     {
         $cursor = $this->current;
 
         while ($cursor !== null) {
-            if ($cursor->is($context)) {
+            if ($cursor instanceof $contextClass) {
                 return true;
             }
-            $cursor = $cursor->parent;
+
+            $cursor = $cursor->getParent();
         }
 
         return false;
+    }
+
+    public function handle(Token $token, $parseContext): void
+    {
+        //Debug::show([$token->value, $this->current->canClose($token)]);
+        $this->current->handle($token, $parseContext);
+        $this->current->validation($token, $parseContext);
+        $current = $this->current;
+        if ($this->current->canClose($token, $parseContext)) {
+            $parseContext->consumePrevious();
+            $this->current->onClose($token, $parseContext);
+            $this->exit();
+            $current->afterClose($token, $parseContext);
+        }
+    }
+
+    public function setPath(string $path): void
+    {
+        $this->path = $path;
+    }
+
+    public function setConfig(array $config): void
+    {
+        $this->config = $config;
     }
 }

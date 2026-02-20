@@ -18,6 +18,6 @@ class VariableReferenceAssignEmitter implements NodeEmitter
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        return $node->value;
+        return "$" . $node->name;
     }
 }

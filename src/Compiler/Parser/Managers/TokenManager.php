@@ -36,6 +36,11 @@ class TokenManager
         return array_slice($this->getTokens(), $this->getCurrentPosition(), $limit);
     }
 
+    public function getProcessedTokens(int $limit = 100): array
+    {
+        return array_slice($this->getTokens(), $this->getCurrentPosition() - $limit, $limit);
+    }
+
     public function getAll()
     {
         return [
@@ -74,7 +79,6 @@ class TokenManager
             $this->currentToken = $this->endFileToken;
         }
 
-        // Sincroniza o lookup (se você ainda estiver usando ele)
         $this->tokenLookup = $this->currentToken;
         $this->positionLookup = $this->currentPosition;
     }

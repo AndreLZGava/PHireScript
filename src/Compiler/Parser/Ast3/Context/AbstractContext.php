@@ -1,0 +1,57 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PHireScript\Compiler\Parser\Ast3\Context;
+
+use PHireScript\Compiler\Parser\Managers\Token\Token;
+use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\ParseContext;
+
+abstract class AbstractContext
+{
+    private ?AbstractContext $parent = null;
+    public array $children = [];
+
+    public function __construct(public Node $node)
+    {
+    }
+
+    public function setParent(AbstractContext $parent): void
+    {
+        $this->parent = $parent;
+    }
+
+    public function getParent(): ?AbstractContext
+    {
+        return $this->parent;
+    }
+
+    abstract public function handle(Token $token, ParseContext $parseContext): ?Node;
+
+    public function canClose(Token $token, ParseContext $parseContext): bool
+    {
+        return false;
+    }
+
+    public function validation(Token $token, ParseContext $parseContext): void
+    {
+    }
+
+    public function afterClose(Token $token, ParseContext $parseContext): void
+    {
+        return;
+    }
+
+    public function onClose(Token $token, ParseContext $parseContext): void
+    {
+        return;
+    }
+
+    public function addChild($child): void
+    {
+        if (!empty($child)) {
+            $this->children[] = $child;
+        }
+    }
+}

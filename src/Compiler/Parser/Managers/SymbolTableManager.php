@@ -8,10 +8,12 @@ use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\VariableReferenceNode;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 
 class SymbolTableManager
 {
     private array $typeDefinitions = [];
+    private ?string $rawType = null;
 
     public function __construct()
     {
@@ -20,19 +22,31 @@ class SymbolTableManager
         $this->typeDefinitions = $getDefaultOverrideMethods;
     }
 
+    public function from($rawType): self
+    {
+        $this->rawType = $rawType;
+        return $this;
+    }
+
+    public function getFunction($functionName): ?BaseMethods
+    {
+        if (is_null($this->rawType) || is_null($functionName)) {
+            return null;
+        }
+        return $this->typeDefinitions[$this->rawType][$functionName] ?? null;
+    }
+
 
     private function scanAndBuildRegistry(string $directory): array
     {
         if (!is_dir($directory)) {
-            throw new \RuntimeException("Diretório não encontrado: $directory");
+            throw new \RuntimeException("Dir not found: $directory");
         }
 
         $registry = [];
         $files = glob($directory . '/*.php');
 
         foreach ($files as $file) {
-          // 1. Identificar a classe contida no arquivo
-          // Usamos get_declared_classes() antes e depois do require para descobrir qual classe foi carregada
             $classesBefore = get_declared_classes();
             require_once $file;
             $classesAfter = get_declared_classes();
@@ -41,45 +55,35 @@ class SymbolTableManager
             foreach ($newClasses as $className) {
                 $reflector = new \ReflectionClass($className);
 
-              // Pular classes abstratas ou interfaces
                 if (!$reflector->isInstantiable()) {
                     continue;
                 }
 
-              // 2. Instanciar a classe (Resolvendo dependências do __construct automaticamente)
                 try {
                     $instance = $this->resolveAndInstantiate($reflector);
                 } catch (\Throwable $e) {
-                  // Se não conseguir instanciar, pula essa classe e loga erro se necessário
-                    error_log("Não foi possível instanciar {$className}: " . $e->getMessage());
+                    error_log("It was not possible instantiate {$className}: " . $e->getMessage());
                     continue;
                 }
 
-              // Nome curto da classe (ex: Queue) para a chave do array
                 $shortName = $reflector->getShortName();
                 $registry[$shortName] = [];
 
-              // 3. Ler métodos públicos
                 $methods = $reflector->getMethods(\ReflectionMethod::IS_PUBLIC);
 
                 foreach ($methods as $method) {
                     $methodName = $method->getName();
 
-                  // Ignorar métodos mágicos (__construct, __destruct, etc)
                     if (str_starts_with($methodName, '__')) {
                         continue;
                     }
 
-                  // 4. Executar o método para obter o retorno (BaseMethods)
                     try {
-                      // Invoca o método na instância criada.
-                      // Nota: Se o método exigir parâmetros obrigatórios sem default, isso falhará.
-                      // No seu exemplo, ...$params é opcional, então funciona.
                         $result = $method->invoke($instance);
 
                         $registry[$shortName][$methodName] = $result;
                     } catch (\Throwable $e) {
-                        error_log("Erro ao executar método {$className}::{$methodName}: " . $e->getMessage());
+                        error_log("Error executing method {$className}::{$methodName}: " . $e->getMessage());
                     }
                 }
             }

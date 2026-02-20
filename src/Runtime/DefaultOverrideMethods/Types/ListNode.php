@@ -16,7 +16,7 @@ class ListNode extends GeneralType
     public function enqueue(...$params)
     {
         return new BaseMethods(
-            'array_push(@self, ...@param)',
+            'array_push(@self, @params)',
             ['self'],
             $this->types,
             $params

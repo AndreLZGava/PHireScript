@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast2\Statement;
 
 use PHireScript\Compiler\Parser\Ast2\Statements;
-use PHireScript\Compiler\Parser\Ast\CommentStatement;
-use PHireScript\Compiler\Parser\Ast\GlobalStatement;
+use PHireScript\Compiler\Parser\Ast\CommentNode;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -21,7 +20,7 @@ class Comment extends Statements
 
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
-        $node = new CommentStatement($token);
+        $node = new CommentNode($token);
         $node->code = trim((string) $token->value);
         return $node;
     }

@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace PHireScript\Compiler;
 
 use Exception;
+use PHireScript\Compiler\Checker\Expression\MethodConsumptionChecker;
+use PHireScript\Compiler\Checker\Root\ProgramChecker;
+use PHireScript\Compiler\Checker\Expression\Types\QueueChecker;
 use PHireScript\SymbolTable;
 use PHireScript\Compiler\Parser\Ast\ClassDefinition;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
@@ -18,8 +21,25 @@ use PHireScript\Helper\Debug\Debug;
 class Checker
 {
     private $table;
+    public array $checkers = [];
+    public function __construct()
+    {
+        $this->checkers = [
+            new QueueChecker(),
+            new MethodConsumptionChecker(),
+            new ProgramChecker(),
+        ];
+    }
+
     public function check(Program $ast, SymbolTable $table)
     {
+        foreach ($this->checkers as $check) {
+            if ($check->mustCheck($ast)) {
+                $check->check($ast, $this);
+            }
+        }
+
+
         $this->table = $table;
         foreach ($ast->statements as $node) {
             if ($node instanceof ClassDefinition) {

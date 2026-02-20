@@ -8,6 +8,32 @@ class Debug
 {
     private static int $callCount = 0;
 
+    public static function trace(...$args): void
+    {
+        self::$callCount++;
+        $isCli = (php_sapi_name() === 'cli');
+
+        $backtrace = debug_backtrace();
+        $file = $backtrace[0]['file'] ?? 'unknown';
+        $line = $backtrace[0]['line'] ?? 0;
+
+        $isAlt = self::$callCount % 2 === 0;
+        array_unshift($args, debug_backtrace(2));
+        foreach ($args as $index => $val) {
+            $type = gettype($val);
+            $displayValue = self::formatValue($val);
+
+            $isArgAlt = ($index % 2 === 0) ? $isAlt : !$isAlt;
+
+            if ($isCli) {
+                self::renderCli($displayValue, $type, $file, $line, $isArgAlt);
+            } else {
+                self::renderWeb($displayValue, $type, $file, $line, $isArgAlt);
+            }
+        }
+        exit;
+    }
+
     public static function show(...$args): void
     {
         self::$callCount++;

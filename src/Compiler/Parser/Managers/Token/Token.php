@@ -11,66 +11,67 @@ class Token
         public readonly mixed $value,
         public readonly int $line,
         public readonly int $column,
+        public ?string $processedBy = null,
     ) {
     }
 
-    public function isComment()
+    public function isComment(): bool
     {
         return $this->type === 'T_COMMENT';
     }
 
-    public function isStringLiteral()
+    public function isStringLiteral(): bool
     {
         return $this->type === 'T_STRING_LIT';
     }
 
-    public function isNumber()
+    public function isNumber(): bool
     {
         return $this->type === 'T_NUMBER';
     }
 
-    public function isKeyword()
+    public function isKeyword(): bool
     {
         return $this->type === 'T_KEYWORD';
     }
 
-    public function isBool()
+    public function isBool(): bool
     {
         return $this->type === 'T_BOOL';
     }
-    public function isEndOfLine()
+    public function isEndOfLine(): bool
     {
         return $this->type === 'T_EOL';
     }
-    public function isWhiteSpace()
+    public function isWhiteSpace(): bool
     {
         return $this->type === 'T_WHITESPACE';
     }
-    public function isAccessor()
+    public function isAccessor(): bool
     {
         return $this->type === 'T_ACCESSORS';
     }
-    public function isModifier()
+    public function isModifier(): bool
     {
         return $this->type === 'T_MODIFIER';
     }
-    public function isType()
+    public function isType(): bool
     {
         return $this->type === 'T_TYPE';
     }
-    public function isVariable()
+    public function isVariable(): bool
     {
         return $this->type === 'T_VARIABLE';
     }
-    public function isIdentifier()
+    public function isIdentifier(): bool
     {
         return $this->type === 'T_IDENTIFIER';
     }
-    public function isSymbol()
+    public function isSymbol(): bool
     {
         return $this->type === 'T_SYMBOL';
     }
-    public function isBackslash()
+    public function isBackslash(): bool
     {
         return $this->type === 'T_BACKSLASH';
     }

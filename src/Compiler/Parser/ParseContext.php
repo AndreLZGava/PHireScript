@@ -19,10 +19,10 @@ class ParseContext
     public function __construct(
         public VariableManager $variables,
         public Program $program,
-        public ParserDispatcher $emitter,
+        // public ParserDispatcher $emitter,
         public TokenManager $tokenManager,
-        public ContextManager $context,
         public SymbolTableManager $symbolTable,
+        public ?ContextManager $contextManager = null,
         private mixed $previous = null,
     ) {
     }
@@ -30,6 +30,7 @@ class ParseContext
     public function definePrevious(mixed $previous): void
     {
         if (!empty($this->previous) && $previous !== $this->previous) {
+            Debug::show($this->previous);
             throw new Exception('Previous already defined, please consume it before new assignment!');
         }
         $this->previous = $previous;
@@ -40,5 +41,10 @@ class ParseContext
         $previous = $this->previous;
         $this->previous = null;
         return $previous;
+    }
+
+    public function peekPrevious(): mixed
+    {
+        return  $this->previous;
     }
 }

@@ -7,9 +7,11 @@ namespace PHireScript\Compiler\Parser\Managers;
 use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\VariableReferenceNode;
+use PHireScript\Helper\Debug\Debug;
 
 class VariableManager
 {
+    private mixed $variableOnFocus = null;
     public function __construct(
         private array $variables = [],
         private array $properties = [],
@@ -24,6 +26,7 @@ class VariableManager
     public function addVariable(VariableDeclarationNode|VariableReferenceNode $variable)
     {
         $this->variables[$variable->name] = $variable;
+        $this->variableOnFocus = $variable;
     }
 
     public function getVariables()
@@ -33,7 +36,11 @@ class VariableManager
 
     public function getVariable(string $variableName): null|VariableDeclarationNode|VariableReferenceNode
     {
-        return $this->variables[$variableName]  ?? null;
+        if (isset($this->variables[$variableName])) {
+            $this->variableOnFocus = $this->variables[$variableName];
+        }
+
+        return  $this->variables[$variableName] ?? null;
     }
 
     public function getProperties()
@@ -44,5 +51,10 @@ class VariableManager
     public function getProperty(string $propertyName): ?PropertyDefinition
     {
         return $this->properties[$propertyName]  ?? null;
+    }
+
+    public function getVariableOnFocus()
+    {
+        return $this->variableOnFocus;
     }
 }

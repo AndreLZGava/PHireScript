@@ -21,6 +21,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\ClassEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\CommentStatementEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\DependencyEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ExternalEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\FunctionEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\GlobalStatementEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\InterfaceEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\KeyValuePairEmitter;
@@ -33,6 +34,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\ParameterEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ProgramEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyAccessEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyDeclarationEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\QueueEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ReturnEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ScalarLiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VariableReferenceAssignEmitter;
@@ -64,6 +66,7 @@ class Emitter
             new ClassEmitter(),
             new TraitEmitter(),
             new MethodEmitter(),
+            new FunctionEmitter(),
 
             new ObjectLiteralEmitter(),
 
@@ -77,6 +80,7 @@ class Emitter
             new BinaryExpressionEmitter(),
             new VariableReferenceAssignEmitter(),
             new SuperTypeEmitter(),
+            new QueueEmitter(),
 
             new PropertyDeclarationEmitter(),
             new VoidExpressionEmitter(),
