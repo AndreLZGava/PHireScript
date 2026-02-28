@@ -286,8 +286,8 @@ abstract class ClassesFactory extends GlobalFactory
     {
         $tokensOfThisBlock = array_slice($this->tokenManager->getTokens(), $this->tokenManager->getCurrentPosition());
         if (in_array($this->tokenManager->getCurrentToken()->type, ['T_EOL', 'T_COMMENT'], true)) {
-            throw new Exception('Method ' . $node->name . ' has no definition ' .
-                'of return. Please implement a return explicitly!');
+            throw new CompileException('Method ' . $node->name . ' has no definition ' .
+                'of return. Please implement a return explicitly!', $node->line, $node->column);
         }
         $isClass = in_array($this->tokenManager->getContext(), ['class', 'trait']);
         $result = [];

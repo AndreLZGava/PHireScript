@@ -7,6 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast;
 use Exception;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 use PHireScript\Runtime\RuntimeClass;
 
 class PackageStatement extends Statement
@@ -17,7 +18,7 @@ class PackageStatement extends Statement
     public readonly string $completePackage;
 
     public function __construct(
-        Token $token,
+        public Token $token,
         public readonly string $package,
         public readonly string $object,
         public readonly string $file,
@@ -35,9 +36,13 @@ class PackageStatement extends Statement
             !str_starts_with($basename, $this->object) ||
             !str_ends_with($basename, '.' . $ext)
         ) {
-            throw new Exception('File name must match class/interface/type/' .
-                'immutable/trait name! File ' . $this->file . ' object name '
-                . $this->object);
+            throw new CompileException(
+                'File name must match class/interface/type/' .
+                    'immutable/trait name! File ' . $this->file . ' object name '
+                    . $this->object,
+                $this->token->line,
+                $this->token->column,
+            );
         }
     }
 

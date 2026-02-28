@@ -7,6 +7,8 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
+use PHireScript\Compiler\Parser\Ast\CommentNode;
+use PHireScript\Helper\Debug\Debug;
 
 class ArrayLiteralEmitter implements NodeEmitter
 {
@@ -18,11 +20,12 @@ class ArrayLiteralEmitter implements NodeEmitter
     public function emit(object $node, EmitContext $ctx): string
     {
         $items = [];
-
-        foreach ($node->elements ?? [] as $el) {
-            $items[] = $ctx->emitter->emit($el, $ctx);
+        foreach ($node->elements ?? [] as $n => $el) {
+            if (!$el instanceof CommentNode) {
+                $items[] = $ctx->emitter->emit($el, $ctx);
+            }
         }
 
-        return '[' . implode(', ', $items) . ']';
+        return "[\n" . implode(", \n", $items) . "\n]";
     }
 }

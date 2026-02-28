@@ -9,7 +9,9 @@ use PHireScript\Compiler\Parser\Ast3\Context\Expressions\Types\QueueContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\ClosingParenthesisResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CommaResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\OpeningParenthesisResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\QueueResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\VariableReferenceResolver;
@@ -19,6 +21,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 
 class ParamsConsumptionContext extends AbstractContext
 {
@@ -28,7 +31,9 @@ class ParamsConsumptionContext extends AbstractContext
     {
         $this->resolvers = [
             new StringLiteralResolver(),
+            new NumberLiteralResolver(),
             new BoolLiteralResolver(),
+            new ArrayLiteralResolver(),
             new VariableReferenceResolver(),
 
             new ClosingParenthesisResolver(),
@@ -48,8 +53,12 @@ class ParamsConsumptionContext extends AbstractContext
                 return null;
             }
         }
-       // Debug::show($parseContext->tokenManager->getProcessedTokens(10));exit;
-        throw new \Exception($token->value . ' is not supported in params context!');
+        // Debug::show($parseContext->tokenManager->getProcessedTokens(10));exit;
+        throw new CompileException(
+            $token->value . ' is not supported in params context!',
+            $token->line,
+            $token->column
+        );
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool

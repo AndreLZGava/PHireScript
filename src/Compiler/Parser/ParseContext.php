@@ -12,6 +12,7 @@ use PHireScript\Compiler\Parser\Managers\TokenManager;
 use PHireScript\Compiler\Parser\Managers\VariableManager;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 use PHireScript\Runtime\RuntimeClass;
 
 class ParseContext
@@ -30,8 +31,12 @@ class ParseContext
     public function definePrevious(mixed $previous): void
     {
         if (!empty($this->previous) && $previous !== $this->previous) {
-            Debug::show($this->previous);
-            throw new Exception('Previous already defined, please consume it before new assignment!');
+            Debug::show($this->previous, Debug::trace());
+            throw new CompileException(
+                'Previous already defined, please consume it before new assignment!',
+                $previous->line,
+                $previous->column
+            );
         }
         $this->previous = $previous;
     }

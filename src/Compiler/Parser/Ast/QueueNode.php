@@ -12,7 +12,7 @@ class QueueNode extends Collection implements Type
     private string $raw = 'Queue';
 
     public function __construct(
-        Token $token,
+        public Token $token,
         public array $types = [],
     ) {
     }

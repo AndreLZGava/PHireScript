@@ -15,16 +15,22 @@ use PHireScript\Compiler\Parser\Ast\FunctionNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 
 class FunctionCallResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->isIdentifier() &&
-        $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '(' &&
-        $parseContext->symbolTable->from(
-            $parseContext->variables->getVariableOnFocus()?->type?->getRawType()
-        )->getFunction($token->value);
+        try {
+            return $token->isIdentifier() &&
+                $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '(' &&
+                $parseContext->symbolTable->from(
+                    $parseContext->variables->getVariableOnFocus()?->type?->getRawType()
+                )->getFunction($token->value);
+        } catch (\Exception $e) {
+            Debug::show($parseContext->variables->getVariableOnFocus());
+            exit;
+        }
     }
 
     public function resolve(
@@ -38,7 +44,12 @@ class FunctionCallResolver implements ContextTokenResolver
         )->getFunction($token->value);
 
         if (is_null($functionDefinition)) {
-            throw new Exception('Method ' . $token->value . ' is not defined for variable of type ' . $variableType);
+            throw new CompileException(
+                'Method ' . $token->value . ' is not defined for variable of type '
+                    . $variableType,
+                $token->line,
+                $token->column
+            );
         }
 
         $function = new FunctionNode(token: $token);

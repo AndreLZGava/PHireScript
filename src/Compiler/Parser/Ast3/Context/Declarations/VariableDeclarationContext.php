@@ -10,6 +10,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 
 class VariableDeclarationContext extends AbstractContext
 {
@@ -32,7 +33,11 @@ class VariableDeclarationContext extends AbstractContext
             }
         }
 
-        throw new \Exception($token->value . ' is not supported in variable declaration context!');
+        throw new CompileException(
+            $token->value . ' is not supported in variable declaration context!',
+            $token->line,
+            $token->column
+        );
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool

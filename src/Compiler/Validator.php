@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler;
 
-use Exception;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 use PHireScript\Runtime\RuntimeClass;
 
 class Validator
 {
-    private array $open = ['(' => 0, '{' => 0, '[' => 0 , '<' => 0];
+    private array $open = ['(' => 0, '{' => 0, '[' => 0, '<' => 0];
     private array $close = [')' => 0, '}' => 0, ']' => 0, '>' => 0];
     private array $forbidden = [
         'namespace' => 'Use "pkg" to declare a package',
@@ -64,14 +64,20 @@ class Validator
             $line = $token->line;
             if ($this->isForbidden($tokenValue)) {
                 $message = $this->getMessage($tokenValue);
-                throw new \Exception(
-                    "Error: '{$tokenValue}' is not allowed in line {$line}. " . $message
+                throw new CompileException(
+                    "Error: '{$tokenValue}' is not allowed in line {$line}. " . $message,
+                    $token->line,
+                    $token->column
                 );
             }
 
             if ($tokenValue === RuntimeClass::KEYWORD_PACKAGE) {
                 if ($hasPkg) {
-                    throw new Exception('You must define pkg only once per file!');
+                    throw new CompileException(
+                        'You must define pkg only once per file!',
+                        $token->line,
+                        $token->column
+                    );
                 }
                 $hasPkg = true;
             }
@@ -80,9 +86,13 @@ class Validator
                 $mustHavePkg  = true;
                 $hasMoreThanOneObjectByFile++;
                 if ($hasMoreThanOneObjectByFile > 1) {
-                    throw new Exception('Its allowed only one definition of ' .
-                        implode(', ', $objectAllowed) . ' per file. Please move ' .
-                        'content from line ' . $line . ' to another file!');
+                    throw new CompileException(
+                        'Its allowed only one definition of ' .
+                            implode(', ', $objectAllowed) . ' per file. Please move ' .
+                            'content from line ' . $line . ' to another file!',
+                        $token->line,
+                        $token->column
+                    );
                 }
             }
 
@@ -97,7 +107,7 @@ class Validator
         $this->validateCounting('[', ']');
         $this->validateCounting('<', '>');
         if ($mustHavePkg && !$hasPkg) {
-            throw new Exception('You must define a pkg for file that contains '
+            throw new CompileException('You must define a pkg for file that contains '
                 . implode(', ', $objectAllowed));
         }
     }
@@ -127,7 +137,7 @@ class Validator
     private function validateCounting($open, $close)
     {
         if ($this->open[$open] !== $this->close[$close]) {
-            throw new Exception("Amount of {$open} ({$this->open[$open]}) " .
+            throw new CompileException("Amount of {$open} ({$this->open[$open]}) " .
                 "diverge from {$close} ({$this->close[$close]})");
         }
     }

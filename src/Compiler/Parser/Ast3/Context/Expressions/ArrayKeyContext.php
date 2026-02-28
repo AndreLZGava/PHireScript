@@ -13,6 +13,7 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResol
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\VariableReferenceResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
@@ -21,7 +22,7 @@ use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
-class ArrayLiteralContext extends AbstractContext
+class ArrayKeyContext extends AbstractContext
 {
     private array $resolvers;
 
@@ -29,16 +30,15 @@ class ArrayLiteralContext extends AbstractContext
     {
         $this->resolvers = [
             new CommentResolver(),
-            new EndOfLineResolver(),
-            new CommaResolver(),
             new ColonResolver(),
+            new EndOfLineResolver(),
             new ClosingBracketResolver(),
-            new ArrayKeyResolver(),
+            new CommaResolver(),
 
-            new BoolLiteralResolver(),
             new StringLiteralResolver(),
-            new NumberLiteralResolver(),
             new ArrayLiteralResolver(),
+            new NumberLiteralResolver(),
+            new VariableReferenceResolver(),
         ];
     }
 
@@ -47,21 +47,27 @@ class ArrayLiteralContext extends AbstractContext
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
-
                 $resolver->resolve($token, $parseContext, $this);
-                $this->node->elements = $this->children;
+                $this->node->value = $this->children[0] ?? null;
                 return null;
             }
         }
         throw new CompileException(
-            $token->value . ' is not supported in array definition context!',
+            $token->value . ' is not supported in array key definition context!',
             $token->line,
-            $token->value
+            $token->column
         );
+    }
+
+    public function afterClose(Token $token, ParseContext $parseContext): void
+    {
+        if ($token->value === ']') {
+            $parseContext->contextManager->exit();
+        }
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === ']';
+        return $token->value === ',' || $token->isComment() || $token->value === ']';
     }
 }

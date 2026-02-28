@@ -11,7 +11,7 @@ use PHireScript\Helper\Debug\Debug;
 class VariableReferenceNode extends Statement implements Type
 {
     public function __construct(
-        Token $token,
+        public Token $token,
         public string $name,
         public ?Node $type,
         public VariableDeclarationNode $value,

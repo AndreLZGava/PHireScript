@@ -2,12 +2,40 @@
 *  This are the examples of array cases
 */
 // Literal inline array (only supported inline for now)
-variables = ['test' => ['array']]
+myTest = 'guess'
+anotherOne = 'another One'
+variables = [
+  true,
+  'another',
+  'test': ['array'],
+  0: 'another test',
+  myTest: anotherOne,
+]
+
+variables.contains('another')
+
+variables.add('teste', 'MDS')
+.add('omg', ['test': 0])
+.destroy('teste')
+
+variables3 = ['test': ['mds']]
+variables3.display()
+
+variable4 = [
+  0: [
+    '#drupal': [
+      '#shora': 'neee'
+    ]
+  ],
+  1: [
+    '#elements': [
+      '#ttttt': 'Shoke de monstro'
+    ]
+  ]
+]
 
 // Array cast (only support one parameter for now)
-variables2 = Array('test')
-
-variables = ['test' => [variables2]]
+//variables2 = Array('test')
 
 // Variable reference
-variablesReference = variables
+//variablesReference = variables

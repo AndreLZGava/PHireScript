@@ -54,7 +54,6 @@ class Transpiler implements TranspilerInterface
         $preCompiledPhpCode = $emitter->emit($updatedAst);
 
         $this->codeBeforeGenerator = $preCompiledPhpCode;
-
         $result = $this->generator->process($preCompiledPhpCode);
 
         return $result;

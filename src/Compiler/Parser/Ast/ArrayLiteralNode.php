@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Ast;
 
+use PHireScript\Compiler\Parser\Ast\Expression\Types\Type;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 
-class ArrayLiteralNode extends Expression
+class ArrayLiteralNode extends Expression implements Type
 {
+    private string $raw = 'Array';
+
     public function __construct(
-        Token $token,
-        public array $elements
+        public Token $token,
+        public array $elements = []
     ) {
     }
 
-    public function addChild(Node $node): void
+    public function getRawType(): string
     {
-        $this->elements[] = $node;
+        return $this->raw;
     }
 }

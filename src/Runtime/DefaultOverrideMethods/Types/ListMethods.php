@@ -6,10 +6,10 @@ namespace PHireScript\Runtime\DefaultOverrideMethods\Types;
 
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 
-class ArrayNode extends GeneralType
+class ListMethods extends GeneralType
 {
     public function __construct(
-        public array $types = [],
+        public array $types,
     ) {
     }
 

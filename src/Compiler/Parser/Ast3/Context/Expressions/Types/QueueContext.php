@@ -15,6 +15,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 
 class QueueContext extends AbstractContext
 {
@@ -44,7 +45,11 @@ class QueueContext extends AbstractContext
                 return null;
             }
         }
-        throw new \Exception($token->value . ' is not supported in queue definition context!');
+        throw new CompileException(
+            $token->value . ' is not supported in queue definition context!',
+            $token->line,
+            $token->column,
+        );
     }
 
     public function validation(Token $token, ParseContext $parseContext): void
@@ -53,7 +58,11 @@ class QueueContext extends AbstractContext
             ($token->isEndOfLine() || $token->value === '>') &&
             count($this->node->types) === 0
         ) {
-            throw new Exception('Queue must define at least one subtype!');
+            throw new CompileException(
+                'Queue must define at least one subtype!',
+                $token->line,
+                $token->column
+            );
         }
     }
 

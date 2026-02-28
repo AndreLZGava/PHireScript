@@ -9,6 +9,7 @@ use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CastingConsumptionParams\ClosingParenthesisResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CastingConsumptionParams\OpeningParenthesisResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\TypeResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\VariableReferenceResolver;
@@ -18,6 +19,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 
 class CastContext extends AbstractContext
 {
@@ -31,6 +33,7 @@ class CastContext extends AbstractContext
 
             new StringLiteralResolver(),
             new BoolLiteralResolver(),
+            new NumberLiteralResolver(),
 
             new VariableReferenceResolver(),
 
@@ -53,7 +56,11 @@ class CastContext extends AbstractContext
                 return null;
             }
         }
-        throw new \Exception($token->value . ' is not supported in casting definition context!');
+        throw new CompileException(
+            $token->value . ' is not supported in casting definition context!',
+            $token->line,
+            $token->column
+        );
     }
 
     public function validation(Token $token, ParseContext $parseContext): void
@@ -62,7 +69,12 @@ class CastContext extends AbstractContext
             ($token->isEndOfLine() || $token->value === ')') &&
             is_null($this->node->value)
         ) {
-            throw new Exception('Casting value to ' . $this->node->to . ' must receive at least one parameter!');
+            throw new CompileException(
+                'Casting value to ' . $this->node->to .
+                    ' must receive at least one parameter!',
+                $this->node->line,
+                $this->node->column
+            );
         }
     }
 

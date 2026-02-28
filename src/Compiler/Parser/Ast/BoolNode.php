@@ -11,7 +11,7 @@ class BoolNode extends Expression implements Type
 {
     private string $raw = 'Bool';
     public function __construct(
-        Token $token,
+        public Token $token,
         public bool $value,
     ) {
     }

@@ -13,6 +13,7 @@ use PHireScript\Compiler\Parser\Ast\ClassDefinition;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CheckerException;
 
 /**
  * @todo implement that interface may not have properties and
@@ -129,18 +130,18 @@ class Checker
             $prop->mustBeBool && count($returnMethod) > 1 ||
             $prop->mustBeBool && current($returnMethod) !== 'Bool'
         ) {
-            throw new Exception('Method ' . $prop->name .
+            throw new CheckerException('Method ' . $prop->name .
                 '? must return exclusively "Bool". Passed "' .
-                $prop->returnType . '"!');
+                $prop->returnType . '"!', $prop->line, $prop->column);
         }
 
         if (
             $prop->mustBeVoid && count($returnMethod) > 1 ||
             $prop->mustBeVoid && current($returnMethod) !== 'Void'
         ) {
-            throw new Exception('Method ' . $prop->name .
+            throw new CheckerException('Method ' . $prop->name .
                 '! must return exclusively "Void". Passed "' .
-                $prop->returnType . '"!');
+                $prop->returnType . '"!', $prop->line, $prop->column);
         }
     }
 

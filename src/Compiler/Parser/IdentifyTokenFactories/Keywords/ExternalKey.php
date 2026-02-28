@@ -11,6 +11,7 @@ use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
+use PHireScript\Runtime\Exceptions\CompileException;
 
 class ExternalKey extends ClassesFactory
 {
@@ -72,7 +73,7 @@ class ExternalKey extends ClassesFactory
         }
 
         if (empty($uses)) {
-            throw new Exception('External statement cannot be empty!');
+            throw new CompileException('External statement cannot be empty!', $token->line, $token->column);
         }
 
         // $this->tokenManager->walk($walk);

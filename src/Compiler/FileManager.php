@@ -9,6 +9,7 @@ use FilesystemIterator;
 use PHireScript\Core\CompileMode;
 use PHireScript\Core\CompilerContext;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 use PHireScript\Runtime\RuntimeClass;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -212,8 +213,9 @@ class FileManager
         $maxLines = max(count($originalLines), count($preParserLines));
 
         $message = $e->getMessage();
-        $exploded = explode('on line ', $message);
-        $errorLine = str_contains($message, 'on line ') ? (int) end($exploded) : $e->getLine();
+        if ($e instanceof CompileException) {
+            $errorLine = $e->line;
+        }
 
         echo "\n{$red}" . str_repeat('=', $width) . "{$reset}\n";
         echo "  {$red}PHire Script DEBUGGER - COMPILATION ERROR{$reset}\n";

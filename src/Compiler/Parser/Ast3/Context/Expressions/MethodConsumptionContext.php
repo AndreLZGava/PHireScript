@@ -17,6 +17,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 
 class MethodConsumptionContext extends AbstractContext
 {
@@ -43,7 +44,11 @@ class MethodConsumptionContext extends AbstractContext
                 return null;
             }
         }
-        throw new \Exception($token->value . ' is not supported in method consumption context!');
+        throw new CompileException(
+            $token->value . ' is not supported in method consumption context!',
+            $token->line,
+            $token->column
+        );
     }
 
     public function afterClose(Token $token, ParseContext $parseContext): void
@@ -60,6 +65,6 @@ class MethodConsumptionContext extends AbstractContext
          * .myAnotherFunction().
          * myNewMethod()
          */
-        return $token->value == '.' || $token->isEndOfLine();// $parseContext->tokenManager->getPreviousTokenBeforeCurrent()->value === ')';
+        return $token->value == '.' || $token->isEndOfLine();
     }
 }

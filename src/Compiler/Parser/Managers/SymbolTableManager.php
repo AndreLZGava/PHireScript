@@ -33,7 +33,7 @@ class SymbolTableManager
         if (is_null($this->rawType) || is_null($functionName)) {
             return null;
         }
-        return $this->typeDefinitions[$this->rawType][$functionName] ?? null;
+        return $this->typeDefinitions[$this->rawType . 'Methods'][$functionName] ?? null;
     }
 
 
@@ -79,11 +79,11 @@ class SymbolTableManager
                     }
 
                     try {
-                        $result = $method->invoke($instance);
+                         $result = $method->invoke($instance);
 
                         $registry[$shortName][$methodName] = $result;
                     } catch (\Throwable $e) {
-                        error_log("Error executing method {$className}::{$methodName}: " . $e->getMessage());
+                         error_log("Error executing method {$className}::{$methodName}: " . $e->getMessage());
                     }
                 }
             }

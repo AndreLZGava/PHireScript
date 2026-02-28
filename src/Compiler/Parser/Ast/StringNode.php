@@ -11,7 +11,7 @@ class StringNode extends Expression implements Type
 {
     private string $raw = 'String';
     public function __construct(
-        Token $token,
+        public Token $token,
         public string $value,
     ) {
     }

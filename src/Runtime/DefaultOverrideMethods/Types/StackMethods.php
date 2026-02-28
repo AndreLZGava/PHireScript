@@ -6,14 +6,14 @@ namespace PHireScript\Runtime\DefaultOverrideMethods\Types;
 
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 
-class ListNode extends GeneralType
+class StackMethods extends GeneralType
 {
     public function __construct(
         public array $types,
     ) {
     }
 
-    public function enqueue(...$params)
+    public function push(...$params)
     {
         return new BaseMethods(
             'array_push(@self, @params)',
@@ -23,10 +23,10 @@ class ListNode extends GeneralType
         );
     }
 
-    public function dequeue()
+    public function pop()
     {
         return new BaseMethods(
-            'array_shift(@self)',
+            'array_pop(@self)',
             ['self'],
         );
     }
@@ -34,7 +34,7 @@ class ListNode extends GeneralType
     public function peek()
     {
         return new BaseMethods(
-            'reset(@self)',
+            'end(@self)',
             ['self'],
         );
     }

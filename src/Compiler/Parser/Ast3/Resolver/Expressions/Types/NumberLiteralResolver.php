@@ -9,17 +9,19 @@ use PHireScript\Compiler\Parser\Ast3\Context\Expressions\AssignmentContext;
 use PHireScript\Compiler\Parser\Ast3\Context\Expressions\Types\QueueContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Ast\AssignmentNode;
+use PHireScript\Compiler\Parser\Ast\BoolNode;
 use PHireScript\Compiler\Parser\Ast\CommentNode;
+use PHireScript\Compiler\Parser\Ast\NumberNode;
 use PHireScript\Compiler\Parser\Ast\QueueNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 
-class QueueResolver implements ContextTokenResolver
+class NumberLiteralResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->value === 'Queue';
+        return $token->isNumber();
     }
 
     public function resolve(
@@ -27,13 +29,11 @@ class QueueResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
-        $queue = new QueueNode($token);
-
-        $parseContext->contextManager->enter(
-            new QueueContext($queue)
-        );
-        $parseContext->definePrevious($queue);
-
-        $context->addChild($queue);
+        if (filter_var($token->value, FILTER_VALIDATE_INT) !== false) {
+            $numberNode = new NumberNode($token, filter_var($token->value, FILTER_VALIDATE_INT));
+        } elseif (filter_var($token->value, FILTER_VALIDATE_FLOAT) !== false) {
+            $numberNode = new NumberNode($token, filter_var($token->value, FILTER_VALIDATE_FLOAT));
+        }
+        $context->addChild($numberNode);
     }
 }

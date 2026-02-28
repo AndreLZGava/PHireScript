@@ -19,6 +19,7 @@ use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 
 class ProgramContext extends AbstractContext
 {
@@ -49,6 +50,10 @@ class ProgramContext extends AbstractContext
             }
         }
         Debug::show($token, $parseContext->tokenManager->getLeftTokens(5));
-        throw new Exception($token->value . ' is not supported in program context!');
+        throw new CompileException(
+            $token->value . ' is not supported in program context!',
+            $token->line,
+            $token->column
+        );
     }
 }
