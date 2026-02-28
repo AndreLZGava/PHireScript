@@ -9,6 +9,9 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 
+/**
+ * @extends AbstractContext<ParamsNode>
+ */
 class TryCatchContext extends AbstractContext
 {
     public function handle(Token $token, ParseContext $parseContext): ?Node

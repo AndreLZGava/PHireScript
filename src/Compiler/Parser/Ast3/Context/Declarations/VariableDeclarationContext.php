@@ -8,16 +8,22 @@ use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
+/**
+ * @extends AbstractContext<ParamsNode>
+ */
 class VariableDeclarationContext extends AbstractContext
 {
     private array $resolvers = [];
 
-    public function __construct(public Node $node)
+    public function __construct(VariableDeclarationNode $node)
     {
+        parent::__construct($node);
+
         $this->resolvers = [
             new AssignmentResolver(),
         ];

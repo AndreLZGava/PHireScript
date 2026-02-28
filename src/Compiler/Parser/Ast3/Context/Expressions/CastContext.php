@@ -13,20 +13,26 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralRes
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\TypeResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\VariableReferenceResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\PipeResolver;
+use PHireScript\Compiler\Parser\Ast\CastingNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
+/**
+ * @extends AbstractContext<ParamsNode>
+ */
 class CastContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(public Node $node)
+    public function __construct(CastingNode $node)
     {
+        parent::__construct($node);
         $this->resolvers = [
             new OpeningParenthesisResolver(),
             new ClosingParenthesisResolver(),
@@ -38,6 +44,7 @@ class CastContext extends AbstractContext
             new VariableReferenceResolver(),
 
             new EndOfLineResolver(),
+            new CommentResolver(),
         ];
     }
 
@@ -86,6 +93,6 @@ class CastContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->isEndOfLine();
+        return $token->isEndOfLine() || $token->isComment();
     }
 }

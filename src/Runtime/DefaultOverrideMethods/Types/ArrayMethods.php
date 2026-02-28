@@ -10,7 +10,8 @@ use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 class ArrayMethods extends GeneralType
 {
     public function __construct(
-        public array $types = [],
+        public array $typesKey = [],
+        public array $typesValues = [],
     ) {
     }
 

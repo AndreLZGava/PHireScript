@@ -16,18 +16,24 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralRes
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\VariableReferenceResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
+use PHireScript\Compiler\Parser\Ast\KeyValuePairNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
+/**
+ * @extends AbstractContext<ParamsNode>
+ */
 class ArrayKeyContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(public Node $node)
+    public function __construct(KeyValuePairNode $node)
     {
+        parent::__construct($node);
+
         $this->resolvers = [
             new CommentResolver(),
             new ColonResolver(),

@@ -15,18 +15,23 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralRes
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
+use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
+/**
+ * @extends AbstractContext<ParamsNode>
+ */
 class ArrayLiteralContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(public Node $node)
+    public function __construct(ArrayLiteralNode $node)
     {
+        parent::__construct($node);
         $this->resolvers = [
             new CommentResolver(),
             new EndOfLineResolver(),
@@ -56,12 +61,12 @@ class ArrayLiteralContext extends AbstractContext
         throw new CompileException(
             $token->value . ' is not supported in array definition context!',
             $token->line,
-            $token->value
+            $token->column
         );
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === ']';
+        return $token->value === ']' || $token->isComment();
     }
 }

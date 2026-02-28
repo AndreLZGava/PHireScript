@@ -1,6 +1,11 @@
 /**
 *  This are the examples of array cases
 */
+//scopedArray = Array<Int|String: String>
+//scopedArray = []
+//scopedArray[] = 'test'
+
+
 // Literal inline array (only supported inline for now)
 myTest = 'guess'
 anotherOne = 'another One'
@@ -11,6 +16,9 @@ variables = [
   0: 'another test',
   myTest: anotherOne,
 ]
+
+// Array cast
+variables2 = Array('test')
 
 variables.contains('another')
 
@@ -34,8 +42,6 @@ variable4 = [
   ]
 ]
 
-// Array cast (only support one parameter for now)
-//variables2 = Array('test')
-
 // Variable reference
-//variablesReference = variables
+variablesReference = variables
+

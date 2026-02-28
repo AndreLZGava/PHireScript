@@ -9,6 +9,9 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 
+/**
+ * @extends AbstractContext<ParamsNode>
+ */
 class ReturnTypeContext extends AbstractContext
 {
     protected ?Node $returnType = null;

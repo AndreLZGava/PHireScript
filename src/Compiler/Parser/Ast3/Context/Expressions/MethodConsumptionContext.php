@@ -5,26 +5,28 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast3\Context\Expressions;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Context\Expressions\Types\QueueContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\ClosingParenthesisResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\OpeningParenthesisResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\QueueResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
+use PHireScript\Compiler\Parser\Ast\FunctionNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
+/**
+ * @extends AbstractContext<ParamsNode>
+ */
 class MethodConsumptionContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(public Node $node)
+    public function __construct(FunctionNode $node)
     {
+        parent::__construct($node);
         $this->resolvers = [
             new OpeningParenthesisResolver(),
             new ClosingParenthesisResolver(),

@@ -12,24 +12,31 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayLiteralReso
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\CastResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ObjectLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\QueueResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\VariableReferenceResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
+use PHireScript\Compiler\Parser\Ast\AssignmentNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
+/**
+ * @extends AbstractContext<ParamsNode>
+ */
 class AssignmentContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(public Node $node)
+    public function __construct(AssignmentNode $node)
     {
+        parent::__construct($node);
         $this->resolvers = [
             new AssignmentResolver(),
 
@@ -40,6 +47,7 @@ class AssignmentContext extends AbstractContext
             new NumberLiteralResolver(),
             new ArrayLiteralResolver(),
             new BoolLiteralResolver(),
+            new ObjectLiteralResolver(),
 
             new VariableReferenceResolver(),
 
@@ -47,6 +55,7 @@ class AssignmentContext extends AbstractContext
 
             new DotResolver(),
             new EndOfLineResolver(),
+            new CommentResolver(),
 
             new VariableConsumptionResolver(),
         ];
@@ -73,6 +82,6 @@ class AssignmentContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->isEndOfLine();
+        return $token->isEndOfLine() || $token->isComment();
     }
 }

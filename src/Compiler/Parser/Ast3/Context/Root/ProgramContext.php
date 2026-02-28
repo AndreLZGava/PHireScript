@@ -21,6 +21,9 @@ use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
+/**
+ * @extends AbstractContext<ParamsNode>
+ */
 class ProgramContext extends AbstractContext
 {
     private array $resolvers = [];

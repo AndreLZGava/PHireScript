@@ -9,6 +9,9 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 
+/**
+ * @extends AbstractContext<ParamsNode>
+ */
 class ParameterListContext extends AbstractContext
 {
     protected array $parameters = [];

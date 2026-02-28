@@ -2,24 +2,21 @@
 
 declare(strict_types=1);
 
-namespace PHireScript\Compiler\Parser\Ast3\Context\Declarations;
+namespace PHireScript\Compiler\Parser\Ast3\Context\Expressions;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Context\Expressions\Types\QueueContext;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\ClosingParenthesisResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ColonResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CommaResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\OpeningParenthesisResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayLiteralResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\QueueResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\VariableReferenceResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
+use PHireScript\Compiler\Parser\Ast\KeyValuePairNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
-use PHireScript\Compiler\Parser\Ast\ParamsNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -27,24 +24,25 @@ use PHireScript\Runtime\Exceptions\CompileException;
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class ParamsConsumptionContext extends AbstractContext
+class ObjectKeyContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(ParamsNode $node)
+    public function __construct(KeyValuePairNode $node)
     {
         parent::__construct($node);
-        $this->resolvers = [
-            new StringLiteralResolver(),
-            new NumberLiteralResolver(),
-            new BoolLiteralResolver(),
-            new ArrayLiteralResolver(),
-            new VariableReferenceResolver(),
 
-            new ClosingParenthesisResolver(),
+        $this->resolvers = [
+            new CommentResolver(),
+            new ColonResolver(),
+            new EndOfLineResolver(),
+            new ClosingCurlyBracketResolver(),
             new CommaResolver(),
 
-            new EndOfLineResolver(),
+            new StringLiteralResolver(),
+            new ArrayLiteralResolver(),
+            new NumberLiteralResolver(),
+            new VariableReferenceResolver(),
         ];
     }
 
@@ -54,20 +52,26 @@ class ParamsConsumptionContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
-                $this->node->params = $this->children;
+                $this->node->value = $this->children[0] ?? null;
                 return null;
             }
         }
-        // Debug::show($parseContext->tokenManager->getProcessedTokens(10));exit;
         throw new CompileException(
-            $token->value . ' is not supported in params context!',
+            $token->value . ' is not supported in object key definition context!',
             $token->line,
             $token->column
         );
     }
 
+    public function afterClose(Token $token, ParseContext $parseContext): void
+    {
+        if ($token->value === '}') {
+            $parseContext->contextManager->exit();
+        }
+    }
+
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === ')';
+        return $token->value === ',' || $token->isComment() || $token->value === '}';
     }
 }

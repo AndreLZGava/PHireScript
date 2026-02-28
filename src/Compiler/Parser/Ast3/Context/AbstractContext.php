@@ -8,13 +8,25 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 
+/**
+ * @template T of Node
+ */
 abstract class AbstractContext
 {
     private ?AbstractContext $parent = null;
     public array $children = [];
 
-    public function __construct(public Node $node)
+    /**
+     * @var T
+     */
+    public $node;
+
+    /**
+     * @param T $node
+     */
+    public function __construct(Node $node)
     {
+        $this->node = $node;
     }
 
     public function setParent(AbstractContext $parent): void
