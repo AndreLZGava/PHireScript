@@ -13,6 +13,7 @@ class CompilerContext
         public readonly bool $inMemory = false,
         public readonly bool $verbose = false,
         public readonly bool $clean = false,
+        public readonly bool $displayInsideCompiler = false,
         public readonly string $file = '',
         public readonly string $targetWatch = '',
     ) {

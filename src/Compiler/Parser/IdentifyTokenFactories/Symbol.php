@@ -74,7 +74,7 @@ public function process(Token $token, ParseContext $parseContext): ?Node
 
     foreach ($factories as $parser) {
         if ($parser->Token $token, ParseContext $parseContext) :
-            bool) {
+            bool {
             return $parser->process($program);
             }
         }

@@ -36,7 +36,7 @@ class ProgramEmitter implements NodeEmitter
         foreach ($arrayCode as $key => $code) {
             if (
                 $key === 'init' ||
-                str_contains($key, "PHireScript\Compiler\Parser\Ast\PackageStatement")
+                str_contains($key, "PHireScript\Compiler\Parser\Ast\PackageNode")
             ) {
                 $processedCodeBeforeUses .= $code . "\n";
                 continue;

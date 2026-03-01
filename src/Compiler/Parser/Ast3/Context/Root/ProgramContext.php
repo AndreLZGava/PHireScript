@@ -14,6 +14,9 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ExternalResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\PackageResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\UseResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -38,6 +41,11 @@ class ProgramContext extends AbstractContext
             new VariableConsumptionResolver(),
             new AssignmentResolver(),
             new FunctionCallResolver(),
+
+            // these won't appear in any other sub context
+            new PackageResolver(),
+            new UseResolver(),
+            new ExternalResolver(),
         ];
     }
 

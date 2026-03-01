@@ -41,8 +41,6 @@ class Keywords extends GlobalFactory
             'interface' => InterfaceKey::class,
             'class' => ClassKey::class,
             'return' => ReturnKey::class,
-            'pkg' => PkgKey::class,
-            'use' => UseKey::class,
             'external' => ExternalKey::class,
             'trait' => TraitKey::class,
             'abstract' => AbstractKey::class,

@@ -1,88 +1,123 @@
 <?php
 
-$html = "<!DOCTYPE html>
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use PHireScript\Compiler;
+use PHireScript\Core\CompileMode;
+use PHireScript\Core\CompilerContext;
+use PHireScript\Helper\Debug\Debug;
+
+$baseDir = __DIR__;
+$requestFile = $_GET['file'] ?? null;
+
+if ($requestFile !== null) {
+    $requestFile = ltrim($requestFile, '/\\');
+    $file = realpath($baseDir . DIRECTORY_SEPARATOR . $requestFile);
+
+    if (
+        $file !== false &&
+        is_file($file) &&
+        str_starts_with($file, $baseDir) &&
+        pathinfo($file, PATHINFO_EXTENSION) === 'ps'
+    ) {
+        $context = new CompilerContext(
+            CompileMode::DEBUG,
+            true,
+            file: $requestFile,
+            displayInsideCompiler:true,
+        );
+
+        $compiler = new Compiler($context);
+        $compiler->compile();
+        exit;
+        //echo '<pre style="background:#111;color:#0f0;padding:20px;border-radius:8px;">';
+        //echo htmlspecialchars(file_get_contents($file));
+        //echo '</pre>';
+    }
+
+    http_response_code(404);
+    echo "Invalid file.";
+    exit;
+}
+
+function findPsFiles(string $baseDir): array
+{
+    $files = [];
+
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator(
+            $baseDir,
+            FilesystemIterator::SKIP_DOTS
+        )
+    );
+
+    foreach ($iterator as $file) {
+        if ($file->isFile() && $file->getExtension() === 'ps') {
+            $files[] = str_replace($baseDir . DIRECTORY_SEPARATOR, '', $file->getPathname());
+        }
+    }
+
+    sort($files);
+
+    return $files;
+}
+
+$baseDir = __DIR__;
+$psFiles = findPsFiles($baseDir);
+
+?>
+<!DOCTYPE html>
 <html>
+
 <head>
-<meta charset='UTF-8'>
-<title>PHP Internal API</title>
-<style>
-    body { font-family: monospace; background: #111; color: #eee; }
-    table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #333; padding: 6px; }
-    th { background: #222; }
-    a { color: #4da6ff; text-decoration: none; }
-    .deprecated { color: #ff6b6b; font-weight: bold; }
-</style>
+    <meta charset="UTF-8">
+    <title>PHireScript Files</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
+
 <body>
 
-<h1>PHP Internal API</h1>
-<table>
-<thead>
-<tr>
-    <th>Type</th>
-    <th>Name</th>
-    <th>Deprecated</th>
-</tr>
-</thead>
-<tbody>
-";
+    <h1>Files .ps found</h1>
 
-//
-// ✅ FUNÇÕES
-//
+    <ul>
+        <?php foreach ($psFiles as $file) : ?>
+            <li>
+                <a href="?file=<?= urlencode($file) ?>">
+                    <?= htmlspecialchars($file) ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
 
-$functions = get_defined_functions()['internal'];
-sort($functions);
-$count = 0;
-foreach ($functions as $func) {
-    $ref = new ReflectionFunction($func);
+    <?php if (empty($psFiles)) : ?>
+        <p>No .ps File found!</p>
+    <?php endif; ?>
 
-    $deprecated = $ref->isDeprecated()
-    ? "<span class='deprecated'>YES 😈</span>"
-    : "NO";
+</body>
 
-    $docUrl = "https://www.php.net/{$func}";
-    $count++;
-    $html .= "
-    <tr>
-        <td>Function</td>
-        <td><a href='{$docUrl}' target='_blank'>{$func}</a></td>
-        <td>{$deprecated}</td>
-    </tr>";
-}
-
-//
-// ✅ CLASSES + MÉTODOS
-//
-
-$classes = get_declared_classes();
-foreach ($classes as $class) {
-    $refClass = new ReflectionClass($class);
-
-    if (!$refClass->isInternal()) {
-        continue;
-    }
-
-    foreach ($refClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-        $name = $class . "::" . $method->getName();
-
-        $deprecated = $method->isDeprecated()
-        ? "<span class='deprecated'>YES 😈</span>"
-        : "NO";
-
-      // Doc link padrão PHP
-        $docUrl = "https://www.php.net/manual/en/class." . strtolower($class) . ".php";
-        $count++;
-        $html .= "
-    <tr>
-    <td>Method</td>
-    <td><a href='{$docUrl}' target='_blank'>{$name}</a></td>
-    <td>{$deprecated}</td>
-    </tr>";
-    }
-}
-
-$html .= "</tbody></table></body><h1>{$count}</h2></html>";
-
-file_put_contents('php_api.html', $html);
+</html>

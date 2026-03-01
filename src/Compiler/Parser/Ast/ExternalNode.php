@@ -6,11 +6,11 @@ namespace PHireScript\Compiler\Parser\Ast;
 
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 
-class DependenciesStatement extends Statement
+class ExternalNode extends Statement
 {
     public function __construct(
         Token $token,
-        public readonly array $packages = [],
+        public array $namespaces = [],
     ) {
     }
 }

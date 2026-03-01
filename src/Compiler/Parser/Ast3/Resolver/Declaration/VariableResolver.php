@@ -32,7 +32,6 @@ class VariableResolver implements ContextTokenResolver
             name: $token->value,
         );
 
-
         $parseContext->definePrevious($variable);
         $parseContext->variables->addVariable($variable);
     }

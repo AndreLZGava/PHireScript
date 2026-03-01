@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PHireScript;
 
 use PHireScript\Compiler\FileManager;
-use PHireScript\Core\CompileMode;
 use PHireScript\Core\CompilerContext;
+use PHireScript\Helper\Debug\Debug;
 use PHireScript\Transpiler;
 use PHireScript\TranspilerDependencyTree;
 

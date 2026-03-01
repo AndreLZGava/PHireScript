@@ -4,8 +4,8 @@ namespace PHireScript;
 
 use PHireScript\Compiler\DependencyGraphBuilder\Node;
 use PHireScript\Compiler\Parser\Ast\ClassDefinition;
-use PHireScript\Compiler\Parser\Ast\PackageStatement;
-use PHireScript\Compiler\Parser\Ast\DependenciesStatement;
+use PHireScript\Compiler\Parser\Ast\PackageNode;
+use PHireScript\Compiler\Parser\Ast\UseNode;
 use PHireScript\Compiler\Parser\Ast\InterfaceDefinition;
 use PHireScript\Compiler\Program;
 
@@ -37,7 +37,7 @@ class DependencyGraphBuilder
     private function registerNode(Program $ast): void
     {
         foreach ($ast->statements as $stmt) {
-            if ($stmt instanceof PackageStatement) {
+            if ($stmt instanceof PackageNode) {
                 $packageName = $stmt->completePackage;
                 if (isset($this->nodes[$packageName])) {
                     throw new \Exception("Package '{$packageName}' was already defined!");
@@ -58,7 +58,7 @@ class DependencyGraphBuilder
         $currentPackage = null;
         $shouldHavePackage = false;
         foreach ($ast->statements as $stmt) {
-            if ($stmt instanceof PackageStatement) {
+            if ($stmt instanceof PackageNode) {
                 $currentPackage = $stmt->completePackage;
             }
             if (
@@ -75,7 +75,7 @@ class DependencyGraphBuilder
         }
 
         foreach ($ast->statements as $stmt) {
-            if ($stmt instanceof DependenciesStatement) {
+            if ($stmt instanceof UseNode) {
                 foreach ($stmt->packages as $dep) {
                     $depPackage = $dep->package;
 

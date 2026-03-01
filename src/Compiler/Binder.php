@@ -6,7 +6,7 @@ namespace PHireScript\Compiler;
 
 use PHireScript\SymbolTable;
 use PHireScript\Compiler\Parser\Ast\ClassDefinition;
-use PHireScript\Compiler\Parser\Ast\DependenciesStatement;
+use PHireScript\Compiler\Parser\Ast\UseNode;
 use PHireScript\Compiler\Parser\Ast\DependencyStatement;
 use PHireScript\Compiler\Parser\Ast\InterfaceDefinition;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
@@ -124,7 +124,7 @@ class Binder
         $uses = [];
 
         foreach ($this->program->statements as $statement) {
-            if ($statement instanceof DependenciesStatement) {
+            if ($statement instanceof UseNode) {
                 foreach ($statement->packages as $package) {
                     if ($package instanceof DependencyStatement) {
                         $usingPackage = explode('.', $package->package);

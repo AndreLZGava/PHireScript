@@ -47,7 +47,6 @@ class FileManager
                     '.php',
                     $relativePath
                 );
-
                 $this->compileFile($file->getPathname(), $outputFile, $transpiler);
             }
         }
@@ -162,11 +161,18 @@ class FileManager
                 }
             }
 
-            if ($this->context->inMemory) {
+            if ($this->context->inMemory && !$this->context->displayInsideCompiler) {
                 echo "\n\033[1;32m✔ SUCCESSFUL PHP OUTPUT\033[0m\n";
                 echo $result . "\n";
             }
+            if ($this->context->inMemory && $this->context->displayInsideCompiler) {
+                $this->getExecutionInterface($sourceCode, $result);
+            }
         } catch (Exception $e) {
+            if ($this->context->displayInsideCompiler) {
+                $this->getErrorInterfaceWeb($e, $transpiler, $sourceCode);
+                return;
+            }
             echo "\033[1;31m✗ Error in $input: " . $e->getMessage() . "\033[0m\n";
             $this->getErrorInterface($e, $transpiler, $sourceCode);
         }
@@ -275,6 +281,125 @@ class FileManager
         echo "\n{$yellow}ERROR MESSAGE:{$reset}\n";
         echo "{$red}» {$message}{$reset}\n";
         echo "{$red}" . str_repeat('=', $width) . "{$reset}\n";
+    }
+
+    private function getErrorInterfaceWeb($e, $transpiler, $code): string
+    {
+        $width = 120;
+        $gutterWidth = 8;
+        $availableWidth = $width - $gutterWidth;
+
+        $codeGenerated = $transpiler->getCodeBeforeGenerator();
+        $hasTranspiled = !empty(trim($codeGenerated));
+
+        $originalLines   = explode("\n", rtrim($code));
+        $preParserLines  = $hasTranspiled ? explode("\n", rtrim($codeGenerated)) : [];
+        $maxLines        = max(count($originalLines), count($preParserLines));
+
+        $message = htmlspecialchars($e->getMessage());
+        $errorLine = ($e instanceof CompileException) ? $e->line : null;
+
+        $html = '';
+
+        $html .= '<pre style="
+        background:#0d1117;
+        color:#c9d1d9;
+        padding:20px;
+        border-radius:10px;
+        font-family: Consolas, monospace;
+        font-size:14px;
+        overflow:auto;
+    ">';
+
+        $html .= "PHire Script DEBUGGER - COMPILATION ERROR\n";
+        $html .= str_repeat('=', $width) . "\n\n";
+
+        if ($hasTranspiled) {
+            $colWidth = (int) ($availableWidth / 2) - 2;
+            $html .= str_pad('Line', 6) .
+                str_pad('ORIGINAL PHire Script', $colWidth) .
+                " | TRANSPILED PHP\n";
+        } else {
+            $colWidth = $availableWidth;
+            $html .= str_pad('Line', 6) .
+                "ORIGINAL PHire Script\n";
+        }
+
+        $html .= str_repeat('-', $width) . "\n";
+
+        for ($i = 0; $i < $maxLines; $i++) {
+            $currentLineNum = $i + 1;
+            $left  = htmlspecialchars($originalLines[$i] ?? '');
+            $right = htmlspecialchars($preParserLines[$i] ?? '');
+
+            $isError = ($currentLineNum === $errorLine);
+
+            $linePrefix = str_pad((string) $currentLineNum, 4, ' ', STR_PAD_LEFT) . ' ';
+
+            if ($hasTranspiled) {
+                $line =
+                    $linePrefix .
+                    str_pad(mb_substr($left, 0, $colWidth), $colWidth) .
+                    " | " .
+                    mb_substr($right, 0, $colWidth);
+            } else {
+                $line = $linePrefix . $left;
+            }
+
+            if ($isError) {
+                $html .= '<span style="background:#3b0d0d;color:#ff7b72;">→ ' . $line . "</span>\n";
+            } else {
+                $html .= '  ' . $line . "\n";
+            }
+        }
+
+        $html .= "\n\nERROR MESSAGE:\n";
+        $html .= '<span style="color:#ff7b72;">» ' . $message . "</span>\n";
+        $html .= str_repeat('=', $width);
+
+        $html .= '</pre>';
+
+        echo $html;
+        exit;
+    }
+
+    private function getExecutionInterface(string $compiledCode, string $executionResult)
+    {
+        $compiledSafe = htmlspecialchars($compiledCode);
+        $resultSafe   = htmlspecialchars($executionResult);
+
+        echo '
+    <div style="
+        display:flex;
+        gap:20px;
+        align-items:flex-start;
+        font-family:Consolas, monospace;
+    ">
+        <div style="flex:1;">
+            <h3 style="margin:0 0 10px 0;color:#58a6ff;">PHire Script</h3>
+            <pre style="
+                background:#0d1117;
+                color:#c9d1d9;
+                padding:20px;
+                border-radius:10px;
+                overflow:auto;
+                min-height:400px;
+            ">' . $compiledSafe . '</pre>
+        </div>
+
+        <div style="flex:1;">
+            <h3 style="margin:0 0 10px 0;color:#3fb950;">PHP result</h3>
+            <pre style="
+                background:#0d1117;
+                color:#c9d1d9;
+                padding:20px;
+                border-radius:10px;
+                overflow:auto;
+                min-height:400px;
+            ">' . $resultSafe . '</pre>
+        </div>
+    </div>
+    ';
     }
 
     private function listClassesExtending(

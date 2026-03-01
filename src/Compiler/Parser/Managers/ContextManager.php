@@ -89,4 +89,14 @@ class ContextManager
     {
         $this->config = $config;
     }
+
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
 }

@@ -10,8 +10,7 @@ use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 use PHireScript\Runtime\RuntimeClass;
 
-class PackageStatement extends Statement
-{
+class PackageNode extends Statement {
     public readonly string $namespace;
     public readonly string $completeObjectReference;
 
@@ -19,18 +18,25 @@ class PackageStatement extends Statement
 
     public function __construct(
         public Token $token,
-        public readonly string $package,
-        public readonly string $object,
-        public readonly string $file,
+        public string $file,
+        public ?string $package = null,
+        public ?string $object = null,
     ) {
-        $this->validate();
-        $this->completePackage = $package . '.' . $object;
+        //$this->validate();
+        //$this->completePackage = $package . '.' . $object;
     }
 
-    private function validate()
-    {
+    public function validate() {
         $basename = basename($this->file);
         $ext = RuntimeClass::DEFAULT_FILE_EXTENSION;
+
+        if (is_null($this->package)) {
+            throw new CompileException(
+                'Package must be defined!',
+                $this->token->line,
+                $this->token->column,
+            );
+        }
 
         if (
             !str_starts_with($basename, $this->object) ||
@@ -46,8 +52,7 @@ class PackageStatement extends Statement
         }
     }
 
-    public function generateNamespace(array $config): void
-    {
+    public function generateNamespace(array $config): void {
         $namespace = '';
         $namespace = current(explode('/' . $this->object, $this->file));
         $baseDir = rtrim((string) $config['paths']['source'], '/') . '/';

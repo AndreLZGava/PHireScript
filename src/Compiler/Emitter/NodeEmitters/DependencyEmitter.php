@@ -6,14 +6,14 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\DependenciesStatement;
+use PHireScript\Compiler\Parser\Ast\UseNode;
 use PHireScript\Helper\Debug\Debug;
 
 class DependencyEmitter implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {
-        return $node instanceof DependenciesStatement;
+        return $node instanceof UseNode;
     }
 
     public function emit(object $node, EmitContext $ctx): string

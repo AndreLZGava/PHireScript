@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
 
 use Exception;
-use PHireScript\Compiler\Parser\Ast\ExternalsStatement;
+use PHireScript\Compiler\Parser\Ast\ExternalNode;
 use PHireScript\Compiler\Parser\Ast\NamespaceStatement;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;
@@ -22,7 +22,7 @@ class ExternalKey extends ClassesFactory
         //$this->tokenManager->advance();
         $namespaces = $this->buildUseNamespaces();
 
-        $namespaces = new ExternalsStatement(
+        $namespaces = new ExternalNode(
             $currentToken,
             $namespaces,
         );

@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class CastingNode extends Expression
 {
     public function __construct(
-        Token $token,
+        public Token $token,
         public string $to,
         public mixed $value = null,
     ) {

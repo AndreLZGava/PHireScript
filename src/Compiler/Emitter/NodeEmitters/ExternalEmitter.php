@@ -6,13 +6,13 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\ExternalsStatement;
+use PHireScript\Compiler\Parser\Ast\ExternalNode;
 
 class ExternalEmitter implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {
-        return $node instanceof ExternalsStatement;
+        return $node instanceof ExternalNode;
     }
 
     public function emit(object $node, EmitContext $ctx): string
