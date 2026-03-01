@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class StackNode extends Collection
 {
     public function __construct(
-        Token $token,
+        public Token $token,
         public array $types = [],
     ) {
     }

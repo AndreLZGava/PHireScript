@@ -11,9 +11,12 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\CastResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ListResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\MapResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ObjectLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\QueueResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StackResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\VariableReferenceResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
@@ -41,6 +44,9 @@ class AssignmentContext extends AbstractContext
             new AssignmentResolver(),
 
             new QueueResolver(),
+            new StackResolver(),
+            new MapResolver(),
+            new ListResolver(),
             new CastResolver(),
 
             new StringLiteralResolver(),

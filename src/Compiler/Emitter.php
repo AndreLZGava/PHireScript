@@ -25,7 +25,9 @@ use PHireScript\Compiler\Emitter\NodeEmitters\FunctionEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\GlobalStatementEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\InterfaceEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\KeyValuePairEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\ListEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\LiteralEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\MapEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\MethodEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\NumberEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ObjectLiteralEmitter;
@@ -37,6 +39,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\PropertyDeclarationEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\QueueEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ReturnEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ScalarLiteralEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\StackEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VariableReferenceAssignEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\StringEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\SuperTypeEmitter;
@@ -81,6 +84,9 @@ class Emitter
             new VariableReferenceAssignEmitter(),
             new SuperTypeEmitter(),
             new QueueEmitter(),
+            new ListEmitter(),
+            new StackEmitter(),
+            new MapEmitter(),
 
             new PropertyDeclarationEmitter(),
             new VoidExpressionEmitter(),

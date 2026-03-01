@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Emitter;
 
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 
 class EmitterDispatcher
 {
@@ -25,8 +26,12 @@ class EmitterDispatcher
                 return $emitter->emit($node, $context);
             }
         }
-        Debug::show($node);
-        exit;
+
+        throw new CompileException(
+            get_class($node) . ' has no emitter defined to process!',
+            $node->token->line,
+            $node->token->column,
+        );
         //return "// Unknown node: {$node::class}\n";
     }
 }
