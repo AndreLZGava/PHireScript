@@ -10,6 +10,7 @@ use PHireScript\Compiler\Checker\Checker;
 use PHireScript\Compiler\Parser\Ast\FunctionNode;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\QueueNode;
+use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
@@ -42,14 +43,15 @@ class MethodConsumptionChecker implements Checker {
 
     private function validateSubTypes($node, $params) {
         $type = $node->variableBase?->type?->getRawType() ?? $node->variableBase?->getRawType();
-        $variableTypes = $node->variableBase?->type?->types ?? [];
-        $allowedKeys = $node->variableBase?->type?->keys ?? [];
+        $variableTypes = $node->variableBase?->type?->types ?? $node->variableBase->type?->type?->types ?? [];
+        $allowedKeys = $node->variableBase?->type?->keys ?? $node->variableBase?->type?->type?->keys ?? [];
         $expected = $node->method->params;
         foreach ($params as $number => $param) {
             $paramRawType = $param->getRawType();
             if ($expected[$number]->relatedKeyParam && in_array($paramRawType, $allowedKeys)) {
                 continue;
             }
+
             if (
                 !empty($variableTypes) &&
                 !in_array($paramRawType, $variableTypes)
