@@ -4,13 +4,20 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Ast;
 
+use PHireScript\Compiler\Parser\Ast\Expression\Types\Type;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 
-class ObjectLiteralNode extends Expression
+class ObjectLiteralNode extends Expression implements Type
 {
+
     public function __construct(
-        Token $token,
+        public Token $token,
         public array|ArrayLiteralNode $properties = []
     ) {
+    }
+
+    public function getRawType(): string
+    {
+        return 'Object';
     }
 }

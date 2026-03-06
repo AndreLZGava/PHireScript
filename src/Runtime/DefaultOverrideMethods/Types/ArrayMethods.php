@@ -14,11 +14,6 @@ class ArrayMethods extends GeneralType {
     ) {
     }
 
-    public function defineSubtype(array $array) {
-        Debug::show($array);
-        exit;
-    }
-
     public function contains() {
         return new BaseMethods(
             name: 'contains?',

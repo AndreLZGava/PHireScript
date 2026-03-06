@@ -13,23 +13,49 @@ use PHireScript\Compiler\Parser\Ast\QueueNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
-class MethodConsumptionChecker implements Checker
-{
-    public function mustCheck(Node $node): bool
-    {
+class MethodConsumptionChecker implements Checker {
+    public function mustCheck(Node $node): bool {
         return $node instanceof FunctionNode;
     }
 
-    public function check(Node $node, CompilerChecker $checker): void
-    {
+    public function check(Node $node, CompilerChecker $checker): void {
+        $params = $node->params->params;
+        $this->validateRequiredParams($node, $params);
+        $this->validateSubTypes($node, $params);
+
+        return;
+    }
+
+    private function validateRequiredParams($node, $params) {
+        $expectedParams = $node->method->params;
+        foreach ($expectedParams as $key => $expected) {
+            if ($expected->required && !isset($params[$key])) {
+                throw new CompileException(
+                    'The ' . ($key + 1) . '° parameter (' . $expected->name . ') of type "' . $expected->type .
+                        '" is required for method(' . $node->method->name . ') and is missing!',
+                    $node->token->line,
+                    $node->token->column
+                );
+            }
+        }
+    }
+
+    private function validateSubTypes($node, $params) {
         $type = $node->variableBase?->type?->getRawType() ?? $node->variableBase?->getRawType();
         $variableTypes = $node->variableBase?->type?->types ?? [];
-        $params = $node->params->params;
-        foreach ($params as $param) {
+        $allowedKeys = $node->variableBase?->type?->keys ?? [];
+        $expected = $node->method->params;
+        foreach ($params as $number => $param) {
             $paramRawType = $param->getRawType();
-            if (!empty($variableTypes) && !in_array($paramRawType, $variableTypes)) {
+            if ($expected[$number]->relatedKeyParam && in_array($paramRawType, $allowedKeys)) {
+                continue;
+            }
+            if (
+                !empty($variableTypes) &&
+                !in_array($paramRawType, $variableTypes)
+            ) {
                 throw new CompileException(
-                    'Param of value ' . $paramRawType .
+                    'Param of type ' . $paramRawType .
                         ' not allowed for ' . $type .
                         '. Allowed in this case ' . implode($variableTypes) . '!',
                     $param->token->line,
@@ -37,6 +63,5 @@ class MethodConsumptionChecker implements Checker
                 );
             }
         }
-        return;
     }
 }

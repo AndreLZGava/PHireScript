@@ -11,6 +11,7 @@ class BaseParams
         public string $type,
         public bool $required = false,
         public mixed $defaultValue = null,
+        public bool $relatedKeyParam = false,
     ) {
     }
 }
