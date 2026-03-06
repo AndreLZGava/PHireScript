@@ -1,17 +1,17 @@
 // This is a comment
 myQueue = Queue<String>
 
-myQueue.enqueue('string 1', 'string 2')
-    .enqueue('true')
-    .enqueue(
+myQueue.enqueue!('string 1', 'string 2')
+    .enqueue!('true')
+    .enqueue!(
       'teste 4',
       'qua',
       'qua',
       '10'
     )
-myQueue.dequeue()
+myQueue.dequeue!()
 anotherVariableString = 'true'
-myQueue.enqueue(anotherVariableString)
+myQueue.enqueue!(anotherVariableString)
 // this will remove 'string 1' from queue and will assignment its value to newVar
-newVar = myQueue.dequeue()
-newString = myQueue.dequeue()
+newVar = myQueue.dequeue!()
+newString = myQueue.dequeue!()

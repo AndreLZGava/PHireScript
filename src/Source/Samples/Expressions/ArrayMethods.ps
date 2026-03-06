@@ -2,10 +2,10 @@
 myString = 'day month Year'
 
 myString.split(' ')
-  .add('hour')
-  .add('seconds')
-  .add('another')
-  .last()
+  .add!('hour')
+  myString.add!('seconds')
+  myString.add!('another')
+  myString.last()
   myString.destroy()
 myString.toLowerCase()
 

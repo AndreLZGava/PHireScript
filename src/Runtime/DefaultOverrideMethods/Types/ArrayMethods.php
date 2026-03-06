@@ -15,11 +15,13 @@ class ArrayMethods extends GeneralType {
     }
 
     public function defineSubtype(array $array) {
-        Debug::show($array);exit;
+        Debug::show($array);
+        exit;
     }
 
     public function contains() {
         return new BaseMethods(
+            name: 'contains?',
             phpCodeForConversion: 'in_array(@searching, @self)',
             returnOfPhpExecution: ['Bool'],
             subTypes: $this->types,
@@ -31,6 +33,7 @@ class ArrayMethods extends GeneralType {
 
     public function add() {
         return new BaseMethods(
+            name: 'add!',
             phpCodeForConversion: '@self[@key] = @value',
             returnOfPhpExecution: [],
             subTypes: [],
@@ -43,6 +46,7 @@ class ArrayMethods extends GeneralType {
 
     public function addEnd() {
         return new BaseMethods(
+            name: 'addEnd!',
             phpCodeForConversion: 'array_push(@self, @params)',
             returnOfPhpExecution: [],
             subTypes: $this->types,
@@ -54,6 +58,7 @@ class ArrayMethods extends GeneralType {
 
     public function addStart() {
         return new BaseMethods(
+            name: 'addStart!',
             phpCodeForConversion: 'array_unshift(@self, @params)',
             returnOfPhpExecution: [],
             subTypes: $this->types,
@@ -65,6 +70,7 @@ class ArrayMethods extends GeneralType {
 
     public function last() {
         return new BaseMethods(
+            name: 'last',
             phpCodeForConversion: 'empty(@self) ? null : @self[array_key_last(@self)];',
             returnOfPhpExecution: ['Mixed'],
             subTypes: $this->types,
@@ -74,6 +80,7 @@ class ArrayMethods extends GeneralType {
 
     public function first() {
         return new BaseMethods(
+            name: 'first',
             phpCodeForConversion: 'current(@self ?? [])',
             returnOfPhpExecution: ['Mixed'],
             subTypes: $this->types,

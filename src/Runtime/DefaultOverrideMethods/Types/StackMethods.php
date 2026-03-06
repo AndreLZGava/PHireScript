@@ -16,8 +16,9 @@ class StackMethods extends GeneralType
     public function push(...$params)
     {
         return new BaseMethods(
+            'push!',
             'array_push(@self, @params)',
-            ['self'],
+            [],
             $this->types,
             $params
         );
@@ -26,16 +27,18 @@ class StackMethods extends GeneralType
     public function pop()
     {
         return new BaseMethods(
+            'pop!',
             'array_pop(@self)',
-            ['self'],
+            ['mixed'],
         );
     }
 
     public function peek()
     {
         return new BaseMethods(
+            'peek',
             'end(@self)',
-            ['self'],
+            ['mixed'],
         );
     }
 }

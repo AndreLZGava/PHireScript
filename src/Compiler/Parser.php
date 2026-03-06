@@ -23,6 +23,7 @@ class Parser
 
     public function parse(array $tokens, string $path): Program
     {
+        //Debug::show($tokens);exit;
         $tokenManager = new TokenManager(
             RuntimeClass::CONTEXT_GENERAL,
             $tokens,

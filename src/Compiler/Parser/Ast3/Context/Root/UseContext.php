@@ -9,13 +9,14 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CommaResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ClosingCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\DotResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\IdentifierResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Root\OpeningCurlyBracketResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\Use\GroupUseResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
+use PHireScript\Compiler\Parser\Ast\GroupUseNode;
+use PHireScript\Compiler\Parser\Ast\PackageDependencyNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\UseNode;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
@@ -24,9 +25,6 @@ use PHireScript\Runtime\Exceptions\CompileException;
 class UseContext extends AbstractContext
 {
     private array $resolvers;
-    private bool $alreadyEnteredGroup = false;
-    private array $dependencies = [];
-    private string $dependency = '';
 
     public function __construct(UseNode $node)
     {
@@ -36,7 +34,7 @@ class UseContext extends AbstractContext
             new DotResolver(),
             new EndOfLineResolver(),
             new CommaResolver(),
-            new OpeningCurlyBracketResolver(),
+            new GroupUseResolver(),
             new ClosingCurlyBracketResolver(),
         ];
     }
@@ -47,7 +45,6 @@ class UseContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
-                $this->handleMultiplePackages($token);
 
                 return null;
             }
@@ -59,33 +56,34 @@ class UseContext extends AbstractContext
         );
     }
 
-    private function handleMultiplePackages(Token $token): void
+    public function afterClose(Token $token, ParseContext $parseContext): void
     {
-        if ($token->value === '}' || $token->isEndOfLine()) {
-            return;
-        }
-
-        if ($token->value === '{') {
-            $this->alreadyEnteredGroup = true;
-            return;
-        }
-
-        if ($this->alreadyEnteredGroup && !empty($this->getChildrenValues())) {
-            $this->dependencies[] = $this->getChildrenValues();
-            $newPackage = [];
-            foreach ($this->dependencies as $dependency) {
-                $newPackage[] = $this->dependency . $dependency;
+        $package = '';
+        $packages = [];
+        $hasGroup = false;
+        foreach ($this->children as $item) {
+            if (is_string($item)) {
+                $package .= $item;
+                continue;
             }
 
-            $this->node->packages = $newPackage;
-            $this->children = [];
-            return;
+            if ($item instanceof GroupUseNode) {
+                $hasGroup = true;
+                foreach ($item->parts as $alias => $part) {
+                    $packageNode = new PackageDependencyNode($token);
+                    $packageNode->package = $package . $part;
+                    $packageNode->alias = is_string($alias) ? $alias : null;
+                    $packages[] = $packageNode;
+                }
+            }
+        }
+        if (!$hasGroup) {
+            $packageNode = new PackageDependencyNode($token);
+            $packageNode->package = $package;
+            $packages[] = $packageNode;
         }
 
-        $this->dependency .= $this->getChildrenValues() ?? '';
-        $this->node->packages = [$this->dependency];
-        $this->children = [];
-        return;
+        $this->node->packages = $packages;
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool

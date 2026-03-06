@@ -10,10 +10,13 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\TypeResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\BackSlashResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ClosingCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\DotResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\External\GroupUseResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\IdentifierResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\OpeningCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\ExternalNode;
+use PHireScript\Compiler\Parser\Ast\GroupUseNode;
+use PHireScript\Compiler\Parser\Ast\NamespaceNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\UseNode;
@@ -27,9 +30,6 @@ use PHireScript\Runtime\Exceptions\CompileException;
 class ExternalContext extends AbstractContext
 {
     private array $resolvers;
-    private bool $alreadyEnteredGroup = false;
-    private array $dependencies = [];
-    private string $dependency = '';
 
     public function __construct(ExternalNode $node)
     {
@@ -40,7 +40,7 @@ class ExternalContext extends AbstractContext
             new BackSlashResolver(),
             new EndOfLineResolver(),
             new CommaResolver(),
-            new OpeningCurlyBracketResolver(),
+            new GroupUseResolver(),
             new ClosingCurlyBracketResolver(),
         ];
     }
@@ -51,12 +51,12 @@ class ExternalContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
-                $this->handleMultiplePackages($token);
 
                 return null;
             }
         }
-        Debug::show($token);exit;
+        Debug::show($token);
+        exit;
         throw new CompileException(
             $token->value . ' is not supported in external definition context!',
             $token->line,
@@ -64,33 +64,34 @@ class ExternalContext extends AbstractContext
         );
     }
 
-    private function handleMultiplePackages(Token $token): void
+    public function afterClose(Token $token, ParseContext $parseContext): void
     {
-        if ($token->value === '}' || $token->isEndOfLine()) {
-            return;
-        }
-
-        if ($token->value === '{') {
-            $this->alreadyEnteredGroup = true;
-            return;
-        }
-
-        if ($this->alreadyEnteredGroup && isset($this->getChildrenValues())) {
-            $this->dependencies[] = $this->getChildrenValues();
-            $newPackage = [];
-            foreach ($this->dependencies as $dependency) {
-                $newPackage[] = $this->dependency . $dependency;
+        $package = '';
+        $namespaces = [];
+        $hasGroup = false;
+        foreach ($this->children as $item) {
+            if (is_string($item)) {
+                $package .= $item;
+                continue;
             }
 
-            $this->node->namespaces = $newPackage;
-            $this->children = [];
-            return;
+            if ($item instanceof GroupUseNode) {
+                foreach ($item->parts as $alias => $part) {
+                    $hasGroup = true;
+                    $packageNode = new NamespaceNode($token);
+                    $packageNode->package = $package . $part;
+                    $packageNode->alias = is_string($alias) ? $alias : null;
+                    $namespaces[] = $packageNode;
+                }
+            }
+        }
+        if (!$hasGroup) {
+            $packageNode = new NamespaceNode($token);
+            $packageNode->namespace = $package;
+            $namespaces[] = $packageNode;
         }
 
-        $this->dependency .= $this->getChildrenValues() ?? '';
-        $this->node->namespaces = [$this->dependency];
-        $this->children = [];
-        return;
+        $this->node->namespaces = $namespaces;
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool

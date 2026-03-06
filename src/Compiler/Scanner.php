@@ -31,7 +31,7 @@ class Scanner
             'CardNumber|Cron|Cvv|Duration|ExpiryDate|Json|Mac|Slug|Url|Queue|' .
             'List|Stack|Map)\b/',
         'T_VARIABLE'    => '/^\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',
-        'T_IDENTIFIER'  => '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',
+        'T_IDENTIFIER' => '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff!?]*/',
         'T_SYMBOL'      => '/^([{}();,:=+<>\#!?\[\]\.$*\/%|-])/',
         'T_BACKSLASH' => '/^\\\\/',
     ];

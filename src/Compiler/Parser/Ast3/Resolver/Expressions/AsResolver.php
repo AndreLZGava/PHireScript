@@ -8,15 +8,12 @@ use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
-use PHireScript\Runtime\Exceptions\CompileException;
 
-class FunctionCallNotFoundResolver implements ContextTokenResolver
+class AsResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->isIdentifier() &&
-        $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '(';
+        return $token->value === 'as';
     }
 
     public function resolve(
@@ -24,6 +21,5 @@ class FunctionCallNotFoundResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
-        throw new CompileException("This method does not exist nor is not supported for this type of variable", $token->line, $token->column);
     }
 }

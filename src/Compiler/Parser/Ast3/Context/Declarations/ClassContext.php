@@ -7,6 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast3\Context\Declarations;
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\IdentifierResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\Block\OpeningCurlyBracketResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\ClassNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
@@ -29,6 +30,7 @@ class ClassContext extends AbstractContext
             'name' => new IdentifierResolver(),
             'body[]' => new OpeningCurlyBracketResolver(),
             new EndOfLineResolver(),
+            new CommentResolver(),
         ];
     }
 

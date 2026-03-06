@@ -16,6 +16,7 @@ class ObjectMethods extends GeneralType
     public function hasProperty()
     {
         return new BaseMethods(
+            'hasProperty?',
             phpCodeForConversion: 'property_exists(@self, @property)',
             returnOfPhpExecution: ['Bool'],
             subTypes: ['String', 'Bool', 'Array', 'Number'],
@@ -28,8 +29,9 @@ class ObjectMethods extends GeneralType
     public function clone()
     {
         return new BaseMethods(
+            'clone',
             phpCodeForConversion: 'clone @self',
-            returnOfPhpExecution: ['Bool'],
+            returnOfPhpExecution: ['Object'],
             subTypes: [],
             params: []
         );
@@ -38,6 +40,7 @@ class ObjectMethods extends GeneralType
     public function getProperties()
     {
         return new BaseMethods(
+            'getProperties',
             phpCodeForConversion: 'get_object_vars(@self)',
             returnOfPhpExecution: ['Array'],
             subTypes: [],

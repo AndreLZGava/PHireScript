@@ -16,8 +16,9 @@ class ListMethods extends GeneralType
     public function enqueue(...$params)
     {
         return new BaseMethods(
+            'enqueue!',
             'array_push(@self, @params)',
-            ['self'],
+            [],
             $this->types,
             $params
         );
@@ -26,14 +27,16 @@ class ListMethods extends GeneralType
     public function dequeue()
     {
         return new BaseMethods(
+            'dequeue!',
             'array_shift(@self)',
-            ['self'],
+            [],
         );
     }
 
     public function peek()
     {
         return new BaseMethods(
+            'peek',
             'reset(@self)',
             ['self'],
         );

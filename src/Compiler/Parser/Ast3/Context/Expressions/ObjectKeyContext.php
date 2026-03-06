@@ -52,7 +52,7 @@ class ObjectKeyContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
-                $this->node->value = $this->getChildrenValues();
+                $this->node->value = $this->children[0] ?? null;
                 return null;
             }
         }

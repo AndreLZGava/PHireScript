@@ -103,7 +103,7 @@ class SymbolTableManager {
                     try {
                         $result = $method->invoke($instance);
 
-                        $registry[$shortName][$methodName] = $result;
+                        $registry[$shortName][$result->name] = $result;
                     } catch (\Throwable $e) {
                         error_log("Error executing method {$className}::{$methodName}: " . $e->getMessage());
                     }

@@ -9,7 +9,7 @@ use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\UseNode;
 use PHireScript\Helper\Debug\Debug;
 
-class DependencyEmitter implements NodeEmitter
+class UseEmitter implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

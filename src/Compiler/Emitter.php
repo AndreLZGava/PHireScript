@@ -19,7 +19,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\CastingEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ClassEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\CommentStatementEmitter;
-use PHireScript\Compiler\Emitter\NodeEmitters\DependencyEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\UseEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ExternalEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\FunctionEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\GlobalStatementEmitter;
@@ -62,7 +62,7 @@ class Emitter
         $this->dispatcher = new EmitterDispatcher([
             new ProgramEmitter(),
             new PackageEmitter(),
-            new DependencyEmitter(),
+            new UseEmitter(),
             new ExternalEmitter(),
             new InterfaceEmitter(),
             new ClassEmitter(),
