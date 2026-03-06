@@ -7,6 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast3\Context\Expressions;
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Context\Expressions\Types\QueueContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\VariableConsumptionResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
@@ -58,6 +59,7 @@ class AssignmentContext extends AbstractContext
             new VariableReferenceResolver(),
 
             new FunctionCallResolver(),
+            new FunctionCallNotFoundResolver(),
 
             new DotResolver(),
             new EndOfLineResolver(),
@@ -73,9 +75,9 @@ class AssignmentContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
-                $this->node->right = $this->children[0] ?? null;
-                $this->node->left->value = $this->children[0] ?? null;
-                $this->node->left->type = $this->children[0] ?? null;
+                $this->node->right = $this->getChildrenValues();
+                $this->node->left->value = $this->getChildrenValues();
+                $this->node->left->type = $this->getChildrenValues();
                 return null;
             }
         }

@@ -8,37 +8,39 @@ use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseRegistryFunctions;
 
-class GeneralType
-{
-    public function destroy()
-    {
+class GeneralType {
+    public function destroy() {
         return new BaseMethods(
             'unset(@self)',
-            ['null'],
+            [],
         );
     }
 
-    public function defined()
-    {
+    public function defined() {
         return new BaseMethods(
             phpCodeForConversion: 'isset(@self)',
-            typesOfReturningMethodInPhireScript: ['Bool'],
+            returnOfPhpExecution: ['Bool'],
         );
     }
 
-    public function getClass()
-    {
+    public function getClass() {
         return new BaseMethods(
             phpCodeForConversion: 'is_object(@self) ? get_class(@self) : gettype(@self)',
-            typesOfReturningMethodInPhireScript: ['Bool'],
+            returnOfPhpExecution: ['Bool'],
         );
     }
 
-    public function display()
-    {
+    public function show() {
         return new BaseMethods(
             phpCodeForConversion: 'if(is_array(@self) || is_object(@self)) {print_r(@self);} else {echo @self ;}',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: [],
+        );
+    }
+
+    public function display() {
+        return new BaseMethods(
+            phpCodeForConversion: 'print_r(@self)',
+            returnOfPhpExecution: [],
         );
     }
 
@@ -48,8 +50,7 @@ class GeneralType
      *
      * @return boolean
      */
-    public function is()
-    {
+    public function is() {
         $isOfType = function (mixed $value, string $type): bool {
             if (is_object($value) && (class_exists($type) || interface_exists($type))) {
                 return $value instanceof $type;
@@ -71,8 +72,8 @@ class GeneralType
 
         return new BaseMethods(
             phpCodeForConversion: "is(@self, @type)",
-            typesOfReturningMethodInPhireScript: ['Bool'],
-            allowedTypesOfParams: [],
+            returnOfPhpExecution: ['Bool'],
+            subTypes: [],
             params: [
                 new BaseParams(name: '@type', type: 'mixed', required: true)
             ],

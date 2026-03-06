@@ -42,7 +42,7 @@ class StackContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
-                $parseContext->contextManager->current()->addChild($this->children[0] ?? null);
+                $parseContext->contextManager->current()->addChild($this->getChildrenValues());
 
                 $this->node->types = array_unique($parseContext->contextManager->current()->children);
 

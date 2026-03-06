@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
 use Exception;
-use PHireScript\Compiler\Parser\Ast\ClassDefinition;
+use PHireScript\Compiler\Parser\Ast\ClassNode;
 use PHireScript\Compiler\Parser\Ast\ComplexObjectDefinition;
 use PHireScript\Compiler\Parser\Ast\ConstructorDefinition;
 use PHireScript\Compiler\Parser\Ast\IfStatementNode;
@@ -206,7 +206,7 @@ abstract class ClassesFactory extends GlobalFactory
                 ->process($this->program);
 
             if ($returned) {
-                if ($node instanceof ClassDefinition) {
+                if ($node instanceof ClassNode) {
                     $this->processConstruct($node, $returned);
                 }
                 $result[] = $returned;
@@ -220,7 +220,7 @@ abstract class ClassesFactory extends GlobalFactory
         return $result;
     }
 
-    private function processConstruct(ClassDefinition $node, mixed $processedNode)
+    private function processConstruct(ClassNode $node, mixed $processedNode)
     {
         $currentToken = $this->tokenManager->getCurrentToken();
         if (

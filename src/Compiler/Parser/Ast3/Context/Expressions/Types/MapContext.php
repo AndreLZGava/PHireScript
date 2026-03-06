@@ -14,7 +14,6 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\PipeResolver;
 use PHireScript\Compiler\Parser\Ast\MapNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
-use PHireScript\Compiler\Parser\Ast\StackNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
 
@@ -43,7 +42,7 @@ class MapContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
-                $parseContext->contextManager->current()->addChild($this->children[0] ?? null);
+                $parseContext->contextManager->current()->addChild($this->getChildrenValues());
 
                 $this->node->types = array_unique($parseContext->contextManager->current()->children);
 

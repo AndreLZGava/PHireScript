@@ -10,35 +10,57 @@ use PHireScript\Compiler\Parser\Ast\VariableReferenceNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 
-class SymbolTableManager
-{
+class SymbolTableManager {
     private array $typeDefinitions = [];
     private ?string $rawType = null;
+    private array $lastExecution = [];
 
-    public function __construct()
-    {
+    public function __construct() {
         $targetDir = __DIR__ . '/../../../../src/Runtime/DefaultOverrideMethods/Types';
         $getDefaultOverrideMethods = $this->scanAndBuildRegistry($targetDir);
         $this->typeDefinitions = $getDefaultOverrideMethods;
     }
 
-    public function from($rawType): self
-    {
+    public function from($rawType): self {
         $this->rawType = $rawType;
         return $this;
     }
 
-    public function getFunction($functionName): ?BaseMethods
-    {
-        if (is_null($this->rawType) || is_null($functionName)) {
+    public function getFunctionFromLastExecution(string $functionName, bool $mustUpdate = false): ?BaseMethods {
+        if (empty($this->lastExecution)) {
             return null;
         }
-        return $this->typeDefinitions[$this->rawType . 'Methods'][$functionName] ?? null;
+        $allowedParams = count($this->lastExecution) === 1 ? current($this->lastExecution) : (
+            count($this->lastExecution) === 0 ? [] : implode('|', $this->lastExecution)
+        );
+
+        if (
+            !array_key_exists($allowedParams . 'Methods', $this->typeDefinitions) ||
+            !array_key_exists($functionName, $this->typeDefinitions[$allowedParams . 'Methods'])
+        ) {
+            return null;
+        }
+
+        $function = $this->typeDefinitions[$allowedParams . 'Methods'][$functionName];
+        if ($function && $mustUpdate) {
+            $this->lastExecution = $function->returnOfPhpExecution;
+        }
+        return $function ?? null;
+    }
+
+    public function getFunction($functionName): ?BaseMethods {
+        if (is_null($this->rawType) || is_null($functionName) || !array_key_exists($this->rawType . 'Methods', $this->typeDefinitions)) {
+            return null;
+        }
+        $function = $this->typeDefinitions[$this->rawType . 'Methods'][$functionName] ?? null;
+        if ($function) {
+            $this->lastExecution = $function->returnOfPhpExecution;
+        }
+        return $function ?? null;
     }
 
 
-    private function scanAndBuildRegistry(string $directory): array
-    {
+    private function scanAndBuildRegistry(string $directory): array {
         if (!is_dir($directory)) {
             throw new \RuntimeException("Dir not found: $directory");
         }
@@ -79,11 +101,11 @@ class SymbolTableManager
                     }
 
                     try {
-                         $result = $method->invoke($instance);
+                        $result = $method->invoke($instance);
 
                         $registry[$shortName][$methodName] = $result;
                     } catch (\Throwable $e) {
-                         error_log("Error executing method {$className}::{$methodName}: " . $e->getMessage());
+                        error_log("Error executing method {$className}::{$methodName}: " . $e->getMessage());
                     }
                 }
             }
@@ -93,8 +115,7 @@ class SymbolTableManager
     }
 
 
-    private function resolveAndInstantiate(\ReflectionClass $reflector): object
-    {
+    private function resolveAndInstantiate(\ReflectionClass $reflector): object {
         $constructor = $reflector->getConstructor();
 
         if (!$constructor || $constructor->getNumberOfParameters() === 0) {

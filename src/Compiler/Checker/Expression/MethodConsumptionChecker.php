@@ -22,7 +22,7 @@ class MethodConsumptionChecker implements Checker
 
     public function check(Node $node, CompilerChecker $checker): void
     {
-        $type = $node->variableBase?->type?->getRawType();
+        $type = $node->variableBase?->type?->getRawType() ?? $node->variableBase?->getRawType();
         $variableTypes = $node->variableBase?->type?->types ?? [];
         $params = $node->params->params;
         foreach ($params as $param) {

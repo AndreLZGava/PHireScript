@@ -57,4 +57,9 @@ class VariableManager
     {
         return $this->variableOnFocus;
     }
+
+    public function setVirtualVariable($variable)
+    {
+        $this->variableOnFocus = $variable;
+    }
 }

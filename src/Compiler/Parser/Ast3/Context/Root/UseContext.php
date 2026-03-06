@@ -70,8 +70,8 @@ class UseContext extends AbstractContext
             return;
         }
 
-        if ($this->alreadyEnteredGroup && isset($this->children[0])) {
-            $this->dependencies[] = $this->children[0];
+        if ($this->alreadyEnteredGroup && !empty($this->getChildrenValues())) {
+            $this->dependencies[] = $this->getChildrenValues();
             $newPackage = [];
             foreach ($this->dependencies as $dependency) {
                 $newPackage[] = $this->dependency . $dependency;
@@ -82,7 +82,7 @@ class UseContext extends AbstractContext
             return;
         }
 
-        $this->dependency .= $this->children[0] ?? '';
+        $this->dependency .= $this->getChildrenValues() ?? '';
         $this->node->packages = [$this->dependency];
         $this->children = [];
         return;

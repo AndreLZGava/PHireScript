@@ -38,7 +38,6 @@ use PHireScript\Compiler\Emitter\NodeEmitters\PropertyAccessEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyDeclarationEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\QueueEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ReturnEmitter;
-use PHireScript\Compiler\Emitter\NodeEmitters\ScalarLiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\StackEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VariableReferenceAssignEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\StringEmitter;
@@ -106,7 +105,6 @@ class Emitter
             new ThrowStatementEmitter(),
             new NewExceptionEmitter(),
             new CastingEmitter(),
-            //new ScalarLiteralEmitter(),
         ]);
     }
 

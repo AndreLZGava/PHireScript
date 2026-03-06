@@ -17,8 +17,8 @@ class ObjectMethods extends GeneralType
     {
         return new BaseMethods(
             phpCodeForConversion: 'property_exists(@self, @property)',
-            typesOfReturningMethodInPhireScript: ['Bool'],
-            allowedTypesOfParams: ['String', 'Bool', 'Array', 'Number'],
+            returnOfPhpExecution: ['Bool'],
+            subTypes: ['String', 'Bool', 'Array', 'Number'],
             params: [
             new BaseParams(name: '@property', type: 'string', required: true)
             ]
@@ -29,8 +29,8 @@ class ObjectMethods extends GeneralType
     {
         return new BaseMethods(
             phpCodeForConversion: 'clone @self',
-            typesOfReturningMethodInPhireScript: ['Bool'],
-            allowedTypesOfParams: [],
+            returnOfPhpExecution: ['Bool'],
+            subTypes: [],
             params: []
         );
     }
@@ -39,8 +39,8 @@ class ObjectMethods extends GeneralType
     {
         return new BaseMethods(
             phpCodeForConversion: 'get_object_vars(@self)',
-            typesOfReturningMethodInPhireScript: ['Array'],
-            allowedTypesOfParams: [],
+            returnOfPhpExecution: ['Array'],
+            subTypes: [],
             params: []
         );
     }

@@ -18,8 +18,8 @@ class QueueMethods extends GeneralType
     {
         return new BaseMethods(
             phpCodeForConversion: 'array_push(@self, @params)',
-            typesOfReturningMethodInPhireScript: ['self'],
-            allowedTypesOfParams: $this->types,
+            returnOfPhpExecution: [],
+            subTypes: $this->types,
             params: [
                 new BaseParams('@params', 'array', true),
             ],
@@ -30,7 +30,7 @@ class QueueMethods extends GeneralType
     {
         return new BaseMethods(
             phpCodeForConversion: 'array_shift(@self)',
-            typesOfReturningMethodInPhireScript: ['self'],
+            returnOfPhpExecution: [],
         );
     }
 
@@ -38,7 +38,7 @@ class QueueMethods extends GeneralType
     {
         return new BaseMethods(
             phpCodeForConversion: 'reset(@self)',
-            typesOfReturningMethodInPhireScript: ['self'],
+            returnOfPhpExecution: ['Mixed'],
         );
     }
 
@@ -46,8 +46,8 @@ class QueueMethods extends GeneralType
     {
         return new BaseMethods(
             phpCodeForConversion: 'in_array(@searching, @self)',
-            typesOfReturningMethodInPhireScript: ['Bool'],
-            allowedTypesOfParams: $this->types,
+            returnOfPhpExecution: ['Bool'],
+            subTypes: $this->types,
             params: [
                 new BaseParams(name: '@searching', type: 'mixed', required: true)
             ]

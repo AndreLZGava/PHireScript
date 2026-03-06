@@ -55,8 +55,8 @@ class CastContext extends AbstractContext
                 $token->processedBy = get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
                 $param = null;
-                if (!is_null($this->children[0]->params)) {
-                    $param = $this->children[0]->params[0];
+                if (!is_null($this->getChildrenValues()?->params)) {
+                    $param = $this->getChildrenValues()?->params[0];
                 }
                 $this->node->value = $param;
 

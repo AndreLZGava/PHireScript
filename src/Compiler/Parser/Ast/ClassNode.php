@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Ast;
 
-class ClassDefinition extends ComplexObjectDefinition
+class ClassNode extends ComplexObjectDefinition
 {
     public bool $readOnly = false;
     public array $modifiers = [];

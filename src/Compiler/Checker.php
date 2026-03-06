@@ -9,7 +9,7 @@ use PHireScript\Compiler\Checker\Expression\MethodConsumptionChecker;
 use PHireScript\Compiler\Checker\Root\ProgramChecker;
 use PHireScript\Compiler\Checker\Expression\Types\QueueChecker;
 use PHireScript\SymbolTable;
-use PHireScript\Compiler\Parser\Ast\ClassDefinition;
+use PHireScript\Compiler\Parser\Ast\ClassNode;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
 use PHireScript\Helper\Debug\Debug;
@@ -43,7 +43,7 @@ class Checker
 
         $this->table = $table;
         foreach ($ast->statements as $node) {
-            if ($node instanceof ClassDefinition) {
+            if ($node instanceof ClassNode) {
                 $this->checkClassBody($node);
             }
         }

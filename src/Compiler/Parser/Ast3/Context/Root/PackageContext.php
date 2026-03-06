@@ -39,7 +39,7 @@ class PackageContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
-                $this->node->package .= $this->children[0] ?? '';
+                $this->node->package .= $this->getChildrenValues() ?? '';
                 $this->children = [];
 
                 return null;

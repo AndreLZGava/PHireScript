@@ -20,20 +20,26 @@ class FunctionEmitter implements NodeEmitter
 
     public function emit(object $node, EmitContext $ctx): string
     {
-
-        $code = $this->overrideSelf($node, $ctx);
+        $code = $this->overrideVariable($node, $ctx);
+        $code .= $this->overrideSelf($node, $ctx);
         $normalized = $this->normalizeParams(
             $node->params->params,
             $node->method->params,
             $code,
             $ctx
         );
-
         $code = $this->overrideParams($normalized);
-        if ($node->method->child === null) {
-            $code .= ';';
-        }
+        $code .= ";\n";
         return $code;
+    }
+
+    private function overrideVariable($node, $ctx)
+    {
+        if ($node->overrideVariableFocus) {
+            return "$" . $node->variableBase->name . ' = ';
+        }
+
+        return '';
     }
 
     private function overrideSelf($node, $ctx)
@@ -65,6 +71,9 @@ class FunctionEmitter implements NodeEmitter
             }
             $code = $this->processNamedParams($param->name, $this->processDefaultValue($param), $code);
         }
+
+        $code = preg_replace('/@(?!(params)\b)\w+/', '', $code);
+
 
         return (object) ['params' => $params, 'code' => $code];
     }

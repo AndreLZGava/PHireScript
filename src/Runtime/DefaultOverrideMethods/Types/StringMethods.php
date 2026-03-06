@@ -8,203 +8,195 @@ use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 
-class StringMethods extends GeneralType
-{
-    public function length()
-    {
+class StringMethods extends GeneralType {
+    public function length() {
         return new BaseMethods(
             'strlen(@self)',
             ['Int'],
         );
     }
 
-    public function toUpperCase()
-    {
+    public function toUpperCase() {
         return new BaseMethods(
             phpCodeForConversion: 'mb_strtoupper(@self, @format)',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
             params: [
-            new BaseParams('@format', 'string', false, 'UTF-8'),
+                new BaseParams('@format', 'string', false, 'UTF-8'),
             ],
         );
     }
 
-    public function toLowerCase()
-    {
+    public function toLowerCase() {
         return new BaseMethods(
             phpCodeForConversion: 'mb_strtolower(@self, @format)',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
             params: [
-            new BaseParams('@format', 'string', false, 'UTF-8'),
+                new BaseParams('@format', 'string', false, 'UTF-8'),
             ],
         );
     }
 
-    public function replace()
-    {
+    public function replace() {
         return new BaseMethods(
             phpCodeForConversion: 'str_replace(@from, @to, @self)',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
             params: [
-            new BaseParams('@from', 'string', true),
-            new BaseParams('@to', 'string', true),
+                new BaseParams('@from', 'string', true),
+                new BaseParams('@to', 'string', true),
             ],
         );
     }
 
-    public function removeSpaces()
-    {
+    public function removeSpaces() {
         return new BaseMethods(
             phpCodeForConversion: 'trim(@self, @characters)',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
             params: [
-            new BaseParams('@characters', 'string', false, null),
+                new BaseParams('@characters', 'string', false, null),
             ]
         );
     }
 
-    public function removeSpacesLeft()
-    {
+    public function removeSpacesLeft() {
         return new BaseMethods(
             phpCodeForConversion: 'ltrim(@self, @characters)',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
             params: [
-            new BaseParams('@characters', 'string', false, null),
+                new BaseParams('@characters', 'string', false, null),
             ]
         );
     }
 
-    public function removeSpacesRight()
-    {
+    public function removeSpacesRight() {
         return new BaseMethods(
             phpCodeForConversion: 'rtrim(@self, @characters)',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
             params: [
-            new BaseParams('@characters', 'string', false, null),
+                new BaseParams('@characters', 'string', false, null),
             ]
         );
     }
 
-    public function removeAllSpaces()
-    {
+    public function removeAllSpaces() {
         return new BaseMethods(
             phpCodeForConversion: "preg_replace('/\s+/', '', @self)",
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
         );
     }
 
-    public function contains()
-    {
+    public function contains() {
         return new BaseMethods(
             phpCodeForConversion: 'str_contains(@self, @characters)',
-            typesOfReturningMethodInPhireScript: ['Bool'],
+            returnOfPhpExecution: ['Bool'],
             params: [
-            new BaseParams('@characters', 'string', true),
+                new BaseParams('@characters', 'string', true),
             ]
         );
     }
 
-    public function endWith()
-    {
+    public function endWith() {
         return new BaseMethods(
             phpCodeForConversion: 'str_ends_with(@self, @characters)',
-            typesOfReturningMethodInPhireScript: ['Bool'],
+            returnOfPhpExecution: ['Bool'],
             params: [
-            new BaseParams('@characters', 'string', true),
+                new BaseParams('@characters', 'string', true),
             ]
         );
     }
 
-    public function startWith()
-    {
+    public function startWith() {
         return new BaseMethods(
             phpCodeForConversion: 'str_starts_with(@self, @characters)',
-            typesOfReturningMethodInPhireScript: ['Bool'],
+            returnOfPhpExecution: ['Bool'],
             params: [
-            new BaseParams('@characters', 'string', true),
+                new BaseParams('@characters', 'string', true),
             ]
         );
     }
 
-    public function decrement()
-    {
+    public function decrement() {
         return new BaseMethods(
             phpCodeForConversion: 'str_decrement(@self)',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
         );
     }
 
-    public function increment()
-    {
+    public function increment() {
         return new BaseMethods(
             phpCodeForConversion: 'str_increment(@self)',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
         );
     }
 
-    public function getCsv()
-    {
+    public function getCsv() {
         return new BaseMethods(
             phpCodeForConversion: 'str_getcsv(@self, @separator, @enclosure, @escape)',
-            typesOfReturningMethodInPhireScript: ['Bool'],
+            returnOfPhpExecution: ['Bool'],
             params: [
-            new BaseParams('@separator', 'string', false, ','),
-            new BaseParams('@enclosure', 'string', false, "\""),
-            new BaseParams('@escape', 'string', false, "\\"),
+                new BaseParams('@separator', 'string', false, ','),
+                new BaseParams('@enclosure', 'string', false, "\""),
+                new BaseParams('@escape', 'string', false, "\\"),
             ]
         );
     }
 
-    public function join()
-    {
+    public function join() {
         return new BaseMethods(
             phpCodeForConversion: '@self . implode(\'\', [@params])',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
             params: [
-            new BaseParams('@params', 'string', true),
+                new BaseParams('@params', 'string', true),
             ]
         );
     }
 
-    public function repeat()
-    {
+    public function repeat() {
         return new BaseMethods(
             phpCodeForConversion: 'str_repeat("@self, @times)',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
             params: [
-            new BaseParams('@times', 'int', true),
+                new BaseParams('@times', 'int', true),
             ]
         );
     }
 
-    public function shuffle()
-    {
+    public function shuffle() {
         return new BaseMethods(
             phpCodeForConversion: 'str_shuffle(@self)',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
         );
     }
 
-    public function splitAtEvery()
-    {
+    public function splitAtEvery() {
         return new BaseMethods(
             phpCodeForConversion: 'str_split(@self, @counting)',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
             params: [
-            new BaseParams('@counting', 'int', false, 1),
+                new BaseParams('@counting', 'int', false, 1),
             ]
         );
     }
 
-    public function wordCount()
-    {
+    public function wordCount() {
         return new BaseMethods(
             phpCodeForConversion: 'str_word_count(@self, @format, @characters)',
-            typesOfReturningMethodInPhireScript: ['String'],
+            returnOfPhpExecution: ['String'],
             params: [
-            new BaseParams('@format', 'int', false, 0),
-            new BaseParams('@characters', '?int', false, null),
+                new BaseParams('@format', 'int', false, 0),
+                new BaseParams('@characters', '?int', false, null),
             ]
+        );
+    }
+
+    public function split() {
+        return new BaseMethods(
+            phpCodeForConversion: 'explode(@separator, @self, @limit)',
+            returnOfPhpExecution: ['Array'],
+            subTypes: ['String'],
+            params: [
+                new BaseParams('@separator', 'string', true),
+                new BaseParams('@limit', 'int', false, 1),
+            ],
         );
     }
 }

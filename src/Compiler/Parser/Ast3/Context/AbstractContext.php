@@ -66,4 +66,17 @@ abstract class AbstractContext
             $this->children[] = $child;
         }
     }
+
+    protected function getChildrenValues(?string $key = null)
+    {
+        if ($key && str_contains('[]', $key)) {
+            return $this->children;
+        }
+        return current($this->children) ?? null;
+    }
+
+    protected function sanitizeKeys($key)
+    {
+        return str_replace('[]', '', $key);
+    }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Keywords;
 
-use PHireScript\Compiler\Parser\Ast\ClassDefinition;
+use PHireScript\Compiler\Parser\Ast\ClassNode;
 use PHireScript\Compiler\Parser\Ast\InterfaceDefinition;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\ClassesFactory;

@@ -13,7 +13,8 @@ class ArrayLiteralNode extends Expression implements Type
 
     public function __construct(
         public Token $token,
-        public array $elements = []
+        public array $elements = [],
+        public array $types = [],
     ) {
     }
 

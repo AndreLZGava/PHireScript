@@ -10,7 +10,7 @@ abstract class Node
 {
     public int $line;
     public int $column;
-    public function __construct(Token $token)
+    public function __construct(public Token $token)
     {
         $this->line = $token->line;
         $this->column = $token->column;

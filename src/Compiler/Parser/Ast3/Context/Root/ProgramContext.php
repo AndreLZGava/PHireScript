@@ -9,6 +9,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\VariableConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\VariableResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
@@ -16,6 +17,7 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ExternalResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\PackageResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\TypeResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\UseResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
@@ -41,11 +43,13 @@ class ProgramContext extends AbstractContext
             new VariableConsumptionResolver(),
             new AssignmentResolver(),
             new FunctionCallResolver(),
+            new FunctionCallNotFoundResolver(),
 
             // these won't appear in any other sub context
             new PackageResolver(),
             new UseResolver(),
             new ExternalResolver(),
+            new TypeResolver(),
         ];
     }
 
@@ -60,7 +64,7 @@ class ProgramContext extends AbstractContext
                 return $parseContext->program;
             }
         }
-        Debug::show($token, $parseContext->tokenManager->getLeftTokens(5));
+        Debug::show($token, $parseContext->tokenManager->getLeftTokens(5), class_exists(TypeResolver::class));
         throw new CompileException(
             $token->value . ' is not supported in program context!',
             $token->line,

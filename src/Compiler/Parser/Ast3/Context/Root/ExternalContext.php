@@ -6,6 +6,7 @@ namespace PHireScript\Compiler\Parser\Ast3\Context\Root;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CommaResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\TypeResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\BackSlashResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ClosingCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\DotResolver;
@@ -35,6 +36,7 @@ class ExternalContext extends AbstractContext
         parent::__construct($node);
         $this->resolvers = [
             new IdentifierResolver(),
+            new TypeResolver(),
             new BackSlashResolver(),
             new EndOfLineResolver(),
             new CommaResolver(),
@@ -54,6 +56,7 @@ class ExternalContext extends AbstractContext
                 return null;
             }
         }
+        Debug::show($token);exit;
         throw new CompileException(
             $token->value . ' is not supported in external definition context!',
             $token->line,
@@ -72,8 +75,8 @@ class ExternalContext extends AbstractContext
             return;
         }
 
-        if ($this->alreadyEnteredGroup && isset($this->children[0])) {
-            $this->dependencies[] = $this->children[0];
+        if ($this->alreadyEnteredGroup && isset($this->getChildrenValues())) {
+            $this->dependencies[] = $this->getChildrenValues();
             $newPackage = [];
             foreach ($this->dependencies as $dependency) {
                 $newPackage[] = $this->dependency . $dependency;
@@ -84,7 +87,7 @@ class ExternalContext extends AbstractContext
             return;
         }
 
-        $this->dependency .= $this->children[0] ?? '';
+        $this->dependency .= $this->getChildrenValues() ?? '';
         $this->node->namespaces = [$this->dependency];
         $this->children = [];
         return;

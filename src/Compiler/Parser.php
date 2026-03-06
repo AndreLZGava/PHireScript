@@ -55,7 +55,7 @@ class Parser
 
             $tokenManager->advance();
         }
-        // Debug::show($program);exit;
+        // Debug::show($program->statements);exit;
         return $program;
     }
 }
