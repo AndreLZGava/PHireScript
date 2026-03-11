@@ -22,7 +22,7 @@ class OpeningParenthesisResolver implements ContextTokenResolver
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
         return $token->value === '(' &&
-        $parseContext->tokenManager->getPreviousTokenBeforeCurrent()->isType();
+        $parseContext->tokenManager->getPreviousTokenBeforeCurrent()->isPrimitive();
     }
 
     public function resolve(

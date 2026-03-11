@@ -14,6 +14,7 @@ use PHireScript\Compiler\Parser\Ast\CommentNode;
 use PHireScript\Compiler\Parser\Ast\QueueNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
+use PHireScript\Helper\Debug\Debug;
 
 class BoolLiteralResolver implements ContextTokenResolver
 {
@@ -27,7 +28,7 @@ class BoolLiteralResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
-        $boolNode = new BoolNode($token, (bool) $token->value);
+        $boolNode = new BoolNode($token, filter_var($token->value, FILTER_VALIDATE_BOOL));
         $context->addChild($boolNode);
     }
 }

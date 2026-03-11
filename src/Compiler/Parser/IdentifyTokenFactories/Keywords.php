@@ -36,26 +36,7 @@ class Keywords extends GlobalFactory
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $this->factories = [
-            'type' => Type::class,
-            'immutable' => Immutable::class,
-            'interface' => InterfaceKey::class,
             'class' => ClassKey::class,
-            'return' => ReturnKey::class,
-            'external' => ExternalKey::class,
-            'trait' => TraitKey::class,
-            'abstract' => AbstractKey::class,
-            'extends' => ExtendsKey::class,
-            'implements' => ImplementsKey::class,
-            'with' => WithKey::class,
-
-            // Support to class anotation
-            'inject' => InjectKey::class,
-            'cache' => CacheKey::class,
-            'singleton' => SingletonKey::class,
-            'transient' => TransientKey::class,
-            'scoped' => ScopedKey::class,
-            'schedule' => ScheduleKey::class,
-            'as' => AsKey::class
         ];
 
         $tokenValue = $this->tokenManager->getCurrentToken()->value;

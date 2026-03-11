@@ -7,13 +7,15 @@ namespace PHireScript\Runtime\DefaultOverrideMethods\Types;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 
-class ListMethods extends GeneralType {
+class ListMethods extends GeneralType
+{
     public function __construct(
         public array $types,
     ) {
     }
 
-    public function contains() {
+    public function contains()
+    {
         return new BaseMethods(
             name: 'contains?',
             phpCodeForConversion: 'in_array(@searching, @self)',
@@ -25,7 +27,8 @@ class ListMethods extends GeneralType {
         );
     }
 
-    public function keyDefined() {
+    public function keyDefined()
+    {
         return new BaseMethods(
             name: 'keyDefined?',
             phpCodeForConversion: 'array_key_exists(@searching, @self)',
@@ -37,11 +40,12 @@ class ListMethods extends GeneralType {
         );
     }
 
-    public function add() {
+    public function add()
+    {
         return new BaseMethods(
-            name: 'add!',
+            name: 'add',
             phpCodeForConversion: '@self[@key] = @value',
-            returnOfPhpExecution: [],
+            returnOfPhpExecution: ['List'],
             subTypes: [],
             params: [
                 new BaseParams(name: '@value', type: 'mixed', required: true),
@@ -50,7 +54,8 @@ class ListMethods extends GeneralType {
         );
     }
 
-    public function last() {
+    public function last()
+    {
         return new BaseMethods(
             name: 'last',
             phpCodeForConversion: 'empty(@self) ? null : @self[array_key_last(@self)];',
@@ -60,7 +65,8 @@ class ListMethods extends GeneralType {
         );
     }
 
-    public function first() {
+    public function first()
+    {
         return new BaseMethods(
             name: 'first',
             phpCodeForConversion: 'current(@self ?? [])',

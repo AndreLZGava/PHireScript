@@ -2,50 +2,46 @@
 
 declare(strict_types=1);
 
-namespace PHireScript\Compiler\Parser\Ast3\Context\Declarations;
+namespace PHireScript\Compiler\Parser\Ast3\Context\Expressions;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Context\Expressions\Types\QueueContext;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\ClosingParenthesisResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ColonResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CommaResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\OpeningParenthesisResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayKeyResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayLiteralResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingAngleBracketResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\QueueResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\OpeningAngleBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\VariableReferenceResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
+use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
-use PHireScript\Compiler\Parser\Ast\ParamsNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\TypeResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\PipeResolver;
 
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class ParamsConsumptionContext extends AbstractContext
+class ArrayContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(ParamsNode $node)
+    public function __construct(ArrayLiteralNode $node)
     {
         parent::__construct($node);
         $this->resolvers = [
-            new StringLiteralResolver(),
-            new NumberLiteralResolver(),
-            new BoolLiteralResolver(),
-            new ArrayLiteralResolver(),
-            new VariableReferenceResolver(),
-
-            new ClosingParenthesisResolver(),
-            new CommaResolver(),
-
-            new EndOfLineResolver(),
+        new OpeningAngleBracketResolver(),
+        new TypeResolver(),
+        new ClosingAngleBracketResolver(),
+        new EndOfLineResolver(),
+        new PipeResolver(),
         ];
     }
 
@@ -54,14 +50,14 @@ class ParamsConsumptionContext extends AbstractContext
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
+
                 $resolver->resolve($token, $parseContext, $this);
-                $this->node->params = $this->children;
+                $this->node->types = array_unique($parseContext->contextManager->current()->children);
                 return null;
             }
         }
-        // Debug::show($parseContext->tokenManager->getProcessedTokens(10));exit;
         throw new CompileException(
-            $token->value . ' is not supported in params context!',
+            $token->value . ' is not supported in typed array definition context!',
             $token->line,
             $token->column
         );
@@ -69,6 +65,6 @@ class ParamsConsumptionContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === ')';
+        return $token->value === '>';
     }
 }

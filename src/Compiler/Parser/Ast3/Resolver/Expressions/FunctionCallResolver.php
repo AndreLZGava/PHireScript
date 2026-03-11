@@ -24,9 +24,11 @@ use PHireScript\Runtime\Exceptions\CompileException;
 // Tenho uma função que retorna string e a proxima chama string, está consumindo a variavel de foco
 // Tenho uma função que retorna uma string e a proxima é um array, está
 // Tenho função que retorna mais de um tipo
-class FunctionCallResolver implements ContextTokenResolver {
+class FunctionCallResolver implements ContextTokenResolver
+{
     private bool $blockOverrideSelfVariable = false;
-    public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool {
+    public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
+    {
         if (
             $token->isIdentifier() &&
             $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '('
@@ -57,11 +59,11 @@ class FunctionCallResolver implements ContextTokenResolver {
         $variableType = $parseContext->variables->getVariableOnFocus()?->type?->getRawType();
         $functionDefinition = $parseContext->symbolTable->from(
             $variableType
-            )->getFunction($token->value);
+        )->getFunction($token->value);
 
-            $onFocus = $parseContext->variables->getVariableOnFocus();
+        $onFocus = $parseContext->variables->getVariableOnFocus();
 
-            if (empty($functionDefinition)) {
+        if (empty($functionDefinition)) {
             $this->blockOverrideSelfVariable = $context->blockOverrideSelfVariable ?? false;
             $functionDefinition = $parseContext->symbolTable->getFunctionFromLastExecution($token->value, true);
             /**$onFocus = end($parseContext->program->statements);
@@ -97,7 +99,8 @@ class FunctionCallResolver implements ContextTokenResolver {
         $context->addChild($function);
     }
 
-    private function overrideVariableOnFocus($function, $functionDefinition, $token) {
+    private function overrideVariableOnFocus($function, $functionDefinition, $token)
+    {
         $function->overrideVariableFocus = count($functionDefinition->returnOfPhpExecution) > 0 && $this->blockOverrideSelfVariable;
         if ($function->overrideVariableFocus) {
             $firstType = current($function->method->returnOfPhpExecution);
@@ -111,7 +114,8 @@ class FunctionCallResolver implements ContextTokenResolver {
         }
     }
 
-    private function getNewVirtualVariable($token, $value) {
+    private function getNewVirtualVariable($token, $value)
+    {
         return match (true) {
             $value === 'Array'  => new ArrayLiteralNode($token),
             $value === 'String' => new StringNode($token, $value),

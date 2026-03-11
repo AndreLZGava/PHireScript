@@ -9,6 +9,7 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\VariableConsumptionRes
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayLiteralResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\CastResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ListResolver;
@@ -49,6 +50,7 @@ class AssignmentContext extends AbstractContext
             new MapResolver(),
             new ListResolver(),
             new CastResolver(),
+            new ArrayResolver(),
 
             new StringLiteralResolver(),
             new NumberLiteralResolver(),

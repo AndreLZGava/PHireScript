@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Context\Expressions\CastContext;
+use PHireScript\Compiler\Parser\Ast3\Context\Expressions\ArrayContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\CastingNode;
+use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 
-class CastResolver implements ContextTokenResolver
+class ArrayResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->isPrimitive() &&
-            $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '(';
+        return $token->value === 'Array' &&
+        $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '<';
     }
 
     public function resolve(
@@ -24,14 +24,11 @@ class CastResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
-
-        $casting = new CastingNode($token, $token->value);
+        $arrayNode = new ArrayLiteralNode($token);
 
         $parseContext->contextManager->enter(
-            new CastContext($casting)
+            new ArrayContext($arrayNode)
         );
-        $parseContext->definePrevious($casting);
-
-        $context->addChild($casting);
+        $context->addChild($arrayNode);
     }
 }

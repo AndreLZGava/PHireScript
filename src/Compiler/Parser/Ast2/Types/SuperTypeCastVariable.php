@@ -20,7 +20,7 @@ class SuperTypeCastVariable extends GlobalFactory
 
     public function isTheCase(Token $token, ParseContext $parseContext): bool
     {
-        return $token->isType() &&
+        return $token->isSuperType() &&
             in_array(
                 $token->value,
                 [

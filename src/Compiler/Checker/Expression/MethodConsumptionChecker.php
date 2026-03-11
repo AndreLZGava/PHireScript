@@ -14,12 +14,15 @@ use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
-class MethodConsumptionChecker implements Checker {
-    public function mustCheck(Node $node): bool {
+class MethodConsumptionChecker implements Checker
+{
+    public function mustCheck(Node $node): bool
+    {
         return $node instanceof FunctionNode;
     }
 
-    public function check(Node $node, CompilerChecker $checker): void {
+    public function check(Node $node, CompilerChecker $checker): void
+    {
         $params = $node->params->params;
         $this->validateRequiredParams($node, $params);
         $this->validateSubTypes($node, $params);
@@ -27,7 +30,8 @@ class MethodConsumptionChecker implements Checker {
         return;
     }
 
-    private function validateRequiredParams($node, $params) {
+    private function validateRequiredParams($node, $params)
+    {
         $expectedParams = $node->method->params;
         foreach ($expectedParams as $key => $expected) {
             if ($expected->required && !isset($params[$key])) {
@@ -41,15 +45,26 @@ class MethodConsumptionChecker implements Checker {
         }
     }
 
-    private function validateSubTypes($node, $params) {
+    private function validateSubTypes($node, $params)
+    {
         $type = $node->variableBase?->type?->getRawType() ?? $node->variableBase?->getRawType();
         $variableTypes = $node->variableBase?->type?->types ?? $node->variableBase->type?->type?->types ?? [];
         $allowedKeys = $node->variableBase?->type?->keys ?? $node->variableBase?->type?->type?->keys ?? [];
         $expected = $node->method->params;
         foreach ($params as $number => $param) {
             $paramRawType = $param->getRawType();
+
             if ($expected[$number]->relatedKeyParam && in_array($paramRawType, $allowedKeys)) {
                 continue;
+            }
+            if ($expected[$number]->relatedKeyParam && !in_array($paramRawType, $allowedKeys)) {
+                throw new CompileException(
+                    'Param of type ' . $paramRawType .
+                        ' not allowed for key of ' . $type .
+                        '. Allowed in this case ' . implode('|', $allowedKeys) . '!',
+                    $param->token->line,
+                    $param->token->column
+                );
             }
 
             if (
@@ -59,7 +74,7 @@ class MethodConsumptionChecker implements Checker {
                 throw new CompileException(
                     'Param of type ' . $paramRawType .
                         ' not allowed for ' . $type .
-                        '. Allowed in this case ' . implode($variableTypes) . '!',
+                        '. Allowed in this case ' . implode('|', $variableTypes) . '!',
                     $param->token->line,
                     $param->token->column
                 );

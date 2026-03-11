@@ -13,7 +13,7 @@ class TypeResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->isType() &&
+        return ($token->isPrimitive() || $token->isSuperType() || $token->isMetaType()) &&
         $parseContext->tokenManager->getNextTokenAfterCurrent()->value !== '(';
     }
 

@@ -55,10 +55,26 @@ class Token
     {
         return $this->type === 'T_MODIFIER';
     }
-    public function isType(): bool
+    public function isPrimitive(): bool
     {
-        return $this->type === 'T_TYPE';
+        return $this->type === 'T_PRIMITIVE';
     }
+
+    public function isSuperType(): bool
+    {
+        return $this->type === 'T_SUPER_TYPE';
+    }
+
+    public function isMetaType(): bool
+    {
+        return $this->type === 'T_META_TYPE';
+    }
+
+    public function isNull(): bool
+    {
+        return $this->type === 'T_NULL';
+    }
+
     public function isVariable(): bool
     {
         return $this->type === 'T_VARIABLE';

@@ -22,15 +22,18 @@ class Scanner
             'if|else|elseif|this|self|super|pkg|use|as|external|abstract|' .
             'schedule|cache|singleton|scoped|transient)\b/',
         'T_BOOL'        => '/^\b(true|false)\b/',
+        'T_NULL'        => '/^\b(null)\b/',
         'T_EOL'         => '/^[\r\n]+/',
         'T_WHITESPACE'  => '/^[ \t]+/',
         'T_ACCESSORS'   => '/^(\+>|<>|#>|\*>|\+<|><|#<|\*<)/',
         'T_MODIFIER'    => '/^(\->|=>|::|\.\.\.|\+\+|--|==|!=|<=|>=|&&|\|\|)/',
-        'T_TYPE'        => '/^\b(Int|String|Float|Bool|Object|Array|Void|' .
-            'Null|Mixed|Any|Date|DateTime|Time|Email|Ipv4|Ipv6|Uuid|Color|' .
-            'CardNumber|Cron|Cvv|Duration|ExpiryDate|Json|Mac|Slug|Url|Queue|' .
-            'List|Stack|Map)\b/',
-        'T_VARIABLE'    => '/^\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',
+        'T_PRIMITIVE' => '/^\b(Int|String|Float|Bool|Object|Array|Void|' .
+            'Null|Mixed|Any|Queue|List|Stack|Map|Struct)\b/',
+        'T_META_TYPE' => '/^\b(Card|Currency|Date|DateTime|Password' .
+            '|Phone|Time)\b/',
+        'T_SUPER_TYPE'        => '/^\b(Email|Ipv4|Ipv6|Uuid|Color|Url|' .
+            'CardNumber|Cron|Cvv|Duration|ExpiryDate|Json|Mac|Slug)\b/',
+        //'T_VARIABLE'    => '/^\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',
         'T_IDENTIFIER' => '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff!?]*/',
         'T_SYMBOL'      => '/^([{}();,:=+<>\#!?\[\]\.$*\/%|-])/',
         'T_BACKSLASH' => '/^\\\\/',
