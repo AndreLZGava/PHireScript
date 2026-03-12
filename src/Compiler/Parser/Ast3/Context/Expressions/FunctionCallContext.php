@@ -21,7 +21,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class MethodConsumptionContext extends AbstractContext {
+class FunctionCallContext extends AbstractContext {
     private array $resolvers;
 
     public function __construct(FunctionNode $node) {

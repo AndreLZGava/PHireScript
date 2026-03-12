@@ -18,6 +18,10 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ExternalResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\PackageResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\TypeResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\TypeResolver as TypesTypeResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\MetaTypeCastingResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\PrimitiveResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\SuperTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\UseResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
@@ -44,6 +48,11 @@ class ProgramContext extends AbstractContext
             new AssignmentResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
+
+            new TypesTypeResolver(),
+            new PrimitiveResolver(),
+            new SuperTypeCastingResolver(),
+            new MetaTypeCastingResolver(),
 
             // these won't appear in any other sub context
             new PackageResolver(),

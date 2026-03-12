@@ -7,7 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast2\Types;
 use PHireScript\Compiler\Parser\Ast2\GlobalFactory;
 use PHireScript\Compiler\Parser\Ast\AssignmentNode;
 use PHireScript\Compiler\Parser\Ast\BoolNode;
-use PHireScript\Compiler\Parser\Ast\CastingNode;
+use PHireScript\Compiler\Parser\Ast\PrimitiveCastingNode;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\NumberNode;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
@@ -42,7 +42,7 @@ class ObjectArrayLiteralValue extends GlobalFactory
             $current->left->type = $arrayOrObject;
         }
 
-        if ($current instanceof CastingNode) {
+        if ($current instanceof PrimitiveCastingNode) {
             $current->value = $arrayOrObject;
         }
 

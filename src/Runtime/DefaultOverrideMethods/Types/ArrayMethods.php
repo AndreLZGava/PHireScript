@@ -37,8 +37,15 @@ class ArrayMethods extends GeneralType
             subTypes: [],
             params: [
                 new BaseParams(name: '@value', type: 'mixed', required: true),
-                new BaseParams(name: '@key', type: 'string', required: false, defaultValue: null, relatedKeyParam: true),
-            ]
+                new BaseParams(
+                    name: '@key',
+                    type: 'string',
+                    required: false,
+                    defaultValue: null,
+                    relatedKeyParam: true
+                ),
+            ],
+            overridesSelfParam: false,
         );
     }
 

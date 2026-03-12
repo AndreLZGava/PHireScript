@@ -21,7 +21,7 @@ class VariableReferenceNode extends Statement implements Type
 
     public function getRawType(): string
     {
-        if ($this->type instanceof CastingNode) {
+        if ($this->type instanceof PrimitiveCastingNode) {
             return $this->type->to;
         }
         return $this->type->getRawType();

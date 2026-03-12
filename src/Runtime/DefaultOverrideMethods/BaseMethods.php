@@ -13,7 +13,7 @@ class BaseMethods
         public array $subTypes = [],
         public array $params = [],
         public array $functionsValidate = [],
-        public bool $isMutable = false,
+        public bool $overridesSelfParam = true,
         public ?array $injections = [],
         public ?BaseRegistryFunctions $function = null,
     ) {

@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Parser\Ast;
 
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 
-class CastingNode extends Expression
+class PrimitiveCastingNode extends Expression
 {
     public function __construct(
         public Token $token,

@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast3\Context\Declarations;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
+use PHireScript\Compiler\Parser\Ast3\Context\Expressions\AssignmentContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\IdentifierResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\Block\OpeningCurlyBracketResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\MetaTypeCastingResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\PrimitiveResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\SuperTypeCastingResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\ClassNode;
@@ -31,6 +36,11 @@ class ClassContext extends AbstractContext
             'body[]' => new OpeningCurlyBracketResolver(),
             new EndOfLineResolver(),
             new CommentResolver(),
+            // Não funciona, por que não é aqui é o contexto do corpo de classe
+            /**new PrimitiveResolver(),
+            new SuperTypeCastingResolver(),
+            new MetaTypeCastingResolver(),
+            new AssignmentResolver(),**/
         ];
     }
 

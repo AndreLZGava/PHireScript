@@ -6,14 +6,14 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\CastingNode;
+use PHireScript\Compiler\Parser\Ast\PrimitiveCastingNode;
 use PHireScript\Helper\Debug\Debug;
 
 class CastingEmitter implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {
-        return $node instanceof CastingNode;
+        return $node instanceof PrimitiveCastingNode;
     }
 
     public function emit(object $node, EmitContext $ctx): string

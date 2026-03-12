@@ -11,14 +11,12 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CastingConsumptionPara
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\TypeResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\VariableReferenceResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\PipeResolver;
-use PHireScript\Compiler\Parser\Ast\CastingNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\SuperTypeNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -26,11 +24,11 @@ use PHireScript\Runtime\Exceptions\CompileException;
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class CastContext extends AbstractContext
+class SuperTypeCastingContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(CastingNode $node)
+    public function __construct(SuperTypeNode $node)
     {
         parent::__construct($node);
         $this->resolvers = [
@@ -64,25 +62,10 @@ class CastContext extends AbstractContext
             }
         }
         throw new CompileException(
-            $token->value . ' is not supported in casting definition context!',
+            $token->value . ' is not supported in super type casting definition context!',
             $token->line,
             $token->column
         );
-    }
-
-    public function validation(Token $token, ParseContext $parseContext): void
-    {
-        if (
-            ($token->isEndOfLine() || $token->value === ')') &&
-            is_null($this->node->value)
-        ) {
-            throw new CompileException(
-                'Casting value to ' . $this->node->to .
-                    ' must receive at least one parameter!',
-                $this->node->token->line,
-                $this->node->token->column
-            );
-        }
     }
 
     public function afterClose(Token $token, ParseContext $parseContext): void

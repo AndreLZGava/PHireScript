@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast3\Resolver\Root;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Context\Expressions\PrimitiveCastingContext;
+use PHireScript\Compiler\Parser\Ast3\Context\Expressions\SuperTypeCastingContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\PrimitiveCastingNode;
+use PHireScript\Compiler\Parser\Ast\SuperTypeNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 
-class DotResolver implements ContextTokenResolver
+class SuperTypeCastingResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->value === '.';
+        return $token->isSuperType() && $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '(';
     }
 
     public function resolve(
@@ -23,6 +23,13 @@ class DotResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
-        $context->addChild($token->value);
+        $nodeSuperType = new SuperTypeNode($token);
+        $parseContext->contextManager->enter(
+            new SuperTypeCastingContext($nodeSuperType)
+        );
+
+        $parseContext->definePrevious($nodeSuperType);
+
+        $context->addChild($nodeSuperType);
     }
 }

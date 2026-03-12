@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Parser\Ast3\Resolver\Expressions;
 
 use Exception;
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Context\Expressions\MethodConsumptionContext;
+use PHireScript\Compiler\Parser\Ast3\Context\Expressions\FunctionCallContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Ast\AssignmentNode;
@@ -26,7 +26,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
 // Tenho função que retorna mais de um tipo
 class FunctionCallResolver implements ContextTokenResolver
 {
-    private bool $blockOverrideSelfVariable = false;
+    private bool $assignmentContext = false;
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
         if (
@@ -64,7 +64,7 @@ class FunctionCallResolver implements ContextTokenResolver
         $onFocus = $parseContext->variables->getVariableOnFocus();
 
         if (empty($functionDefinition)) {
-            $this->blockOverrideSelfVariable = $context->blockOverrideSelfVariable ?? false;
+            $this->assignmentContext = $context->assignmentContext ?: false;
             $functionDefinition = $parseContext->symbolTable->getFunctionFromLastExecution($token->value, true);
             /**$onFocus = end($parseContext->program->statements);
             if($onFocus instanceof AssignmentNode) {
@@ -94,14 +94,17 @@ class FunctionCallResolver implements ContextTokenResolver
         //$parseContext->variables->setVirtualVariable($function);
 
         $parseContext->contextManager->enter(
-            new MethodConsumptionContext($function)
+            new FunctionCallContext($function)
         );
         $context->addChild($function);
     }
 
     private function overrideVariableOnFocus($function, $functionDefinition, $token)
     {
-        $function->overrideVariableFocus = count($functionDefinition->returnOfPhpExecution) > 0 && $this->blockOverrideSelfVariable;
+        $function->overrideVariableFocus = count($functionDefinition->returnOfPhpExecution) > 0 &&
+            $functionDefinition->overridesSelfParam &&
+            !$this->assignmentContext;
+
         if ($function->overrideVariableFocus) {
             $firstType = current($function->method->returnOfPhpExecution);
             $firstType = $firstType == 'Mixed' ? current($function->variableBase?->type?->types ?? []) : $firstType;

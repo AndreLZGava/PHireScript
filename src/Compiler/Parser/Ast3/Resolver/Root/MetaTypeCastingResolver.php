@@ -2,20 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PHireScript\Compiler\Parser\Ast3\Resolver\Root\Block;
+namespace PHireScript\Compiler\Parser\Ast3\Resolver\Root;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Context\Expressions\PrimitiveCastingContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\PrimitiveCastingNode;
+use PHireScript\Compiler\Parser\Ast\MetaTypeNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 
-class OpeningCurlyBracketResolver implements ContextTokenResolver
+class MetaTypeCastingResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->value === '{';
+        return $token->isMetaType() && $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '(';
     }
 
     public function resolve(
@@ -23,5 +22,7 @@ class OpeningCurlyBracketResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
+        $nodeSuperType = new MetaTypeNode($token, $token->value);
+        $context->addChild($nodeSuperType);
     }
 }

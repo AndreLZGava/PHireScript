@@ -11,7 +11,7 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\CastResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\PrimitiveCastingResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ListResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\MapResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
@@ -19,7 +19,11 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ObjectLiteralRes
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\QueueResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StackResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\TypeResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\VariableReferenceResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\MetaTypeCastingResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\PrimitiveResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\SuperTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\DotResolver;
@@ -37,7 +41,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
 class AssignmentContext extends AbstractContext
 {
     private array $resolvers;
-    public bool $blockOverrideSelfVariable = true;
+    public bool $assignmentContext = true;
 
     public function __construct(AssignmentNode $node)
     {
@@ -49,7 +53,7 @@ class AssignmentContext extends AbstractContext
             new StackResolver(),
             new MapResolver(),
             new ListResolver(),
-            new CastResolver(),
+            new PrimitiveCastingResolver(),
             new ArrayResolver(),
 
             new StringLiteralResolver(),
@@ -62,6 +66,12 @@ class AssignmentContext extends AbstractContext
 
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
+
+            new TypeResolver(),
+            new PrimitiveResolver(),
+
+            new SuperTypeCastingResolver(),
+            new MetaTypeCastingResolver(),
 
             new DotResolver(),
             new EndOfLineResolver(),
