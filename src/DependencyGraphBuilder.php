@@ -6,7 +6,7 @@ use PHireScript\Compiler\DependencyGraphBuilder\Node;
 use PHireScript\Compiler\Parser\Ast\ClassNode;
 use PHireScript\Compiler\Parser\Ast\PackageNode;
 use PHireScript\Compiler\Parser\Ast\UseNode;
-use PHireScript\Compiler\Parser\Ast\InterfaceDefinition;
+use PHireScript\Compiler\Parser\Ast\InterfaceNode;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
@@ -67,7 +67,7 @@ class DependencyGraphBuilder
             }
             if (
                 $stmt instanceof ClassNode ||
-                $stmt instanceof InterfaceDefinition
+                $stmt instanceof InterfaceNode
             ) {
                 $shouldHavePackage = true;
                 break;

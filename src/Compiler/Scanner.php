@@ -20,7 +20,7 @@ class Scanner
         'T_KEYWORD'     => '/^\b(class|interface|trait|type|extends|with|' .
             'implements|inject|async|spawn|constructor|return|immutable|' .
             'if|else|elseif|this|self|super|pkg|use|as|external|abstract|' .
-            'schedule|cache|singleton|scoped|transient)\b/',
+            'schedule|cache|singleton|scoped|transient|readonly|static|package)\b/',
         'T_BOOL'        => '/^\b(true|false)\b/',
         'T_NULL'        => '/^\b(null)\b/',
         'T_EOL'         => '/^[\r\n]+/',

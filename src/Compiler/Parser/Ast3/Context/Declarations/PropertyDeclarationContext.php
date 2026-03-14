@@ -45,7 +45,6 @@ class PropertyDeclarationContext extends AbstractContext
                 return null;
             }
         }
-
         throw new CompileException(
             $token->value . ' is not supported in property declaration context!',
             $token->line,

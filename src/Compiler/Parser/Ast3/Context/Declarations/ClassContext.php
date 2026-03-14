@@ -8,6 +8,7 @@ use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Context\Expressions\AssignmentContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\IdentifierResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\Block\OpeningCurlyBracketResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ModifiersResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\ClassNode;
@@ -42,6 +43,7 @@ class ClassContext extends AbstractContext
 
     public function handle(Token $token, ParseContext $parseContext): ?Node
     {
+        $this->handleModifiers($parseContext->consumePrevious());
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
@@ -59,6 +61,13 @@ class ClassContext extends AbstractContext
         );
     }
 
+    private function handleModifiers($previousModifiers)
+    {
+        $modifiers = $previousModifiers ? ModifiersResolver::getModifiers($previousModifiers) : [];
+        if (!empty($modifiers)) {
+            $this->node->modifiers = $modifiers;
+        }
+    }
 
     private function handleClassProperties(Token $token, int|string $keyResolver): void
     {

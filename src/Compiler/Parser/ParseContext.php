@@ -31,7 +31,7 @@ class ParseContext
     public function definePrevious(mixed $previous): void
     {
         if (!empty($this->previous) && $previous !== $this->previous) {
-            Debug::show($this->previous, Debug::trace());
+            Debug::trace($this->previous, $previous);
             throw new CompileException(
                 'Previous already defined, please consume it before new assignment!',
                 $previous->line,

@@ -7,6 +7,10 @@ namespace PHireScript\Compiler\Parser\Ast3\Context\Root;
 use Exception;
 use PHireScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\ClassResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\ImmutableResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\InterfaceResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\TraitResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\VariableConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\VariableResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallNotFoundResolver;
@@ -20,6 +24,7 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Root\PackageResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\TypeResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\TypeResolver as TypesTypeResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\MetaTypeCastingResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ModifiersResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\PrimitiveResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\SuperTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\UseResolver;
@@ -63,10 +68,18 @@ class ProgramContext extends AbstractContext
             new MetaTypeCastingResolver(),
 
             // these won't appear in any other sub context
+            // declaration
             new PackageResolver(),
             new UseResolver(),
             new ExternalResolver(),
+            new ModifiersResolver(),
+            // class
+            new ClassResolver(),
+            new TraitResolver(),
             new TypeResolver(),
+            new ImmutableResolver(),
+            // interface
+            new InterfaceResolver(),
         ];
     }
 

@@ -8,7 +8,7 @@ use PHireScript\SymbolTable;
 use PHireScript\Compiler\Parser\Ast\ClassNode;
 use PHireScript\Compiler\Parser\Ast\UseNode;
 use PHireScript\Compiler\Parser\Ast\DependencyStatement;
-use PHireScript\Compiler\Parser\Ast\InterfaceDefinition;
+use PHireScript\Compiler\Parser\Ast\InterfaceNode;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
@@ -28,7 +28,7 @@ class Binder
         foreach ($program->statements as $node) {
             if (
                 $node instanceof ClassNode ||
-                $node instanceof InterfaceDefinition
+                $node instanceof InterfaceNode
             ) {
                 $this->globalTable->registerTypeDefinition($node->name, $node);
             }
@@ -38,7 +38,7 @@ class Binder
         foreach ($program->statements as $node) {
             if (
                 $node instanceof ClassNode ||
-                $node instanceof InterfaceDefinition
+                $node instanceof InterfaceNode
             ) {
                 $this->bindClassBody($node);
             }
@@ -47,7 +47,7 @@ class Binder
         return $program;
     }
 
-    protected function bindClassBody(ClassNode|InterfaceDefinition $class)
+    protected function bindClassBody(ClassNode|InterfaceNode $class)
     {
         foreach ($class->body->children as $member) {
             if ($member instanceof PropertyNode) {
