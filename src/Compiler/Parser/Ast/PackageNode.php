@@ -10,11 +10,12 @@ use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 use PHireScript\Runtime\RuntimeClass;
 
-class PackageNode extends Statement {
-    public readonly string $namespace;
-    public readonly string $completeObjectReference;
+class PackageNode extends Statement
+{
+    public string $namespace;
+    public string $completeObjectReference;
 
-    public readonly string $completePackage;
+    public string $completePackage;
 
     public function __construct(
         public Token $token,
@@ -23,10 +24,10 @@ class PackageNode extends Statement {
         public ?string $object = null,
     ) {
         //$this->validate();
-        //$this->completePackage = $package . '.' . $object;
     }
 
-    public function validate() {
+    public function validate()
+    {
         $basename = basename($this->file);
         $ext = RuntimeClass::DEFAULT_FILE_EXTENSION;
 
@@ -52,7 +53,8 @@ class PackageNode extends Statement {
         }
     }
 
-    public function generateNamespace(array $config): void {
+    public function generateNamespace(array $config): void
+    {
         $namespace = '';
         $namespace = current(explode('/' . $this->object, $this->file));
         $baseDir = rtrim((string) $config['paths']['source'], '/') . '/';
@@ -63,6 +65,7 @@ class PackageNode extends Statement {
 
         $namespace = str_replace('/', '\\', $namespace);
 
+        $this->completePackage = $this->package . '.' . $this->object;
         $this->namespace = $config['namespace'] . '\\' . $namespace;
         $this->completeObjectReference = '\\' . $this->namespace . '\\' . $this->object . '::class';
     }

@@ -29,7 +29,6 @@ class Validator
         '+>' => 'Split like "+ >" and follow the order!',
 
         'void' => 'Use "Void" instead!',
-        'null' => 'Use "Null" instead!',
         'string' => 'Use "String" instead!',
         'int' => 'Use "Int" instead!',
         'float' => 'Use "Float" instead!',

@@ -11,7 +11,7 @@ use PHireScript\Compiler\Checker\Expression\Types\QueueChecker;
 use PHireScript\SymbolTable;
 use PHireScript\Compiler\Parser\Ast\ClassNode;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CheckerException;
 
@@ -52,7 +52,7 @@ class Checker
     private function checkClassBody($classNode)
     {
         foreach ($classNode->body as $member) {
-            if ($member instanceof PropertyDefinition) {
+            if ($member instanceof PropertyNode) {
                 $propertyName = $member->name;
                 if ($member->defaultValue !== null) {
                     // $this->ensureTypeCompatibility($member, $member->defaultValue);
@@ -146,7 +146,7 @@ class Checker
     }
 
 
-    private function ensureTypeCompatibility(PropertyDefinition $prop, $valueNode)
+    private function ensureTypeCompatibility(PropertyNode $prop, $valueNode)
     {
         $isValid = false;
 

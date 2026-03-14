@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Emitter\Internal;
 
 use PHireScript\Compiler\Emitter\EmitContext;
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 
 class PropertyAssignmentEmitter
 {
-    public function emit(PropertyDefinition $prop, EmitContext $ctx): string
+    public function emit(PropertyNode $prop, EmitContext $ctx): string
     {
         $var = $prop->name;
         $types = $prop->resolvedTypeInfo;

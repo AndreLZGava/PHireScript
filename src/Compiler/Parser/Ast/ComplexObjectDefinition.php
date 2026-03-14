@@ -8,5 +8,4 @@ class ComplexObjectDefinition extends Node
 {
     public string $type;
     public string $name;
-    public array $body = [];
 }

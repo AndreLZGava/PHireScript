@@ -7,36 +7,25 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\Internal\ConstructorEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitter;
+use PHireScript\Compiler\Parser\Ast\ClassBodyNode;
 use PHireScript\Compiler\Parser\Ast\ClassNode;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\PropertyNode;
-use PHireScript\Compiler\Parser\Ast\TraitDefinition;
 use PHireScript\Helper\Debug\Debug;
 
-class TraitEmitter implements NodeEmitter
+class ClassBodyEmitter implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {
-        return $node instanceof TraitDefinition;
+        return $node instanceof ClassBodyNode;
     }
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        $code = "trait {$node->name} {\n";
-        // ---- properties
-        foreach ($node->body as $member) {
-            if ($member instanceof PropertyNode) {
-                $code .= $ctx->emitter->emit($member, $ctx) ;
-            }
+        $code = "{\n";
+        foreach ($node->children as $member) {
+            $code .= $ctx->emitter->emit($member, $ctx);
         }
-
-        // ---- methods
-        foreach ($node->body as $member) {
-            if ($member instanceof MethodDefinition) {
-                $code .= $ctx->emitter->emit($member, $ctx);
-            }
-        }
-
         return $code . "}\n";
     }
 }

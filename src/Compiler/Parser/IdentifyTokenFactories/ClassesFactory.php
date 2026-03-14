@@ -15,7 +15,7 @@ use PHireScript\Compiler\Parser\Ast\NewExceptionNode;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\NotOperatorNode;
 use PHireScript\Compiler\Parser\Ast\PropertyAccessNode;
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\ThisExpressionNode;
 use PHireScript\Compiler\Parser\Ast\ThrowStatementNode;
 use PHireScript\Compiler\Parser\Ast\TraitDefinition;
@@ -224,7 +224,7 @@ abstract class ClassesFactory extends GlobalFactory
     {
         $currentToken = $this->tokenManager->getCurrentToken();
         if (
-            $processedNode instanceof PropertyDefinition &&
+            $processedNode instanceof PropertyNode &&
             in_array('abstract', $processedNode->modifiers)
         ) {
             $constructor = $node->construct ?? new ConstructorDefinition(modifiers: $processedNode->modifiers);

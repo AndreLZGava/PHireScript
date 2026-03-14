@@ -16,4 +16,5 @@ class ClassNode extends ComplexObjectDefinition
     public array $inject = [];
     public array $cache = [];
     public array $schedule = [];
+    public ?ClassBodyNode $body = null;
 }

@@ -16,6 +16,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\BinaryExpressionEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\BoolEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\CastingEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\ClassBodyEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ClassEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\CommentStatementEmitter;
@@ -50,7 +51,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\VariableLiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VoidExpressionEmitter;
 use PHireScript\Compiler\Emitter\Type\PhpTypeResolver;
 use PHireScript\Compiler\Emitter\UseRegistry;
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\DependencyGraphBuilder;
 
 class Emitter
@@ -66,6 +67,7 @@ class Emitter
             new ExternalEmitter(),
             new InterfaceEmitter(),
             new ClassEmitter(),
+            new ClassBodyEmitter(),
             new TraitEmitter(),
             new MethodEmitter(),
             new FunctionEmitter(),

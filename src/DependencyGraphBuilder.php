@@ -8,6 +8,7 @@ use PHireScript\Compiler\Parser\Ast\PackageNode;
 use PHireScript\Compiler\Parser\Ast\UseNode;
 use PHireScript\Compiler\Parser\Ast\InterfaceDefinition;
 use PHireScript\Compiler\Program;
+use PHireScript\Helper\Debug\Debug;
 
 class DependencyGraphBuilder
 {
@@ -21,8 +22,11 @@ class DependencyGraphBuilder
     /** @var array<string, array<string>> */
     private array $edges = [];
 
-    public function buildGraph(array $astList): void
+    private array $config = [];
+
+    public function buildGraph(array $astList, $config): void
     {
+        $this->config = $config;
         foreach ($astList as $ast) {
             $this->registerNode($ast);
         }

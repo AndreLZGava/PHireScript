@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Managers;
 
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\VariableReferenceNode;
 use PHireScript\Helper\Debug\Debug;
@@ -18,7 +18,7 @@ class VariableManager
     ) {
     }
 
-    public function addProperty(PropertyDefinition $property)
+    public function addProperty(PropertyNode $property)
     {
         $this->properties[$property->name] = $property;
     }
@@ -48,7 +48,7 @@ class VariableManager
         return $this->properties;
     }
 
-    public function getProperty(string $propertyName): ?PropertyDefinition
+    public function getProperty(string $propertyName): ?PropertyNode
     {
         return $this->properties[$propertyName]  ?? null;
     }

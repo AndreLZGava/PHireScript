@@ -6,14 +6,14 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
 
 class PropertyEmitter implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {
-        return $node instanceof PropertyDefinition;
+        return $node instanceof PropertyNode;
     }
 
     public function emit(object $node, EmitContext $ctx): string
@@ -24,7 +24,7 @@ class PropertyEmitter implements NodeEmitter
             $node->modifiers[0] . ' ';
         $type = $ctx->types->phpType($node);
         $name = '$' . $node->name;
-        $defaultValue = $node->defaultValue ? ' = ' . $node->defaultValue : '';
+        $defaultValue = $node->value ? ' = ' . $node->value : '';
 
         return "    {$visibility}{$type} {$name}{$defaultValue};\n";
     }

@@ -8,7 +8,7 @@ use Exception;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\PropertyAccessNode;
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\VariableNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Parser\Transformers\ModifiersTransform;

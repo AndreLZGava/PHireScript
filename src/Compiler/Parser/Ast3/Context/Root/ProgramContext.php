@@ -39,6 +39,14 @@ class ProgramContext extends AbstractContext
 
     public function __construct(ParseContext $parseContext)
     {
+        if ($parseContext->tokenManager->getContext() === 'pre') {
+            $this->resolvers = [
+                new PackageResolver(),
+                new UseResolver(),
+                new ExternalResolver(),
+            ];
+            return;
+        }
         $this->resolvers = [
             new CommentResolver(),
             new EndOfLineResolver(),
@@ -73,7 +81,9 @@ class ProgramContext extends AbstractContext
                 return $parseContext->program;
             }
         }
-        Debug::show($token, $parseContext->tokenManager->getLeftTokens(5), class_exists(TypeResolver::class));
+        if ($parseContext->tokenManager->getContext() === 'pre') {
+            return null;
+        }
         throw new CompileException(
             $token->value . ' is not supported in program context!',
             $token->line,

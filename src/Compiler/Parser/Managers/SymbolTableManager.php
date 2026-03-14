@@ -4,29 +4,33 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Managers;
 
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\VariableReferenceNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 
-class SymbolTableManager {
+class SymbolTableManager
+{
     private array $typeDefinitions = [];
     private ?string $rawType = null;
     private array $lastExecution = [];
 
-    public function __construct() {
+    public function __construct()
+    {
         $targetDir = __DIR__ . '/../../../../src/Runtime/DefaultOverrideMethods/Types';
         $getDefaultOverrideMethods = $this->scanAndBuildRegistry($targetDir);
         $this->typeDefinitions = $getDefaultOverrideMethods;
     }
 
-    public function from($rawType): self {
+    public function from($rawType): self
+    {
         $this->rawType = $rawType;
         return $this;
     }
 
-    public function getFunctionFromLastExecution(string $functionName, bool $mustUpdate = false): ?BaseMethods {
+    public function getFunctionFromLastExecution(string $functionName, bool $mustUpdate = false): ?BaseMethods
+    {
         if (empty($this->lastExecution)) {
             return null;
         }
@@ -48,8 +52,13 @@ class SymbolTableManager {
         return $function ?? null;
     }
 
-    public function getFunction($functionName): ?BaseMethods {
-        if (is_null($this->rawType) || is_null($functionName) || !array_key_exists($this->rawType . 'Methods', $this->typeDefinitions)) {
+    public function getFunction($functionName): ?BaseMethods
+    {
+        if (
+            is_null($this->rawType) ||
+            is_null($functionName) ||
+            !array_key_exists($this->rawType . 'Methods', $this->typeDefinitions)
+        ) {
             return null;
         }
         $function = $this->typeDefinitions[$this->rawType . 'Methods'][$functionName] ?? null;
@@ -60,7 +69,8 @@ class SymbolTableManager {
     }
 
 
-    private function scanAndBuildRegistry(string $directory): array {
+    private function scanAndBuildRegistry(string $directory): array
+    {
         if (!is_dir($directory)) {
             throw new \RuntimeException("Dir not found: $directory");
         }
@@ -115,7 +125,8 @@ class SymbolTableManager {
     }
 
 
-    private function resolveAndInstantiate(\ReflectionClass $reflector): object {
+    private function resolveAndInstantiate(\ReflectionClass $reflector): object
+    {
         $constructor = $reflector->getConstructor();
 
         if (!$constructor || $constructor->getNumberOfParameters() === 0) {

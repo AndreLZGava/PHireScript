@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PHireScript\Compiler\Parser\Ast;
+
+use PHireScript\Compiler\Parser\Managers\Token\Token;
+
+class PropertyNode extends Node
+{
+    public function __construct(
+        public Token $token,
+        public null|Node|string $type,
+        public string $name = '',
+        public ?Node $value = null,
+        public array $modifiers = [],
+        public array $resolvedTypeInfo = [],
+    ) {
+    }
+}

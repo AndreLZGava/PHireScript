@@ -20,7 +20,6 @@ class UseEmitter implements NodeEmitter
     {
         $code = '';
         $namespaces = $ctx->dependencyManager->getNodes();
-
         foreach ($node->packages as $package) {
             $code .= "use {$namespaces[$package->package]->namespace}";
             if ($package->alias) {

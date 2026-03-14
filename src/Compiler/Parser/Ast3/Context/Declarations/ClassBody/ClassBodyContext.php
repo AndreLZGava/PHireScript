@@ -2,14 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PHireScript\Compiler\Parser\Ast3\Context\Declarations;
+namespace PHireScript\Compiler\Parser\Ast3\Context\Declarations\ClassBody;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Context\Expressions\AssignmentContext;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Root\IdentifierResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Root\Block\OpeningCurlyBracketResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\PropertyResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\MetaTypeCastingResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\OpeningCurlyBracketResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\PrimitiveResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\SuperTypeCastingResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
+use PHireScript\Compiler\Parser\Ast\ClassBodyNode;
 use PHireScript\Compiler\Parser\Ast\ClassNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
@@ -20,23 +25,19 @@ use PHireScript\Runtime\Exceptions\CompileException;
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class ClassContext extends AbstractContext
+class ClassBodyContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(ClassNode $node)
+    public function __construct(ClassBodyNode $node)
     {
         parent::__construct($node);
         $this->resolvers = [
-            'name' => new IdentifierResolver(),
-            'body[]' => new OpeningCurlyBracketResolver(),
-            new EndOfLineResolver(),
-            new CommentResolver(),
-            // Não funciona, por que não é aqui é o contexto do corpo de classe
-            /**new PrimitiveResolver(),
-            new SuperTypeCastingResolver(),
-            new MetaTypeCastingResolver(),
-            new AssignmentResolver(),**/
+        new EndOfLineResolver(),
+        //new OpeningCurlyBracketResolver(),
+        new PropertyResolver(),
+        new ClosingCurlyBracketResolver(),
+        new CommentResolver(),
         ];
     }
 
@@ -53,23 +54,15 @@ class ClassContext extends AbstractContext
         }
 
         throw new CompileException(
-            $token->value . ' is not supported in ' . $this->node->token->value . ' definition context!',
+            $token->value . ' is not supported in ' . $this->node->bodyOf . ' body definition context!',
             $token->line,
             $token->column,
         );
     }
 
-
     private function handleClassProperties(Token $token, int|string $keyResolver): void
     {
-        if (is_int($keyResolver)) {
-            return;
-        }
-        $key = $this->sanitizeKeys($keyResolver);
-        $value = $this->getChildrenValues($keyResolver);
-        $this->node->$key =  $value ?: [];
-        $this->children = [];
-        return;
+        $this->node->children = $this->children;
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool

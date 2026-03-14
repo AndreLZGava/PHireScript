@@ -16,7 +16,7 @@ class FunctionCallNotFoundResolver implements ContextTokenResolver
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
         return $token->isIdentifier() &&
-        $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '(';
+            $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '(';
     }
 
     public function resolve(
@@ -24,6 +24,11 @@ class FunctionCallNotFoundResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
-        throw new CompileException("This method does not exist nor is not supported for this type of variable", $token->line, $token->column);
+        throw new CompileException(
+            "This method \"{$token->value}\" does not " .
+                "exist nor is supported for this type of variable",
+            $token->line,
+            $token->column
+        );
     }
 }

@@ -9,7 +9,7 @@ use PHireScript\Compiler\Emitter\Internal\ConstructorEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\ClassNode;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
 
 class ClassEmitter implements NodeEmitter
@@ -27,16 +27,18 @@ class ClassEmitter implements NodeEmitter
         $implements = $node->implements ?
             ' implements ' . implode(', ', $node->implements) :
             '';
-        $code .= "class {$node->name}{$extends}{$implements} {\n";
+        $code .= "class {$node->name}{$extends}{$implements}\n";
 
         foreach ($node->traits as $trait) {
             $code .= '    use ' . $trait . ";\n";
         }
-
+        // Process Body
+        $code .= $ctx->emitter->emit($node->body, $ctx);
+        /*
         // ---- properties
         foreach ($node->body as $member) {
-            if ($member instanceof PropertyDefinition) {
-                $code .= $ctx->emitter->emit($member, $ctx);
+            if ($member instanceof PropertyNode) {
+                $code .= $ctx->emitter->emit($node->body, $ctx);
             }
         }
 
@@ -51,14 +53,15 @@ class ClassEmitter implements NodeEmitter
                 $code .= $ctx->emitter->emit($member, $ctx);
             }
         }
-
         return $code . "}\n";
+*/
+        return $code;
     }
 
     private function shouldGenerateConstructor(ClassNode $class): bool
     {
         foreach ($class->body as $member) {
-            if ($member instanceof PropertyDefinition) {
+            if ($member instanceof PropertyNode) {
                 return true;
             }
         }

@@ -10,7 +10,7 @@ use PHireScript\Compiler\Parser\Ast\UseNode;
 use PHireScript\Compiler\Parser\Ast\DependencyStatement;
 use PHireScript\Compiler\Parser\Ast\InterfaceDefinition;
 use PHireScript\Compiler\Parser\Ast\MethodDefinition;
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
 
 class Binder
@@ -49,8 +49,8 @@ class Binder
 
     protected function bindClassBody(ClassNode|InterfaceDefinition $class)
     {
-        foreach ($class->body as $member) {
-            if ($member instanceof PropertyDefinition) {
+        foreach ($class->body->children as $member) {
+            if ($member instanceof PropertyNode) {
                 $this->resolvePropertyTypes($member);
             }
 
@@ -62,21 +62,19 @@ class Binder
 
     protected function resolvePropertyTypeForMethods(MethodDefinition $prop)
     {
-        foreach ($prop->args as $propertyDefinition) {
-            $this->resolvePropertyTypes($propertyDefinition);
+        foreach ($prop->args as $PropertyNode) {
+            $this->resolvePropertyTypes($PropertyNode);
         }
     }
 
-    protected function resolvePropertyTypes(PropertyDefinition $prop)
+    protected function resolvePropertyTypes(PropertyNode $prop)
     {
-        $typeString = $prop->type;
+        $typeString = is_string($prop->type) ? $prop->type : $prop->type->getRawType();
         $types = str_contains((string) $typeString, '|') ? explode('|', (string) $typeString) : [$typeString];
-
         $resolved = [];
         foreach ($types as $type) {
             $resolved[] = $this->categorizeType($type);
         }
-
         $prop->resolvedTypeInfo = $resolved;
     }
 

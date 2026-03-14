@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
 use PHireScript\Compiler\Parser\Ast\Node;
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Parser\Transformers\ModifiersTransform;
 use PHireScript\Compiler\Program;
@@ -17,7 +17,7 @@ class Type extends GlobalFactory
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
         $currentToken =  $this->tokenManager->getCurrentToken();
-        $node = new PropertyDefinition($currentToken);
+        $node = new PropertyNode($currentToken);
         $allowNull = false;
         $context = $this->tokenManager->getContext();
         if (

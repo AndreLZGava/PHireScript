@@ -10,7 +10,7 @@ use PHireScript\Compiler\Parser\Ast\MethodDefinition;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\ObjectLiteralNode;
 use PHireScript\Compiler\Parser\Ast\PropertyAccessNode;
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\ReturnNode;
 use PHireScript\Compiler\Parser\Ast\ThisExpressionNode;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
@@ -80,7 +80,7 @@ class GetterAndSetters extends GlobalFactory
 
         if ($currentToken->value === '>') {
             $typeMethod = 'set';
-            $arg = new PropertyDefinition($parseContext->tokenManager->getCurrentToken());
+            $arg = new PropertyNode($parseContext->tokenManager->getCurrentToken());
             $arg->name = $name;
             $arg->type = implode("|", $types);
             if ($defaultValue) {

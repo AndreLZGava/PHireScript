@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Emitter\Type;
 
 use PHireScript\Compiler\Emitter\UseRegistry;
-use PHireScript\Compiler\Parser\Ast\PropertyDefinition;
+use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Types\UnionType;
 
 class PhpTypeResolver
 {
     private array $uses;
-    public function resolve(PropertyDefinition $prop, UseRegistry $uses): string
+    public function resolve(PropertyNode $prop, UseRegistry $uses): string
     {
         $types = [];
 
@@ -39,7 +39,7 @@ class PhpTypeResolver
         return implode('|', array_unique($types));
     }
 
-    public function assignment(PropertyDefinition $prop, UseRegistry $uses): string
+    public function assignment(PropertyNode $prop, UseRegistry $uses): string
     {
         $types = $prop->resolvedTypeInfo;
         $explicitTypes =  explode('|', $this->phpType($prop));
@@ -73,10 +73,9 @@ class PhpTypeResolver
         };
     }
 
-    public function phpType(PropertyDefinition $prop): string
+    public function phpType(PropertyNode $prop): string
     {
         $types = [];
-
         foreach ($prop->resolvedTypeInfo as $info) {
             if ($info['category'] === 'primitive') {
                 $types[] = $info['native'];
@@ -98,7 +97,7 @@ class PhpTypeResolver
         return implode('|', array_unique($types));
     }
 
-    private function allowsNull(PropertyDefinition $prop): bool
+    private function allowsNull(PropertyNode $prop): bool
     {
         foreach ($prop->resolvedTypeInfo as $info) {
             if (($info['name'] ?? null) === 'Null') {
