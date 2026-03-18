@@ -24,7 +24,9 @@ class ClassBodyEmitter implements NodeEmitter
     {
         $code = "{\n";
         foreach ($node->children as $member) {
-            $code .= $ctx->emitter->emit($member, $ctx);
+            if ($member) {
+                $code .= $ctx->emitter->emit($member, $ctx);
+            }
         }
         return $code . "}\n";
     }

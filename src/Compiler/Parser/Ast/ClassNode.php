@@ -9,9 +9,9 @@ class ClassNode extends ComplexObjectDefinition
     public bool $readOnly = false;
     public array $modifiers = [];
     public ?string $docBlock = null;
-    public ?string $extends = null;
-    public array $traits = [];
-    public array $implements = [];
+    public ?ClassExtendsNode $extends = null;
+    public ?WithNode $with = null;
+    public ?ImplementsNode $implements = null;
     public ?ConstructorDefinition $construct = null;
     public array $inject = [];
     public array $cache = [];

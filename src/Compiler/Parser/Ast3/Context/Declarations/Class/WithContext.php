@@ -2,42 +2,37 @@
 
 declare(strict_types=1);
 
-namespace PHireScript\Compiler\Parser\Ast3\Context\Declarations\ClassBody;
+namespace PHireScript\Compiler\Parser\Ast3\Context\Declarations\Class;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\PropertyResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ModifiersResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CommaResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ComplexObjects\IdentifierResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\ClassBodyNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\WithNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class ClassBodyContext extends AbstractContext
+class WithContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(ClassBodyNode $node)
+    public function __construct(WithNode $node)
     {
         parent::__construct($node);
         $this->resolvers = [
-            new EndOfLineResolver(),
-            new PropertyResolver(),
-            new ClosingCurlyBracketResolver(),
-            new CommentResolver(),
-            new ModifiersResolver(),
+        new EndOfLineResolver(),
+        new IdentifierResolver(),
+        new CommaResolver(),
         ];
     }
 
     public function handle(Token $token, ParseContext $parseContext): ?Node
     {
-
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
@@ -49,7 +44,7 @@ class ClassBodyContext extends AbstractContext
         }
 
         throw new CompileException(
-            $token->value . ' is not supported in ' . $this->node->bodyOf . ' body definition context!',
+            $token->value . ' is not supported in \'with\' for class context!',
             $token->line,
             $token->column,
         );
@@ -57,11 +52,13 @@ class ClassBodyContext extends AbstractContext
 
     private function handleClassProperties(Token $token, int|string $keyResolver): void
     {
+
         $this->node->children = $this->children;
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === '}';
+        return $parseContext->tokenManager->getNextTokenAfterCurrent()->isKeyword() ||
+        $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '{';
     }
 }

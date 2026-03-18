@@ -23,8 +23,6 @@ class Binder
     public function bind(Program $program)
     {
         $this->program = $program;
-        // PASSAGEM 1: Registrar a existência de todas as classes
-        // Isso permite que uma classe use outra como tipo, mesmo se definida depois
         foreach ($program->statements as $node) {
             if (
                 $node instanceof ClassNode ||
@@ -34,7 +32,6 @@ class Binder
             }
         }
 
-        // PASSAGEM 2: Resolver as propriedades e corpos
         foreach ($program->statements as $node) {
             if (
                 $node instanceof ClassNode ||
@@ -49,6 +46,7 @@ class Binder
 
     protected function bindClassBody(ClassNode|InterfaceNode $class)
     {
+        $this->bindWithToBody($class);
         foreach ($class->body->children as $member) {
             if ($member instanceof PropertyNode) {
                 $this->resolvePropertyTypes($member);
@@ -57,6 +55,13 @@ class Binder
             if ($member instanceof MethodDefinition) {
                 $this->resolvePropertyTypeForMethods($member);
             }
+        }
+    }
+
+    protected function bindWithToBody($class)
+    {
+        if ($class->with) {
+            array_unshift($class->body->children, $class->with);
         }
     }
 

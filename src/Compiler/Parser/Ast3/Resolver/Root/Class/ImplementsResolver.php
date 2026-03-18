@@ -2,21 +2,20 @@
 
 declare(strict_types=1);
 
-namespace PHireScript\Compiler\Parser\Ast3\Resolver\Root\Interface;
+namespace PHireScript\Compiler\Parser\Ast3\Resolver\Root\Class;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Context\Declarations\Interface\InterfaceBodyContext;
+use PHireScript\Compiler\Parser\Ast3\Context\Declarations\Class\ImplementsContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\InterfaceBodyNode;
+use PHireScript\Compiler\Parser\Ast\ImplementsNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 
-class OpeningCurlyBracketResolver implements ContextTokenResolver
+class ImplementsResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->value === '{';
+        return $token->value === 'implements';
     }
 
     public function resolve(
@@ -24,14 +23,14 @@ class OpeningCurlyBracketResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
-        $node = new InterfaceBodyNode(
+        $node = new ImplementsNode(
             token: $token,
-            bodyOf: $context->node->name,
         );
 
         $parseContext->contextManager->enter(
-            new InterfaceBodyContext($node)
+            new ImplementsContext($node)
         );
+
         $context->addChild($node);
     }
 }

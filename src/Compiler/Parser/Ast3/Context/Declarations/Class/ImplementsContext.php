@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PHireScript\Compiler\Parser\Ast3\Context\Declarations\InterfaceBody;
+namespace PHireScript\Compiler\Parser\Ast3\Context\Declarations\Class;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\PropertyResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CommaResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ComplexObjects\IdentifierResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\InterfaceBodyNode;
+use PHireScript\Compiler\Parser\Ast\ImplementsNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -18,18 +17,17 @@ use PHireScript\Runtime\Exceptions\CompileException;
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class InterfaceBodyContext extends AbstractContext
+class ImplementsContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(InterfaceBodyNode $node)
+    public function __construct(ImplementsNode $node)
     {
         parent::__construct($node);
         $this->resolvers = [
         new EndOfLineResolver(),
-        new PropertyResolver(),
-        new ClosingCurlyBracketResolver(),
-        new CommentResolver(),
+        new IdentifierResolver(),
+        new CommaResolver(),
         ];
     }
 
@@ -46,7 +44,7 @@ class InterfaceBodyContext extends AbstractContext
         }
 
         throw new CompileException(
-            $token->value . ' is not supported in ' . $this->node->bodyOf . ' body definition context!',
+            $token->value . ' is not supported in \'implements\' for class context!',
             $token->line,
             $token->column,
         );
@@ -54,11 +52,13 @@ class InterfaceBodyContext extends AbstractContext
 
     private function handleClassProperties(Token $token, int|string $keyResolver): void
     {
+
         $this->node->children = $this->children;
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === '}';
+        return $parseContext->tokenManager->getNextTokenAfterCurrent()->isKeyword() ||
+        $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '{';
     }
 }

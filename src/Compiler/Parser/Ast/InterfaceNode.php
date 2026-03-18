@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 class InterfaceNode extends ComplexObjectDefinition
 {
     public array $modifiers = [];
-    public array $extends = [];
+    public ?InterfaceExtendsNode $extends = null;
     public ?InterfaceBodyNode $body = null;
     public function __construct(public Token $token)
     {

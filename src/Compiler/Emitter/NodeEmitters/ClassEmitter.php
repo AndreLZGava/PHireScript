@@ -5,12 +5,8 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
-use PHireScript\Compiler\Emitter\Internal\ConstructorEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\ClassNode;
-use PHireScript\Compiler\Parser\Ast\MethodDefinition;
-use PHireScript\Compiler\Parser\Ast\PropertyNode;
-use PHireScript\Helper\Debug\Debug;
 
 class ClassEmitter implements NodeEmitter
 {
@@ -23,18 +19,14 @@ class ClassEmitter implements NodeEmitter
     {
         $code = $node->readOnly ? 'readonly ' : '';
         $code .= implode(' ', $node->modifiers) . ' ';
-        $extends = $node->extends ? ' extends ' . $node->extends  : '';
+        $extends = $node->extends ? ' extends ' . $node->extends->child  : '';
         $implements = $node->implements ?
-            ' implements ' . implode(', ', $node->implements) :
+            ' implements ' . implode(', ', $node->implements->children) :
             '';
         $code .= "class {$node->name}{$extends}{$implements}\n";
-
-        foreach ($node->traits as $trait) {
-            $code .= '    use ' . $trait . ";\n";
-        }
-        // Process Body
         $code .= $ctx->emitter->emit($node->body, $ctx);
         /*
+        @todo this will be properly emitted by its own emitters.
         // ---- properties
         foreach ($node->body as $member) {
             if ($member instanceof PropertyNode) {
@@ -56,15 +48,5 @@ class ClassEmitter implements NodeEmitter
         return $code . "}\n";
 */
         return $code;
-    }
-
-    private function shouldGenerateConstructor(ClassNode $class): bool
-    {
-        foreach ($class->body as $member) {
-            if ($member instanceof PropertyNode) {
-                return true;
-            }
-        }
-        return false;
     }
 }

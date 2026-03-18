@@ -48,11 +48,10 @@ use PHireScript\Compiler\Emitter\NodeEmitters\ThisExpressionEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\TraitEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VariableDeclarationEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VariableEmitter;
-use PHireScript\Compiler\Emitter\NodeEmitters\VariableLiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\VoidExpressionEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\WithEmitter;
 use PHireScript\Compiler\Emitter\Type\PhpTypeResolver;
 use PHireScript\Compiler\Emitter\UseRegistry;
-use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\DependencyGraphBuilder;
 
 class Emitter
@@ -73,6 +72,7 @@ class Emitter
             new TraitEmitter(),
             new MethodEmitter(),
             new FunctionEmitter(),
+            new WithEmitter(),
 
             new ObjectLiteralEmitter(),
 
