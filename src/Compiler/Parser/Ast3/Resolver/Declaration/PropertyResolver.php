@@ -32,7 +32,7 @@ class PropertyResolver implements ContextTokenResolver
         $modifiers = $this->handleModifiers($parseContext->consumePrevious());
         $property = new PropertyNode(
             token: $token,
-            type: $token->value,
+            types: [$token->value],
             modifiers: $modifiers,
         );
 

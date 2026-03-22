@@ -7,9 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast3\Context\Expressions;
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ColonResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CommaResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayKeyResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayLiteralResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
@@ -20,7 +18,6 @@ use PHireScript\Compiler\Parser\Ast\KeyValuePairNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
@@ -67,13 +64,13 @@ class ArrayKeyContext extends AbstractContext
 
     public function afterClose(Token $token, ParseContext $parseContext): void
     {
-        if ($token->value === ']') {
+        if ($token->isClosingBracket()) {
             $parseContext->contextManager->exit();
         }
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === ',' || $token->isComment() || $token->value === ']';
+        return $token->isComma() || $token->isComment() || $token->isClosingBracket();
     }
 }

@@ -3,18 +3,13 @@
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols;
 
 use PHireScript\Compiler\Parser\Ast\BinaryExpressionNode;
-use PHireScript\Compiler\Parser\Ast\Literal\FloatLiteral;
 use PHireScript\Compiler\Parser\Ast\VariableReferenceNode;
-use PHireScript\Compiler\Parser\Ast\LiteralNode;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\NumberNode;
 use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
-use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactoryInterface;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Compiler\Program;
-use PHireScript\Helper\Debug\Debug;
 
 class VariableAssignmentFactory extends GlobalFactory
 {
@@ -84,7 +79,7 @@ class VariableAssignmentFactory extends GlobalFactory
     {
         $token = $ctx->tokenManager->getCurrentToken();
 
-        if ($token->value === '(') {
+        if ($token->isOpeningParenthesis()) {
             //$ctx->tokenManager->advance();
             $expr = $this->parseExpression($ctx);
             //$ctx->tokenManager->advance();

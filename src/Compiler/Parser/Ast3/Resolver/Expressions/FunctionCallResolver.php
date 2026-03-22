@@ -9,7 +9,6 @@ use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Context\Expressions\FunctionCallContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
-use PHireScript\Compiler\Parser\Ast\AssignmentNode;
 use PHireScript\Compiler\Parser\Ast\BoolNode;
 use PHireScript\Compiler\Parser\Ast\FunctionNode;
 use PHireScript\Compiler\Parser\Ast\NumberNode;
@@ -31,13 +30,13 @@ class FunctionCallResolver implements ContextTokenResolver
     {
         if (
             $token->isIdentifier() &&
-            $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '('
+            $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningParenthesis()
         ) {
             //   Debug::show($parseContext->variables->getVariableOnFocus());
         }
         try {
             return $token->isIdentifier() &&
-                $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '(' &&
+                $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningParenthesis() &&
                 (
                     $parseContext->symbolTable->getFunctionFromLastExecution($token->value) ||
                     $parseContext->symbolTable->from(

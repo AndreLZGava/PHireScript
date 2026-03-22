@@ -13,7 +13,7 @@ class OpeningAngleBracketResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->value === '<';
+        return $token->isLeftAngleBracket();
     }
 
     public function resolve(

@@ -18,7 +18,7 @@ class ClosingAngleBracketResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->value === '>';
+        return $token->isRightAngleBracket();
     }
 
     public function resolve(

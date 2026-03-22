@@ -16,7 +16,7 @@ class ArrayResolver implements ContextTokenResolver
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
         return $token->value === 'Array' &&
-        $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '<';
+        $parseContext->tokenManager->getNextTokenAfterCurrent()->isLeftAngleBracket();
     }
 
     public function resolve(

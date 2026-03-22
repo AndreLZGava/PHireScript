@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast3\Context\Expressions;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\ClosingParenthesisResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\OpeningParenthesisResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\ClosingParamsConsumptionResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\OpeningParamsConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\DotResolver;
@@ -21,14 +21,16 @@ use PHireScript\Runtime\Exceptions\CompileException;
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class FunctionCallContext extends AbstractContext {
+class FunctionCallContext extends AbstractContext
+{
     private array $resolvers;
 
-    public function __construct(FunctionNode $node) {
+    public function __construct(FunctionNode $node)
+    {
         parent::__construct($node);
         $this->resolvers = [
-            new OpeningParenthesisResolver(),
-            new ClosingParenthesisResolver(),
+            new OpeningParamsConsumptionResolver(),
+            new ClosingParamsConsumptionResolver(),
             new EndOfLineResolver(),
             new DotResolver(),
             new FunctionCallResolver(),
@@ -36,7 +38,8 @@ class FunctionCallContext extends AbstractContext {
         ];
     }
 
-    public function handle(Token $token, ParseContext $parseContext): ?Node {
+    public function handle(Token $token, ParseContext $parseContext): ?Node
+    {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
@@ -52,22 +55,25 @@ class FunctionCallContext extends AbstractContext {
         );
     }
 
-    private function handleParameters($resolver, $parseContext, $token) {
+    private function handleParameters($resolver, $parseContext, $token)
+    {
         $this->node->params = $this->getChildrenValues();
     }
 
-    public function afterClose(Token $token, ParseContext $parseContext): void {
+    public function afterClose(Token $token, ParseContext $parseContext): void
+    {
         if ($token->isEndOfLine()) {
             $parseContext->contextManager->exit();
         }
     }
 
-    public function canClose(Token $token, ParseContext $parseContext): bool {
+    public function canClose(Token $token, ParseContext $parseContext): bool
+    {
         /**
          * myTest.myFunction().myAnotherFunction()
          * .myAnotherFunction().
          * myNewMethod()
          */
-        return $token->value == '.' || $token->isEndOfLine();
+        return $token->isDot() || $token->isEndOfLine();
     }
 }

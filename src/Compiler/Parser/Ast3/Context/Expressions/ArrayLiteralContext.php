@@ -19,7 +19,6 @@ use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
@@ -67,6 +66,6 @@ class ArrayLiteralContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === ']' || $token->isComment();
+        return $token->isClosingBracket() || $token->isComment();
     }
 }

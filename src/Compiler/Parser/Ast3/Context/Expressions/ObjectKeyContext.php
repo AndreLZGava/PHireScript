@@ -65,13 +65,13 @@ class ObjectKeyContext extends AbstractContext
 
     public function afterClose(Token $token, ParseContext $parseContext): void
     {
-        if ($token->value === '}') {
+        if ($token->isClosingCurlyBracket()) {
             $parseContext->contextManager->exit();
         }
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === ',' || $token->isComment() || $token->value === '}';
+        return $token->isComma() || $token->isComment() || $token->isClosingCurlyBracket();
     }
 }

@@ -9,7 +9,8 @@ use PHireScript\Compiler\Parser\Ast\ClassNode;
 use PHireScript\Compiler\Parser\Ast\UseNode;
 use PHireScript\Compiler\Parser\Ast\DependencyStatement;
 use PHireScript\Compiler\Parser\Ast\InterfaceNode;
-use PHireScript\Compiler\Parser\Ast\MethodDefinition;
+use PHireScript\Compiler\Parser\Ast\MethodDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\ParamArgumentNode;
 use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
 
@@ -52,7 +53,7 @@ class Binder
                 $this->resolvePropertyTypes($member);
             }
 
-            if ($member instanceof MethodDefinition) {
+            if ($member instanceof MethodDeclarationNode) {
                 $this->resolvePropertyTypeForMethods($member);
             }
         }
@@ -60,24 +61,22 @@ class Binder
 
     protected function bindWithToBody($class)
     {
-        if ($class->with) {
+        if (isset($class->with)) {
             array_unshift($class->body->children, $class->with);
         }
     }
 
-    protected function resolvePropertyTypeForMethods(MethodDefinition $prop)
+    protected function resolvePropertyTypeForMethods(MethodDeclarationNode $prop)
     {
-        foreach ($prop->args as $PropertyNode) {
-            $this->resolvePropertyTypes($PropertyNode);
+        foreach ($prop->parameters->params as $propertyNode) {
+            $this->resolvePropertyTypes($propertyNode);
         }
     }
 
-    protected function resolvePropertyTypes(PropertyNode $prop)
+    protected function resolvePropertyTypes(PropertyNode|ParamArgumentNode $prop)
     {
-        $typeString = is_string($prop->type) ? $prop->type : $prop->type->getRawType();
-        $types = str_contains((string) $typeString, '|') ? explode('|', (string) $typeString) : [$typeString];
         $resolved = [];
-        foreach ($types as $type) {
+        foreach ($prop->types as $type) {
             $resolved[] = $this->categorizeType($type);
         }
         $prop->resolvedTypeInfo = $resolved;

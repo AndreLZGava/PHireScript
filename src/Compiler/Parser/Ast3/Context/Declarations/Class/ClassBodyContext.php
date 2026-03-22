@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast3\Context\Declarations\Class;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\MethodDeclarationResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\PropertyResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ModifiersResolver;
@@ -32,6 +33,7 @@ class ClassBodyContext extends AbstractContext
             new ClosingCurlyBracketResolver(),
             new CommentResolver(),
             new ModifiersResolver(),
+            new MethodDeclarationResolver(),
         ];
     }
 
@@ -62,6 +64,6 @@ class ClassBodyContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === '}';
+        return $token->isClosingCurlyBracket();
     }
 }

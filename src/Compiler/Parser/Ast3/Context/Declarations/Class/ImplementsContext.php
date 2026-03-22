@@ -59,6 +59,6 @@ class ImplementsContext extends AbstractContext
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
         return $parseContext->tokenManager->getNextTokenAfterCurrent()->isKeyword() ||
-        $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '{';
+        $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningCurlyBracket();
     }
 }

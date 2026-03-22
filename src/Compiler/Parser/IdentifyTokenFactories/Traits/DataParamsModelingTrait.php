@@ -4,16 +4,8 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits;
 
-use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
-use PHireScript\Compiler\Parser\Ast\KeyValuePairNode;
-use PHireScript\Compiler\Parser\Ast\LiteralNode;
-use PHireScript\Compiler\Parser\Ast\Node;
-use PHireScript\Compiler\Parser\Ast\ObjectLiteralNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
 use PHireScript\Compiler\Parser\Managers\TokenManager;
-use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Compiler\Program;
-use PHireScript\Helper\Debug\Debug;
 
 trait DataParamsModelingTrait
 {
@@ -47,11 +39,11 @@ trait DataParamsModelingTrait
         $closeParenthesis = [];
         $tokensOfThisBlock = array_slice($this->tokenManager->getTokens(), $this->tokenManager->getCurrentPosition());
         foreach ($tokensOfThisBlock as $keyToken => $token) {
-            if ($token->value === '(') {
+            if ($token->isOpeningParenthesis()) {
                 $openParenthesis[] = $token;
             }
 
-            if ($token->value === ')') {
+            if ($token->isClosingParenthesis()) {
                 $closeParenthesis[] = $token;
                 if (count($openParenthesis) === count($closeParenthesis)) {
                     break;

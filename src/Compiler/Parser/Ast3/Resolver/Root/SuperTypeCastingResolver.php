@@ -15,7 +15,7 @@ class SuperTypeCastingResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->isSuperType() && $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '(';
+        return $token->isSuperType() && $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningParenthesis();
     }
 
     public function resolve(

@@ -39,7 +39,7 @@ class Transpiler implements TranspilerInterface
         $validator = new Validator();
         $validator->validate($tokens);
 
-        $parser = new Parser($this->config);
+        $parser = new Parser($this->config, $this->dependencyManager);
         $ast = $parser->parse($tokens, $path);
         // Debug::show($ast); exit;
         $symbolTable = new SymbolTable();

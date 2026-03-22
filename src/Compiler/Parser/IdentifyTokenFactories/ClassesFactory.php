@@ -10,21 +10,17 @@ use PHireScript\Compiler\Parser\Ast\ComplexObjectDefinition;
 use PHireScript\Compiler\Parser\Ast\ConstructorDefinition;
 use PHireScript\Compiler\Parser\Ast\IfStatementNode;
 use PHireScript\Compiler\Parser\Ast\IssetOperatorNode;
-use PHireScript\Compiler\Parser\Ast\MethodDefinition;
+use PHireScript\Compiler\Parser\Ast\MethodDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\NewExceptionNode;
-use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\NotOperatorNode;
 use PHireScript\Compiler\Parser\Ast\PropertyAccessNode;
 use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\ThisExpressionNode;
 use PHireScript\Compiler\Parser\Ast\ThrowStatementNode;
-use PHireScript\Compiler\Parser\Ast\TraitDefinition;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\FactoryInitializer;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
 use PHireScript\Compiler\Parser\Managers\TokenManager;
-use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\RuntimeClass;
 
 abstract class ClassesFactory extends GlobalFactory
@@ -32,7 +28,7 @@ abstract class ClassesFactory extends GlobalFactory
     use DataParamsModelingTrait;
 
     public Program $program;
-    public function getMethodBody(MethodDefinition $node): array
+    public function getMethodBody(MethodDeclarationNode $node): array
     {
         $codeBlockToken = $this->codeBlockToken();
         $factories = FactoryInitializer::getFactories();
@@ -57,7 +53,7 @@ abstract class ClassesFactory extends GlobalFactory
         return $result;
     }
 
-    public function getReturnType(MethodDefinition $node): ?string
+    public function getReturnType(MethodDeclarationNode $node): ?string
     {
         $codeBlockToken = $this->returnType($node);
         //        Debug::show($codeBlockToken);exit;
@@ -87,7 +83,7 @@ abstract class ClassesFactory extends GlobalFactory
             }
 
             if (
-                $token->value === ','
+                $token->isComma()
             ) {
                 continue;
             }
@@ -121,7 +117,7 @@ abstract class ClassesFactory extends GlobalFactory
             }
 
             if (
-                $token->value === ','
+                $token->isComma()
             ) {
                 continue;
             }
@@ -154,7 +150,7 @@ abstract class ClassesFactory extends GlobalFactory
             }
 
             if (
-                $token->value === ','
+                $token->isComma()
             ) {
                 continue;
             }
@@ -265,11 +261,11 @@ abstract class ClassesFactory extends GlobalFactory
         $tokensOfThisBlock = array_slice($this->tokenManager->getTokens(), $this->tokenManager->getCurrentPosition());
 
         foreach ($tokensOfThisBlock as $keyToken => $token) {
-            if ($token->value === '{') {
+            if ($token->isOpeningCurlyBracket()) {
                 $openBrackets[] = $token;
             }
 
-            if ($token->value === '}') {
+            if ($token->isClosingCurlyBracket()) {
                 $closeBrackets[] = $token;
                 if (count($openBrackets) === count($closeBrackets)) {
                     break;
@@ -282,7 +278,7 @@ abstract class ClassesFactory extends GlobalFactory
         return $tokensOfThisBlock;
     }
 
-    public function returnType(MethodDefinition $node): array
+    public function returnType(MethodDeclarationNode $node): array
     {
         $tokensOfThisBlock = array_slice($this->tokenManager->getTokens(), $this->tokenManager->getCurrentPosition());
         if (in_array($this->tokenManager->getCurrentToken()->type, ['T_EOL', 'T_COMMENT'], true)) {
@@ -307,7 +303,7 @@ abstract class ClassesFactory extends GlobalFactory
                 $capture &&
                 $token->isEndOfLine() ||
                 $isClass &&
-                $token->isSymbol() && $token->value === '{'
+                $token->isSymbol() && $token->isOpeningCurlyBracket()
             ) {
                 break;
             }

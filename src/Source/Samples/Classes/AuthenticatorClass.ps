@@ -12,7 +12,7 @@ external Symfony\Component\DependencyInjection\Loader\GlobFileLoader
 
 class AuthenticatorClass with Logger implements Authenticator, Another {
 
-    authenticate(UserCredentials credentials): Bool {
+    authenticate(Null|UserCredentials credentials = null): Bool {
         return true
     }
 
@@ -21,7 +21,7 @@ class AuthenticatorClass with Logger implements Authenticator, Another {
     }
 
     returnNull(): Null {
-        return Null
+        return null
     }
 
     returnStringSingle(): String {
@@ -45,7 +45,7 @@ class AuthenticatorClass with Logger implements Authenticator, Another {
     }
 
     returnArrayComplete(): Array {
-        return ['example' => ['another', 'array']]
+        return ['example': ['another', 'array']]
     }
 
     returnObjectEmpty(): Object {

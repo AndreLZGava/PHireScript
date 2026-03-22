@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
 use Exception;
-use PHireScript\Compiler\Parser\Ast\MethodDefinition;
+use PHireScript\Compiler\Parser\Ast\MethodDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\PropertyAccessNode;
-use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\VariableNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Parser\Transformers\ModifiersTransform;
-use PHireScript\Compiler\Program;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\RuntimeClass;
 
 class Method extends ClassesFactory
@@ -38,7 +35,7 @@ class Method extends ClassesFactory
             $this->parseContext->variables->getVariable($currentToken->value) &&
             $currentToken->isIdentifier() &&
             $nextToken->isSymbol() &&
-            $nextToken->value === '.' &&
+            $nextToken->isDot() &&
             $this->tokenManager->getNextToken()->isIdentifier()
         ) {
             $variable = $this->parseContext->variables->getVariable($currentToken->value);
@@ -52,7 +49,7 @@ class Method extends ClassesFactory
 
         if (
             $currentToken->isIdentifier() &&
-            $previousToken->value === '(' &&
+            $previousToken->isOpeningParenthesis() &&
             $nextToken->isIdentifier()
         ) {
             $type = new Type($this->tokenManager, $this->parseContext);
@@ -64,7 +61,7 @@ class Method extends ClassesFactory
             in_array($nextToken->value, ['?', '!', '('], true)
         ) {
            // $this->tokenManager->walk(in_array($nextToken->value, ['?', '!'], true) ? 2 : 1);
-            $node = new MethodDefinition($this->tokenManager->getCurrentToken());
+            $node = new MethodDeclarationNode($this->tokenManager->getCurrentToken());
             $node->name = trim((string) $currentToken->value);
             $node->mustBeBool = $nextToken->value === '?';
             $node->mustBeVoid = $nextToken->value === '!';

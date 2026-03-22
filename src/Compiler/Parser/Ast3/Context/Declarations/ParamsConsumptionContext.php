@@ -5,24 +5,18 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast3\Context\Declarations;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Context\Expressions\Types\QueueContext;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\ClosingParenthesisResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\ClosingParamsConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CommaResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ConsumptionParams\OpeningParenthesisResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayLiteralResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\QueueResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\VariableReferenceResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\ParamsNode;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
@@ -42,7 +36,7 @@ class ParamsConsumptionContext extends AbstractContext
             new ArrayLiteralResolver(),
             new VariableReferenceResolver(),
 
-            new ClosingParenthesisResolver(),
+            new ClosingParamsConsumptionResolver(),
             new CommaResolver(),
 
             new EndOfLineResolver(),
@@ -76,6 +70,6 @@ class ParamsConsumptionContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === ')';
+        return $token->isClosingParenthesis();
     }
 }

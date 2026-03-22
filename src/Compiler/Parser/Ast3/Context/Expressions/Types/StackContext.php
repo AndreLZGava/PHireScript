@@ -59,7 +59,7 @@ class StackContext extends AbstractContext
     public function validation(Token $token, ParseContext $parseContext): void
     {
         if (
-            ($token->isEndOfLine() || $token->value === '>') &&
+            ($token->isEndOfLine() || $token->isRightAngleBracket()) &&
             count($this->node->types) === 0
         ) {
             throw new CompileException(
@@ -72,6 +72,6 @@ class StackContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === '>';
+        return $token->isRightAngleBracket();
     }
 }

@@ -18,9 +18,35 @@ class Scanner
         'T_STRING_LIT'  => '/^"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|^\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'/',
         'T_NUMBER'      => '/^\d+(\.\d+)?/',
         'T_KEYWORD'     => '/^\b(class|interface|trait|type|extends|with|' .
-            'implements|inject|async|spawn|constructor|return|immutable|' .
+            'implements|inject|async|spawn|return|immutable|' .
             'if|else|elseif|this|self|super|pkg|use|as|external|abstract|' .
             'schedule|cache|singleton|scoped|transient|readonly|static|package)\b/',
+        'T_MAGIC_METHODS' => '/^\b(onCreate|onDestroy|onGet|onSet|onHas|onUnset' .
+            '|onCall|onStaticCall|toString|toSerialize|toUnserialize|beforeSerialize' .
+            '|afterUnserialize|onClone|toInspect)\b/',
+        // Magic Methods Mapping (FireScript → PHP)
+        //
+        // onCreate          → __construct
+        // onDestroy         → __destruct
+        //
+        // onGet     → __get
+        // onSet     → __set
+        // onHas     → __isset
+        // onUnset   → __unset
+        //
+        // onCall            → __call
+        // onStaticCall      → __callStatic
+        //
+        // toString          → __toString
+        //
+        // toSerialize         → __serialize
+        // toUnserialize       → __unserialize
+        // beforeSerialize   → __sleep   (hook)
+        // afterUnserialize  → __wakeup  (hook)
+        //
+        // onClone           → __clone
+        //
+        // toInspect           → __debugInfo
         'T_BOOL'        => '/^\b(true|false)\b/',
         'T_NULL'        => '/^\b(null)\b/',
         'T_EOL'         => '/^[\r\n]+/',

@@ -7,10 +7,8 @@ namespace PHireScript\Compiler\Parser\Ast3\Context\Expressions;
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\ColonResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CommaResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayKeyResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ObjectKeyResolver;
@@ -22,7 +20,6 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\Ast\ObjectLiteralNode;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
@@ -71,6 +68,6 @@ class ObjectLiteralContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === '}';
+        return $token->isClosingCurlyBracket();
     }
 }

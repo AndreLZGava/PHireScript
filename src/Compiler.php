@@ -6,9 +6,10 @@ namespace PHireScript;
 
 use PHireScript\Compiler\FileManager;
 use PHireScript\Core\CompilerContext;
-use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\FatalErrorException;
 use PHireScript\Transpiler;
 use PHireScript\TranspilerDependencyTree;
+use Throwable;
 
 class Compiler
 {
@@ -22,6 +23,11 @@ class Compiler
 
     public function compile(?string $sourceDir = null, ?string $distDir = null)
     {
+
+        set_exception_handler(function (Throwable $e) {
+            FatalErrorException::prettyException($e);
+        });
+
         $config = $this->loader->getConfigFile();
         $sourceDir = $sourceDir ?? $config['paths']['source'] . '/';
         $distDir = $distDir ?? $config['paths']['dist'] . '/';
@@ -30,7 +36,6 @@ class Compiler
 
         $listPrograms = $this->loader->load($sourceDir, $transpilerDependencyTree);
         $this->dependencyManager->buildGraph($listPrograms, $config);
-
         $transpiler = new Transpiler($config, $this->dependencyManager);
 
         $this->loader->loadAndCompile($sourceDir, $distDir, $transpiler);

@@ -41,7 +41,7 @@ class ClassEmitter implements NodeEmitter
 
         // ---- methods
         foreach ($node->body as $member) {
-            if ($member instanceof MethodDefinition) {
+            if ($member instanceof MethodDeclarationNode) {
                 $code .= $ctx->emitter->emit($member, $ctx);
             }
         }

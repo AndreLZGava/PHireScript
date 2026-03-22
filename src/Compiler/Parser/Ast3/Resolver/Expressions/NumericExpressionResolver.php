@@ -17,7 +17,7 @@ use PHireScript\Helper\Debug\Debug;
  */
 class NumericExpressionResolver implements ContextTokenResolver
 {
-    const MATH_OPERATORS = [
+    public const MATH_OPERATORS = [
     '*',
     '/',
     '-',
@@ -32,8 +32,19 @@ class NumericExpressionResolver implements ContextTokenResolver
         $hasOperator = in_array($next->value, self::MATH_OPERATORS);
 
         return ($token->isNumber() && $hasOperator) ||
-        ($token->isIdentifier() && $parseContext->variables->getVariable($token->value) && $hasOperator) ||
-        ($token->value === '(' && ($next->isNumber() || $token->isIdentifier() && $parseContext->variables->getVariable($next->value)));
+        (
+          $token->isIdentifier() &&
+          $parseContext->variables->getVariable($token->value) &&
+          $hasOperator
+        ) ||
+        (
+          $token->isOpeningParenthesis() &&
+          (
+            $next->isNumber() ||
+            $token->isIdentifier() &&
+            $parseContext->variables->getVariable($next->value)
+          )
+        );
     }
 
     public function resolve(

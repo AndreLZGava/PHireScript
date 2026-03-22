@@ -16,7 +16,7 @@ class PrimitiveCastingResolver implements ContextTokenResolver
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
         return $token->isPrimitive() &&
-            $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '(';
+            $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningParenthesis();
     }
 
     public function resolve(

@@ -8,13 +8,20 @@ use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
+use PHireScript\Helper\Debug\Debug;
 
 class TypeResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return ($token->isPrimitive() || $token->isSuperType() || $token->isMetaType()) &&
-        $parseContext->tokenManager->getNextTokenAfterCurrent()->value !== '(';
+        return (
+            $token->isNull() ||
+            $token->isPrimitive() ||
+            $token->isSuperType() ||
+            $token->isMetaType() ||
+            $parseContext->dependencyBuilder->isDependencyOf($parseContext->getCurrentPackage(), $token->value)
+        ) &&
+            $parseContext->tokenManager->getNextTokenAfterCurrent()->value !== '(';
     }
 
     public function resolve(

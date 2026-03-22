@@ -19,7 +19,7 @@ class TranspilerDependencyTree
         $scanner = new Scanner($code);
         $tokens = $scanner->tokenize();
 
-        $parser = new Parser($this->config);
+        $parser = new Parser($this->config, new DependencyGraphBuilder());
         $ast = $parser->parse($tokens, $path);
 
         return $ast;

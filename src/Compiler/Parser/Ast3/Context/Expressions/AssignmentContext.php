@@ -14,6 +14,7 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResol
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\PrimitiveCastingResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ListResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\MapResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NullLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ObjectLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\QueueResolver;
@@ -56,6 +57,7 @@ class AssignmentContext extends AbstractContext
             new PrimitiveCastingResolver(),
             new ArrayResolver(),
 
+            new NullLiteralResolver(),
             new StringLiteralResolver(),
             new NumberLiteralResolver(),
             new ArrayLiteralResolver(),

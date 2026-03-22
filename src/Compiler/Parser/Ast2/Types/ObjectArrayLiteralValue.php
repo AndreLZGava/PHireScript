@@ -6,17 +6,12 @@ namespace PHireScript\Compiler\Parser\Ast2\Types;
 
 use PHireScript\Compiler\Parser\Ast2\GlobalFactory;
 use PHireScript\Compiler\Parser\Ast\AssignmentNode;
-use PHireScript\Compiler\Parser\Ast\BoolNode;
 use PHireScript\Compiler\Parser\Ast\PrimitiveCastingNode;
 use PHireScript\Compiler\Parser\Ast\Node;
-use PHireScript\Compiler\Parser\Ast\NumberNode;
-use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
 use PHireScript\Compiler\Parser\Managers\Context\Context;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
-use PHireScript\Compiler\Program;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 
 class ObjectArrayLiteralValue extends GlobalFactory
 {
@@ -25,7 +20,7 @@ class ObjectArrayLiteralValue extends GlobalFactory
     public function isTheCase(Token $token, ParseContext $parseContext): bool
     {
         return $token->isSymbol() &&
-            ($token->value === '{' || $token->value === '[') &&
+            ($token->isOpeningCurlyBracket() || $token->isOpeningBracket()) &&
             (
                 $parseContext->context->getCurrentContext() === Context::Assignment ||
                 $parseContext->context->getCurrentContext() === Context::Casting

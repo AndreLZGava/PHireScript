@@ -150,6 +150,25 @@ class DependencyGraphBuilder
         return $result;
     }
 
+    public function getDependenciesOf($package): array
+    {
+        if (!isset($this->getNodes()[$package])) {
+            return [];
+        }
+        return $this->getNodes()[$package]?->dependsOn;
+    }
+    // @todo at some point we'll need to provide a way to handle alias.
+    public function isDependencyOf($currentPackage, $package): bool
+    {
+        foreach ($this->getDependenciesOf($currentPackage) as $item) {
+            if (is_string($item) && str_ends_with($item, $package)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getNodes(): array
     {
         return $this->nodes;

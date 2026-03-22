@@ -9,16 +9,12 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Root\Use\AsResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CommaResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\Use\IdentifierResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Root\OpeningCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\GroupUseNode;
-use PHireScript\Compiler\Parser\Ast\NamespaceNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
-use PhpParser\Node\Scalar\MagicConst\Dir;
 
 /**
  * @extends AbstractContext<ParamsNode>
@@ -83,6 +79,6 @@ class GroupUseContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->value === '}';
+        return $token->isClosingCurlyBracket();
     }
 }

@@ -9,11 +9,12 @@ use PHireScript\Compiler\Parser\Managers\TokenManager;
 use PHireScript\Compiler\Parser\Managers\VariableManager;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
+use PHireScript\DependencyGraphBuilder;
 use PHireScript\Runtime\RuntimeClass;
 
 class Parser
 {
-    public function __construct(private array $config)
+    public function __construct(private array $config, protected DependencyGraphBuilder $dependencyBuilder)
     {
     }
 
@@ -33,6 +34,7 @@ class Parser
             tokenManager: $tokenManager,
             contextManager: null,
             symbolTable: new SymbolTableManager(),
+            dependencyBuilder: $this->dependencyBuilder,
         );
 
         $rootContext = new ProgramContext($parseContext);

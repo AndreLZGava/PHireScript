@@ -56,6 +56,11 @@ class Token
         return $this->type === 'T_MODIFIER';
     }
 
+    public function isMagicMethod(): bool
+    {
+        return $this->type === 'T_MAGIC_METHODS';
+    }
+
     public function isType(): bool
     {
         return $this->isPrimitive() || $this->isSuperType() || $this->isMetaType();
@@ -95,5 +100,65 @@ class Token
     public function isBackslash(): bool
     {
         return $this->type === 'T_BACKSLASH';
+    }
+
+    public function isOpeningCurlyBracket(): bool
+    {
+        return $this->value === '{';
+    }
+
+    public function isClosingCurlyBracket(): bool
+    {
+        return $this->value === '}';
+    }
+
+    public function isOpeningParenthesis(): bool
+    {
+        return $this->value === '(';
+    }
+
+    public function isClosingParenthesis(): bool
+    {
+        return $this->value === ')';
+    }
+
+    public function isOpeningBracket(): bool
+    {
+        return $this->value === '[';
+    }
+
+    public function isClosingBracket(): bool
+    {
+        return $this->value === ']';
+    }
+
+    public function isLeftAngleBracket(): bool
+    {
+        return $this->value === '<';
+    }
+
+    public function isRightAngleBracket(): bool
+    {
+        return $this->value === '>';
+    }
+
+    public function isComma(): bool
+    {
+        return $this->value === ',';
+    }
+
+    public function isDot(): bool
+    {
+        return $this->value === '.';
+    }
+
+    public function isColon(): bool
+    {
+        return $this->value === ':';
+    }
+
+    public function isPipe(): bool
+    {
+        return $this->value === '|';
     }
 }

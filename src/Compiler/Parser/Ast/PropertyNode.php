@@ -10,7 +10,7 @@ class PropertyNode extends Node
 {
     public function __construct(
         public Token $token,
-        public null|Node|string $type,
+        public array $types,
         public string $name = '',
         public ?Node $value = null,
         public array $modifiers = [],

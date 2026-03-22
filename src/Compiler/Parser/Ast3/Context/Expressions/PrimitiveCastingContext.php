@@ -6,8 +6,8 @@ namespace PHireScript\Compiler\Parser\Ast3\Context\Expressions;
 
 use Exception;
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CastingConsumptionParams\ClosingParenthesisResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CastingConsumptionParams\OpeningParenthesisResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CastingConsumptionParams\ClosingParamsConsumptionResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\CastingConsumptionParams\OpeningParamsConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
@@ -31,8 +31,8 @@ class PrimitiveCastingContext extends AbstractContext
     {
         parent::__construct($node);
         $this->resolvers = [
-            new OpeningParenthesisResolver(),
-            new ClosingParenthesisResolver(),
+            new OpeningParamsConsumptionResolver(),
+            new ClosingParamsConsumptionResolver(),
 
             new StringLiteralResolver(),
             new BoolLiteralResolver(),
@@ -70,7 +70,7 @@ class PrimitiveCastingContext extends AbstractContext
     public function validation(Token $token, ParseContext $parseContext): void
     {
         if (
-            ($token->isEndOfLine() || $token->value === ')') &&
+            ($token->isEndOfLine() || $token->isClosingParenthesis()) &&
             is_null($this->node->value)
         ) {
             throw new CompileException(

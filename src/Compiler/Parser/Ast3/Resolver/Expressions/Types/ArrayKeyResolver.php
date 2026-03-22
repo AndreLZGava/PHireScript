@@ -29,7 +29,7 @@ class ArrayKeyResolver implements ContextTokenResolver
         $token->isNumber() ||
         ($token->isIdentifier() && $parseContext->variables->getVariable($token->value))
         ) &&
-        $parseContext->tokenManager->getNextTokenAfterCurrent()->value === ':';
+        $parseContext->tokenManager->getNextTokenAfterCurrent()->isColon();
     }
 
     public function resolve(

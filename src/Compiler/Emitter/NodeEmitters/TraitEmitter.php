@@ -8,7 +8,7 @@ use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\Internal\ConstructorEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\ClassNode;
-use PHireScript\Compiler\Parser\Ast\MethodDefinition;
+use PHireScript\Compiler\Parser\Ast\MethodDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\TraitDefinition;
 use PHireScript\Helper\Debug\Debug;
@@ -32,7 +32,7 @@ class TraitEmitter implements NodeEmitter
 
         // ---- methods
         foreach ($node->body as $member) {
-            if ($member instanceof MethodDefinition) {
+            if ($member instanceof MethodDeclarationNode) {
                 $code .= $ctx->emitter->emit($member, $ctx);
             }
         }

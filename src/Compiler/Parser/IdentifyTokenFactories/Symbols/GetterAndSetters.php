@@ -4,23 +4,17 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols;
 
-use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Ast\AssignmentNode;
-use PHireScript\Compiler\Parser\Ast\MethodDefinition;
+use PHireScript\Compiler\Parser\Ast\MethodDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\Node;
-use PHireScript\Compiler\Parser\Ast\ObjectLiteralNode;
 use PHireScript\Compiler\Parser\Ast\PropertyAccessNode;
 use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\ReturnNode;
 use PHireScript\Compiler\Parser\Ast\ThisExpressionNode;
-use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\VariableNode;
 use PHireScript\Compiler\Parser\Ast\VoidExpressionNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
-use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataArrayObjectModelingTrait;
-use PHireScript\Compiler\Parser\IdentifyTokenFactories\Traits\DataParamsModelingTrait;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
-use PHireScript\Compiler\Program;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Parser\Transformers\ModifiersTransform;
 use PHireScript\Runtime\RuntimeClass;
@@ -43,11 +37,11 @@ class GetterAndSetters extends GlobalFactory
 
     public function process(Token $token, ParseContext $parseContext): ?Node
     {
-        $node = new MethodDefinition($parseContext->tokenManager->getCurrentToken());
+        $node = new MethodDeclarationNode($parseContext->tokenManager->getCurrentToken());
         return $this->parseGetterAndSetter($node, $parseContext);
     }
 
-    private function parseGetterAndSetter(MethodDefinition $node, ParseContext $parseContext)
+    private function parseGetterAndSetter(MethodDeclarationNode $node, ParseContext $parseContext)
     {
         $tokens = $parseContext->tokenManager->getLeftTokens();
         $previous = $parseContext->tokenManager->getPreviousTokenBeforeCurrent();
@@ -78,7 +72,7 @@ class GetterAndSetters extends GlobalFactory
             }
         }
 
-        if ($currentToken->value === '>') {
+        if ($currentToken->isRightAngleBracket()) {
             $typeMethod = 'set';
             $arg = new PropertyNode($parseContext->tokenManager->getCurrentToken());
             $arg->name = $name;
@@ -100,7 +94,7 @@ class GetterAndSetters extends GlobalFactory
             $node->returnType = 'Void';
         }
 
-        if ($currentToken->value === '<') {
+        if ($currentToken->isLeftAngleBracket()) {
             $typeMethod = 'get';
             $node->args = [];
             $property = new PropertyAccessNode(

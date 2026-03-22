@@ -20,7 +20,7 @@ class ObjectKeyResolver implements ContextTokenResolver
         return (
         $token->isStringLiteral() ||
         $token->isIdentifier()) &&
-        $parseContext->tokenManager->getNextTokenAfterCurrent()->value === ':';
+        $parseContext->tokenManager->getNextTokenAfterCurrent()->isColon();
     }
 
     public function resolve(

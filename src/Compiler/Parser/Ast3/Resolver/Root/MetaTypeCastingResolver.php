@@ -14,7 +14,7 @@ class MetaTypeCastingResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->isMetaType() && $parseContext->tokenManager->getNextTokenAfterCurrent()->value === '(';
+        return $token->isMetaType() && $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningParenthesis();
     }
 
     public function resolve(

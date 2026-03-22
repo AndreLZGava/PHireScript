@@ -10,7 +10,7 @@ use PHireScript\Compiler\Checker\Root\ProgramChecker;
 use PHireScript\Compiler\Checker\Expression\Types\QueueChecker;
 use PHireScript\SymbolTable;
 use PHireScript\Compiler\Parser\Ast\ClassNode;
-use PHireScript\Compiler\Parser\Ast\MethodDefinition;
+use PHireScript\Compiler\Parser\Ast\MethodDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CheckerException;
@@ -77,13 +77,13 @@ class Checker
                 }
             }
 
-            if ($member instanceof MethodDefinition) {
+            if ($member instanceof MethodDeclarationNode) {
                 $this->validateMethodReturn($member);
             }
         }
     }
 
-    private function validateMethodReturn(MethodDefinition $method)
+    private function validateMethodReturn(MethodDeclarationNode $method)
     {
         $this->ensureReturnsForMethods($method);
 
@@ -123,7 +123,7 @@ class Checker
         return true;
     }
 
-    private function ensureReturnsForMethods(MethodDefinition $prop)
+    private function ensureReturnsForMethods(MethodDeclarationNode $prop)
     {
         $returnMethod = explode('|', (string) $prop->returnType);
         if (

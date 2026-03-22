@@ -16,7 +16,7 @@ class OpeningCurlyBracketResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->value === '{';
+        return $token->isOpeningCurlyBracket();
     }
 
     public function resolve(

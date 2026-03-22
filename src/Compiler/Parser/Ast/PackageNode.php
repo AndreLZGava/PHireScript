@@ -6,6 +6,7 @@ namespace PHireScript\Compiler\Parser\Ast;
 
 use Exception;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
+use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 use PHireScript\Runtime\RuntimeClass;
@@ -53,8 +54,9 @@ class PackageNode extends Statement
         }
     }
 
-    public function generateNamespace(array $config): void
+    public function generateNamespace(ParseContext $context): void
     {
+        $config = $context->contextManager->getConfig();
         $namespace = '';
         $namespace = current(explode('/' . $this->object, $this->file));
         $baseDir = rtrim((string) $config['paths']['source'], '/') . '/';
@@ -68,5 +70,6 @@ class PackageNode extends Statement
         $this->completePackage = $this->package . '.' . $this->object;
         $this->namespace = $config['namespace'] . '\\' . $namespace;
         $this->completeObjectReference = '\\' . $this->namespace . '\\' . $this->object . '::class';
+        $context->setCurrentPackage($this->completePackage);
     }
 }
