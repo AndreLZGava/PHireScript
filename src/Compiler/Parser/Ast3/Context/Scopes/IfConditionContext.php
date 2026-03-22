@@ -11,7 +11,15 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\VariableConsumptionRes
 use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\VariableResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayLiteralResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ArrayResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\BoolLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NullLiteralResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\NumberLiteralResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ObjectLiteralResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\PrimitiveCastingResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\StringLiteralResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ModifiersResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
@@ -27,17 +35,19 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ClosingCurlyBracketResolver a
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\MetaTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\PrimitiveResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\SuperTypeCastingResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Signatures\ClosingParamsDeclarationResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\IfResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\ReturnResolver;
+use PHireScript\Compiler\Parser\Ast\IfConditionNode;
 
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class MethodScopeContext extends AbstractContext
+class IfConditionContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(MethodScopeNode $node)
+    public function __construct(IfConditionNode $node)
     {
         parent::__construct($node);
         $this->resolvers = [
@@ -50,17 +60,22 @@ class MethodScopeContext extends AbstractContext
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
 
+            new PrimitiveCastingResolver(),
+            new ArrayResolver(),
+
+            new NullLiteralResolver(),
+            new StringLiteralResolver(),
+            new NumberLiteralResolver(),
+            new ArrayLiteralResolver(),
+            new BoolLiteralResolver(),
+            new ObjectLiteralResolver(),
+
             new TypesTypeResolver(),
             new PrimitiveResolver(),
             new SuperTypeCastingResolver(),
             new MetaTypeCastingResolver(),
 
-            new IfResolver(),
-
-            // for closing
-            new RootClosingCurlyBracketResolver(),
-            // this only for methods and functions
-            new ReturnResolver(),
+            new ClosingParamsDeclarationResolver(),
         ];
     }
 
@@ -71,33 +86,27 @@ class MethodScopeContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
-                $this->handleClassProperties($token, $keyResolver);
+                $this->handleConditions($token, $keyResolver);
 
                 return null;
             }
         }
 
         throw new CompileException(
-            $token->value . ' is not supported in method body definition context!',
+            $token->value . ' is not supported in if condition definition context!',
             $token->line,
             $token->column,
         );
     }
 
-    private function handleClassProperties(Token $token, int|string $keyResolver): void
+    private function handleConditions(Token $token, int|string $keyResolver): void
     {
         $this->node->children = $this->children;
     }
 
-    public function afterClose(Token $token, ParseContext $parseContext): void
-    {
-        if ($token->isClosingCurlyBracket()) {
-            $parseContext->contextManager->exit();
-        }
-    }
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->isClosingCurlyBracket();
+        return $token->isClosingParenthesis();
     }
 }

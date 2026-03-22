@@ -6,7 +6,6 @@ namespace PHireScript\Compiler\Parser\Ast3\Resolver\Declaration;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast3\Context\Declarations\MethodDeclarationContext;
-use PHireScript\Compiler\Parser\Ast3\Context\Declarations\PropertyDeclarationContext;
 use PHireScript\Compiler\Parser\Ast3\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ModifiersResolver;
 use PHireScript\Compiler\Parser\Ast\MethodDeclarationNode;
@@ -18,7 +17,7 @@ class MethodDeclarationResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return ($token->isIdentifier() || $token->isIdentifier())
+        return ($token->isIdentifier() || $token->isMagicMethod())
             && $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningParenthesis();
     }
 

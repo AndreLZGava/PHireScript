@@ -28,12 +28,6 @@ class FunctionCallResolver implements ContextTokenResolver
     private bool $assignmentContext = false;
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        if (
-            $token->isIdentifier() &&
-            $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningParenthesis()
-        ) {
-            //   Debug::show($parseContext->variables->getVariableOnFocus());
-        }
         try {
             return $token->isIdentifier() &&
                 $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningParenthesis() &&

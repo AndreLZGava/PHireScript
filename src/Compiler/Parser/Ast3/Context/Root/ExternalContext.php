@@ -55,8 +55,6 @@ class ExternalContext extends AbstractContext
                 return null;
             }
         }
-        Debug::show($token);
-        exit;
         throw new CompileException(
             $token->value . ' is not supported in external definition context!',
             $token->line,

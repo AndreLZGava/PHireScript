@@ -6,22 +6,21 @@ namespace PHireScript\Compiler\Emitter\Internal;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\IfStatementNode;
+use PHireScript\Compiler\Parser\Ast\IfNode;
+use PHireScript\Helper\Debug\Debug;
 
 class IfStatementEmitter implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {
-        return $node instanceof IfStatementNode;
+        return $node instanceof IfNode;
     }
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        $condition = $ctx->emitter->emit($node->condition, $ctx);
+        $condition = $ctx->emitter->emit($node->condition->children[0], $ctx);
 
-        $body = is_array($node->statements)
-        ? $this->emitBody($node->statements, $ctx)
-        : $ctx->emitter->emit($node->statements, $ctx);
+        $body = $this->emitBody($node->statements->children, $ctx);
 
         $code = "if ($condition) {\n            $body\n        }";
 
@@ -35,7 +34,7 @@ class IfStatementEmitter implements NodeEmitter
 
     private function emitBody(array $nodes, EmitContext $ctx): string
     {
-        return implode("\n            ", array_map(
+        return implode("\n", array_map(
             fn($n) => $ctx->emitter->emit($n, $ctx),
             $nodes
         ));

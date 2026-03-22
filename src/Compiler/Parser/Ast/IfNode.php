@@ -6,12 +6,11 @@ namespace PHireScript\Compiler\Parser\Ast;
 
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 
-class IfStatementNode extends Statement
-{
+class IfNode extends Statement {
     public function __construct(
-        Token $token,
-        public mixed $condition,
-        public mixed $statements,
+        public Token $token,
+        public ?IfConditionNode $condition = null,
+        public ?IfScopeNode $statements = null,
         public array $elseStatements = []
     ) {
     }
