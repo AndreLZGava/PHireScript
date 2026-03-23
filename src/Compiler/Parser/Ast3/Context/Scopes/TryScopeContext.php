@@ -30,15 +30,16 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Root\SuperTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\IfResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\ReturnResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\TryResolver;
+use PHireScript\Compiler\Parser\Ast\TryScopeNode;
 
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class MethodScopeContext extends AbstractContext
+class TryScopeContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(MethodScopeNode $node)
+    public function __construct(TryScopeNode $node)
     {
         parent::__construct($node);
         $this->resolvers = [
@@ -80,7 +81,7 @@ class MethodScopeContext extends AbstractContext
         }
 
         throw new CompileException(
-            $token->value . ' is not supported in method body definition context!',
+            $token->value . ' is not supported in try scope definition context!',
             $token->line,
             $token->column,
         );
@@ -89,13 +90,6 @@ class MethodScopeContext extends AbstractContext
     private function handleClassProperties(Token $token, int|string $keyResolver): void
     {
         $this->node->children = $this->children;
-    }
-
-    public function afterClose(Token $token, ParseContext $parseContext): void
-    {
-        if ($token->isClosingCurlyBracket()) {
-            $parseContext->contextManager->exit();
-        }
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool

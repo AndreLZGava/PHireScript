@@ -30,15 +30,17 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Root\SuperTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\IfResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\ReturnResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\TryResolver;
+use PHireScript\Compiler\Parser\Ast\HandleNode;
+use PHireScript\Compiler\Parser\Ast\TryScopeNode;
 
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class MethodScopeContext extends AbstractContext
+class HandleScopeContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(MethodScopeNode $node)
+    public function __construct(HandleNode $node)
     {
         parent::__construct($node);
         $this->resolvers = [
@@ -80,7 +82,7 @@ class MethodScopeContext extends AbstractContext
         }
 
         throw new CompileException(
-            $token->value . ' is not supported in method body definition context!',
+            $token->value . ' is not supported in handle scope definition context!',
             $token->line,
             $token->column,
         );

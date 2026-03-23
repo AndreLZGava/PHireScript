@@ -5,19 +5,17 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast3\Context\Scopes;
 
 use PHireScript\Compiler\Parser\Ast3\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\MethodDeclarationResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\PropertyResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\VariableConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Declaration\VariableResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\FunctionCallResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
-use PHireScript\Compiler\Parser\Ast3\Resolver\Root\ModifiersResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Root\OpeningCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\MethodScopeNode;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\OpeningHandleScopeResolver;
+use PHireScript\Compiler\Parser\Ast\AlwaysScopeNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -34,11 +32,11 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\TryResolver;
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class MethodScopeContext extends AbstractContext
+class AlwaysScopeContext extends AbstractContext
 {
     private array $resolvers;
 
-    public function __construct(MethodScopeNode $node)
+    public function __construct(AlwaysScopeNode $node)
     {
         parent::__construct($node);
         $this->resolvers = [
@@ -68,7 +66,6 @@ class MethodScopeContext extends AbstractContext
 
     public function handle(Token $token, ParseContext $parseContext): ?Node
     {
-
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
@@ -80,7 +77,7 @@ class MethodScopeContext extends AbstractContext
         }
 
         throw new CompileException(
-            $token->value . ' is not supported in method body definition context!',
+            $token->value . ' is not supported in always scope definition context!',
             $token->line,
             $token->column,
         );
@@ -100,6 +97,8 @@ class MethodScopeContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->isClosingCurlyBracket();
+        return $token->isClosingCurlyBracket() ||
+            $parseContext->tokenManager
+            ->getNextTokenAfterCurrent()->value === 'always';
     }
 }

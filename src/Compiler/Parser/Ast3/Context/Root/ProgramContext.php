@@ -29,6 +29,7 @@ use PHireScript\Compiler\Parser\Ast3\Resolver\Root\PrimitiveResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\SuperTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Root\UseResolver;
 use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\IfResolver;
+use PHireScript\Compiler\Parser\Ast3\Resolver\Statements\TryResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -69,6 +70,7 @@ class ProgramContext extends AbstractContext
             new MetaTypeCastingResolver(),
 
             new IfResolver(),
+            new TryResolver(),
 
             // these won't appear in any other sub context
             // declaration

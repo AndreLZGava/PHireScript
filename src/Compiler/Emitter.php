@@ -6,11 +6,14 @@ namespace PHireScript\Compiler;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\EmitterDispatcher;
+use PHireScript\Compiler\Emitter\Internal\AlwaysEmitter;
+use PHireScript\Compiler\Emitter\Internal\HandleEmitter;
 use PHireScript\Compiler\Emitter\Internal\IfStatementEmitter;
 use PHireScript\Compiler\Emitter\Internal\IssetOperatorEmitter;
 use PHireScript\Compiler\Emitter\Internal\NewExceptionEmitter;
 use PHireScript\Compiler\Emitter\Internal\NotOperatorEmitter;
 use PHireScript\Compiler\Emitter\Internal\ThrowStatementEmitter;
+use PHireScript\Compiler\Emitter\Internal\TryEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ArrayLiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\BinaryExpressionEmitter;
@@ -36,7 +39,9 @@ use PHireScript\Compiler\Emitter\NodeEmitters\NullEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\NumberEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ObjectLiteralEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PackageEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\ParamArgumentEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ParameterEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\ParamsListEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ProgramEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyAccessEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyDeclarationEmitter;
@@ -110,11 +115,16 @@ class Emitter
             new CommentStatementEmitter(),
             new GlobalStatementEmitter(),
             new IfStatementEmitter(),
+            new TryEmitter(),
+            new HandleEmitter(),
+            new AlwaysEmitter(),
             new IssetOperatorEmitter(),
             new NotOperatorEmitter(),
             new ThrowStatementEmitter(),
             new NewExceptionEmitter(),
             new CastingEmitter(),
+            new ParamsListEmitter(),
+            new ParamArgumentEmitter(),
         ]);
     }
 

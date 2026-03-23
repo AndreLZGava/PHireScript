@@ -22,7 +22,7 @@ class IfStatementEmitter implements NodeEmitter
 
         $body = $this->emitBody($node->statements->children, $ctx);
 
-        $code = "if ($condition) {\n            $body\n        }";
+        $code = "if ($condition) {\n $body\n}";
 
         if (!empty($node->elseStatements)) {
             $elseBody = $this->emitBody($node->elseStatements, $ctx);
