@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Emitter\Type;
 
 use PHireScript\Compiler\Emitter\UseRegistry;
-use PHireScript\Compiler\Parser\Ast\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Types\UnionType;
 

@@ -7,10 +7,10 @@ namespace PHireScript\Compiler\Checker\Expression;
 use Exception;
 use PHireScript\Compiler\Checker as CompilerChecker;
 use PHireScript\Compiler\Checker\Checker;
-use PHireScript\Compiler\Parser\Ast\FunctionNode;
-use PHireScript\Compiler\Parser\Ast\Node;
-use PHireScript\Compiler\Parser\Ast\QueueNode;
-use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\FunctionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Node;
+use PHireScript\Compiler\Parser\Ast\Nodes\QueueNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\VariableDeclarationNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 

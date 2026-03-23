@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace PHireScript\Compiler;
 
 use PHireScript\SymbolTable;
-use PHireScript\Compiler\Parser\Ast\ClassNode;
-use PHireScript\Compiler\Parser\Ast\UseNode;
-use PHireScript\Compiler\Parser\Ast\DependencyStatement;
-use PHireScript\Compiler\Parser\Ast\InterfaceNode;
-use PHireScript\Compiler\Parser\Ast\MethodDeclarationNode;
-use PHireScript\Compiler\Parser\Ast\ParamArgumentNode;
-use PHireScript\Compiler\Parser\Ast\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\UseNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\DependencyStatement;
+use PHireScript\Compiler\Parser\Ast\Nodes\InterfaceNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\MethodDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\ParamArgumentNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
 
 class Binder

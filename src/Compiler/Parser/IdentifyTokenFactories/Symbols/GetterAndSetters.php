@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols;
 
-use PHireScript\Compiler\Parser\Ast\AssignmentNode;
-use PHireScript\Compiler\Parser\Ast\MethodDeclarationNode;
-use PHireScript\Compiler\Parser\Ast\Node;
-use PHireScript\Compiler\Parser\Ast\PropertyAccessNode;
-use PHireScript\Compiler\Parser\Ast\PropertyNode;
-use PHireScript\Compiler\Parser\Ast\ReturnNode;
-use PHireScript\Compiler\Parser\Ast\ThisExpressionNode;
-use PHireScript\Compiler\Parser\Ast\VariableNode;
-use PHireScript\Compiler\Parser\Ast\VoidExpressionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\AssignmentNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\MethodDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Node;
+use PHireScript\Compiler\Parser\Ast\Nodes\PropertyAccessNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\ReturnNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\ThisExpressionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\VariableNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\VoidExpressionNode;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\GlobalFactory;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;

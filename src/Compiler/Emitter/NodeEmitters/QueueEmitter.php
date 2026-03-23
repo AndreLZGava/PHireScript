@@ -6,8 +6,8 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\BoolNode;
-use PHireScript\Compiler\Parser\Ast\QueueNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\BoolNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\QueueNode;
 
 class QueueEmitter implements NodeEmitter
 {

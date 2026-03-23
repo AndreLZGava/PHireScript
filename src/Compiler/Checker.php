@@ -9,9 +9,9 @@ use PHireScript\Compiler\Checker\Expression\MethodConsumptionChecker;
 use PHireScript\Compiler\Checker\Root\ProgramChecker;
 use PHireScript\Compiler\Checker\Expression\Types\QueueChecker;
 use PHireScript\SymbolTable;
-use PHireScript\Compiler\Parser\Ast\ClassNode;
-use PHireScript\Compiler\Parser\Ast\MethodDeclarationNode;
-use PHireScript\Compiler\Parser\Ast\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\MethodDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CheckerException;
 
@@ -88,7 +88,7 @@ class Checker
         $this->ensureReturnsForMethods($method);
 
         foreach ($method->bodyCode as $node) {
-            if ($node instanceof \PHireScript\Compiler\Parser\Ast\ReturnNode) {
+            if ($node instanceof \PHireScript\Compiler\Parser\Ast\Nodes\ReturnNode) {
                 $this->checkTypeCompatibility($method->returnType, $node->expression, $method->name);
             }
         }
@@ -96,7 +96,7 @@ class Checker
 
     private function checkTypeCompatibility($declaredType, $expressionNode, $methodName)
     {
-        if ($expressionNode instanceof \PHireScript\Compiler\Parser\Ast\ArrayLiteralNode) {
+        if ($expressionNode instanceof \PHireScript\Compiler\Parser\Ast\Nodes\ArrayLiteralNode) {
             if ($declaredType === 'Array') {
                 return true;
             }
@@ -196,15 +196,15 @@ class Checker
     private function getNodeType($node): string
     {
 
-        if ($node instanceof \PHireScript\Compiler\Parser\Ast\LiteralNode) {
+        if ($node instanceof \PHireScript\Compiler\Parser\Ast\Nodes\LiteralNode) {
             return $node->rawType;
         }
 
-        if ($node instanceof \PHireScript\Compiler\Parser\Ast\ArrayLiteralNode) {
+        if ($node instanceof \PHireScript\Compiler\Parser\Ast\Nodes\ArrayLiteralNode) {
             return 'Array';
         }
 
-        if ($node instanceof \PHireScript\Compiler\Parser\Ast\VariableDeclarationNode) {
+        if ($node instanceof \PHireScript\Compiler\Parser\Ast\Nodes\VariableDeclarationNode) {
             return $this->table->getType($node->name, $node->line);
         }
 

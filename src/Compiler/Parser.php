@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler;
 
-use PHireScript\Compiler\Parser\Ast3\Context\Root\ProgramContext;
+use PHireScript\Compiler\Parser\Ast\Context\Root\ProgramContext;
 use PHireScript\Compiler\Parser\Managers\ContextManager;
 use PHireScript\Compiler\Parser\Managers\TokenManager;
 use PHireScript\Compiler\Parser\Managers\VariableManager;

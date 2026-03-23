@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\GlobalStatement;
+use PHireScript\Compiler\Parser\Ast\Nodes\GlobalStatement;
 
 class GlobalStatementEmitter implements NodeEmitter
 {

@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\LiteralNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\LiteralNode;
 use PHireScript\Helper\Debug\Debug;
 
 class LiteralEmitter implements NodeEmitter

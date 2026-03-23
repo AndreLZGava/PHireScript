@@ -7,7 +7,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 use Exception;
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\MethodDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\MethodDeclarationNode;
 use PHireScript\Helper\Debug\Debug;
 
 class MethodEmitter implements NodeEmitter

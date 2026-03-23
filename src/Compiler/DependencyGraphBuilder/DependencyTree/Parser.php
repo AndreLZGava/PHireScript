@@ -2,7 +2,7 @@
 
 namespace PHireScript\Compiler\DependencyGraphBuilder\DependencyTree;
 
-use PHireScript\Compiler\Parser\Ast3\Context\Root\ProgramContext;
+use PHireScript\Compiler\Parser\Ast\Context\Root\ProgramContext;
 use PHireScript\Compiler\Parser\Managers\ContextManager;
 use PHireScript\Compiler\Parser\Managers\SymbolTableManager;
 use PHireScript\Compiler\Parser\Managers\TokenManager;

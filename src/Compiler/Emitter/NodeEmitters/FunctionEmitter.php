@@ -7,7 +7,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 use Exception;
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\FunctionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\FunctionNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 

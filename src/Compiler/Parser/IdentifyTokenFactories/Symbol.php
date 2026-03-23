@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\IdentifyTokenFactories;
 
-use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\ArrayCastVariable;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\BlockBracketsCommaOnMethod;
 use PHireScript\Compiler\Parser\IdentifyTokenFactories\Symbols\BlockBrackets;

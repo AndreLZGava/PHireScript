@@ -6,8 +6,8 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\ListNode;
-use PHireScript\Compiler\Parser\Ast\StackNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\ListNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\StackNode;
 
 class StackEmitter implements NodeEmitter
 {

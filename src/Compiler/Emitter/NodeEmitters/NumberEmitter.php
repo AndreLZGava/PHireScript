@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\NumberNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\NumberNode;
 
 class NumberEmitter implements NodeEmitter
 {

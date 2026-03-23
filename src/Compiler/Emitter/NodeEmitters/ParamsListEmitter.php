@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\ParamsListNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\ParamsListNode;
 
 class ParamsListEmitter implements NodeEmitter
 {

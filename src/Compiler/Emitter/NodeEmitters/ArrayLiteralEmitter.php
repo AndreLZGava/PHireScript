@@ -6,8 +6,8 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\ArrayLiteralNode;
-use PHireScript\Compiler\Parser\Ast\CommentNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\ArrayLiteralNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\CommentNode;
 use PHireScript\Helper\Debug\Debug;
 
 class ArrayLiteralEmitter implements NodeEmitter

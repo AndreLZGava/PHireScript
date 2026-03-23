@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Emitter\Internal;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\IfNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\IfNode;
 use PHireScript\Helper\Debug\Debug;
 
 class IfStatementEmitter implements NodeEmitter

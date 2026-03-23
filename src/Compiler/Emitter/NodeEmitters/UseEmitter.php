@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\UseNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\UseNode;
 use PHireScript\Helper\Debug\Debug;
 
 class UseEmitter implements NodeEmitter

@@ -3,10 +3,10 @@
 namespace PHireScript;
 
 use PHireScript\Compiler\DependencyGraphBuilder\Node;
-use PHireScript\Compiler\Parser\Ast\ClassNode;
-use PHireScript\Compiler\Parser\Ast\PackageNode;
-use PHireScript\Compiler\Parser\Ast\UseNode;
-use PHireScript\Compiler\Parser\Ast\InterfaceNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\PackageNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\UseNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\InterfaceNode;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 

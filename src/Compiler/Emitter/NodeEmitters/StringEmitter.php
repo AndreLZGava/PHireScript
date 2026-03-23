@@ -6,8 +6,8 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\Literal\StringLiteral;
-use PHireScript\Compiler\Parser\Ast\StringNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Literal\StringLiteral;
+use PHireScript\Compiler\Parser\Ast\Nodes\StringNode;
 
 class StringEmitter implements NodeEmitter
 {

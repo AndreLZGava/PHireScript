@@ -7,10 +7,10 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\Internal\ConstructorEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\ClassNode;
-use PHireScript\Compiler\Parser\Ast\MethodDeclarationNode;
-use PHireScript\Compiler\Parser\Ast\PropertyNode;
-use PHireScript\Compiler\Parser\Ast\TraitDefinition;
+use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\MethodDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\TraitDefinition;
 use PHireScript\Helper\Debug\Debug;
 
 class TraitEmitter implements NodeEmitter

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Managers;
 
-use PHireScript\Compiler\Parser\Ast\PropertyNode;
-use PHireScript\Compiler\Parser\Ast\VariableDeclarationNode;
-use PHireScript\Compiler\Parser\Ast\VariableReferenceNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\VariableDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\VariableReferenceNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 

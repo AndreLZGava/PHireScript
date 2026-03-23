@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Checker\Root;
 
 use PHireScript\Compiler\Checker as CompilerChecker;
 use PHireScript\Compiler\Checker\Checker;
-use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Checker;
 
 use PHireScript\Compiler\Checker as CompilerChecker;
-use PHireScript\Compiler\Parser\Ast\Node;
+use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 
 interface Checker
 {

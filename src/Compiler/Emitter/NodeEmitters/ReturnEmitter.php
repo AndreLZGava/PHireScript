@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\ReturnNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\ReturnNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Types\TypeGuard;
 

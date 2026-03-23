@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Emitter\Internal;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\IssetOperatorNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\IssetOperatorNode;
 
 class IssetOperatorEmitter implements NodeEmitter
 {

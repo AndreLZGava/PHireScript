@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\ExternalNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\ExternalNode;
 
 class ExternalEmitter implements NodeEmitter
 {

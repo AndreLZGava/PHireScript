@@ -6,8 +6,8 @@ namespace PHireScript\Compiler\Emitter\Internal;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
-use PHireScript\Compiler\Parser\Ast\ClassNode;
-use PHireScript\Compiler\Parser\Ast\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
 
 class ConstructorEmitter implements NodeEmitter
 {

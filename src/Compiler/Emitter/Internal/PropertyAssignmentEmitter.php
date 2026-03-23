@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Emitter\Internal;
 
 use PHireScript\Compiler\Emitter\EmitContext;
-use PHireScript\Compiler\Parser\Ast\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
 
 class PropertyAssignmentEmitter
 {
