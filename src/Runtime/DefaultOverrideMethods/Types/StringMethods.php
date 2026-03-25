@@ -12,7 +12,7 @@ class StringMethods extends GeneralType {
     public function length() {
         return new BaseMethods(
             'length',
-            'strlen(@self)',
+            '\strlen(@self)',
             ['Int'],
         );
     }
@@ -20,7 +20,7 @@ class StringMethods extends GeneralType {
     public function toUpperCase() {
         return new BaseMethods(
             'toUpperCase',
-            phpCodeForConversion: 'mb_strtoupper(@self, @format)',
+            phpCodeForConversion: '\mb_strtoupper(@self, @format)',
             returnOfPhpExecution: ['String'],
             params: [
                 new BaseParams('@format', 'string', false, 'UTF-8'),
@@ -31,7 +31,7 @@ class StringMethods extends GeneralType {
     public function toLowerCase() {
         return new BaseMethods(
             'toLowerCase',
-            phpCodeForConversion: 'mb_strtolower(@self, @format)',
+            phpCodeForConversion: '\mb_strtolower(@self, @format)',
             returnOfPhpExecution: ['String'],
             params: [
                 new BaseParams('@format', 'string', false, 'UTF-8'),
@@ -42,7 +42,7 @@ class StringMethods extends GeneralType {
     public function replace() {
         return new BaseMethods(
             'replace',
-            phpCodeForConversion: 'str_replace(@from, @to, @self)',
+            phpCodeForConversion: '\str_replace(@from, @to, @self)',
             returnOfPhpExecution: ['String'],
             params: [
                 new BaseParams('@from', 'string', true),
@@ -54,7 +54,7 @@ class StringMethods extends GeneralType {
     public function removeSpaces() {
         return new BaseMethods(
             'removeSpaces',
-            phpCodeForConversion: 'trim(@self, @characters)',
+            phpCodeForConversion: '\trim(@self, @characters)',
             returnOfPhpExecution: ['String'],
             params: [
                 new BaseParams('@characters', 'string', false, null),
@@ -65,7 +65,7 @@ class StringMethods extends GeneralType {
     public function removeSpacesLeft() {
         return new BaseMethods(
             'removeSpacesLeft',
-            phpCodeForConversion: 'ltrim(@self, @characters)',
+            phpCodeForConversion: '\ltrim(@self, @characters)',
             returnOfPhpExecution: ['String'],
             params: [
                 new BaseParams('@characters', 'string', false, null),
@@ -76,7 +76,7 @@ class StringMethods extends GeneralType {
     public function removeSpacesRight() {
         return new BaseMethods(
             'removeSpacesRight',
-            phpCodeForConversion: 'rtrim(@self, @characters)',
+            phpCodeForConversion: '\rtrim(@self, @characters)',
             returnOfPhpExecution: ['String'],
             params: [
                 new BaseParams('@characters', 'string', false, null),
@@ -87,7 +87,7 @@ class StringMethods extends GeneralType {
     public function removeAllSpaces() {
         return new BaseMethods(
             'removeAllSpaces',
-            phpCodeForConversion: "preg_replace('/\s+/', '', @self)",
+            phpCodeForConversion: "\preg_replace('/\s+/', '', @self)",
             returnOfPhpExecution: ['String'],
         );
     }
@@ -95,7 +95,7 @@ class StringMethods extends GeneralType {
     public function contains() {
         return new BaseMethods(
             'contains?',
-            phpCodeForConversion: 'str_contains(@self, @characters)',
+            phpCodeForConversion: '\str_contains(@self, @characters)',
             returnOfPhpExecution: ['Bool'],
             params: [
                 new BaseParams('@characters', 'string', true),
@@ -106,7 +106,7 @@ class StringMethods extends GeneralType {
     public function endWith() {
         return new BaseMethods(
             'endWith?',
-            phpCodeForConversion: 'str_ends_with(@self, @characters)',
+            phpCodeForConversion: '\str_ends_with(@self, @characters)',
             returnOfPhpExecution: ['Bool'],
             params: [
                 new BaseParams('@characters', 'string', true),
@@ -117,7 +117,7 @@ class StringMethods extends GeneralType {
     public function startWith() {
         return new BaseMethods(
             'startWith?',
-            phpCodeForConversion: 'str_starts_with(@self, @characters)',
+            phpCodeForConversion: '\str_starts_with(@self, @characters)',
             returnOfPhpExecution: ['Bool'],
             params: [
                 new BaseParams('@characters', 'string', true),
@@ -128,7 +128,7 @@ class StringMethods extends GeneralType {
     public function decrement() {
         return new BaseMethods(
             'decrement',
-            phpCodeForConversion: 'str_decrement(@self)',
+            phpCodeForConversion: '\str_decrement(@self)',
             returnOfPhpExecution: ['String'],
         );
     }
@@ -136,7 +136,7 @@ class StringMethods extends GeneralType {
     public function increment() {
         return new BaseMethods(
             'increment',
-            phpCodeForConversion: 'str_increment(@self)',
+            phpCodeForConversion: '\str_increment(@self)',
             returnOfPhpExecution: ['String'],
         );
     }
@@ -144,7 +144,7 @@ class StringMethods extends GeneralType {
     public function getCsv() {
         return new BaseMethods(
             'getCsv',
-            phpCodeForConversion: 'str_getcsv(@self, @separator, @enclosure, @escape)',
+            phpCodeForConversion: '\str_getcsv(@self, @separator, @enclosure, @escape)',
             returnOfPhpExecution: ['Array'],
             params: [
                 new BaseParams('@separator', 'string', false, ','),
@@ -157,7 +157,7 @@ class StringMethods extends GeneralType {
     public function join() {
         return new BaseMethods(
             'join',
-            phpCodeForConversion: '@self . implode(\'\', [@params])',
+            phpCodeForConversion: '@self . \implode(\'\', [@params])',
             returnOfPhpExecution: ['String'],
             params: [
                 new BaseParams('@params', 'string', true),
@@ -168,7 +168,7 @@ class StringMethods extends GeneralType {
     public function repeat() {
         return new BaseMethods(
             'repeat',
-            phpCodeForConversion: 'str_repeat("@self, @times)',
+            phpCodeForConversion: '\str_repeat(@self, @times)',
             returnOfPhpExecution: ['String'],
             params: [
                 new BaseParams('@times', 'int', true),
@@ -179,7 +179,7 @@ class StringMethods extends GeneralType {
     public function shuffle() {
         return new BaseMethods(
             'shuffle',
-            phpCodeForConversion: 'str_shuffle(@self)',
+            phpCodeForConversion: '\str_shuffle(@self)',
             returnOfPhpExecution: ['String'],
         );
     }
@@ -187,7 +187,7 @@ class StringMethods extends GeneralType {
     public function splitEvery() {
         return new BaseMethods(
              'splitEvery',
-            phpCodeForConversion: 'str_split(@self, @counting)',
+            phpCodeForConversion: '\str_split(@self, @counting)',
             returnOfPhpExecution: ['String'],
             params: [
                 new BaseParams('@counting', 'int', false, 1),
@@ -198,7 +198,7 @@ class StringMethods extends GeneralType {
     public function wordCount() {
         return new BaseMethods(
              'wordCount',
-            phpCodeForConversion: 'str_word_count(@self, @format, @characters)',
+            phpCodeForConversion: '\str_word_count(@self, @format, @characters)',
             returnOfPhpExecution: ['Int'],
             params: [
                 new BaseParams('@format', 'int', false, 0),
@@ -210,7 +210,7 @@ class StringMethods extends GeneralType {
     public function split() {
         return new BaseMethods(
             'split',
-            phpCodeForConversion: 'explode(@separator, @self, @limit)',
+            phpCodeForConversion: '\explode(@separator, @self, @limit)',
             returnOfPhpExecution: ['Array'],
             subTypes: ['String'],
             params: [

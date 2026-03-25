@@ -18,7 +18,9 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\RangeResolver;
 use PHireScript\Compiler\Parser\ParseContext;
+use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
@@ -39,6 +41,7 @@ class ArrayLiteralContext extends AbstractContext
             new ClosingBracketResolver(),
             new ArrayKeyResolver(),
 
+            new RangeResolver(),
             new BoolLiteralResolver(),
             new StringLiteralResolver(),
             new NumberLiteralResolver(),

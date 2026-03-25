@@ -8,7 +8,7 @@ class BaseMethods
 {
     public function __construct(
         public string $name,
-        public string $phpCodeForConversion,
+        public string|array $phpCodeForConversion,
         public array $returnOfPhpExecution,
         public array $subTypes = [],
         public array $params = [],

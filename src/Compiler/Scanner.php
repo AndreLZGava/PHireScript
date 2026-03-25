@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PHireScript\Compiler;
 
 use PHireScript\Compiler\Parser\Managers\Token\Token;
+use PHireScript\Helper\Debug\Debug;
 
-class Scanner
-{
+class Scanner {
     private readonly string $code;
     private int $cursor = 0;
     private int $line = 1;
@@ -16,6 +16,7 @@ class Scanner
     private const PATTERNS = [
         'T_COMMENT'     => '/^\/\/.*|^\/\*[\s\S]*?\*\//',
         'T_STRING_LIT'  => '/^"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|^\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'/',
+        'T_RANGE' => '/^-?\d+\.\.-?\d+/',
         'T_NUMBER'      => '/^\d+(\.\d+)?/',
         'T_KEYWORD'     => '/^\b(class|interface|trait|type|extends|with|' .
             'implements|inject|async|spawn|return|immutable|try|handle|always' .
@@ -65,13 +66,11 @@ class Scanner
         'T_BACKSLASH' => '/^\\\\/',
     ];
 
-    public function __construct(string $code)
-    {
+    public function __construct(string $code) {
         $this->code = str_replace(["\r\n", "\r"], "\n", $code);
     }
 
-    public function tokenize(): array
-    {
+    public function tokenize(): array {
         $tokens = [];
         $length = strlen($this->code);
 

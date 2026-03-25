@@ -12,6 +12,7 @@ class BaseParams
         public bool $required = false,
         public mixed $defaultValue = null,
         public bool $relatedKeyParam = false,
+        public array $allowedOptions = [],
     ) {
     }
 }

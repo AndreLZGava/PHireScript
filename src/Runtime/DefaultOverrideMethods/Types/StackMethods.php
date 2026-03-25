@@ -17,7 +17,7 @@ class StackMethods extends GeneralType
     {
         return new BaseMethods(
             'push!',
-            'array_push(@self, @params)',
+            '\array_push(@self, @params)',
             [],
             $this->types,
             $params
@@ -28,7 +28,7 @@ class StackMethods extends GeneralType
     {
         return new BaseMethods(
             'pop!',
-            'array_pop(@self)',
+            '\array_pop(@self)',
             ['mixed'],
         );
     }
@@ -37,7 +37,7 @@ class StackMethods extends GeneralType
     {
         return new BaseMethods(
             'peek',
-            'end(@self)',
+            '\end(@self)',
             ['mixed'],
         );
     }

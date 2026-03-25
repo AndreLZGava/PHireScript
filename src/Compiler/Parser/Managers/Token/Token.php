@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Managers\Token;
 
-class Token
-{
+class Token {
     public function __construct(
         public readonly string $type,
         public readonly mixed $value,
@@ -15,150 +14,124 @@ class Token
     ) {
     }
 
-    public function isComment(): bool
-    {
+    public function isComment(): bool {
         return $this->type === 'T_COMMENT';
     }
 
-    public function isStringLiteral(): bool
-    {
+    public function isStringLiteral(): bool {
         return $this->type === 'T_STRING_LIT';
     }
 
-    public function isNumber(): bool
-    {
+    public function isNumber(): bool {
         return $this->type === 'T_NUMBER';
     }
 
-    public function isKeyword(): bool
-    {
+    public function isKeyword(): bool {
         return $this->type === 'T_KEYWORD';
     }
 
-    public function isBool(): bool
-    {
+    public function isBool(): bool {
         return $this->type === 'T_BOOL';
     }
-    public function isEndOfLine(): bool
-    {
+    public function isEndOfLine(): bool {
         return $this->type === 'T_EOL';
     }
-    public function isWhiteSpace(): bool
-    {
+    public function isWhiteSpace(): bool {
         return $this->type === 'T_WHITESPACE';
     }
-    public function isAccessor(): bool
-    {
+    public function isAccessor(): bool {
         return $this->type === 'T_ACCESSORS';
     }
-    public function isModifier(): bool
-    {
+
+    public function isRange(): bool {
+        return $this->type === 'T_RANGE';
+    }
+
+    public function isModifier(): bool {
         return $this->type === 'T_MODIFIER';
     }
 
-    public function isMagicMethod(): bool
-    {
+    public function isMagicMethod(): bool {
         return $this->type === 'T_MAGIC_METHODS';
     }
 
-    public function isType(): bool
-    {
+    public function isType(): bool {
         return $this->isPrimitive() || $this->isSuperType() || $this->isMetaType();
     }
-    public function isPrimitive(): bool
-    {
+    public function isPrimitive(): bool {
         return $this->type === 'T_PRIMITIVE';
     }
 
-    public function isSuperType(): bool
-    {
+    public function isSuperType(): bool {
         return $this->type === 'T_SUPER_TYPE';
     }
 
-    public function isMetaType(): bool
-    {
+    public function isMetaType(): bool {
         return $this->type === 'T_META_TYPE';
     }
 
-    public function isNull(): bool
-    {
+    public function isNull(): bool {
         return $this->type === 'T_NULL';
     }
 
-    public function isVariable(): bool
-    {
+    public function isVariable(): bool {
         return $this->type === 'T_VARIABLE';
     }
-    public function isIdentifier(): bool
-    {
+    public function isIdentifier(): bool {
         return $this->type === 'T_IDENTIFIER';
     }
-    public function isSymbol(): bool
-    {
+    public function isSymbol(): bool {
         return $this->type === 'T_SYMBOL';
     }
-    public function isBackslash(): bool
-    {
+    public function isBackslash(): bool {
         return $this->type === 'T_BACKSLASH';
     }
 
-    public function isOpeningCurlyBracket(): bool
-    {
+    public function isOpeningCurlyBracket(): bool {
         return $this->value === '{';
     }
 
-    public function isClosingCurlyBracket(): bool
-    {
+    public function isClosingCurlyBracket(): bool {
         return $this->value === '}';
     }
 
-    public function isOpeningParenthesis(): bool
-    {
+    public function isOpeningParenthesis(): bool {
         return $this->value === '(';
     }
 
-    public function isClosingParenthesis(): bool
-    {
+    public function isClosingParenthesis(): bool {
         return $this->value === ')';
     }
 
-    public function isOpeningBracket(): bool
-    {
+    public function isOpeningBracket(): bool {
         return $this->value === '[';
     }
 
-    public function isClosingBracket(): bool
-    {
+    public function isClosingBracket(): bool {
         return $this->value === ']';
     }
 
-    public function isLeftAngleBracket(): bool
-    {
+    public function isLeftAngleBracket(): bool {
         return $this->value === '<';
     }
 
-    public function isRightAngleBracket(): bool
-    {
+    public function isRightAngleBracket(): bool {
         return $this->value === '>';
     }
 
-    public function isComma(): bool
-    {
+    public function isComma(): bool {
         return $this->value === ',';
     }
 
-    public function isDot(): bool
-    {
+    public function isDot(): bool {
         return $this->value === '.';
     }
 
-    public function isColon(): bool
-    {
+    public function isColon(): bool {
         return $this->value === ':';
     }
 
-    public function isPipe(): bool
-    {
+    public function isPipe(): bool {
         return $this->value === '|';
     }
 }

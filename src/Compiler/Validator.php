@@ -106,8 +106,8 @@ class Validator
         $this->validateCounting('[', ']');
         $this->validateCounting('<', '>');
         if ($mustHavePkg && !$hasPkg) {
-            throw new CompileException('You must define a pkg for file that contains '
-                . implode(', ', $objectAllowed));
+            throw new CompileException('You must define a pkg or package for file that contains '
+                . implode(', ', $objectAllowed), 0, 0);
         }
     }
 
@@ -137,7 +137,7 @@ class Validator
     {
         if ($this->open[$open] !== $this->close[$close]) {
             throw new CompileException("Amount of {$open} ({$this->open[$open]}) " .
-                "diverge from {$close} ({$this->close[$close]})");
+                "diverge from {$close} ({$this->close[$close]})", 0 , 0);
         }
     }
 }

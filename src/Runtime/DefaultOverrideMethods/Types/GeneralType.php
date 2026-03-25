@@ -12,7 +12,7 @@ class GeneralType {
     public function destroy() {
         return new BaseMethods(
             name: 'destroy!',
-            phpCodeForConversion: 'unset(@self)',
+            phpCodeForConversion: '\unset(@self)',
             returnOfPhpExecution: [],
         );
     }
@@ -20,7 +20,7 @@ class GeneralType {
     public function defined() {
         return new BaseMethods(
             name: 'defined?',
-            phpCodeForConversion: 'isset(@self)',
+            phpCodeForConversion: '\isset(@self)',
             returnOfPhpExecution: ['Bool'],
         );
     }
@@ -28,7 +28,7 @@ class GeneralType {
     public function getClass() {
         return new BaseMethods(
             name: 'getClass',
-            phpCodeForConversion: 'is_object(@self) ? get_class(@self) : gettype(@self)',
+            phpCodeForConversion: '\is_object(@self) ? \get_class(@self) : \gettype(@self)',
             returnOfPhpExecution: ['String'],
         );
     }
@@ -36,7 +36,7 @@ class GeneralType {
     public function show() {
         return new BaseMethods(
             name: 'show!',
-            phpCodeForConversion: 'if(is_array(@self) || is_object(@self)) {print_r(@self);} else {echo @self ;}',
+            phpCodeForConversion: 'if(\is_array(@self) || \is_object(@self)) {\print_r(@self);} else {echo @self ;}',
             returnOfPhpExecution: [],
         );
     }
@@ -44,7 +44,7 @@ class GeneralType {
     public function display() {
         return new BaseMethods(
             name: 'display!',
-            phpCodeForConversion: 'print_r(@self)',
+            phpCodeForConversion: '\print_r(@self)',
             returnOfPhpExecution: [],
         );
     }

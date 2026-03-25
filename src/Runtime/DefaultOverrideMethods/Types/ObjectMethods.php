@@ -17,7 +17,7 @@ class ObjectMethods extends GeneralType
     {
         return new BaseMethods(
             'hasProperty?',
-            phpCodeForConversion: 'property_exists(@self, @property)',
+            phpCodeForConversion: '\property_exists(@self, @property)',
             returnOfPhpExecution: ['Bool'],
             subTypes: ['String', 'Bool', 'Array', 'Number'],
             params: [
@@ -41,7 +41,7 @@ class ObjectMethods extends GeneralType
     {
         return new BaseMethods(
             'getProperties',
-            phpCodeForConversion: 'get_object_vars(@self)',
+            phpCodeForConversion: '\get_object_vars(@self)',
             returnOfPhpExecution: ['Array'],
             subTypes: [],
             params: []

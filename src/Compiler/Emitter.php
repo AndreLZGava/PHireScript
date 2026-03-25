@@ -46,6 +46,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\ProgramEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyAccessEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\PropertyDeclarationEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\QueueEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\RangeEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ReturnEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ReturnTypeEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\StackEmitter;
@@ -91,6 +92,7 @@ class Emitter
             new ArrayLiteralEmitter(),
             new LiteralEmitter(),
             new NullEmitter(),
+            new RangeEmitter(),
             new BoolEmitter(),
             new StringEmitter(),
             new NumberEmitter(),
