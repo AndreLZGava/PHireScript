@@ -422,23 +422,6 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function sliceReplace() {
-        return new BaseMethods(
-            'sliceReplace',
-            phpCodeForConversion: [
-                '$__before = \mb_substr(@self, 0, @start, "UTF-8");',
-                '$__after = \mb_substr(@self, @start + @length, null, "UTF-8");',
-                'return $__before . @replace . $__after;'
-            ],
-            returnOfPhpExecution: ['String'],
-            params: [
-                new BaseParams('@start', 'int', true),
-                new BaseParams('@length', 'int', true),
-                new BaseParams('@replace', 'string', true),
-            ]
-        );
-    }
-
     public function charCodeAt() {
         return new BaseMethods(
             'charCodeAt',

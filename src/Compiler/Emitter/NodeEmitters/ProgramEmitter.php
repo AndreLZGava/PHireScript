@@ -43,7 +43,6 @@ class ProgramEmitter implements NodeEmitter
             }
             $processedCodeAfterUses .= $code . "\n";
         }
-
         return $processedCodeBeforeUses . $uses . $processedCodeAfterUses;
     }
 

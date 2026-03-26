@@ -30,6 +30,10 @@ class Token {
         return $this->type === 'T_KEYWORD';
     }
 
+    public function isGlobalConst(): bool {
+        return $this->type === 'T_CONST';
+    }
+
     public function isBool(): bool {
         return $this->type === 'T_BOOL';
     }

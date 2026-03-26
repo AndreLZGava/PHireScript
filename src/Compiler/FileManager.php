@@ -19,14 +19,11 @@ use ReflectionClass;
 use RuntimeException;
 use Throwable;
 
-class FileManager
-{
-    public function __construct(private readonly CompilerContext $context)
-    {
+class FileManager {
+    public function __construct(private readonly CompilerContext $context) {
     }
 
-    public function loadAndCompile($sourceDir, $distDir, $transpiler)
-    {
+    public function loadAndCompile($sourceDir, $distDir, $transpiler) {
         if ($this->context->mode === CompileMode::WATCH) {
             $this->watch($sourceDir, $distDir, $transpiler);
             return;
@@ -52,8 +49,7 @@ class FileManager
         }
     }
 
-    private function watch($sourceDir, $distDir, $transpiler)
-    {
+    private function watch($sourceDir, $distDir, $transpiler) {
         $extension = $this->context->getExtensionToPersist();
         $targetDir = $this->context->targetWatch;
         echo "--- PHireScript started the process ---\n";
@@ -107,8 +103,7 @@ class FileManager
         }
     }
 
-    public function load($sourceDir, $transpiler): array
-    {
+    public function load($sourceDir, $transpiler): array {
         $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
         $iterator = new RecursiveIteratorIterator($directory);
         $result = [];
@@ -127,8 +122,7 @@ class FileManager
     }
 
 
-    private function compileFile($input, $output, $transpiler)
-    {
+    private function compileFile($input, $output, $transpiler) {
         try {
             $sourceCode = file_get_contents($input);
             $result = $transpiler->compile($sourceCode, $input);
@@ -179,8 +173,7 @@ class FileManager
     }
 
 
-    public function getConfigFile()
-    {
+    public function getConfigFile() {
         $configs = json_decode(file_get_contents('PHireScript.json'), true);
         $configs['php'] = phpversion();
         $configs['metatypes'] = $this->listClassesExtending(
@@ -196,8 +189,7 @@ class FileManager
         return $configs;
     }
 
-    private function getErrorInterface($e, $transpiler, $code)
-    {
+    private function getErrorInterface($e, $transpiler, $code) {
         $width = (int) shell_exec('tput cols') ?: 120;
 
         $gutterWidth = 10;
@@ -217,7 +209,7 @@ class FileManager
         $originalLines = explode("\n", rtrim($code));
         $preParserLines = $hasTranspiled ? explode("\n", rtrim($codeGenerated)) : [];
         $maxLines = max(count($originalLines), count($preParserLines));
-
+        $errorLine = 0;
         $message = $e->getMessage();
         if ($e instanceof CompileException) {
             $errorLine = $e->line;
@@ -283,8 +275,7 @@ class FileManager
         echo "{$red}" . str_repeat('=', $width) . "{$reset}\n";
     }
 
-    private function getErrorInterfaceWeb($e, $transpiler, $code): string
-    {
+    private function getErrorInterfaceWeb($e, $transpiler, $code): string {
         $width = 120;
         $gutterWidth = 8;
         $availableWidth = $width - $gutterWidth;
@@ -363,8 +354,7 @@ class FileManager
         exit;
     }
 
-    private function getExecutionInterface(string $compiledCode, string $executionResult)
-    {
+    private function getExecutionInterface(string $compiledCode, string $executionResult) {
         $compiledSafe = htmlspecialchars($compiledCode);
         $resultSafe   = htmlspecialchars($executionResult);
 
@@ -491,8 +481,7 @@ class FileManager
         return $classes;
     }
 
-    private function cleanDirectory($dir)
-    {
+    private function cleanDirectory($dir) {
         $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST

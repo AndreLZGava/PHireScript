@@ -32,7 +32,7 @@ class Transpiler implements TranspilerInterface
     public function compile(string $code, string $path): string
     {
         $this->codeBeforeGenerator = '';
-        $scanner = new Scanner($code);
+        $scanner = new Scanner($code, $path);
         $tokens = $scanner->tokenize();
 
         //Debug::show($tokens);exit;
@@ -54,8 +54,8 @@ class Transpiler implements TranspilerInterface
         $preCompiledPhpCode = $emitter->emit($updatedAst);
 
         $this->codeBeforeGenerator = $preCompiledPhpCode;
+        // /Debug::show($preCompiledPhpCode);exit;
         $result = $this->generator->process($preCompiledPhpCode);
-
         return $result;
     }
 

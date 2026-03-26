@@ -19,7 +19,6 @@ class AssignmentEmitter implements NodeEmitter
     {
         $left  = $ctx->emitter->emit($node->left, $ctx);
         $right = $ctx->emitter->emit($node->right, $ctx);
-
         return "{$left} = {$right};";
     }
 }

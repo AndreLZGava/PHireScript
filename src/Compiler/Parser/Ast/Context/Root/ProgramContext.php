@@ -32,6 +32,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\IfResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\TryResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
@@ -55,6 +56,7 @@ class ProgramContext extends AbstractContext
             return;
         }
         $this->resolvers = [
+            new GlobalConstantResolver(),
             new CommentResolver(),
             new EndOfLineResolver(),
             new DotResolver(),
@@ -99,9 +101,11 @@ class ProgramContext extends AbstractContext
                 return $parseContext->program;
             }
         }
+
         if ($parseContext->tokenManager->getContext() === 'pre') {
             return null;
         }
+
         throw new CompileException(
             $token->value . ' is not supported in program context!',
             $token->line,

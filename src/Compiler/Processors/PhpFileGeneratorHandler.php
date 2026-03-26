@@ -20,6 +20,7 @@ class PhpFileGeneratorHandler implements PreprocessorInterface
     {
         try {
             $ast = $this->parser->parse($code);
+
             $symbolTable = new \PHireScript\SymbolTable();
 
             $collector = new \PhpParser\NodeTraverser();
@@ -27,7 +28,7 @@ class PhpFileGeneratorHandler implements PreprocessorInterface
             $ast = $collector->traverse($ast);
 
             $traverser = new \PhpParser\NodeTraverser();
-            $traverser->addVisitor(new \PHireScript\Visitor\VariableResolver($symbolTable));
+            //$traverser->addVisitor(new \PHireScript\Visitor\VariableResolver($symbolTable));
             $traverser->addVisitor(new \PHireScript\Visitor\StringObjectTransformer($symbolTable));
             $traverser->addVisitor(new \PHireScript\Visitor\ArrayObjectTransformer($symbolTable));
 

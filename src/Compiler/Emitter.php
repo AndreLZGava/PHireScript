@@ -26,6 +26,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\CommentStatementEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\UseEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ExternalEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\FunctionEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\GlobalConstEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\GlobalStatementEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\InterfaceBodyEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\InterfaceEmitter;
@@ -74,6 +75,9 @@ class Emitter
             new PackageEmitter(),
             new UseEmitter(),
             new ExternalEmitter(),
+
+            new GlobalConstEmitter(),
+
             new InterfaceEmitter(),
             new InterfaceBodyEmitter(),
             new ClassEmitter(),
@@ -114,6 +118,7 @@ class Emitter
 
             new ParameterEmitter(),
             new PropertyEmitter(),
+
             new CommentStatementEmitter(),
             new GlobalStatementEmitter(),
             new IfStatementEmitter(),

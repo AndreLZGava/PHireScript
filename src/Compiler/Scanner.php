@@ -61,12 +61,13 @@ class Scanner {
         'T_SUPER_TYPE'        => '/^\b(Email|Ipv4|Ipv6|Uuid|Color|Url|' .
             'CardNumber|Cron|Cvv|Duration|ExpiryDate|Json|Mac|Slug)\b/',
         //'T_VARIABLE'    => '/^\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',
+        'T_CONST' => '/^[A-Z][A-Z0-9_]*\b/',
         'T_IDENTIFIER' => '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff!?]*/',
         'T_SYMBOL'      => '/^([{}();,:=+<>\#!?\[\]\.$*\/%|-])/',
         'T_BACKSLASH' => '/^\\\\/',
     ];
 
-    public function __construct(string $code) {
+    public function __construct(string $code, public string $path) {
         $this->code = str_replace(["\r\n", "\r"], "\n", $code);
     }
 
@@ -108,6 +109,9 @@ class Scanner {
             if (!$match) {
                 $this->cursor++;
             }
+        }
+        if($this->path === 'src/Source/Samples/Variables/Constants.ps') {
+       //     Debug::show($tokens);exit;
         }
         return $tokens;
     }
