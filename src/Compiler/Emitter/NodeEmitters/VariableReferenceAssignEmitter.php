@@ -9,7 +9,7 @@ use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\VariableReferenceNode;
 use PHireScript\Helper\Debug\Debug;
 
-class VariableReferenceAssignEmitter implements NodeEmitter
+class VariableReferenceAssignEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

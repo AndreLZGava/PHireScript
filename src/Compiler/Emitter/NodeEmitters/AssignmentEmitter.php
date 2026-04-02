@@ -8,7 +8,7 @@ use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\AssignmentNode;
 
-class AssignmentEmitter implements NodeEmitter
+class AssignmentEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

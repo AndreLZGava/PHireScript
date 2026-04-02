@@ -8,7 +8,7 @@ use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\ParamsListNode;
 
-class ParamsListEmitter implements NodeEmitter
+class ParamsListEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler;
 
 use Exception;
+use PHireScript\Compiler\Checker\Declaration\ClassChecker;
 use PHireScript\Compiler\Checker\Expression\MethodConsumptionChecker;
 use PHireScript\Compiler\Checker\Root\ProgramChecker;
 use PHireScript\Compiler\Checker\Expression\Types\QueueChecker;
@@ -29,6 +30,7 @@ class Checker
             new QueueChecker(),
             new MethodConsumptionChecker(),
             new ProgramChecker(),
+            new ClassChecker(),
         ];
     }
 

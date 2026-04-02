@@ -10,7 +10,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\CommentNode;
 use PHireScript\Helper\Debug\Debug;
 
-class ArrayLiteralEmitter implements NodeEmitter
+class ArrayLiteralEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

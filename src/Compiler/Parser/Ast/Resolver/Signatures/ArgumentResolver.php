@@ -10,6 +10,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\ParamArgumentNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
+use PHireScript\Helper\Debug\Debug;
 
 class ArgumentResolver implements ContextTokenResolver
 {
@@ -31,7 +32,6 @@ class ArgumentResolver implements ContextTokenResolver
         $parseContext->contextManager->enter(
             new ParameterArgumentContext($node)
         );
-
   //    $parseContext->consumePrevious();
         $parseContext->definePrevious($node);
         $context->addChild($node);

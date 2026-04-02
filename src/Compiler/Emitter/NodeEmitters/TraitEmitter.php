@@ -13,7 +13,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\TraitDefinition;
 use PHireScript\Helper\Debug\Debug;
 
-class TraitEmitter implements NodeEmitter
+class TraitEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

@@ -9,6 +9,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\ArgumentResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Nodes\ParamsListNode;
+use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\EmptyArgumentResolver;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
 
@@ -25,6 +26,7 @@ class ParameterListContext extends AbstractContext
         parent::__construct($node);
 
         $this->resolvers = [
+            new EmptyArgumentResolver(),
             new ArgumentResolver(),
         ];
     }

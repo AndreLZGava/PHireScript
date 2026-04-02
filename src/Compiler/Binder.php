@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler;
 
+use PHireScript\Compiler\Binder\Declaration\ClassBinder;
+use PHireScript\Compiler\Binder\Declaration\Interface\MethodDeclarationBinder;
+use PHireScript\Compiler\Binder\Declaration\PropertyBinder;
+use PHireScript\Compiler\Binder\Declaration\InterfaceBinder;
+use PHireScript\Compiler\Binder\Root\ProgramBinder;
+use PHireScript\Compiler\Binder\Signatures\ModifiersBinder;
 use PHireScript\SymbolTable;
 use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\UseNode;
@@ -17,13 +23,29 @@ use PHireScript\Helper\Debug\Debug;
 class Binder
 {
     private Program $program;
+    public array $binders = [];
     public function __construct(private readonly SymbolTable $globalTable)
     {
+        $this->binders = [
+            new ProgramBinder(),
+            new InterfaceBinder(),
+            new ClassBinder(),
+            new MethodDeclarationBinder(),
+            new PropertyBinder(),
+            new ModifiersBinder(),
+        ];
     }
 
     public function bind(Program $program)
     {
         $this->program = $program;
+
+        foreach ($this->binders as $bind) {
+            if ($bind->mustBind($program)) {
+                $bind->bind($program, $this);
+            }
+        }
+
         foreach ($program->statements as $node) {
             if (
                 $node instanceof ClassNode ||

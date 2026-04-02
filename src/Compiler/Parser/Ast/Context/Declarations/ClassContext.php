@@ -16,6 +16,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
+use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\DependencyInjectionResolver;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
 
@@ -37,6 +38,7 @@ class ClassContext extends AbstractContext
             'extends' => new ExtendsResolver(),
             'with' => new WithResolver(),
             'implements' => new ImplementsResolver(),
+            'typeDependencyInjection' => new DependencyInjectionResolver(),
         ];
     }
 

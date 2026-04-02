@@ -6,9 +6,10 @@ namespace PHireScript\Compiler\Emitter\Internal;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\NodeEmitterAbstract;
 use PHireScript\Compiler\Parser\Ast\Nodes\NewExceptionNode;
 
-class NewExceptionEmitter implements NodeEmitter
+class NewExceptionEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

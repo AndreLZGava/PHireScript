@@ -9,6 +9,8 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\TypeResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Nodes\ReturnTypeNode;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\PipeResolver;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -27,6 +29,8 @@ class ReturnTypeContext extends AbstractContext
 
         $this->resolvers = [
             new TypeResolver(),
+            new EndOfLineResolver(),
+            new PipeResolver(),
         ];
     }
 
@@ -55,6 +59,7 @@ class ReturnTypeContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningCurlyBracket();
+        return $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningCurlyBracket() ||
+        $parseContext->tokenManager->getNextTokenAfterCurrent()->isEndOfLine();
     }
 }

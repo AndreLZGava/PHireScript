@@ -7,11 +7,10 @@ class UserRepository extends Repository {
 
     String tableName = 'user'
 
-    //Soon I will implement this annotations
-    /*inject {
-        singleton Database as database
-        transient UserApi as api
-        scoped Another as another
+    inject {
+        Database as database
+        UserApi as api
+        Another as another
     }
 
     cache {
@@ -26,9 +25,9 @@ class UserRepository extends Repository {
         user = Json(this.api.getUser(id)) as User
         return user
     }
-*/
+
     getUser(Uuid id): Null|Self {
-        //return this.database.get(this.tableName).first(id: id)
+        return this.database.get(this.tableName).first(id: id)
     }
 
 }

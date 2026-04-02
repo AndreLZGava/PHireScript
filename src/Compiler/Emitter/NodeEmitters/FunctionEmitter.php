@@ -11,12 +11,15 @@ use PHireScript\Compiler\Parser\Ast\Nodes\FunctionNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 
-class FunctionEmitter implements NodeEmitter {
-    public function supports(object $node, EmitContext $ctx): bool {
+class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
+{
+    public function supports(object $node, EmitContext $ctx): bool
+    {
         return $node instanceof FunctionNode;
     }
 
-    public function emit(object $node, EmitContext $ctx): string {
+    public function emit(object $node, EmitContext $ctx): string
+    {
         $code = $this->overrideVariable($node, $ctx);
         $code .= $this->overrideSelf($node, $ctx);
         $normalized = $this->normalizeParams(
@@ -30,7 +33,8 @@ class FunctionEmitter implements NodeEmitter {
         return $code;
     }
 
-    private function overrideVariable($node, $ctx) {
+    private function overrideVariable($node, $ctx)
+    {
         if ($node->overrideVariableFocus) {
             return "$" . $node->variableBase->name . ' = ';
         }
@@ -38,7 +42,8 @@ class FunctionEmitter implements NodeEmitter {
         return '';
     }
 
-    private function overrideSelf($node, $ctx) {
+    private function overrideSelf($node, $ctx)
+    {
         $variable = $ctx->emitter->emit($node->variableBase, $ctx);
         $method = $node->method->phpCodeForConversion;
 
@@ -55,19 +60,22 @@ class FunctionEmitter implements NodeEmitter {
         return str_replace('@self', $variable, $method);
     }
 
-    private function wrapAsIIFE(array $lines, string $variable): string {
+    private function wrapAsIIFE(array $lines, string $variable): string
+    {
         $indented = implode("\n    ", $lines);
 
         return "(function() use ($variable) {\n    $indented\n})()";
     }
 
-    private function overrideParams($normalized) {
+    private function overrideParams($normalized)
+    {
         $params = implode(', ', $normalized->params);
         $code = str_replace('@params', $params, $normalized->code);
         return $code;
     }
 
-    private function normalizeParams($sentParams, $expected, $code, $ctx) {
+    private function normalizeParams($sentParams, $expected, $code, $ctx)
+    {
         $params = [];
         $last = end($expected) ?: (object) ['name' => ''];
         foreach ($sentParams as $methodParamId => $param) {
@@ -87,7 +95,8 @@ class FunctionEmitter implements NodeEmitter {
         return (object) ['params' => $params, 'code' => $code];
     }
 
-    private function processDefaultValue(BaseParams $param) {
+    private function processDefaultValue(BaseParams $param)
+    {
         $type = $param->type;
 
         if (!$param->required && $param->defaultValue === null) {
@@ -111,7 +120,8 @@ class FunctionEmitter implements NodeEmitter {
         }
     }
 
-    private function processNamedParams($paramName, $paramValue, $originalCode) {
+    private function processNamedParams($paramName, $paramValue, $originalCode)
+    {
         if (gettype($paramName) !== 'integer') {
             return str_replace($paramName, $paramValue, $originalCode);
         }

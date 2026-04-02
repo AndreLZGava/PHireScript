@@ -7,7 +7,8 @@ namespace PHireScript\Compiler;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Helper\Debug\Debug;
 
-class Scanner {
+class Scanner
+{
     private readonly string $code;
     private int $cursor = 0;
     private int $line = 1;
@@ -18,10 +19,11 @@ class Scanner {
         'T_STRING_LIT'  => '/^"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|^\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'/',
         'T_RANGE' => '/^-?\d+\.\.-?\d+/',
         'T_NUMBER'      => '/^\d+(\.\d+)?/',
+        'T_DEPENDENCY_SCOPE'     => '/^\b(singleton|scoped)\b/',
         'T_KEYWORD'     => '/^\b(class|interface|trait|type|extends|with|' .
             'implements|inject|async|spawn|return|immutable|try|handle|always' .
             'if|else|elseif|this|self|super|pkg|use|as|external|abstract|' .
-            'schedule|cache|singleton|scoped|transient|readonly|static|package)\b/',
+            'schedule|cache|readonly|static|package)\b/',
         'T_MAGIC_METHODS' => '/^\b(onCreate|onDestroy|onGet|onSet|onHas|onUnset' .
             '|onCall|onStaticCall|toString|toSerialize|toUnserialize|beforeSerialize' .
             '|afterUnserialize|onClone|toInspect)\b/',
@@ -67,11 +69,13 @@ class Scanner {
         'T_BACKSLASH' => '/^\\\\/',
     ];
 
-    public function __construct(string $code, public string $path) {
+    public function __construct(string $code, public string $path)
+    {
         $this->code = str_replace(["\r\n", "\r"], "\n", $code);
     }
 
-    public function tokenize(): array {
+    public function tokenize(): array
+    {
         $tokens = [];
         $length = strlen($this->code);
 
@@ -110,7 +114,7 @@ class Scanner {
                 $this->cursor++;
             }
         }
-        if($this->path === 'src/Source/Samples/Variables/Constants.ps') {
+        if ($this->path === 'src/Source/Samples/Variables/Constants.ps') {
        //     Debug::show($tokens);exit;
         }
         return $tokens;

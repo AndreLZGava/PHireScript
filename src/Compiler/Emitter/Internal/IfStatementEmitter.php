@@ -6,10 +6,11 @@ namespace PHireScript\Compiler\Emitter\Internal;
 
 use PHireScript\Compiler\Emitter\EmitContext;
 use PHireScript\Compiler\Emitter\NodeEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\NodeEmitterAbstract;
 use PHireScript\Compiler\Parser\Ast\Nodes\IfNode;
 use PHireScript\Helper\Debug\Debug;
 
-class IfStatementEmitter implements NodeEmitter
+class IfStatementEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

@@ -12,6 +12,8 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\InterfaceBodyNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
+use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\Interface\MethodDeclarationResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Root\ModifiersResolver;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
 
@@ -26,10 +28,12 @@ class InterfaceBodyContext extends AbstractContext
     {
         parent::__construct($node);
         $this->resolvers = [
-        new EndOfLineResolver(),
-        new PropertyResolver(),
-        new ClosingCurlyBracketResolver(),
-        new CommentResolver(),
+            new EndOfLineResolver(),
+            new PropertyResolver(),
+            new ClosingCurlyBracketResolver(),
+            new CommentResolver(),
+            new ModifiersResolver(),
+            new MethodDeclarationResolver(),
         ];
     }
 
@@ -46,7 +50,7 @@ class InterfaceBodyContext extends AbstractContext
         }
 
         throw new CompileException(
-            $token->value . ' is not supported in ' . $this->node->bodyOf . ' body definition context!',
+            $token->value . ' is not supported in ' . $this->node->bodyOf . ' interface body definition context!',
             $token->line,
             $token->column,
         );

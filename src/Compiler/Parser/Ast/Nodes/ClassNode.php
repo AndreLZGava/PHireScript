@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Ast\Nodes;
 
+use PHireScript\Compiler\Parser\Managers\Token\Token;
+
 class ClassNode extends ComplexObjectDefinition
 {
+    public string $type;
     public bool $readOnly = false;
     public array $modifiers = [];
     public ?string $docBlock = null;
@@ -17,4 +20,10 @@ class ClassNode extends ComplexObjectDefinition
     public array $cache = [];
     public array $schedule = [];
     public ?ClassBodyNode $body = null;
+    public ?DependencyInjectionNode $typeDependencyInjection = null;
+
+    public function __construct(public Token $token)
+    {
+        $this->type = $token->value;
+    }
 }

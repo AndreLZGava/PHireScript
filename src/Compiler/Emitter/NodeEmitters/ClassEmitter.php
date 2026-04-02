@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Emitter\NodeEmitters;
 
 use PHireScript\Compiler\Emitter\EmitContext;
+use PHireScript\Compiler\Emitter\Internal\ConstructorEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
+use PHireScript\Helper\Debug\Debug;
 
-class ClassEmitter implements NodeEmitter
+class ClassEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {
@@ -25,6 +27,7 @@ class ClassEmitter implements NodeEmitter
             '';
         $code .= "class {$node->name}{$extends}{$implements}\n";
         $code .= $ctx->emitter->emit($node->body, $ctx);
+
         /*
         @todo this will be properly emitted by its own emitters.
         // ---- properties
@@ -35,9 +38,7 @@ class ClassEmitter implements NodeEmitter
         }
 
         // ---- constructor
-        if ($this->shouldGenerateConstructor($node)) {
-            $code .= (new ConstructorEmitter())->emit($node, $ctx);
-        }
+
 
         // ---- methods
         foreach ($node->body as $member) {

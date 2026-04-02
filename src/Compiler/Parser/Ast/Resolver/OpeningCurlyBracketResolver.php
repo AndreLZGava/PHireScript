@@ -26,6 +26,7 @@ class OpeningCurlyBracketResolver implements ContextTokenResolver
         $node = new ClassBodyNode(
             token: $token,
             bodyOf: $context->node->name,
+            type: $token->value,
         );
 
         $parseContext->contextManager->enter(

@@ -9,7 +9,7 @@ use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\KeyValuePairNode;
 use PHireScript\Helper\Debug\Debug;
 
-class KeyValuePairEmitter implements NodeEmitter
+class KeyValuePairEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

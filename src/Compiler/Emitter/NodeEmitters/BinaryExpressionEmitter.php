@@ -9,7 +9,7 @@ use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\BinaryExpressionNode;
 use PHireScript\Helper\Debug\Debug;
 
-class BinaryExpressionEmitter implements NodeEmitter
+class BinaryExpressionEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

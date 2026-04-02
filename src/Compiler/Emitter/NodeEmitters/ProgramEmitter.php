@@ -10,7 +10,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
-class ProgramEmitter implements NodeEmitter
+class ProgramEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

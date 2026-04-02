@@ -12,6 +12,8 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\TypeResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\PipeResolver;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -28,7 +30,9 @@ class PropertyDeclarationContext extends AbstractContext
         parent::__construct($node);
 
         $this->resolvers = [
-            new IdentifierResolver(),
+            'types[]' => new TypeResolver(),
+            'name' => new IdentifierResolver(),
+            new PipeResolver(),
             new EndOfLineResolver(),
             new AssignmentResolver(),
             new CommentResolver(),
@@ -37,11 +41,11 @@ class PropertyDeclarationContext extends AbstractContext
 
     public function handle(Token $token, ParseContext $parseContext): ?Node
     {
-        foreach ($this->resolvers as $resolver) {
+        foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
-                $this->processProperty();
+                $this->processProperty($token, $keyResolver);
                 return null;
             }
         }
@@ -52,9 +56,21 @@ class PropertyDeclarationContext extends AbstractContext
         );
     }
 
-    private function processProperty()
+    private function processProperty(Token $token, int|string $keyResolver)
     {
-        $this->node->name = $this->children[0];
+        if (is_int($keyResolver)) {
+            return;
+        }
+        $key = $this->sanitizeKeys($keyResolver);
+        $value = $this->getChildrenValues($keyResolver);
+        if (str_contains($keyResolver, '[]')) {
+            $this->node->$key[] =  $value ?: [];
+            $this->children = [];
+            return;
+        }
+        $this->node->$key =  $value ?: [];
+        $this->children = [];
+        return;
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool

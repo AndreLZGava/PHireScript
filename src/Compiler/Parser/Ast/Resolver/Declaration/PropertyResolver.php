@@ -17,11 +17,20 @@ class PropertyResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->isType()
-            //@todo At one point there will be identifier followed by identifier
-            // because in this case the expected is that the first identifier
-            // represents a external or a use case.
-            && $parseContext->tokenManager->getNextTokenAfterCurrent()->isIdentifier();
+        return $parseContext->tokenManager->matchSequence(
+            [
+                [
+                    'type' => 'separated',
+                    'match' => fn($t) => $t->isType(),
+                    'separator' => fn($t) => $t->isPipe(),
+                ],
+                [
+                    'type' => 'once',
+                    'match' => fn($t) => $t->isIdentifier(),
+                ]
+            ],
+            fn($t) => $t->isEndOfLine()
+        );
     }
 
     public function resolve(

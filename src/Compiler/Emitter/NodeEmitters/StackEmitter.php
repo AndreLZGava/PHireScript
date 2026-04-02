@@ -9,7 +9,7 @@ use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\ListNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\StackNode;
 
-class StackEmitter implements NodeEmitter
+class StackEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

@@ -143,4 +143,59 @@ class TokenManager
         $this->tokenLookup = $this->tokens[$this->positionLookup] ?? $this->endFileToken;
         return $this->tokenLookup;
     }
+
+    public function peek(int $offset = 0): Token
+    {
+        $position = $this->currentPosition + $offset;
+        return $this->tokens[$position] ?? $this->endFileToken;
+    }
+
+    public function matchSequence(array $rules, callable $until): bool
+    {
+        $offset = 0;
+
+        foreach ($rules as $rule) {
+            $type = $rule['type'];
+
+            if ($type === 'once') {
+                $token = $this->peek($offset);
+
+                if ($until($token) || !$rule['match']($token)) {
+                    return false;
+                }
+
+                $offset++;
+            }
+
+            if ($type === 'separated') {
+                $matched = false;
+
+                while (true) {
+                    $token = $this->peek($offset);
+
+                    if ($until($token) || !$rule['match']($token)) {
+                        break;
+                    }
+
+                    $matched = true;
+                    $offset++;
+
+                    $separatorToken = $this->peek($offset);
+
+                    if ($rule['separator']($separatorToken)) {
+                        $offset++;
+                        continue;
+                    }
+
+                    break;
+                }
+
+                if (!$matched) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }

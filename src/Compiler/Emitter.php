@@ -30,6 +30,7 @@ use PHireScript\Compiler\Emitter\NodeEmitters\GlobalConstEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\GlobalStatementEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\InterfaceBodyEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\InterfaceEmitter;
+use PHireScript\Compiler\Emitter\NodeEmitters\InterfaceMethodEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\KeyValuePairEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\ListEmitter;
 use PHireScript\Compiler\Emitter\NodeEmitters\LiteralEmitter;
@@ -83,6 +84,7 @@ class Emitter
             new ClassEmitter(),
             new ClassBodyEmitter(),
             new TraitEmitter(),
+            new InterfaceMethodEmitter(),
             new MethodEmitter(),
             new ReturnTypeEmitter(),
             new MethodScopeEmitter(),

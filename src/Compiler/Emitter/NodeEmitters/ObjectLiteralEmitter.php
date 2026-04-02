@@ -8,7 +8,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\ObjectLiteralNode;
 use PHireScript\Helper\Debug\Debug;
 
-class ObjectLiteralEmitter implements NodeEmitter
+class ObjectLiteralEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

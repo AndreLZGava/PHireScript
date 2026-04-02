@@ -10,7 +10,7 @@ use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\MethodDeclarationNode;
 use PHireScript\Helper\Debug\Debug;
 
-class MethodEmitter implements NodeEmitter
+class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {
@@ -40,7 +40,7 @@ class MethodEmitter implements NodeEmitter
         }
 
         $signature = implode(' ', $modifiers);
-        $signature .= ' function ' . $node->name;
+        $signature .= ' function ' . $this->removeEndPunctuation($node->name);
 
         // --------------------
         // params

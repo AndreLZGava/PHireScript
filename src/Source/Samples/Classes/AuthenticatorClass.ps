@@ -10,7 +10,7 @@ use PHireScript.Samples.{
 
 external Symfony\Component\DependencyInjection\Loader\GlobFileLoader
 
-class AuthenticatorClass with Logger implements Authenticator, Another {
+class AuthenticatorClass with Logger as singleton implements Authenticator, Another {
 
     authenticate(Null|UserCredentials credentials = null): Bool {
         return true

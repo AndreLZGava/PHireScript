@@ -10,7 +10,7 @@ use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\ReturnTypeNode;
 use PHireScript\Helper\Debug\Debug;
 
-class ReturnTypeEmitter implements NodeEmitter
+class ReturnTypeEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

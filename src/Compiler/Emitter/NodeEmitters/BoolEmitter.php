@@ -12,7 +12,7 @@ use PHireScript\Helper\Debug\Debug;
 /**
  * Apparently not used.
  */
-class BoolEmitter implements NodeEmitter
+class BoolEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
     public function supports(object $node, EmitContext $ctx): bool
     {

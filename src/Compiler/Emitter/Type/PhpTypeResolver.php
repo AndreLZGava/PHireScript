@@ -66,9 +66,14 @@ class PhpTypeResolver
         if (isset($typeInfo['class'])) {
             $uses->add($typeInfo['class']);
         }
+        $type = $prop->type ?? null;
+        if (!isset($prop->type)) {
+            $type = implode('|', $prop->types);
+        }
+
         return match ($typeInfo['category']) {
-            'supertype' => "\$this->$var = {$prop->type}::cast(\$$var);",
-            'metatype'  => "\$this->$var = \$$var instanceof {$prop->type} ? \$$var : new {$prop->type}(\$$var);",
+            'supertype' => "\$this->$var = {$type}::cast(\$$var);",
+            'metatype'  => "\$this->$var = \$$var instanceof {$type} ? \$$var : new {$type}(\$$var);",
             default     => "\$this->$var = \$$var;"
         };
     }
@@ -86,6 +91,10 @@ class PhpTypeResolver
             }
 
             if (in_array($info['category'], ['metatype', 'custom'], true)) {
+                if (isset($prop->types)) {
+                    $types = array_merge($types, $prop->types);
+                    continue;
+                }
                 $types[] = $prop->type;
             }
 
