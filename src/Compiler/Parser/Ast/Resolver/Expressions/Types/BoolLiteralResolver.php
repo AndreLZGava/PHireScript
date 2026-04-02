@@ -28,7 +28,7 @@ class BoolLiteralResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
-        $boolNode = new BoolNode($token, filter_var($token->value, FILTER_VALIDATE_BOOL));
+        $boolNode = new BoolNode($token, \filter_var($token->value, FILTER_VALIDATE_BOOL));
         $context->addChild($boolNode);
     }
 }

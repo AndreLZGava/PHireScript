@@ -25,11 +25,11 @@ class ReturnEmitter extends NodeEmitterAbstract implements NodeEmitter
 
         if (
             $ctx->dev &&
-            is_string($ctx->currentMethodReturnType) &&
-            str_starts_with($ctx->currentMethodReturnType, '[')
+            \is_string($ctx->currentMethodReturnType) &&
+            \str_starts_with($ctx->currentMethodReturnType, '[')
         ) {
-            $inner = trim($ctx->currentMethodReturnType, '[]');
-            $types = "['" . implode("','", explode('|', $inner)) . "']";
+            $inner = \trim($ctx->currentMethodReturnType, '[]');
+            $types = "['" . \implode("','", \explode('|', $inner)) . "']";
 
             $ctx->uses->add(TypeGuard::class);
             return "return TypeGuard::validateArray($expr, $types);";

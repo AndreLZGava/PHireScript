@@ -28,14 +28,14 @@ class FunctionBodyProcessor implements PreprocessorInterface
 
     private function buildValidationLogic(string $rawTypes): string
     {
-        $types = explode('|', $rawTypes);
+        $types = \explode('|', $rawTypes);
         $conditions = [];
 
         foreach ($types as $type) {
-            $conditions[] = $this->getCheckForType(trim($type), '$item');
+            $conditions[] = $this->getCheckForType(\trim($type), '$item');
         }
 
-        $check = implode(' || ', $conditions);
+        $check = \implode(' || ', $conditions);
 
         return '
         if (defined("PS_STRICT_MODE") && PS_STRICT_MODE) {
@@ -50,14 +50,14 @@ class FunctionBodyProcessor implements PreprocessorInterface
     private function getCheckForType(string $type, string $varName): string
     {
         return match ($type) {
-            'Int'    => "is_int($varName)",
-            'String' => "is_string($varName)",
+            'Int'    => "\is_int($varName)",
+            'String' => "\is_string($varName)",
             'Float'  => "is_float($varName)",
             'Bool'   => "is_bool($varName)",
             'Null'   => "is_null($varName)",
-            'Ipv4'   => "filter_var($varName, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)",
-            'Ipv6'   => "filter_var($varName, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)",
-            'Email'  => "filter_var($varName, FILTER_VALIDATE_EMAIL)",
+            'Ipv4'   => "\filter_var($varName, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)",
+            'Ipv6'   => "\filter_var($varName, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)",
+            'Email'  => "\filter_var($varName, FILTER_VALIDATE_EMAIL)",
             default  => "$varName instanceof $type",
         };
     }

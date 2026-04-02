@@ -9,12 +9,10 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableConsumptionReso
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Root\OpeningCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Statements\OpeningHandleScopeResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\AlwaysScopeNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
@@ -68,7 +66,7 @@ class AlwaysScopeContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = get_class($resolver);
+                $token->processedBy = \get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleClassProperties($token, $keyResolver);
 

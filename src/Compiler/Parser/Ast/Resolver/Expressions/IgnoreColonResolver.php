@@ -9,11 +9,11 @@ use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 
-class AsResolver implements ContextTokenResolver
+class IgnoreColonResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->value === 'as';
+        return $token->isColon();
     }
 
     public function resolve(

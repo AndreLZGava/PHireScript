@@ -28,7 +28,7 @@ class StackMethods extends GeneralType
     {
         return new BaseMethods(
             'pop!',
-            '\array_pop(@self)',
+            '\\array_key_exists(@self)',
             ['mixed'],
         );
     }

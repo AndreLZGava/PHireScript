@@ -9,19 +9,15 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\CommaResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\TypeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\BackSlashResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\ClosingCurlyBracketResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Root\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\External\GroupUseResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\IdentifierResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Root\OpeningCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\ExternalNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\GroupUseNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\NamespaceNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\UseNode;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
@@ -49,7 +45,7 @@ class ExternalContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = get_class($resolver);
+                $token->processedBy = \get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
 
                 return null;
@@ -68,7 +64,7 @@ class ExternalContext extends AbstractContext
         $namespaces = [];
         $hasGroup = false;
         foreach ($this->children as $item) {
-            if (is_string($item)) {
+            if (\is_string($item)) {
                 $package .= $item;
                 continue;
             }
@@ -78,7 +74,7 @@ class ExternalContext extends AbstractContext
                     $hasGroup = true;
                     $packageNode = new NamespaceNode($token);
                     $packageNode->package = $package . $part;
-                    $packageNode->alias = is_string($alias) ? $alias : null;
+                    $packageNode->alias = \is_string($alias) ? $alias : null;
                     $namespaces[] = $packageNode;
                 }
             }

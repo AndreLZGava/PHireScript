@@ -33,7 +33,7 @@ class Card extends MetaTypes
 
         $this->number = CardNumber::cast($source['number']);
         $this->cvv = Cvv::cast($source['cvv']);
-        $this->holderName = strtoupper(trim((string) $source['holder_name']));
+        $this->holderName = strtoupper(\trim((string) $source['holder_name']));
         $this->brand = $this->detectBrand((string) $this->number);
         $this->expiry = ExpiryDate::cast($source['expiry']);
     }

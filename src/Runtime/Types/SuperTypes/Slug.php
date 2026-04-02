@@ -10,7 +10,7 @@ class Slug extends SuperTypes
 {
     protected static function transform(mixed $value): mixed
     {
-        if (!is_string($value)) {
+        if (!\is_string($value)) {
             return null;
         }
 
@@ -21,7 +21,7 @@ class Slug extends SuperTypes
 
         $slug = preg_replace('/\s+/', '-', (string) $slug);
 
-        return trim((string) $slug, '-');
+        return \trim((string) $slug, '-');
     }
 
     protected static function validate(mixed $preparedValue): bool

@@ -34,11 +34,11 @@ class ModifiersBinder implements Binder
                 $item = $map[$item];
             }
 
-            if (in_array($item, $allowed, true)) {
+            if (\in_array($item, $allowed, true)) {
                 $result[] = $item;
             }
         }
 
-        $node->modifiers = array_values(array_unique($result));
+        $node->modifiers = \array_values(\array_unique($result));
     }
 }

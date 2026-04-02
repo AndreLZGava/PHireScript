@@ -7,4 +7,4 @@ resetData() {
 
 data.push("orange")            // must become array_push($data, "orange")
 resetData()
-echo data.join(" - ")          // must become implode(" - ", $data)
+echo data.join(" - ")          // must become \implode(" - ", $data)

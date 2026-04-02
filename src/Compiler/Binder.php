@@ -121,12 +121,12 @@ class Binder
         }
 
         $metaTypes = ['Date', 'Currency', 'Phone'];
-        if (in_array($typeName, $metaTypes, true)) {
+        if (\in_array($typeName, $metaTypes, true)) {
             return ['category' => 'metatype', 'class' => "PHireScript\\Runtime\\Types\\MetaTypes\\$typeName"];
         }
 
         $superTypes = ['Email', 'Ipv4', 'Ipv6', 'Url'];
-        if (in_array($typeName, $superTypes, true)) {
+        if (\in_array($typeName, $superTypes, true)) {
             return ['category' => 'supertype', 'class' => "PHireScript\\Runtime\\Types\\SuperTypes\\$typeName"];
         }
 
@@ -151,17 +151,17 @@ class Binder
             if ($statement instanceof UseNode) {
                 foreach ($statement->packages as $package) {
                     if ($package instanceof DependencyStatement) {
-                        $usingPackage = explode('.', $package->package);
+                        $usingPackage = \explode('.', $package->package);
                         $namedPackage  = !empty($package->alias) ?
                             $package->alias :
-                            end($usingPackage);
+                            \end($usingPackage);
                         $uses[$namedPackage] = $package;
                     }
                 }
             }
         }
 
-        if (array_key_exists($typeName, $uses)) {
+        if (\array_key_exists($typeName, $uses)) {
             return true;
         }
 

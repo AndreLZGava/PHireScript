@@ -22,7 +22,7 @@ class ParamsListEmitter extends NodeEmitterAbstract implements NodeEmitter
         foreach ($node->params as $param) {
             $params[] = $ctx->emitter->emit($param, $ctx);
         }
-        $code .= implode(', ', $params);
+        $code .= \implode(', ', $params);
         $code .= ')';
         return $code;
     }

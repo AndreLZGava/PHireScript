@@ -10,6 +10,6 @@ class Email extends SuperTypes
 {
     protected static function validate(mixed $value): bool
     {
-        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+        return \filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }
 }

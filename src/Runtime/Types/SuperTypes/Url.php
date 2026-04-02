@@ -10,7 +10,7 @@ class Url extends SuperTypes
 {
     protected static function validate(mixed $value): bool
     {
-        $result = filter_var($value, FILTER_VALIDATE_URL);
+        $result = \filter_var($value, FILTER_VALIDATE_URL);
 
         if ($result === false) {
             return false;
@@ -30,7 +30,7 @@ class Url extends SuperTypes
             return null;
         }
 
-        $value = trim((string)$value);
+        $value = \trim((string)$value);
         return parent::transform($value);
     }
 }

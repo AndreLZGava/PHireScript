@@ -19,11 +19,14 @@ use ReflectionClass;
 use RuntimeException;
 use Throwable;
 
-class FileManager {
-    public function __construct(private readonly CompilerContext $context) {
+class FileManager
+{
+    public function __construct(private readonly CompilerContext $context)
+    {
     }
 
-    public function loadAndCompile($sourceDir, $distDir, $transpiler) {
+    public function loadAndCompile($sourceDir, $distDir, $transpiler)
+    {
         if ($this->context->mode === CompileMode::WATCH) {
             $this->watch($sourceDir, $distDir, $transpiler);
             return;
@@ -39,7 +42,7 @@ class FileManager {
             ) {
                 $relativePath = substr($file->getPathname(), strlen($sourceDir));
 
-                $outputFile = $distDir  . str_replace(
+                $outputFile = $distDir  . \str_replace(
                     '.' . $this->context->getExtensionToPersist(),
                     '.php',
                     $relativePath
@@ -49,7 +52,8 @@ class FileManager {
         }
     }
 
-    private function watch($sourceDir, $distDir, $transpiler) {
+    private function watch($sourceDir, $distDir, $transpiler)
+    {
         $extension = $this->context->getExtensionToPersist();
         $targetDir = $this->context->targetWatch;
         echo "--- PHireScript started the process ---\n";
@@ -68,7 +72,7 @@ class FileManager {
                             $currentHash = md5_file($filePath);
 
                             $outputFile = $distDir . '/' .
-                                str_replace(
+                                \str_replace(
                                     '.' . RuntimeClass::DEFAULT_FILE_EXTENSION,
                                     '.php',
                                     $relativePath
@@ -103,7 +107,8 @@ class FileManager {
         }
     }
 
-    public function load($sourceDir, $transpiler): array {
+    public function load($sourceDir, $transpiler): array
+    {
         $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
         $iterator = new RecursiveIteratorIterator($directory);
         $result = [];
@@ -122,7 +127,8 @@ class FileManager {
     }
 
 
-    private function compileFile($input, $output, $transpiler) {
+    private function compileFile($input, $output, $transpiler)
+    {
         try {
             $sourceCode = file_get_contents($input);
             $result = $transpiler->compile($sourceCode, $input);
@@ -135,7 +141,7 @@ class FileManager {
 
                 if ($this->context->persistSnapshot()) {
                     $preParserCode = $transpiler->getCodeBeforeGenerator();
-                    $preCompiledCode = str_replace(
+                    $preCompiledCode = \str_replace(
                         '.' . RuntimeClass::DEFAULT_FILE_EXTENSION,
                         '.' . RuntimeClass::DEFAULT_FILE_SNAPSHOT_EXTENSION,
                         $input
@@ -149,7 +155,7 @@ class FileManager {
                 exec("php -l " . escapeshellarg($output), $output_text, $return_var);
                 if ($return_var !== 0) {
                     echo "✗ Syntax Error in generated file $output:\n";
-                    echo implode("\n", $output_text) . "\n";
+                    echo \implode("\n", $output_text) . "\n";
                 } else {
                     echo "\n\033[1;32m✔ $input -> $output\033[0m\n";
                 }
@@ -173,7 +179,8 @@ class FileManager {
     }
 
 
-    public function getConfigFile() {
+    public function getConfigFile()
+    {
         $configs = json_decode(file_get_contents('PHireScript.json'), true);
         $configs['php'] = phpversion();
         $configs['metatypes'] = $this->listClassesExtending(
@@ -189,7 +196,8 @@ class FileManager {
         return $configs;
     }
 
-    private function getErrorInterface($e, $transpiler, $code) {
+    private function getErrorInterface($e, $transpiler, $code)
+    {
         $width = (int) shell_exec('tput cols') ?: 120;
 
         $gutterWidth = 10;
@@ -204,24 +212,24 @@ class FileManager {
 
         $codeGenerated = $transpiler->getCodeBeforeGenerator();
 
-        $hasTranspiled = !empty(trim($codeGenerated));
+        $hasTranspiled = !empty(\trim($codeGenerated));
 
-        $originalLines = explode("\n", rtrim($code));
-        $preParserLines = $hasTranspiled ? explode("\n", rtrim($codeGenerated)) : [];
-        $maxLines = max(count($originalLines), count($preParserLines));
+        $originalLines = \explode("\n", \rtrim($code));
+        $preParserLines = $hasTranspiled ? \explode("\n", \rtrim($codeGenerated)) : [];
+        $maxLines = \max(\count($originalLines), \count($preParserLines));
         $errorLine = 0;
         $message = $e->getMessage();
         if ($e instanceof CompileException) {
             $errorLine = $e->line;
         }
 
-        echo "\n{$red}" . str_repeat('=', $width) . "{$reset}\n";
+        echo "\n{$red}" . \str_repeat('=', $width) . "{$reset}\n";
         echo "  {$red}PHire Script DEBUGGER - COMPILATION ERROR{$reset}\n";
-        echo "{$red}" . str_repeat('=', $width) . "{$reset}\n\n";
+        echo "{$red}" . \str_repeat('=', $width) . "{$reset}\n\n";
 
         if ($hasTranspiled) {
             $colWidth = (int) ($availableWidth / 2) - 2;
-            printf(
+            \printf(
                 " %-4s | %-{$colWidth}s | %s\n",
                 "Line",
                 "{$blue}ORIGINAL PHire Script{$reset}",
@@ -229,10 +237,10 @@ class FileManager {
             );
         } else {
             $colWidth = $availableWidth;
-            printf(" %-4s | %s\n", "Line", "{$blue}ORIGINAL PHire Script (Full View){$reset}");
+            \printf(" %-4s | %s\n", "Line", "{$blue}ORIGINAL PHire Script (Full View){$reset}");
         }
 
-        echo str_repeat('-', $width) . "\n";
+        echo \str_repeat('-', $width) . "\n";
 
         for ($i = 0; $i < $maxLines; $i++) {
             $currentLineNum = $i + 1;
@@ -243,21 +251,21 @@ class FileManager {
             $lineNumColor = ($currentLineNum === $errorLine) ? $red : $gray;
 
             if ($hasTranspiled) {
-                printf(
+                \printf(
                     " %s %s%-3d%s | %s%-{$colWidth}s%s | %s%s%s\n",
                     $indicator,
                     $lineNumColor,
                     $currentLineNum,
                     $reset,
                     $blue,
-                    mb_substr($left, 0, $colWidth),
+                    \mb_substr($left, 0, $colWidth),
                     $reset,
                     $cyan,
-                    mb_substr($right, 0, $colWidth),
+                    \mb_substr($right, 0, $colWidth),
                     $reset
                 );
             } else {
-                printf(
+                \printf(
                     " %s %s%-3d%s | %s%s%s\n",
                     $indicator,
                     $lineNumColor,
@@ -275,17 +283,18 @@ class FileManager {
         echo "{$red}" . str_repeat('=', $width) . "{$reset}\n";
     }
 
-    private function getErrorInterfaceWeb($e, $transpiler, $code): string {
+    private function getErrorInterfaceWeb($e, $transpiler, $code): string
+    {
         $width = 120;
         $gutterWidth = 8;
         $availableWidth = $width - $gutterWidth;
 
         $codeGenerated = $transpiler->getCodeBeforeGenerator();
-        $hasTranspiled = !empty(trim($codeGenerated));
+        $hasTranspiled = !empty(\trim($codeGenerated));
 
-        $originalLines   = explode("\n", rtrim($code));
-        $preParserLines  = $hasTranspiled ? explode("\n", rtrim($codeGenerated)) : [];
-        $maxLines        = max(count($originalLines), count($preParserLines));
+        $originalLines   = \explode("\n", \rtrim($code));
+        $preParserLines  = $hasTranspiled ? \explode("\n", \rtrim($codeGenerated)) : [];
+        $maxLines        = \max(\count($originalLines), \count($preParserLines));
 
         $message = htmlspecialchars($e->getMessage());
         $errorLine = ($e instanceof CompileException) ? $e->line : null;
@@ -303,25 +312,25 @@ class FileManager {
     ">';
 
         $html .= "PHire Script DEBUGGER - COMPILATION ERROR\n";
-        $html .= str_repeat('=', $width) . "\n\n";
+        $html .= \str_repeat('=', $width) . "\n\n";
 
         if ($hasTranspiled) {
             $colWidth = (int) ($availableWidth / 2) - 2;
-            $html .= str_pad('Line', 6) .
-                str_pad('ORIGINAL PHire Script', $colWidth) .
+            $html .= \str_pad('Line', 6) .
+                \str_pad('ORIGINAL PHire Script', $colWidth) .
                 " | TRANSPILED PHP\n";
         } else {
             $colWidth = $availableWidth;
-            $html .= str_pad('Line', 6) .
+            $html .= \str_pad('Line', 6) .
                 "ORIGINAL PHire Script\n";
         }
 
-        $html .= str_repeat('-', $width) . "\n";
+        $html .= \str_repeat('-', $width) . "\n";
 
         for ($i = 0; $i < $maxLines; $i++) {
             $currentLineNum = $i + 1;
-            $left  = htmlspecialchars($originalLines[$i] ?? '');
-            $right = htmlspecialchars($preParserLines[$i] ?? '');
+            $left  = \htmlspecialchars($originalLines[$i] ?? '');
+            $right = \htmlspecialchars($preParserLines[$i] ?? '');
 
             $isError = ($currentLineNum === $errorLine);
 
@@ -354,7 +363,8 @@ class FileManager {
         exit;
     }
 
-    private function getExecutionInterface(string $compiledCode, string $executionResult) {
+    private function getExecutionInterface(string $compiledCode, string $executionResult)
+    {
         $compiledSafe = htmlspecialchars($compiledCode);
         $resultSafe   = htmlspecialchars($executionResult);
 
@@ -427,7 +437,7 @@ class FileManager {
             $extends   = null;
 
 
-            for ($i = 0; $i < count($tokens); $i++) {
+            for ($i = 0; $i < \count($tokens); $i++) {
                 if ($tokens[$i][0] === T_NAMESPACE) {
                     $namespace = '';
                     for ($j = $i + 2; isset($tokens[$j]); $j++) {
@@ -445,7 +455,7 @@ class FileManager {
                         if (is_array($tokens[$j]) && $tokens[$j][0] === T_EXTENDS) {
                             $extends = '';
                             for ($k = $j + 2; isset($tokens[$k]); $k++) {
-                                if (in_array($tokens[$k][0], [T_STRING, T_NS_SEPARATOR])) {
+                                if (\in_array($tokens[$k][0], [T_STRING, T_NS_SEPARATOR])) {
                                     $extends .= $tokens[$k][1];
                                 } else {
                                     break;
@@ -481,7 +491,8 @@ class FileManager {
         return $classes;
     }
 
-    private function cleanDirectory($dir) {
+    private function cleanDirectory($dir)
+    {
         $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST

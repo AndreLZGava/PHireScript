@@ -29,7 +29,7 @@ class NumericExpressionResolver implements ContextTokenResolver
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
         $next = $parseContext->tokenManager->getNextTokenAfterCurrent();
-        $hasOperator = in_array($next->value, self::MATH_OPERATORS);
+        $hasOperator = \in_array($next->value, self::MATH_OPERATORS);
 
         return ($token->isNumber() && $hasOperator) ||
         (

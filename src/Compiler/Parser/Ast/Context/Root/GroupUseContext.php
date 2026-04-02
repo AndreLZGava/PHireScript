@@ -43,7 +43,7 @@ class GroupUseContext extends AbstractContext
         foreach ($this->resolvers as $key => $resolver) {
             $this->shouldProcessAsAlias = $this->alias;
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = get_class($resolver);
+                $token->processedBy = \get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
 
                 $this->handleSaveGroup($token);
@@ -64,17 +64,17 @@ class GroupUseContext extends AbstractContext
         $parts = $this->node->parts;
         if (!$this->shouldProcessAsAlias) {
             foreach ($this->children as $key => $item) {
-                if (!in_array($item, $parts) && !array_key_exists($item, $parts)) {
+                if (!\in_array($item, $parts) && !\array_key_exists($item, $parts)) {
                     $parts[] = $item;
                 }
             }
             $this->node->parts = $parts;
             return;
         }
-        $lastItem = array_pop($parts);
-        $aliasName = end($this->children);
+        $lastItem = \array_pop($parts);
+        $aliasName = \end($this->children);
         $parts[$aliasName] = $lastItem;
-        $this->node->parts = array_unique($parts);
+        $this->node->parts = \array_unique($parts);
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool

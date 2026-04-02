@@ -18,9 +18,9 @@ class TypeGuard
                 default   => $type
             };
 
-            if (!in_array($mappedType, $allowedTypes, true)) {
+            if (!\in_array($mappedType, $allowedTypes, true)) {
                 throw new \TypeError("Runtime Error: Element at index $index expects [" .
-                implode('|', $allowedTypes) . "], but got $mappedType");
+                \implode('|', $allowedTypes) . "], but got $mappedType");
             }
         }
         return $data;

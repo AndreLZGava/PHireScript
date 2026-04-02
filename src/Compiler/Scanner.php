@@ -71,7 +71,7 @@ class Scanner
 
     public function __construct(string $code, public string $path)
     {
-        $this->code = str_replace(["\r\n", "\r"], "\n", $code);
+        $this->code = \str_replace(["\r\n", "\r"], "\n", $code);
     }
 
     public function tokenize(): array
@@ -100,7 +100,7 @@ class Scanner
 
                     $lastNewlinePos = strrpos($value, "\n");
                     if ($lastNewlinePos !== false) {
-                        $this->line += substr_count($value, "\n");
+                        $this->line += \substr_count($value, "\n");
                         $this->lineStartOffset = $this->cursor + $lastNewlinePos + 1;
                     }
 

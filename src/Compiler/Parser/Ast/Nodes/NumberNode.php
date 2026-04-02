@@ -18,6 +18,6 @@ class NumberNode extends Expression implements Type
 
     public function getRawType(): string
     {
-        return is_int($this->value) ? 'Int' : 'Float';
+        return \is_int($this->value) ? 'Int' : 'Float';
     }
 }

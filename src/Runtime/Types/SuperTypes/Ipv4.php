@@ -10,6 +10,6 @@ class Ipv4 extends SuperTypes
 {
     protected static function validate(mixed $value): bool
     {
-        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
+        return \filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
     }
 }

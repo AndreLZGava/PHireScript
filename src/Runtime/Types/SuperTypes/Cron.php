@@ -45,24 +45,24 @@ class Cron extends SuperTypes
 
     protected static function transform(mixed $value): mixed
     {
-        if (!is_string($value)) {
+        if (!\is_string($value)) {
             return $value;
         }
-        return preg_replace('/\s+/', ' ', strtoupper(trim($value)));
+        return preg_replace('/\s+/', ' ', strtoupper(\trim($value)));
     }
 
     protected static function validate(mixed $preparedValue): bool
     {
-        if (!is_string($preparedValue)) {
+        if (!\is_string($preparedValue)) {
             return false;
         }
 
-        if (in_array($preparedValue, self::MACROS, true)) {
+        if (\in_array($preparedValue, self::MACROS, true)) {
             return true;
         }
 
-        $parts = explode(' ', $preparedValue);
-        $count = count($parts);
+        $parts = \explode(' ', $preparedValue);
+        $count = \count($parts);
 
         if ($count !== 5 && $count !== 6) {
             return false;
@@ -84,7 +84,7 @@ class Cron extends SuperTypes
         int $max,
         array $namedMap = []
     ): bool {
-        foreach (explode(',', $field) as $segment) {
+        foreach (\explode(',', $field) as $segment) {
             if (!self::checkSegment($segment, $min, $max, $namedMap)) {
                 return false;
             }
@@ -98,8 +98,8 @@ class Cron extends SuperTypes
         int $max,
         array $namedMap
     ): bool {
-        if (str_contains($segment, '/')) {
-            [$base, $step] = explode('/', $segment, 2);
+        if (\str_contains($segment, '/')) {
+            [$base, $step] = \explode('/', $segment, 2);
             if (!ctype_digit($step) || (int)$step <= 0) {
                 return false;
             }
@@ -110,8 +110,8 @@ class Cron extends SuperTypes
             return true;
         }
 
-        if (str_contains($segment, '-')) {
-            [$start, $end] = explode('-', $segment, 2);
+        if (\str_contains($segment, '-')) {
+            [$start, $end] = \explode('-', $segment, 2);
             $start = self::resolveValue($start, $namedMap);
             $end   = self::resolveValue($end, $namedMap);
 

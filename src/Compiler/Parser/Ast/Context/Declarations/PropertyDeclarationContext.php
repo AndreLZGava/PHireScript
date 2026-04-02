@@ -43,7 +43,7 @@ class PropertyDeclarationContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = get_class($resolver);
+                $token->processedBy = \get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
                 $this->processProperty($token, $keyResolver);
                 return null;
@@ -58,12 +58,12 @@ class PropertyDeclarationContext extends AbstractContext
 
     private function processProperty(Token $token, int|string $keyResolver)
     {
-        if (is_int($keyResolver)) {
+        if (\is_int($keyResolver)) {
             return;
         }
         $key = $this->sanitizeKeys($keyResolver);
         $value = $this->getChildrenValues($keyResolver);
-        if (str_contains($keyResolver, '[]')) {
+        if (\str_contains($keyResolver, '[]')) {
             $this->node->$key[] =  $value ?: [];
             $this->children = [];
             return;

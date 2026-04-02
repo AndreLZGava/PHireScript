@@ -35,7 +35,7 @@ class FatalErrorException
         $gray = "\033[90m";
         $reset = "\033[0m";
 
-        echo "\n{$red}💥 " . get_class($e) . "{$reset}\n";
+        echo "\n{$red}💥 " . \get_class($e) . "{$reset}\n";
         echo $e->getMessage() . "\n\n";
 
         echo "📄 {$blue}" . $e->getFile() . "{$reset}:{$yellow}" . $e->getLine() . "{$reset}\n";
@@ -73,7 +73,7 @@ class FatalErrorException
 
         $lines = file($file);
         $start = max(0, $line - $padding - 1);
-        $end = min(count($lines), $line + $padding);
+        $end = min(\count($lines), $line + $padding);
 
         $output = "\n";
 
@@ -158,7 +158,7 @@ class FatalErrorException
     </style>';
 
         echo '<div class="box">';
-        echo '<div class="title">💥 ' . get_class($e) . '</div>';
+        echo '<div class="title">💥 ' . \get_class($e) . '</div>';
         echo '<div>' . htmlspecialchars($e->getMessage()) . '</div>';
 
         echo '<div class="meta">';
@@ -209,7 +209,7 @@ class FatalErrorException
 
         $lines = file($file);
         $start = max(0, $line - $padding - 1);
-        $end = min(count($lines), $line + $padding);
+        $end = min(\count($lines), $line + $padding);
 
         $html = '<div class="code">';
 

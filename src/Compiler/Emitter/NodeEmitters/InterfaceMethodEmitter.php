@@ -36,7 +36,7 @@ class InterfaceMethodEmitter extends NodeEmitterAbstract implements NodeEmitter
             $modifiers[] = 'static';
         }
 
-        $signature = implode(' ', $modifiers);
+        $signature = \implode(' ', $modifiers);
         $signature .= ' function ' . $this->removeEndPunctuation($node->name);
 
         $params = [];
@@ -48,7 +48,7 @@ class InterfaceMethodEmitter extends NodeEmitterAbstract implements NodeEmitter
 
         $ctx->insideMethodSignature = false;
 
-        $signature .= '(' . implode(', ', $params) . ')';
+        $signature .= '(' . \implode(', ', $params) . ')';
 
 
         $phpReturnType = $ctx->emitter->emit($node->returnType, $ctx);

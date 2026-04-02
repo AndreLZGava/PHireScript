@@ -20,7 +20,7 @@ class CommentContext extends AbstractContext
 
         if ($token->isComment()) {
             $node = new CommentNode($token);
-            $node->code = trim((string) $token->value);
+            $node->code = \trim((string) $token->value);
             return $node;
         }
 

@@ -22,7 +22,7 @@ class ReturnTypeHandler implements PreprocessorInterface
 
         $specialTypes = ['Email', 'Ipv4', 'Ipv6', 'Json', 'Date'];
 
-        if (in_array($type, $specialTypes, true)) {
+        if (\in_array($type, $specialTypes, true)) {
             return 'string';
         }
 

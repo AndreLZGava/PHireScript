@@ -14,7 +14,7 @@ use PHireScript\Helper\Debug\Debug;
 
 class ModifiersResolver implements ContextTokenResolver
 {
-    const MODIFIERS = [
+    public const MODIFIERS = [
     '*',
     '#',
     '+',
@@ -28,7 +28,7 @@ class ModifiersResolver implements ContextTokenResolver
 
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return in_array($token->value, self::MODIFIERS);
+        return \in_array($token->value, self::MODIFIERS);
     }
 
     public function resolve(
@@ -50,7 +50,7 @@ class ModifiersResolver implements ContextTokenResolver
     {
         return array_values(array_filter(
             $previousModifiers,
-            fn($item) => in_array($item, self::MODIFIERS, true)
+            fn($item) => \in_array($item, self::MODIFIERS, true)
         ));
     }
 }

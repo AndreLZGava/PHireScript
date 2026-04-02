@@ -27,8 +27,8 @@ class LiteralEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     private function clearAsString($found)
     {
-        $found = trim($found, '"');
-        $found = trim($found, "'");
+        $found = \trim($found, '"');
+        $found = \trim($found, "'");
         return '"' . $found . '"';
     }
 }

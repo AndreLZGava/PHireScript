@@ -38,7 +38,7 @@ class MethodDeclarationContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = get_class($resolver);
+                $token->processedBy = \get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
                 $this->processResolvers($token, $keyResolver);
                 return null;
@@ -53,7 +53,7 @@ class MethodDeclarationContext extends AbstractContext
 
     private function processResolvers($token, $keyResolver)
     {
-        if (is_int($keyResolver)) {
+        if (\is_int($keyResolver)) {
             return;
         }
         $key = $this->sanitizeKeys($keyResolver);

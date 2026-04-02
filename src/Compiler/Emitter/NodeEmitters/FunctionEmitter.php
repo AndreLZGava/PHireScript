@@ -47,37 +47,37 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
         $variable = $ctx->emitter->emit($node->variableBase, $ctx);
         $method = $node->method->phpCodeForConversion;
 
-        if (is_array($method)) {
+        if (\is_array($method)) {
             $lines = [];
 
             foreach ($method as $line) {
-                $lines[] = str_replace('@self', $variable, $line);
+                $lines[] = \str_replace('@self', $variable, $line);
             }
 
             return $this->wrapAsIIFE($lines, $variable);
         }
 
-        return str_replace('@self', $variable, $method);
+        return \str_replace('@self', $variable, $method);
     }
 
     private function wrapAsIIFE(array $lines, string $variable): string
     {
-        $indented = implode("\n    ", $lines);
+        $indented = \implode("\n    ", $lines);
 
         return "(function() use ($variable) {\n    $indented\n})()";
     }
 
     private function overrideParams($normalized)
     {
-        $params = implode(', ', $normalized->params);
-        $code = str_replace('@params', $params, $normalized->code);
+        $params = \implode(', ', $normalized->params);
+        $code = \str_replace('@params', $params, $normalized->code);
         return $code;
     }
 
     private function normalizeParams($sentParams, $expected, $code, $ctx)
     {
         $params = [];
-        $last = end($expected) ?: (object) ['name' => ''];
+        $last = \end($expected) ?: (object) ['name' => ''];
         foreach ($sentParams as $methodParamId => $param) {
             if (isset($sentParams[$methodParamId])) {
                 $params[$methodParamId] = $ctx->emitter->emit($sentParams[$methodParamId], $ctx);
@@ -89,7 +89,7 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
             $code = $this->processNamedParams($param->name, $this->processDefaultValue($param), $code);
         }
 
-        $code = preg_replace('/@(?!(params)\b)\w+/', '', $code);
+        $code = \preg_replace('/@(?!(params)\b)\w+/', '', $code);
 
 
         return (object) ['params' => $params, 'code' => $code];
@@ -108,11 +108,11 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
         }
 
         if ($type === 'bool') {
-            return filter_var($param->defaultValue, FILTER_VALIDATE_BOOLEAN);
+            return \filter_var($param->defaultValue, FILTER_VALIDATE_BOOLEAN);
         }
 
         if ($type === 'float') {
-            return filter_var($param->defaultValue, FILTER_VALIDATE_FLOAT);
+            return \filter_var($param->defaultValue, FILTER_VALIDATE_FLOAT);
         }
 
         if ($type === 'int') {
@@ -122,8 +122,8 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     private function processNamedParams($paramName, $paramValue, $originalCode)
     {
-        if (gettype($paramName) !== 'integer') {
-            return str_replace($paramName, $paramValue, $originalCode);
+        if (\gettype($paramName) !== 'integer') {
+            return \str_replace($paramName, $paramValue, $originalCode);
         }
         return '';
     }

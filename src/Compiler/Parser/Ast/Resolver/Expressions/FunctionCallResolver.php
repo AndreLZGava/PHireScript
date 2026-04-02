@@ -59,7 +59,7 @@ class FunctionCallResolver implements ContextTokenResolver
         if (empty($functionDefinition)) {
             $this->assignmentContext = $context->assignmentContext ?: false;
             $functionDefinition = $parseContext->symbolTable->getFunctionFromLastExecution($token->value, true);
-            /**$onFocus = end($parseContext->program->statements);
+            /**$onFocus = \end($parseContext->program->statements);
             if($onFocus instanceof AssignmentNode) {
                 $onFocus = $onFocus->right;
             }
@@ -94,13 +94,13 @@ class FunctionCallResolver implements ContextTokenResolver
 
     private function overrideVariableOnFocus($function, $functionDefinition, $token)
     {
-        $function->overrideVariableFocus = count($functionDefinition->returnOfPhpExecution) > 0 &&
+        $function->overrideVariableFocus = \count($functionDefinition->returnOfPhpExecution) > 0 &&
             $functionDefinition->overridesSelfParam &&
             !$this->assignmentContext;
 
         if ($function->overrideVariableFocus) {
-            $firstType = current($function->method->returnOfPhpExecution);
-            $firstType = $firstType == 'Mixed' ? current($function->variableBase?->type?->types ?? []) : $firstType;
+            $firstType = \current($function->method->returnOfPhpExecution);
+            $firstType = $firstType == 'Mixed' ? \current($function->variableBase?->type?->types ?? []) : $firstType;
             $newVariable = $this->getNewVirtualVariable($token, $firstType);
             if (property_exists($newVariable, 'types')) {
                 $newVariable->types = $function->method->subTypes;

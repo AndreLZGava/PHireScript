@@ -23,12 +23,12 @@ class GetterAndSetters extends GlobalFactory
 {
     public function isTheCase(Token $token, ParseContext $parseContext): bool
     {
-        return  in_array(
+        return  \in_array(
             $parseContext->tokenManager->getCurrentToken()->value,
             RuntimeClass::GETTER_AND_SETTER,
             true
         ) &&
-            in_array(
+            \in_array(
                 $parseContext->tokenManager->getContext(),
                 RuntimeClass::OBJECT_AS_CLASS,
                 true
@@ -59,7 +59,7 @@ class GetterAndSetters extends GlobalFactory
             }
 
             if ($processBeforeAttribution && $token->isIdentifier()) {
-                $name = trim((string) $token->value);
+                $name = \trim((string) $token->value);
             }
 
             if ($token->isSymbol() && $token->value === '=') {
@@ -76,7 +76,7 @@ class GetterAndSetters extends GlobalFactory
             $typeMethod = 'set';
             $arg = new PropertyNode($parseContext->tokenManager->getCurrentToken());
             $arg->name = $name;
-            $arg->type = implode("|", $types);
+            $arg->type = \implode("|", $types);
             if ($defaultValue) {
                 $arg->defaultValue = $defaultValue;
             }
@@ -105,7 +105,7 @@ class GetterAndSetters extends GlobalFactory
             $returnStatement = new ReturnNode($currentToken, $property);
             $node->bodyCode[] = $returnStatement;
 
-            $node->returnType = implode("|", $types);
+            $node->returnType = \implode("|", $types);
         }
 
         $node->name = $typeMethod . ucfirst($name);

@@ -18,9 +18,9 @@ class NewExceptionEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        $className = '\\' . ltrim($node->className, '\\');
+        $className = '\\' . \ltrim($node->className, '\\');
 
-        $message = addslashes($node->message);
+        $message = \addslashes($node->message);
 
         return "new {$className}(\"{$message}\")";
     }

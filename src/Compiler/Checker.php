@@ -69,8 +69,8 @@ class Checker
                 }
 
                 if (
-                    !in_array('abstract', $classNode->modifiers) &&
-                    in_array('abstract', $member->modifiers)
+                    !\in_array('abstract', $classNode->modifiers) &&
+                    \in_array('abstract', $member->modifiers)
                 ) {
                     throw new \Exception(
                         "Semantic error in property '{$propertyName}': " .
@@ -103,18 +103,18 @@ class Checker
                 return true;
             }
 
-            if (str_starts_with((string) $declaredType, '[') && str_ends_with((string) $declaredType, ']')) {
-                $innerTypes = trim((string) $declaredType, '[]');
-                $allowedTypes = explode('|', $innerTypes);
+            if (\str_starts_with((string) $declaredType, '[') && \str_ends_with((string) $declaredType, ']')) {
+                $innerTypes = \trim((string) $declaredType, '[]');
+                $allowedTypes = \explode('|', $innerTypes);
 
                 foreach ($expressionNode->elements as $index => $element) {
                     $elementType = $this->getNodeType($element);
 
-                    if (!in_array($elementType, $allowedTypes, true)) {
+                    if (!\in_array($elementType, $allowedTypes, true)) {
                         throw new \Exception(
                             "Semantic Error in method '{$methodName}': " .
                                 "Element at index {$index} is of type '{$elementType}', " .
-                                "but the return array only accepts [" . implode('|', $allowedTypes) . "]."
+                                "but the return array only accepts [" . \implode('|', $allowedTypes) . "]."
                         );
                     }
                 }
@@ -127,10 +127,10 @@ class Checker
 
     private function ensureReturnsForMethods(MethodDeclarationNode $prop)
     {
-        $returnMethod = explode('|', (string) $prop->returnType);
+        $returnMethod = \explode('|', (string) $prop->returnType);
         if (
-            $prop->mustBeBool && count($returnMethod) > 1 ||
-            $prop->mustBeBool && current($returnMethod) !== 'Bool'
+            $prop->mustBeBool && \count($returnMethod) > 1 ||
+            $prop->mustBeBool && \current($returnMethod) !== 'Bool'
         ) {
             throw new CheckerException('Method ' . $prop->name .
                 '? must return exclusively "Bool". Passed "' .
@@ -138,8 +138,8 @@ class Checker
         }
 
         if (
-            $prop->mustBeVoid && count($returnMethod) > 1 ||
-            $prop->mustBeVoid && current($returnMethod) !== 'Void'
+            $prop->mustBeVoid && \count($returnMethod) > 1 ||
+            $prop->mustBeVoid && \current($returnMethod) !== 'Void'
         ) {
             throw new CheckerException('Method ' . $prop->name .
                 '! must return exclusively "Void". Passed "' .

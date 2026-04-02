@@ -32,7 +32,7 @@ class Time extends MetaTypes
             return ($now->format('H') * 3600) + ($now->format('i') * 60) + $now->format('s');
         }
 
-        if (is_string($value)) {
+        if (\is_string($value)) {
             if (preg_match('/^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(?::([0-5][0-9]))?$/', $value, $matches)) {
                 $h = (int)$matches[1];
                 $m = (int)$matches[2];
@@ -46,7 +46,7 @@ class Time extends MetaTypes
 
     protected static function validate(mixed $value): bool
     {
-        return is_int($value) && $value >= 0 && $value < 86400;
+        return \is_int($value) && $value >= 0 && $value < 86400;
     }
 
 

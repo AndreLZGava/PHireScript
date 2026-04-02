@@ -42,7 +42,7 @@ class FunctionCallContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = get_class($resolver);
+                $token->processedBy = \get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleParameters($resolver, $parseContext, $token);
                 return null;

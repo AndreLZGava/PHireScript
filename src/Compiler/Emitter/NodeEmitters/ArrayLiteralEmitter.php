@@ -26,6 +26,6 @@ class ArrayLiteralEmitter extends NodeEmitterAbstract implements NodeEmitter
             }
         }
 
-        return "[\n" . implode(", \n", $items) . "\n]";
+        return "[\n" . \implode(", \n", $items) . "\n]";
     }
 }

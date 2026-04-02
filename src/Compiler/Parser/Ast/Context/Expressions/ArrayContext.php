@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast\Context\Expressions;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ColonResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\IgnoreColonResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\CommaResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ArrayKeyResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ArrayLiteralResolver;
@@ -49,10 +49,10 @@ class ArrayContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = get_class($resolver);
+                $token->processedBy = \get_class($resolver);
 
                 $resolver->resolve($token, $parseContext, $this);
-                $this->node->types = array_unique($parseContext->contextManager->current()->children);
+                $this->node->types = \array_unique($parseContext->contextManager->current()->children);
                 return null;
             }
         }

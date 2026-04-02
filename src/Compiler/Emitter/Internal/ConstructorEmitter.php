@@ -20,7 +20,7 @@ class ConstructorEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     public function emit(object $class, EmitContext $ctx): string
     {
-        $props = array_filter($class->children, fn($m) => $m instanceof PropertyNode);
+        $props = \array_filter($class->children, fn($m) => $m instanceof PropertyNode);
 
         $params = [];
         $assignments = [];
@@ -42,15 +42,11 @@ class ConstructorEmitter extends NodeEmitterAbstract implements NodeEmitter
             return '';
         }
 
-        return sprintf(
+        return \sprintf(
             "\n    public function __construct(\n        %s\n    ) {\n        %s\n        %s\n    }\n",
-            implode("\n        ", $params),
-            implode("\n        ", $assignments),
-            implode("\n        ", $internalStatements)
+            \implode("\n        ", $params),
+            \implode("\n        ", $assignments),
+            \implode("\n        ", $internalStatements)
         );
-    }
-    private function join($params)
-    {
-        return implode("\n        ", $params);
     }
 }

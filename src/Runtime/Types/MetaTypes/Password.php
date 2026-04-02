@@ -25,7 +25,7 @@ class Password extends MetaTypes
         $errors = self::checkStrength($plainTextOrHash);
 
         if (!empty($errors)) {
-            throw new \InvalidArgumentException("Password not enough: " . implode(", ", $errors));
+            throw new \InvalidArgumentException("Password not enough: " . \implode(", ", $errors));
         }
 
         $this->hash = password_hash($plainTextOrHash, PASSWORD_BCRYPT);

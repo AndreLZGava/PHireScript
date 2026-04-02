@@ -13,7 +13,7 @@ $baseDir = __DIR__;
 $requestFile = $_GET['file'] ?? null;
 
 if ($requestFile !== null) {
-    $requestFile = ltrim($requestFile, '/\\');
+    $requestFile = \ltrim($requestFile, '/\\');
     $file = realpath($baseDir . DIRECTORY_SEPARATOR . $requestFile);
 
     if (
@@ -55,7 +55,7 @@ function findPsFiles(string $baseDir): array
 
     foreach ($iterator as $file) {
         if ($file->isFile() && $file->getExtension() === 'ps') {
-            $files[] = str_replace($baseDir . DIRECTORY_SEPARATOR, '', $file->getPathname());
+            $files[] = \str_replace($baseDir . DIRECTORY_SEPARATOR, '', $file->getPathname());
         }
     }
 

@@ -19,7 +19,7 @@ class StringObjectTransformer extends NodeVisitorAbstract
         'toLowerCase' => 'strtolower',
         'length'      => 'strlen',
         'trim'        => 'trim',
-        'contains'    => 'str_contains',
+        'contains'    => '\str_contains',
     ];
 
     public function __construct(private readonly SymbolTable $symbolTable)

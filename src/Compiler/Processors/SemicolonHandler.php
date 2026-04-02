@@ -12,11 +12,11 @@ class SemicolonHandler implements PreprocessorInterface
 
     public function process(string $code): string
     {
-        $lines = explode("\n", $code);
+        $lines = \explode("\n", $code);
         $result = [];
 
         foreach ($lines as $line) {
-            $trimmed = trim($line);
+            $trimmed = \trim($line);
 
             if ($trimmed === '}') {
                 $result[] = $line . ';';
@@ -28,7 +28,7 @@ class SemicolonHandler implements PreprocessorInterface
                 continue;
             }
 
-            if (str_ends_with($trimmed, ';') || str_ends_with($trimmed, '{')) {
+            if (\str_ends_with($trimmed, ';') || \str_ends_with($trimmed, '{')) {
                 $result[] = $line;
                 continue;
             }
@@ -38,9 +38,9 @@ class SemicolonHandler implements PreprocessorInterface
                 continue;
             }
 
-            if (str_contains($line, '//')) {
-                $parts = explode('//', $line, 2);
-                $content = rtrim($parts[0]);
+            if (\str_contains($line, '//')) {
+                $parts = \explode('//', $line, 2);
+                $content = \rtrim($parts[0]);
                 if ($content !== '') {
                     $result[] = $content . ';' . ' //' . $parts[1];
                 } else {
@@ -52,10 +52,10 @@ class SemicolonHandler implements PreprocessorInterface
             $result[] = $line . ';';
         }
 
-        $code = implode("\n", $result);
+        $code = \implode("\n", $result);
 
         foreach ($this->objectHandler->getObjectPlaceholders() as $placeholder => $originalContent) {
-            $code = str_replace($placeholder, $originalContent, $code);
+            $code = \str_replace($placeholder, $originalContent, $code);
         }
         return $code;
     }

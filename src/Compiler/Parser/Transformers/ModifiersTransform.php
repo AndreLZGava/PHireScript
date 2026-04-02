@@ -17,8 +17,8 @@ class ModifiersTransform
 
     public function map(Token $accessor)
     {
-        $modifier = in_array($accessor->value, RuntimeClass::GETTER_AND_SETTER, true) ||
-            in_array($accessor->type, ['T_EOL', 'T_COMMENT'], true)
+        $modifier = \in_array($accessor->value, RuntimeClass::GETTER_AND_SETTER, true) ||
+            \in_array($accessor->type, ['T_EOL', 'T_COMMENT'], true)
             ? '*' : $accessor->value;
 
         $map = [

@@ -8,8 +8,10 @@ use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseRegistryFunctions;
 
-class GeneralType {
-    public function destroy() {
+class GeneralType
+{
+    public function destroy()
+    {
         return new BaseMethods(
             name: 'destroy!',
             phpCodeForConversion: '\unset(@self)',
@@ -17,15 +19,17 @@ class GeneralType {
         );
     }
 
-    public function defined() {
+    public function defined()
+    {
         return new BaseMethods(
             name: 'defined?',
-            phpCodeForConversion: '\isset(@self)',
+            phpCodeForConversion: 'isset(@self)',
             returnOfPhpExecution: ['Bool'],
         );
     }
 
-    public function getClass() {
+    public function getClass()
+    {
         return new BaseMethods(
             name: 'getClass',
             phpCodeForConversion: '\is_object(@self) ? \get_class(@self) : \gettype(@self)',
@@ -33,7 +37,8 @@ class GeneralType {
         );
     }
 
-    public function show() {
+    public function show()
+    {
         return new BaseMethods(
             name: 'show!',
             phpCodeForConversion: 'if(\is_array(@self) || \is_object(@self)) {\print_r(@self);} else {echo @self ;}',
@@ -41,7 +46,8 @@ class GeneralType {
         );
     }
 
-    public function display() {
+    public function display()
+    {
         return new BaseMethods(
             name: 'display!',
             phpCodeForConversion: '\print_r(@self)',
@@ -55,15 +61,16 @@ class GeneralType {
      *
      * @return boolean
      */
-    public function is() {
+    public function is()
+    {
         $isOfType = function (mixed $value, string $type): bool {
             if (is_object($value) && (class_exists($type) || interface_exists($type))) {
                 return $value instanceof $type;
             }
 
             return match (strtolower($type)) {
-                'string'  => is_string($value),
-                'int', 'integer' => is_int($value),
+                'string'  => \is_string($value),
+                'int', 'integer' => \is_int($value),
                 'float', 'double' => is_float($value),
                 'bool', 'boolean' => is_bool($value),
                 'array'   => is_array($value),

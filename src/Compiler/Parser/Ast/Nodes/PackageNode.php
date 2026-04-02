@@ -42,7 +42,7 @@ class PackageNode extends Statement
 
         if (
             !str_starts_with($basename, $this->object) ||
-            !str_ends_with($basename, '.' . $ext)
+            !\str_ends_with($basename, '.' . $ext)
         ) {
             throw new CompileException(
                 'File name must match class/interface/type/' .
@@ -58,14 +58,14 @@ class PackageNode extends Statement
     {
         $config = $context->contextManager->getConfig();
         $namespace = '';
-        $namespace = current(explode('/' . $this->object, $this->file));
-        $baseDir = rtrim((string) $config['paths']['source'], '/') . '/';
+        $namespace = \current(\explode('/' . $this->object, $this->file));
+        $baseDir = \rtrim((string) $config['paths']['source'], '/') . '/';
 
         if (str_starts_with($namespace, $baseDir)) {
             $namespace = substr($namespace, strlen($baseDir));
         }
 
-        $namespace = str_replace('/', '\\', $namespace);
+        $namespace = \str_replace('/', '\\', $namespace);
 
         $this->completePackage = $this->package . '.' . $this->object;
         $this->namespace = $config['namespace'] . '\\' . $namespace;

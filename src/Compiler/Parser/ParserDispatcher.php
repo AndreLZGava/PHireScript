@@ -26,7 +26,7 @@ class ParserDispatcher
     {
         foreach ($this->emitters as $emitter) {
             if ($emitter->isTheCase($token, $context)) {
-                //Debug::show([get_class($emitter), $token]);
+                //Debug::show([\get_class($emitter), $token]);
                 $result = $emitter->process($token, $context);
                 $context->tokenManager->advance();
                 return $result;

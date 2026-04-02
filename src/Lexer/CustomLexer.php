@@ -19,7 +19,7 @@ class CustomLexer extends Emulative
                 $value = $token[1];
                 $reserved = ['echo', 'var', 'func', 'return', 'if', 'else', 'new', 'stdClass', 'true', 'false'];
 
-                if (!in_array($value, $reserved, true)) {
+                if (!\in_array($value, $reserved, true)) {
                     $token[0] = Tokens::T_VARIABLE;
                 }
             }

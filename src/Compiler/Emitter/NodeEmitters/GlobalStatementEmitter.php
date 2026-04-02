@@ -17,9 +17,9 @@ class GlobalStatementEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        $code = rtrim($node->code);
+        $code = \rtrim($node->code);
 
-        if (!str_ends_with($code, "\n")) {
+        if (!\str_ends_with($code, "\n")) {
             $code .= "\n";
         }
 

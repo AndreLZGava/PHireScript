@@ -17,6 +17,6 @@ class UnionType
         }
 
         $typeNames = array_map(fn ($c) => (new \ReflectionClass($c))->getShortName(), $types);
-        throw new \TypeError("Value is not valid for any of the types: " . implode('|', $typeNames));
+        throw new \TypeError("Value is not valid for any of the types: " . \implode('|', $typeNames));
     }
 }

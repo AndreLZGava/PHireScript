@@ -8,6 +8,6 @@ class NodeEmitterAbstract
 {
     public function removeEndPunctuation(string $text): string
     {
-        return preg_replace('/[!?]+$/', '', $text);
+        return \preg_replace('/[!?]+$/', '', $text);
     }
 }

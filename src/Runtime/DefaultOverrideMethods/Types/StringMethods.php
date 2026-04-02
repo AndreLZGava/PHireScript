@@ -8,8 +8,10 @@ use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 
-class StringMethods extends GeneralType {
-    public function length() {
+class StringMethods extends GeneralType
+{
+    public function length()
+    {
         return new BaseMethods(
             'length',
             '\strlen(@self)',
@@ -17,7 +19,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function toUpperCase() {
+    public function toUpperCase()
+    {
         return new BaseMethods(
             'toUpperCase',
             phpCodeForConversion: '\mb_strtoupper(@self, @format)',
@@ -28,7 +31,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function toLowerCase() {
+    public function toLowerCase()
+    {
         return new BaseMethods(
             'toLowerCase',
             phpCodeForConversion: '\mb_strtolower(@self, @format)',
@@ -39,7 +43,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function replace() {
+    public function replace()
+    {
         return new BaseMethods(
             'replace',
             phpCodeForConversion: '\str_replace(@from, @to, @self)',
@@ -51,7 +56,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function removeSpaces() {
+    public function removeSpaces()
+    {
         return new BaseMethods(
             'removeSpaces',
             phpCodeForConversion: [
@@ -64,10 +70,11 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function removeSpacesLeft() {
+    public function removeSpacesLeft()
+    {
         return new BaseMethods(
             'removeSpacesLeft',
-            phpCodeForConversion: 'return @characters !== null ? \ltrim(@self, @search) : \ltrim(@self);',
+            phpCodeForConversion: 'return @characters !== null ? \\ltrim(@self, @search) : \\ltrim(@self);',
             returnOfPhpExecution: ['String'],
             params: [
                 new BaseParams('@search', 'string|null', false, null),
@@ -75,7 +82,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function removeSpacesRight() {
+    public function removeSpacesRight()
+    {
         return new BaseMethods(
             'removeSpacesRight',
             phpCodeForConversion: 'return @characters !== null ? \rtrim(@self, @search) : \rtrim(@self);',
@@ -86,7 +94,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function removeAllSpaces() {
+    public function removeAllSpaces()
+    {
         return new BaseMethods(
             'removeAllSpaces',
             phpCodeForConversion: "\preg_replace('/\s+/', '', @self)",
@@ -94,7 +103,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function contains() {
+    public function contains()
+    {
         return new BaseMethods(
             'contains?',
             phpCodeForConversion: '\str_contains(@self, @search)',
@@ -105,7 +115,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function endWith() {
+    public function endWith()
+    {
         return new BaseMethods(
             'endWith?',
             phpCodeForConversion: '\str_ends_with(@self, @search)',
@@ -116,7 +127,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function startWith() {
+    public function startWith()
+    {
         return new BaseMethods(
             'startWith?',
             phpCodeForConversion: '\str_starts_with(@self, @search)',
@@ -127,7 +139,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function decrement() {
+    public function decrement()
+    {
         return new BaseMethods(
             'decrement',
             phpCodeForConversion: '\str_decrement(@self)',
@@ -135,7 +148,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function increment() {
+    public function increment()
+    {
         return new BaseMethods(
             'increment',
             phpCodeForConversion: '\str_increment(@self)',
@@ -143,7 +157,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function getCsv() {
+    public function getCsv()
+    {
         return new BaseMethods(
             'getCsv',
             phpCodeForConversion: '\str_getcsv(@self, @separator, @enclosure, @escape)',
@@ -157,7 +172,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function join() {
+    public function join()
+    {
         return new BaseMethods(
             'join',
             phpCodeForConversion: '@self . \implode(\'\', [@params])',
@@ -168,7 +184,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function repeat() {
+    public function repeat()
+    {
         return new BaseMethods(
             'repeat',
             phpCodeForConversion: '\str_repeat(@self, @times)',
@@ -179,7 +196,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function shuffle() {
+    public function shuffle()
+    {
         return new BaseMethods(
             'shuffle',
             phpCodeForConversion: '\str_shuffle(@self)',
@@ -187,7 +205,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function splitEvery() {
+    public function splitEvery()
+    {
         return new BaseMethods(
             'splitEvery',
             phpCodeForConversion: '\str_split(@self, @counting)',
@@ -199,10 +218,11 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function wordCount() {
+    public function wordCount()
+    {
         return new BaseMethods(
             'wordCount',
-            phpCodeForConversion: '\str_word_count(@self, @format, @search)',
+            phpCodeForConversion: '\str_word_\count(@self, @format, @search)',
             returnOfPhpExecution: ['Int'],
             params: [
                 new BaseParams('@format', 'int', false, 0),
@@ -211,7 +231,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function split() {
+    public function split()
+    {
         return new BaseMethods(
             'split',
             phpCodeForConversion: '\explode(@separator, @self, @limit)',
@@ -224,7 +245,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function slice() {
+    public function slice()
+    {
         return new BaseMethods(
             'slice',
             phpCodeForConversion: [
@@ -240,7 +262,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function substring() {
+    public function substring()
+    {
         return new BaseMethods(
             'substring',
             phpCodeForConversion: [
@@ -257,7 +280,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function indexOf() {
+    public function indexOf()
+    {
         return new BaseMethods(
             'indexOf',
             phpCodeForConversion: [
@@ -271,7 +295,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function lastIndexOf() {
+    public function lastIndexOf()
+    {
         return new BaseMethods(
             'lastIndexOf',
             phpCodeForConversion: [
@@ -285,7 +310,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function includes() {
+    public function includes()
+    {
         return new BaseMethods(
             'includes?',
             phpCodeForConversion: '\str_contains(@self, @search)',
@@ -296,7 +322,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function replaceAll() {
+    public function replaceAll()
+    {
         return new BaseMethods(
             'replaceAll',
             phpCodeForConversion: '\str_replace(@search, @replace, @self)',
@@ -308,7 +335,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function match() {
+    public function match()
+    {
         return new BaseMethods(
             'match',
             phpCodeForConversion: [
@@ -323,7 +351,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function reverse() {
+    public function reverse()
+    {
         return new BaseMethods(
             'reverse',
             phpCodeForConversion: [
@@ -335,7 +364,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function isEmpty() {
+    public function isEmpty()
+    {
         return new BaseMethods(
             'isEmpty?',
             phpCodeForConversion: '\mb_strlen(@self, "UTF-8") === 0',
@@ -343,7 +373,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function padStart() {
+    public function padStart()
+    {
         return new BaseMethods(
             'padStart',
             phpCodeForConversion: '\str_pad(@self, @length, @pad, STR_PAD_LEFT)',
@@ -355,7 +386,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function padEnd() {
+    public function padEnd()
+    {
         return new BaseMethods(
             'padEnd',
             phpCodeForConversion: '\str_pad(@self, @length, @pad, STR_PAD_RIGHT)',
@@ -367,7 +399,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function chars() {
+    public function chars()
+    {
         return new BaseMethods(
             'chars',
             phpCodeForConversion: '\preg_split("//u", @self, -1, PREG_SPLIT_NO_EMPTY)',
@@ -376,7 +409,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function words() {
+    public function words()
+    {
         return new BaseMethods(
             'words',
             phpCodeForConversion: [
@@ -388,7 +422,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function lines() {
+    public function lines()
+    {
         return new BaseMethods(
             'lines',
             phpCodeForConversion: '\preg_split("/\r\n|\r|\n/", @self)',
@@ -397,7 +432,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function normalize() {
+    public function normalize()
+    {
         return new BaseMethods(
             'normalize',
             phpCodeForConversion: '\Normalizer::normalize(@self)',
@@ -405,7 +441,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function sliceReplace() {
+    public function sliceReplace()
+    {
         return new BaseMethods(
             'sliceReplace',
             phpCodeForConversion: [
@@ -422,7 +459,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function charCodeAt() {
+    public function charCodeAt()
+    {
         return new BaseMethods(
             'charCodeAt',
             phpCodeForConversion: '\mb_ord(\mb_substr(@self, @index, 1, "UTF-8"), "UTF-8")',
@@ -433,7 +471,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function toNumber() {
+    public function toNumber()
+    {
         return new BaseMethods(
             'toNumber',
             phpCodeForConversion: [
@@ -443,7 +482,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function toBoolean() {
+    public function toBoolean()
+    {
         return new BaseMethods(
             'toBoolean',
             phpCodeForConversion: [
@@ -454,7 +494,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function collapseSpaces() {
+    public function collapseSpaces()
+    {
         return new BaseMethods(
             'collapseSpaces',
             phpCodeForConversion: '\preg_replace("/\s+/u", " ", \trim(@self))',
@@ -462,7 +503,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function between() {
+    public function between()
+    {
         return new BaseMethods(
             'between',
             phpCodeForConversion: [
@@ -481,7 +523,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function remove() {
+    public function remove()
+    {
         return new BaseMethods(
             'remove',
             phpCodeForConversion: '\str_replace(@search, "", @self)',
@@ -492,7 +535,8 @@ class StringMethods extends GeneralType {
         );
     }
 
-    public function to() {
+    public function to()
+    {
         return new BaseMethods(
             'to',
             phpCodeForConversion: [

@@ -34,13 +34,13 @@ class SymbolTableManager
         if (empty($this->lastExecution)) {
             return null;
         }
-        $allowedParams = count($this->lastExecution) === 1 ? current($this->lastExecution) : (
-            count($this->lastExecution) === 0 ? [] : implode('|', $this->lastExecution)
+        $allowedParams = \count($this->lastExecution) === 1 ? \current($this->lastExecution) : (
+            \count($this->lastExecution) === 0 ? [] : \implode('|', $this->lastExecution)
         );
 
         if (
-            !array_key_exists($allowedParams . 'Methods', $this->typeDefinitions) ||
-            !array_key_exists($functionName, $this->typeDefinitions[$allowedParams . 'Methods'])
+            !\array_key_exists($allowedParams . 'Methods', $this->typeDefinitions) ||
+            !\array_key_exists($functionName, $this->typeDefinitions[$allowedParams . 'Methods'])
         ) {
             return null;
         }
@@ -57,7 +57,7 @@ class SymbolTableManager
         if (
             is_null($this->rawType) ||
             is_null($functionName) ||
-            !array_key_exists($this->rawType . 'Methods', $this->typeDefinitions)
+            !\array_key_exists($this->rawType . 'Methods', $this->typeDefinitions)
         ) {
             return null;
         }

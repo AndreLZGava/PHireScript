@@ -12,8 +12,8 @@ $extension = RuntimeClass::DEFAULT_FILE_EXTENSION;
 $filesHash = [];
 
 if ($argc > 3) {
-    $sourceDir = rtrim($argv[1], '/');
-    $distDir = rtrim($argv[2], '/');
+    $sourceDir = \rtrim($argv[1], '/');
+    $distDir = \rtrim($argv[2], '/');
 }
 
 

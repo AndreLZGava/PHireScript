@@ -7,7 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast\Context\Declarations;
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\IdentifierResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Interface\ExtendsResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Root\Interface\OpeningCurlyBracketResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Root\Interface\InterfaceBodyResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\ModifiersResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
@@ -29,7 +29,7 @@ class InterfaceContext extends AbstractContext
         parent::__construct($node);
         $this->resolvers = [
             'name' => new IdentifierResolver(),
-            'body[]' => new OpeningCurlyBracketResolver(),
+            'body[]' => new InterfaceBodyResolver(),
             new EndOfLineResolver(),
             new CommentResolver(),
             new ModifiersResolver(),
@@ -41,7 +41,7 @@ class InterfaceContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = get_class($resolver);
+                $token->processedBy = \get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleClassProperties($token, $keyResolver);
 
@@ -59,7 +59,7 @@ class InterfaceContext extends AbstractContext
 
     private function handleClassProperties(Token $token, int|string $keyResolver): void
     {
-        if (is_int($keyResolver)) {
+        if (\is_int($keyResolver)) {
             return;
         }
         $key = $this->sanitizeKeys($keyResolver);

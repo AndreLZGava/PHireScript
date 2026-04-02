@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PHireScript\Compiler\Parser\Ast\Resolver\Root\Block;
+namespace PHireScript\Compiler\Parser\Ast\Resolver\Root\Class;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Declarations\Class\ClassBodyContext;
@@ -11,7 +11,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\ClassBodyNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 
-class OpeningCurlyBracketResolver implements ContextTokenResolver
+class ClassBodyResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {

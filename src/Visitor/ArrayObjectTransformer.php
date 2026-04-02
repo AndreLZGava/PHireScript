@@ -17,7 +17,7 @@ class ArrayObjectTransformer extends NodeVisitorAbstract
 {
     private $map = [
     'push'    => 'array_push',
-    'pop'     => 'array_pop',
+    'pop'     => '\array_key_exists',
     'shift'   => 'array_shift',
     'unshift' => 'array_unshift',
     'keys'    => 'array_keys',
@@ -106,7 +106,7 @@ class ArrayObjectTransformer extends NodeVisitorAbstract
 
             if ($methodName === 'join') {
                 return new FuncCall(
-                    new Name('implode'),
+                    new Name('\implode'),
                     [
                     $node->args[0] ?? new Arg(new \PhpParser\Node\Scalar\String_("")),
                     new Arg($node->var)

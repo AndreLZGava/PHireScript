@@ -10,12 +10,12 @@ class CardNumber extends SuperTypes
 {
     protected static function transform(mixed $value): mixed
     {
-        return is_string($value) ? preg_replace('/\D/', '', $value) : $value;
+        return \is_string($value) ? preg_replace('/\D/', '', $value) : $value;
     }
 
     protected static function validate(mixed $preparedValue): bool
     {
-        if (!is_string($preparedValue)) {
+        if (!\is_string($preparedValue)) {
             return false;
         }
 

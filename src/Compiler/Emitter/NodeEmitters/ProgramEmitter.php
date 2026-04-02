@@ -22,7 +22,7 @@ class ProgramEmitter extends NodeEmitterAbstract implements NodeEmitter
         //Debug::show($node->statements);exit;
         $code['init'] = "<?php\n\n";
         foreach ($node->statements as $position => $stmt) {
-            $code[get_class($stmt) . '_' . $position] = $ctx->emitter->emit($stmt, $ctx);
+            $code[\get_class($stmt) . '_' . $position] = $ctx->emitter->emit($stmt, $ctx);
         }
         $uses = $this->processUses($ctx);
 
@@ -36,7 +36,7 @@ class ProgramEmitter extends NodeEmitterAbstract implements NodeEmitter
         foreach ($arrayCode as $key => $code) {
             if (
                 $key === 'init' ||
-                str_contains($key, "PHireScript\Compiler\Parser\Ast\Nodes\PackageNode")
+                \str_contains($key, "PHireScript\Compiler\Parser\Ast\Nodes\PackageNode")
             ) {
                 $processedCodeBeforeUses .= $code . "\n";
                 continue;

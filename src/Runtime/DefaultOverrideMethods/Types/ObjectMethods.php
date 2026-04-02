@@ -7,11 +7,14 @@ namespace PHireScript\Runtime\DefaultOverrideMethods\Types;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 
-class ObjectMethods extends GeneralType {
-    public function __construct() {
+class ObjectMethods extends GeneralType
+{
+    public function __construct()
+    {
     }
 
-    public function hasProperty() {
+    public function hasProperty()
+    {
         return new BaseMethods(
             'hasProperty?',
             phpCodeForConversion: '\property_exists(@self, @property)',
@@ -23,7 +26,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function clone() {
+    public function clone()
+    {
         return new BaseMethods(
             'clone',
             phpCodeForConversion: 'clone @self',
@@ -33,7 +37,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function getProperties() {
+    public function getProperties()
+    {
         return new BaseMethods(
             'getProperties',
             phpCodeForConversion: '\get_object_vars(@self)',
@@ -43,7 +48,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function hasMethod() {
+    public function hasMethod()
+    {
         return new BaseMethods(
             name: 'hasMethod?',
             phpCodeForConversion: '\method_exists(@self, @method)',
@@ -54,7 +60,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function get() {
+    public function get()
+    {
         return new BaseMethods(
             name: 'get',
             phpCodeForConversion: '@self->@property ?? @default',
@@ -66,7 +73,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function set() {
+    public function set()
+    {
         return new BaseMethods(
             name: 'set',
             phpCodeForConversion: '@self->@property = @value',
@@ -78,7 +86,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function merge() {
+    public function merge()
+    {
         return new BaseMethods(
             name: 'merge',
             phpCodeForConversion: '(object) array_merge((array) @self, (array) @object)',
@@ -89,7 +98,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function remove() {
+    public function remove()
+    {
         return new BaseMethods(
             name: 'remove',
             phpCodeForConversion: 'unset(@self->@property)',
@@ -100,7 +110,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function toArray() {
+    public function toArray()
+    {
         return new BaseMethods(
             name: 'toArray',
             phpCodeForConversion: '(array) @self',
@@ -108,7 +119,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function toJson() {
+    public function toJson()
+    {
         return new BaseMethods(
             name: 'toJson',
             phpCodeForConversion: '\json_encode(@self)',
@@ -116,7 +128,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function keys() {
+    public function keys()
+    {
         return new BaseMethods(
             name: 'keys',
             phpCodeForConversion: '\array_keys(\get_object_vars(@self))',
@@ -124,7 +137,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function values() {
+    public function values()
+    {
         return new BaseMethods(
             name: 'values',
             phpCodeForConversion: '\array_values(\get_object_vars(@self))',
@@ -132,7 +146,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function entries() {
+    public function entries()
+    {
         return new BaseMethods(
             name: 'entries',
             phpCodeForConversion: '\get_object_vars(@self)',
@@ -140,7 +155,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function each() {
+    public function each()
+    {
         return new BaseMethods(
             name: 'each',
             phpCodeForConversion: 'foreach(\get_object_vars(@self) as $k => $v) { @callback($v, $k); }',
@@ -151,7 +167,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function map() {
+    public function map()
+    {
         return new BaseMethods(
             name: 'map',
             phpCodeForConversion: '(object) array_map(@callback, \get_object_vars(@self))',
@@ -162,7 +179,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function filter() {
+    public function filter()
+    {
         return new BaseMethods(
             name: 'filter',
             phpCodeForConversion: '(object) array_filter(\get_object_vars(@self), @callback)',
@@ -173,7 +191,8 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function isEmpty() {
+    public function isEmpty()
+    {
         return new BaseMethods(
             name: 'isEmpty?',
             phpCodeForConversion: 'empty(\get_object_vars(@self))',
@@ -181,10 +200,11 @@ class ObjectMethods extends GeneralType {
         );
     }
 
-    public function count() {
+    public function count()
+    {
         return new BaseMethods(
             name: 'count',
-            phpCodeForConversion: 'count(\get_object_vars(@self))',
+            phpCodeForConversion: '\count(\get_object_vars(@self))',
             returnOfPhpExecution: ['Int']
         );
     }

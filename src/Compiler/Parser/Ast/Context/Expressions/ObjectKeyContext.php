@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast\Context\Expressions;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ColonResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\IgnoreColonResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\CommaResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ArrayLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
@@ -34,7 +34,7 @@ class ObjectKeyContext extends AbstractContext
 
         $this->resolvers = [
             new CommentResolver(),
-            new ColonResolver(),
+            new IgnoreColonResolver(),
             new EndOfLineResolver(),
             new ClosingCurlyBracketResolver(),
             new CommaResolver(),
@@ -50,7 +50,7 @@ class ObjectKeyContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = get_class($resolver);
+                $token->processedBy = \get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
                 $this->node->value = $this->children[0] ?? null;
                 return null;

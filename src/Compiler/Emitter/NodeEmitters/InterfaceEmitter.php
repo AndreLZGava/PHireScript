@@ -20,7 +20,7 @@ class InterfaceEmitter extends NodeEmitterAbstract implements NodeEmitter
     {
         $name = $node->name;
         $extends = $node->extends ?
-        ' extends ' . implode(', ', $node?->extends?->children ?? []) :
+        ' extends ' . \implode(', ', $node?->extends?->children ?? []) :
         '';
         $code = "interface {$name}{$extends}\n";
         $prev = $ctx->insideInterface;

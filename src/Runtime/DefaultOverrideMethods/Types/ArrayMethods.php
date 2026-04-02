@@ -8,13 +8,15 @@ use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 
-class ArrayMethods extends GeneralType {
+class ArrayMethods extends GeneralType
+{
     public function __construct(
         public array $types = [],
     ) {
     }
 
-    public function contains() {
+    public function contains()
+    {
         return new BaseMethods(
             name: 'contains?',
             phpCodeForConversion: '\in_array(@searching, @self)',
@@ -26,7 +28,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function add() {
+    public function add()
+    {
         return new BaseMethods(
             name: 'add',
             phpCodeForConversion: '@self[@key] = @value',
@@ -46,7 +49,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function addEnd() {
+    public function addEnd()
+    {
         return new BaseMethods(
             name: 'addEnd!',
             phpCodeForConversion: '\array_push(@self, @params)',
@@ -58,7 +62,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function addStart() {
+    public function addStart()
+    {
         return new BaseMethods(
             name: 'addStart!',
             phpCodeForConversion: '\array_unshift(@self, @params)',
@@ -70,17 +75,19 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function last() {
+    public function last()
+    {
         return new BaseMethods(
             name: 'last',
-            phpCodeForConversion: '\empty(@self) ? null : @self[\array_key_last(@self)];',
+            phpCodeForConversion: 'empty(@self) ? null : @self[\array_key_last(@self)];',
             returnOfPhpExecution: ['Mixed'],
             subTypes: $this->types,
             params: [],
         );
     }
 
-    public function first() {
+    public function first()
+    {
         return new BaseMethods(
             name: 'first',
             phpCodeForConversion: '\current(@self ?? [])',
@@ -90,7 +97,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function remove() {
+    public function remove()
+    {
         return new BaseMethods(
             name: 'remove',
             phpCodeForConversion: 'unset(@self[@key])',
@@ -101,7 +109,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function removeValue() {
+    public function removeValue()
+    {
         return new BaseMethods(
             name: 'removeValue',
             phpCodeForConversion: '@self = array_filter(@self, fn($v) => $v !== @value)',
@@ -112,7 +121,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function length() {
+    public function length()
+    {
         return new BaseMethods(
             name: 'length',
             phpCodeForConversion: '\count(@self)',
@@ -120,15 +130,17 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function isEmpty() {
+    public function isEmpty()
+    {
         return new BaseMethods(
             name: 'isEmpty?',
-            phpCodeForConversion: '\empty(@self)',
+            phpCodeForConversion: 'empty(@self)',
             returnOfPhpExecution: ['Bool']
         );
     }
 
-    public function map() {
+    public function map()
+    {
         return new BaseMethods(
             name: 'map',
             phpCodeForConversion: '\array_map(@callback, @self)',
@@ -139,7 +151,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function filter() {
+    public function filter()
+    {
         return new BaseMethods(
             name: 'filter',
             phpCodeForConversion: '\array_filter(@self, @callback)',
@@ -150,7 +163,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function reduce() {
+    public function reduce()
+    {
         return new BaseMethods(
             name: 'reduce',
             phpCodeForConversion: '\array_reduce(@self, @callback, @initial)',
@@ -162,10 +176,11 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function find() {
+    public function find()
+    {
         return new BaseMethods(
             name: 'find',
-            phpCodeForConversion: 'current(array_filter(@self, @callback))',
+            phpCodeForConversion: '\current(array_filter(@self, @callback))',
             returnOfPhpExecution: ['Mixed'],
             params: [
                 new BaseParams('@callback', 'callable', true)
@@ -173,7 +188,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function findIndex() {
+    public function findIndex()
+    {
         return new BaseMethods(
             name: 'findIndex',
             phpCodeForConversion: 'array_search(true, array_map(@callback, @self))',
@@ -184,7 +200,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function sort() {
+    public function sort()
+    {
         return new BaseMethods(
             name: 'sort!',
             phpCodeForConversion: '\sort(@self)',
@@ -192,7 +209,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function reverse() {
+    public function reverse()
+    {
         return new BaseMethods(
             name: 'reverse',
             phpCodeForConversion: '\array_reverse(@self)',
@@ -200,7 +218,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function merge() {
+    public function merge()
+    {
         return new BaseMethods(
             name: 'merge',
             phpCodeForConversion: '\array_merge(@self, @array)',
@@ -211,7 +230,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function unique() {
+    public function unique()
+    {
         return new BaseMethods(
             name: 'unique',
             phpCodeForConversion: '\array_unique(@self)',
@@ -219,7 +239,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function get() {
+    public function get()
+    {
         return new BaseMethods(
             name: 'get',
             phpCodeForConversion: '@self[@key] ?? @default',
@@ -231,7 +252,8 @@ class ArrayMethods extends GeneralType {
         );
     }
 
-    public function each() {
+    public function each()
+    {
         return new BaseMethods(
             name: 'each',
             phpCodeForConversion: 'foreach(@self as $k => $v) { @callback($v, $k); }',

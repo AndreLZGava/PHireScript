@@ -20,10 +20,10 @@ class ClassEmitter extends NodeEmitterAbstract implements NodeEmitter
     public function emit(object $node, EmitContext $ctx): string
     {
         $code = $node->readOnly ? 'readonly ' : '';
-        $code .= implode(' ', $node->modifiers) . ' ';
+        $code .= \implode(' ', $node->modifiers) . ' ';
         $extends = $node->extends ? ' extends ' . $node->extends->child  : '';
         $implements = $node->implements ?
-            ' implements ' . implode(', ', $node->implements->children) :
+            ' implements ' . \implode(', ', $node->implements->children) :
             '';
         $code .= "class {$node->name}{$extends}{$implements}\n";
         $code .= $ctx->emitter->emit($node->body, $ctx);

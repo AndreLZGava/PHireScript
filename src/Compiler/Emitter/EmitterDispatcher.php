@@ -28,18 +28,17 @@ class EmitterDispatcher
         }
         if (empty($node->token)) {
             if (!isset($node->line) && !isset($node->column)) {
-                Debug::show($node, get_class($node));
+                Debug::show($node, \get_class($node));
                 exit;
             }
-            Debug::trace();
             throw new CompileException(
-                get_class($node) . ' has no emitter defined to process!',
+                \get_class($node) . ' has no emitter defined to process!',
                 $node->line,
                 $node->column,
             );
         }
         throw new CompileException(
-            get_class($node) . ' has no emitter defined to process!',
+            \get_class($node) . ' has no emitter defined to process!',
             $node->token->line,
             $node->token->column,
         );

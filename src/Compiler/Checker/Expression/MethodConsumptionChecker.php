@@ -54,14 +54,14 @@ class MethodConsumptionChecker implements Checker
         foreach ($params as $number => $param) {
             $paramRawType = $param->getRawType();
 
-            if ($expected[$number]->relatedKeyParam && in_array($paramRawType, $allowedKeys)) {
+            if ($expected[$number]->relatedKeyParam && \in_array($paramRawType, $allowedKeys)) {
                 continue;
             }
-            if ($expected[$number]->relatedKeyParam && !in_array($paramRawType, $allowedKeys)) {
+            if ($expected[$number]->relatedKeyParam && !\in_array($paramRawType, $allowedKeys)) {
                 throw new CompileException(
                     'Param of type ' . $paramRawType .
                         ' not allowed for key of ' . $type .
-                        '. Allowed in this case ' . implode('|', $allowedKeys) . '!',
+                        '. Allowed in this case ' . \implode('|', $allowedKeys) . '!',
                     $param->token->line,
                     $param->token->column
                 );
@@ -69,12 +69,12 @@ class MethodConsumptionChecker implements Checker
 
             if (
                 !empty($variableTypes) &&
-                !in_array($paramRawType, $variableTypes)
+                !\in_array($paramRawType, $variableTypes)
             ) {
                 throw new CompileException(
                     'Param of type ' . $paramRawType .
                         ' not allowed for ' . $type .
-                        '. Allowed in this case ' . implode('|', $variableTypes) . '!',
+                        '. Allowed in this case ' . \implode('|', $variableTypes) . '!',
                     $param->token->line,
                     $param->token->column
                 );

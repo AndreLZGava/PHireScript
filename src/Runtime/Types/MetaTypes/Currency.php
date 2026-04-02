@@ -32,7 +32,7 @@ class Currency extends MetaTypes
 
     protected function parseValue(mixed $value): int
     {
-        if (is_string($value)) {
+        if (\is_string($value)) {
             $formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
             $number = $formatter->formatCurrency($value, $this->currency);
             // Debug::show($value, $number, $this->locale);exit;
@@ -49,15 +49,15 @@ class Currency extends MetaTypes
 
     protected static function transform(mixed $value): int
     {
-        if (is_int($value)) {
+        if (\is_int($value)) {
             return $value;
         }
         if (is_float($value)) {
             return (int) round($value * 100);
         }
 
-        if (is_string($value)) {
-            $clean = str_replace(',', '.', preg_replace('/[^\d.,-]/', '', $value));
+        if (\is_string($value)) {
+            $clean = \str_replace(',', '.', preg_replace('/[^\d.,-]/', '', $value));
             return (int) round((float) $clean * 100);
         }
 
@@ -66,7 +66,7 @@ class Currency extends MetaTypes
 
     protected static function validate(mixed $value): bool
     {
-        return is_int($value);
+        return \is_int($value);
     }
 
     public function __get(string $name)

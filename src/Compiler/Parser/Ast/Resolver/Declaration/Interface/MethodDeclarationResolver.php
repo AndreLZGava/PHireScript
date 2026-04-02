@@ -33,8 +33,8 @@ class MethodDeclarationResolver implements ContextTokenResolver
             token: $token,
             name: $token->value,
             modifiers: empty($modifiers) ? ['public'] : $modifiers,
-            mustBeBool: str_ends_with('?', $token->value),
-            mustBeVoid: str_ends_with('!', $token->value),
+            mustBeBool: \str_ends_with('?', $token->value),
+            mustBeVoid: \str_ends_with('!', $token->value),
         );
 
         $parseContext->contextManager->enter(

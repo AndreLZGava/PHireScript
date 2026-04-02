@@ -17,7 +17,7 @@ class ParamArgumentEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        $code = implode('|', $node->types);
+        $code = \implode('|', $node->types);
         $variable = " $" . $node->name;
         $value = $node->value ? ' = ' . $node->value : '';
         $code .= $variable . $value;

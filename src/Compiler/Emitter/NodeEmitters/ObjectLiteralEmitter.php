@@ -31,6 +31,6 @@ class ObjectLiteralEmitter extends NodeEmitterAbstract implements NodeEmitter
             $props[] = $ctx->emitter->emit($prop, $ctx);
         }
 
-        return '(object) [' . implode(', ', $props) . ']';
+        return '(object) [' . \implode(', ', $props) . ']';
     }
 }

@@ -20,10 +20,10 @@ final class UseRegistry
 
     public function render(): string
     {
-        ksort($this->uses);
-        return implode("\n", array_map(
+        \ksort($this->uses);
+        return \implode("\n", \array_map(
             fn ($u) => "use $u;",
-            array_keys($this->uses)
+            \array_keys($this->uses)
         )) . "\n\n";
     }
 }

@@ -43,7 +43,7 @@ class UseContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = get_class($resolver);
+                $token->processedBy = \get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
 
                 return null;
@@ -62,7 +62,7 @@ class UseContext extends AbstractContext
         $packages = [];
         $hasGroup = false;
         foreach ($this->children as $item) {
-            if (is_string($item)) {
+            if (\is_string($item)) {
                 $package .= $item;
                 continue;
             }
@@ -72,7 +72,7 @@ class UseContext extends AbstractContext
                 foreach ($item->parts as $alias => $part) {
                     $packageNode = new PackageDependencyNode($token);
                     $packageNode->package = $package . $part;
-                    $packageNode->alias = is_string($alias) ? $alias : null;
+                    $packageNode->alias = \is_string($alias) ? $alias : null;
                     $packages[] = $packageNode;
                 }
             }

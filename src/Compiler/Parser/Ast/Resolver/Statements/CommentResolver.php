@@ -23,7 +23,7 @@ class CommentResolver implements ContextTokenResolver
         AbstractContext $context
     ): void {
         $comment = new CommentNode($token);
-        $comment->code = trim((string) $token->value);
+        $comment->code = \trim((string) $token->value);
         $context->addChild(
             $comment
         );

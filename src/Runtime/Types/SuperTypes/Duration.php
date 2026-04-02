@@ -13,11 +13,11 @@ class Duration extends SuperTypes
         if (is_numeric($value)) {
             return (int)$value;
         }
-        if (!is_string($value)) {
+        if (!\is_string($value)) {
             return $value;
         }
 
-        $value = strtolower(trim($value));
+        $value = strtolower(\trim($value));
         $totalSeconds = 0;
 
         preg_match_all('/(\d+)\s*(h|m|s)/', $value, $matches, PREG_SET_ORDER);
@@ -48,6 +48,6 @@ class Duration extends SuperTypes
 
     protected static function validate(mixed $preparedValue): bool
     {
-        return is_int($preparedValue) && $preparedValue >= 0;
+        return \is_int($preparedValue) && $preparedValue >= 0;
     }
 }

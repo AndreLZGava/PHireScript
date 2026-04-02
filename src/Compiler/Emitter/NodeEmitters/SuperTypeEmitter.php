@@ -18,7 +18,7 @@ class SuperTypeEmitter extends NodeEmitterAbstract implements NodeEmitter
     public function emit(object $node, EmitContext $ctx): string
     {
         $ctx->uses->add("PHireScript\Runtime\Types\SuperTypes\\{$node->type}");
-        $value = is_null($node->value) ? $node->value : $ctx->emitter->emit($node->value, $ctx);
+        $value = \is_null($node->value) ? $node->value : $ctx->emitter->emit($node->value, $ctx);
         return "{$node->type}::cast({$value})";
     }
 }

@@ -33,7 +33,7 @@ foreach ($files as $file) {
 
   if ($result !== 0) {
     echo "❌ Syntax Error in {$filePath}\n";
-    echo implode("\n", $output);
+    echo \implode("\n", $output);
     exit(1);
   }
 
@@ -46,7 +46,7 @@ exec("vendor/bin/phpunit {$testPath}", $output, $result);
 
 if ($result !== 0) {
     echo "❌ Tests Failed\n";
-    echo implode("\n", $output);
+    echo \implode("\n", $output);
     exit(1);
 }
 

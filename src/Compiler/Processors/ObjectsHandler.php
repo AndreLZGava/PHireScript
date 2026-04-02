@@ -26,13 +26,13 @@ class ObjectsHandler implements PreprocessorInterface
         $pattern = '/\{([^{}]*?=>[^{}]*?)\}/s';
         while (preg_match($pattern, (string) $code)) {
             $code = preg_replace_callback($pattern, function ($matches) {
-                $content = str_replace(["\n", "\r"], " ", $matches[1]);
+                $content = \str_replace(["\n", "\r"], " ", $matches[1]);
                 return '[' . $content . ']';
             }, (string) $code);
         }
 
         $code = preg_replace_callback('/=\s*(\[(?:[^\[\]]|(?R))*\])/s', function ($matches) {
-            $placeholder = "__OBJ_" . count($this->objectPlaceholders) . "__";
+            $placeholder = "__OBJ_" . \count($this->objectPlaceholders) . "__";
             $this->objectPlaceholders[$placeholder] = $matches[1];
             return "= " . $placeholder;
         }, (string) $code);

@@ -10,7 +10,7 @@ class ExpiryDate extends SuperTypes
 {
     protected static function transform(mixed $value): mixed
     {
-        if (!is_string($value)) {
+        if (!\is_string($value)) {
             return $value;
         }
 
@@ -25,7 +25,7 @@ class ExpiryDate extends SuperTypes
 
     protected static function validate(mixed $preparedValue): bool
     {
-        if (!is_string($preparedValue) || strlen($preparedValue) !== 4) {
+        if (!\is_string($preparedValue) || strlen($preparedValue) !== 4) {
             return false;
         }
 

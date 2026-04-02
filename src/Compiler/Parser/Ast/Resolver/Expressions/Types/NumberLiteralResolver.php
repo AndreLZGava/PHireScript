@@ -29,10 +29,10 @@ class NumberLiteralResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
-        if (filter_var($token->value, FILTER_VALIDATE_INT) !== false) {
-            $numberNode = new NumberNode($token, filter_var($token->value, FILTER_VALIDATE_INT));
-        } elseif (filter_var($token->value, FILTER_VALIDATE_FLOAT) !== false) {
-            $numberNode = new NumberNode($token, filter_var($token->value, FILTER_VALIDATE_FLOAT));
+        if (\filter_var($token->value, FILTER_VALIDATE_INT) !== false) {
+            $numberNode = new NumberNode($token, \filter_var($token->value, FILTER_VALIDATE_INT));
+        } elseif (\filter_var($token->value, FILTER_VALIDATE_FLOAT) !== false) {
+            $numberNode = new NumberNode($token, \filter_var($token->value, FILTER_VALIDATE_FLOAT));
         }
         $context->addChild($numberNode);
     }

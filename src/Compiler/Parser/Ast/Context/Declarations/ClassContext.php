@@ -6,7 +6,6 @@ namespace PHireScript\Compiler\Parser\Ast\Context\Declarations;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\IdentifierResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Root\Block\OpeningCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\ExtendsResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\ImplementsResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\WithResolver;
@@ -16,6 +15,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
+use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\ClassBodyResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\DependencyInjectionResolver;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -32,7 +32,7 @@ class ClassContext extends AbstractContext
         parent::__construct($node);
         $this->resolvers = [
             'name' => new IdentifierResolver(),
-            'body[]' => new OpeningCurlyBracketResolver(),
+            'body[]' => new ClassBodyResolver(),
             new EndOfLineResolver(),
             new CommentResolver(),
             'extends' => new ExtendsResolver(),
@@ -47,7 +47,7 @@ class ClassContext extends AbstractContext
         $this->handleModifiers($parseContext->consumePrevious());
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = get_class($resolver);
+                $token->processedBy = \get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleClassProperties($token, $keyResolver);
 
@@ -72,7 +72,7 @@ class ClassContext extends AbstractContext
 
     private function handleClassProperties(Token $token, int|string $keyResolver): void
     {
-        if (is_int($keyResolver)) {
+        if (\is_int($keyResolver)) {
             return;
         }
         $key = $this->sanitizeKeys($keyResolver);

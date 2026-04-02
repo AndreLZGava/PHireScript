@@ -8,13 +8,15 @@ use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 
-class MapMethods extends GeneralType {
+class MapMethods extends GeneralType
+{
     public function __construct(
         public array $types = [],
     ) {
     }
 
-    public function length() {
+    public function length()
+    {
         return new BaseMethods(
             name: 'length',
             phpCodeForConversion: '\count(@self)',
@@ -23,7 +25,8 @@ class MapMethods extends GeneralType {
         );
     }
 
-    public function remove() {
+    public function remove()
+    {
         return new BaseMethods(
             name: 'remove',
             phpCodeForConversion: [
@@ -39,7 +42,8 @@ class MapMethods extends GeneralType {
         );
     }
 
-    public function reverse() {
+    public function reverse()
+    {
         return new BaseMethods(
             name: 'reverse',
             phpCodeForConversion: '\array_reverse(@self, true)',
@@ -48,7 +52,8 @@ class MapMethods extends GeneralType {
         );
     }
 
-    public function sort() {
+    public function sort()
+    {
         return new BaseMethods(
             name: 'sort',
             phpCodeForConversion: [
@@ -61,7 +66,8 @@ class MapMethods extends GeneralType {
         );
     }
 
-    public function clear() {
+    public function clear()
+    {
         return new BaseMethods(
             name: 'clear',
             phpCodeForConversion: '@self = []',
@@ -70,7 +76,8 @@ class MapMethods extends GeneralType {
         );
     }
 
-    public function containsValue() {
+    public function containsValue()
+    {
         return new BaseMethods(
             name: 'containsValue?',
             phpCodeForConversion: '\in_array(@searching, @self, true)',
@@ -82,7 +89,8 @@ class MapMethods extends GeneralType {
         );
     }
 
-    public function hasKey() {
+    public function hasKey()
+    {
         return new BaseMethods(
             name: 'hasKey?',
             phpCodeForConversion: '\array_key_exists(@searching, @self)',
@@ -94,7 +102,8 @@ class MapMethods extends GeneralType {
         );
     }
 
-    public function append() {
+    public function append()
+    {
         return new BaseMethods(
             name: 'append',
             phpCodeForConversion: [
@@ -105,13 +114,14 @@ class MapMethods extends GeneralType {
             returnOfPhpExecution: ['Map'],
             subTypes: $this->types,
             params: [
-                new BaseParams(name: '@value', type: implode('|', $this->types), required: true),
+                new BaseParams(name: '@value', type: \implode('|', $this->types), required: true),
                 new BaseParams(name: '@key', type: 'string', required: true, relatedKeyParam: true),
             ]
         );
     }
 
-    public function last() {
+    public function last()
+    {
         return new BaseMethods(
             name: 'last',
             phpCodeForConversion: ['return \count(@self) === 0 ? null : @self[\array_key_last(@self)]'],
@@ -121,17 +131,19 @@ class MapMethods extends GeneralType {
         );
     }
 
-    public function first() {
+    public function first()
+    {
         return new BaseMethods(
             name: 'first',
-            phpCodeForConversion: ['return \empty(@self) ? null : @self[\array_key_first(@self)]'],
+            phpCodeForConversion: ['return empty(@self) ? null : @self[\array_key_first(@self)]'],
             returnOfPhpExecution: ['Null', ...$this->types],
             subTypes: $this->types,
             params: [],
         );
     }
 
-    public function keys() {
+    public function keys()
+    {
         return new BaseMethods(
             name: 'keys',
             phpCodeForConversion: '\array_keys(@self)',
@@ -141,7 +153,8 @@ class MapMethods extends GeneralType {
         );
     }
 
-    public function values() {
+    public function values()
+    {
         return new BaseMethods(
             name: 'values',
             phpCodeForConversion: '\array_values(@self)',

@@ -26,7 +26,7 @@ class ContextManager
 
     public function enter(AbstractContext $context): AbstractContext
     {
-        //Debug::show('entering context ' . get_class($context));
+        //Debug::show('entering context ' . \get_class($context));
         $context->setParent($this->current);
         $this->current = $context;
 
@@ -35,7 +35,7 @@ class ContextManager
 
     public function exit(): void
     {
-        //Debug::show('closing context ' . get_class($this->current));
+        //Debug::show('closing context ' . \get_class($this->current));
         if ($this->current->getParent() !== null) {
             $this->current = $this->current->getParent();
         }

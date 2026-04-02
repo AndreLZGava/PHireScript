@@ -13,7 +13,7 @@ class Cvv extends SuperTypes
         if (!is_scalar($value)) {
             return null;
         }
-        return is_string($value) ? trim($value) : (string) $value;
+        return \is_string($value) ? \trim($value) : (string) $value;
     }
 
     protected static function validate(mixed $preparedValue): bool

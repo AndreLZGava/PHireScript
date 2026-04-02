@@ -81,13 +81,13 @@ class Validator
                 $hasPkg = true;
             }
 
-            if (in_array($tokenValue, $objectAllowed, true)) {
+            if (\in_array($tokenValue, $objectAllowed, true)) {
                 $mustHavePkg  = true;
                 $hasMoreThanOneObjectByFile++;
                 if ($hasMoreThanOneObjectByFile > 1) {
                     throw new CompileException(
                         'Its allowed only one definition of ' .
-                            implode(', ', $objectAllowed) . ' per file. Please move ' .
+                            \implode(', ', $objectAllowed) . ' per file. Please move ' .
                             'content from line ' . $line . ' to another file!',
                         $token->line,
                         $token->column
@@ -107,7 +107,7 @@ class Validator
         $this->validateCounting('<', '>');
         if ($mustHavePkg && !$hasPkg) {
             throw new CompileException('You must define a pkg or package for file that contains '
-                . implode(', ', $objectAllowed), 0, 0);
+                . \implode(', ', $objectAllowed), 0, 0);
         }
     }
 
@@ -118,8 +118,8 @@ class Validator
 
     private function isForbidden(string $word): bool
     {
-        return array_key_exists($word, $this->forbidden) ||
-            in_array($word, $this->forbidden, true);
+        return \array_key_exists($word, $this->forbidden) ||
+            \in_array($word, $this->forbidden, true);
     }
 
     private function countCounterPart($token, $open, $close)
@@ -137,7 +137,7 @@ class Validator
     {
         if ($this->open[$open] !== $this->close[$close]) {
             throw new CompileException("Amount of {$open} ({$this->open[$open]}) " .
-                "diverge from {$close} ({$this->close[$close]})", 0 , 0);
+                "diverge from {$close} ({$this->close[$close]})", 0, 0);
         }
     }
 }

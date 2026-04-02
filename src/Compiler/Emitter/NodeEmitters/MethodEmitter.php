@@ -33,13 +33,13 @@ class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter
         if ($node->abstract ?? false) {
             $modifiers[] = 'abstract';
         }
-        $modifiers = array_merge($modifiers, $node->modifiers ?? 'public');
+        $modifiers = \array_merge($modifiers, $node->modifiers ?? 'public');
 
         if ($node->static ?? false) {
             $modifiers[] = 'static';
         }
 
-        $signature = implode(' ', $modifiers);
+        $signature = \implode(' ', $modifiers);
         $signature .= ' function ' . $this->removeEndPunctuation($node->name);
 
         // --------------------
@@ -53,7 +53,7 @@ class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter
         }
         $ctx->insideMethodSignature = false;
 
-        $signature .= '(' . implode(', ', $params) . ')';
+        $signature .= '(' . \implode(', ', $params) . ')';
 
         // --------------------
         // return type (PHP)

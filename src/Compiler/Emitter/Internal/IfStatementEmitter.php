@@ -35,7 +35,7 @@ class IfStatementEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     private function emitBody(array $nodes, EmitContext $ctx): string
     {
-        return implode("\n", array_map(
+        return \implode("\n", \array_map(
             fn($n) => $ctx->emitter->emit($n, $ctx),
             $nodes
         ));

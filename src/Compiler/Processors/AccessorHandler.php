@@ -10,7 +10,7 @@ class AccessorHandler implements PreprocessorInterface
     {
         $code = preg_replace('/(?<!\d)\.|\.(?!\d)/', '->', $code);
         $code = preg_replace('/(["\'])\s*\+\s*|\s*\+\s*(["\'])/', '$1 . $2', (string) $code);
-        $code = str_replace('var ', '', $code);
+        $code = \str_replace('var ', '', $code);
         return $code;
     }
 }

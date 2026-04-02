@@ -36,16 +36,16 @@ class PhpTypeResolver
             $types[] = 'null';
         }
 
-        return implode('|', array_unique($types));
+        return \implode('|', \array_unique($types));
     }
 
     public function assignment(PropertyNode $prop, UseRegistry $uses): string
     {
         $types = $prop->resolvedTypeInfo;
-        $explicitTypes =  explode('|', $this->phpType($prop));
-        $itemsToVerify = in_array('null', $explicitTypes, true) ?
-            count($types) - 1 :
-            count($types);
+        $explicitTypes =  \explode('|', $this->phpType($prop));
+        $itemsToVerify = \in_array('null', $explicitTypes, true) ?
+            \count($types) - 1 :
+            \count($types);
         $var = $prop->name;
         if ($itemsToVerify > 1) {
             $uses->add(UnionType::class);
@@ -58,7 +58,7 @@ class PhpTypeResolver
                     $typeClasses[] = "$className::class";
                 }
             }
-            $classList = implode(', ', $typeClasses);
+            $classList = \implode(', ', $typeClasses);
             return "\$this->$var = UnionType::cast(\$$var, [$classList]);";
         }
 
@@ -68,7 +68,7 @@ class PhpTypeResolver
         }
         $type = $prop->type ?? null;
         if (!isset($prop->type)) {
-            $type = implode('|', $prop->types);
+            $type = \implode('|', $prop->types);
         }
 
         return match ($typeInfo['category']) {
@@ -90,9 +90,9 @@ class PhpTypeResolver
                 $types[] = 'string';
             }
 
-            if (in_array($info['category'], ['metatype', 'custom'], true)) {
+            if (\in_array($info['category'], ['metatype', 'custom'], true)) {
                 if (isset($prop->types)) {
-                    $types = array_merge($types, $prop->types);
+                    $types = \array_merge($types, $prop->types);
                     continue;
                 }
                 $types[] = $prop->type;
@@ -103,7 +103,7 @@ class PhpTypeResolver
             }
         }
 
-        return implode('|', array_unique($types));
+        return \implode('|', \array_unique($types));
     }
 
     private function allowsNull(PropertyNode $prop): bool

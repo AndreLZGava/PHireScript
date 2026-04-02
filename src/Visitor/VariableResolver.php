@@ -22,7 +22,7 @@ class VariableResolver extends NodeVisitorAbstract
         if ($node instanceof Node\Expr\ConstFetch) {
             $name = $node->name->toString();
             $reserved = ['true', 'false', 'null'];
-            if (!in_array(strtolower($name), $reserved, true)) {
+            if (!\in_array(strtolower($name), $reserved, true)) {
                 return new Variable($name);
             }
         }

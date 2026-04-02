@@ -143,7 +143,7 @@ class DependencyGraphBuilder
             }
         }
 
-        if (count($result) !== count($this->nodes)) {
+        if (\count($result) !== \count($this->nodes)) {
             throw new \Exception("Cyclic dependency found!");
         }
 
@@ -161,7 +161,7 @@ class DependencyGraphBuilder
     public function isDependencyOf($currentPackage, $package): bool
     {
         foreach ($this->getDependenciesOf($currentPackage) as $item) {
-            if (is_string($item) && str_ends_with($item, $package)) {
+            if (\is_string($item) && \str_ends_with($item, $package)) {
                 return true;
             }
         }

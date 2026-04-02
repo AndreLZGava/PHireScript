@@ -30,7 +30,7 @@ class SymbolTable
 
     public function enterScope()
     {
-        array_push($this->scopes, []);
+        \array_push($this->scopes, []);
     }
 
     public function getAllScopes()
@@ -40,7 +40,7 @@ class SymbolTable
 
     public function exitScope()
     {
-        array_pop($this->scopes);
+        \array_pop($this->scopes);
     }
 
     public function setType($name, $type, $linePosition)
@@ -50,7 +50,7 @@ class SymbolTable
 
     public function getType($name, $linePosition)
     {
-        for ($i = count($this->scopes) - 1; $i >= 0; $i--) {
+        for ($i = \count($this->scopes) - 1; $i >= 0; $i--) {
             if (isset($this->scopes[$name][$linePosition])) {
                 return $this->scopes[$name][$linePosition];
             }

@@ -22,10 +22,10 @@ class ReturnTypeEmitter extends NodeEmitterAbstract implements NodeEmitter
         $code = ': ';
         $types = [];
         foreach ($node->types as $type) {
-            $types[] = mb_strtolower($type);
+            $types[] = \mb_strtolower($type);
         }
 
-        $code .= implode('|', $types);
+        $code .= \implode('|', $types);
 
         return $code;
     }

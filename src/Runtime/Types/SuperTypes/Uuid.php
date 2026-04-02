@@ -13,12 +13,12 @@ class Uuid extends SuperTypes
         if (empty($value)) {
             return self::generate();
         }
-        return is_string($value) ? strtolower(trim($value)) : $value;
+        return \is_string($value) ? strtolower(\trim($value)) : $value;
     }
 
     protected static function validate(mixed $preparedValue): bool
     {
-        if (!is_string($preparedValue)) {
+        if (!\is_string($preparedValue)) {
             return false;
         }
 

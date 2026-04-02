@@ -58,7 +58,7 @@ class TokenManager
     {
         $leftTokens = $this->getLeftTokens(1000);
         foreach ($leftTokens as $key => $token) {
-            if (in_array($token->value, $elementsAsValue)) {
+            if (\in_array($token->value, $elementsAsValue)) {
                 return $leftTokens[$key + 1];
             }
         }
@@ -83,7 +83,7 @@ class TokenManager
     {
         $this->currentPosition++;
 
-        if ($this->currentPosition < count($this->tokens)) {
+        if ($this->currentPosition < \count($this->tokens)) {
             $this->currentToken = $this->tokens[$this->currentPosition];
         } else {
             $this->currentToken = $this->endFileToken;
@@ -105,7 +105,7 @@ class TokenManager
 
     public function isEndOfTokens(): bool
     {
-        return $this->currentPosition >= count($this->tokens);
+        return $this->currentPosition >= \count($this->tokens);
     }
 
     public function setCurrentPosition(int $position)

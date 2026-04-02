@@ -38,7 +38,7 @@ class Date extends MetaTypes
                 return (new \DateTimeImmutable())->setTimestamp((int)$value);
             }
 
-            if (is_string($value)) {
+            if (\is_string($value)) {
                 if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $value)) {
                     return \DateTimeImmutable::createFromFormat('d/m/Y', $value);
                 }

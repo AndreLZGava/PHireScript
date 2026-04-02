@@ -69,14 +69,14 @@ abstract class AbstractContext
 
     protected function getChildrenValues(?string $key = null)
     {
-        if ($key && str_contains('[]', $key)) {
+        if ($key && \str_contains('[]', $key)) {
             return $this->children;
         }
-        return current($this->children) ?? null;
+        return \current($this->children) ?? null;
     }
 
     protected function sanitizeKeys($key)
     {
-        return str_replace('[]', '', $key);
+        return \str_replace('[]', '', $key);
     }
 }

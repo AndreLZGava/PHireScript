@@ -10,11 +10,11 @@ class Color extends SuperTypes
 {
     protected static function transform(mixed $value): mixed
     {
-        if (!is_string($value)) {
+        if (!\is_string($value)) {
             return $value;
         }
 
-        $color = ltrim(trim($value), '#');
+        $color = \ltrim(\trim($value), '#');
 
         $color = strtoupper($color);
 
@@ -27,7 +27,7 @@ class Color extends SuperTypes
 
     protected static function validate(mixed $preparedValue): bool
     {
-        $hex = ltrim((string) $preparedValue, '#');
+        $hex = \ltrim((string) $preparedValue, '#');
 
         return preg_match('/^[0-9A-F]{6}$/', $hex) === 1;
     }

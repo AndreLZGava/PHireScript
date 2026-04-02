@@ -7,25 +7,28 @@ namespace PHireScript\Runtime\DefaultOverrideMethods\Types;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 
-class ListMethods extends GeneralType {
+class ListMethods extends GeneralType
+{
     public function __construct(
         public array $types,
     ) {
     }
 
-    public function contains() {
+    public function contains()
+    {
         return new BaseMethods(
             name: 'contains?',
             phpCodeForConversion: '\in_array(@searching, @self, true)',
             returnOfPhpExecution: ['Bool'],
             subTypes: $this->types,
             params: [
-                new BaseParams(name: '@searching', type: implode('|', $this->types), required: true)
+                new BaseParams(name: '@searching', type: \implode('|', $this->types), required: true)
             ]
         );
     }
 
-    public function length() {
+    public function length()
+    {
         return new BaseMethods(
             name: 'length',
             phpCodeForConversion: '\count(@self)',
@@ -34,7 +37,8 @@ class ListMethods extends GeneralType {
         );
     }
 
-    public function remove() {
+    public function remove()
+    {
         return new BaseMethods(
             name: 'remove',
             phpCodeForConversion: [
@@ -50,7 +54,8 @@ class ListMethods extends GeneralType {
         );
     }
 
-    public function join() {
+    public function join()
+    {
         return new BaseMethods(
             name: 'join',
             phpCodeForConversion: '\implode(@separator, @self)',
@@ -62,7 +67,8 @@ class ListMethods extends GeneralType {
         );
     }
 
-    public function reverse() {
+    public function reverse()
+    {
         return new BaseMethods(
             name: 'reverse',
             phpCodeForConversion: '\array_reverse(@self)',
@@ -71,7 +77,8 @@ class ListMethods extends GeneralType {
         );
     }
 
-    public function sort() {
+    public function sort()
+    {
         return new BaseMethods(
             name: 'sort',
             phpCodeForConversion: [
@@ -84,7 +91,8 @@ class ListMethods extends GeneralType {
         );
     }
 
-    public function clear() {
+    public function clear()
+    {
         return new BaseMethods(
             name: 'clear',
             phpCodeForConversion: '@self = []',
@@ -94,7 +102,8 @@ class ListMethods extends GeneralType {
     }
 
 
-    public function hasKey() {
+    public function hasKey()
+    {
         return new BaseMethods(
             name: 'hasKey?',
             phpCodeForConversion: '\array_key_exists(@searching, @self)',
@@ -106,32 +115,35 @@ class ListMethods extends GeneralType {
         );
     }
 
-    public function set() {
+    public function set()
+    {
         return new BaseMethods(
             name: 'set',
             phpCodeForConversion: '@self[@key] = @value',
             returnOfPhpExecution: ['List'],
             subTypes: $this->types,
             params: [
-                new BaseParams(name: '@value', type: implode('|', $this->types), required: true),
+                new BaseParams(name: '@value', type: \implode('|', $this->types), required: true),
                 new BaseParams(name: '@key', type: 'int', required: true, relatedKeyParam: true),
             ]
         );
     }
 
-    public function append() {
+    public function append()
+    {
         return new BaseMethods(
             name: 'append',
             phpCodeForConversion: '@self[] = @value',
             returnOfPhpExecution: ['List'],
             subTypes: $this->types,
             params: [
-                new BaseParams(name: '@value', type: implode('|', $this->types), required: true),
+                new BaseParams(name: '@value', type: \implode('|', $this->types), required: true),
             ]
         );
     }
 
-    public function last() {
+    public function last()
+    {
         return new BaseMethods(
             name: 'last',
             phpCodeForConversion: ['return \count(@self) === 0 ? null : @self[\array_key_last(@self)]'],
@@ -141,7 +153,8 @@ class ListMethods extends GeneralType {
         );
     }
 
-    public function first() {
+    public function first()
+    {
         return new BaseMethods(
             name: 'first',
             phpCodeForConversion: ['return \count(@self) === 0 ? null : \current(@self)'],

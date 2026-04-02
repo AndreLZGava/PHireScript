@@ -39,11 +39,11 @@ class QueueContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = get_class($resolver);
+                $token->processedBy = \get_class($resolver);
                 $resolver->resolve($token, $parseContext, $this);
                 $parseContext->contextManager->current()->addChild($this->getChildrenValues());
 
-                $this->node->types = array_unique($parseContext->contextManager->current()->children);
+                $this->node->types = \array_unique($parseContext->contextManager->current()->children);
 
                 return null;
             }
@@ -59,7 +59,7 @@ class QueueContext extends AbstractContext
     {
         if (
             ($token->isEndOfLine() || $token->isRightAngleBracket()) &&
-            count($this->node->types) === 0
+            \count($this->node->types) === 0
         ) {
             throw new CompileException(
                 'Queue must define at least one subtype!',
