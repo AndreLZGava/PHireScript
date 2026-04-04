@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler;
 
 use PHireScript\Compiler\Binder\Declaration\ClassBinder;
+use PHireScript\Compiler\Binder\Declaration\Class\MagicMethodDeclarationBinder;
 use PHireScript\Compiler\Binder\Declaration\Interface\MethodDeclarationBinder;
 use PHireScript\Compiler\Binder\Declaration\PropertyBinder;
 use PHireScript\Compiler\Binder\Declaration\InterfaceBinder;
@@ -30,6 +31,7 @@ class Binder
             new ProgramBinder(),
             new InterfaceBinder(),
             new ClassBinder(),
+            new MagicMethodDeclarationBinder(),
             new MethodDeclarationBinder(),
             new PropertyBinder(),
             new ModifiersBinder(),

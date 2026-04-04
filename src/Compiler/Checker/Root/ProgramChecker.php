@@ -10,21 +10,12 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
-class ProgramChecker implements Checker
-{
-    public function mustCheck(Node $node): bool
-    {
+class ProgramChecker extends Checker {
+    public function mustCheck(Node $node): bool {
         return $node instanceof Program;
     }
 
-    public function check(Node $node, CompilerChecker $checker): void
-    {
-        foreach ($checker->checkers as $check) {
-            foreach ($node->statements as $statements) {
-                if ($check->mustCheck($statements)) {
-                    $check->check($statements, $checker);
-                }
-            }
-        }
+    public function check(Node $node, CompilerChecker $checker): void {
+        $this->willCheck($node->statements, $checker);
     }
 }

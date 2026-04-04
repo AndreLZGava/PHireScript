@@ -12,30 +12,28 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
-class ClassChecker implements Checker
-{
-    public function mustCheck(Node $node): bool
-    {
+class ClassChecker extends Checker {
+    public function mustCheck(Node $node): bool {
         return $node instanceof ClassNode;
     }
 
-    public function check(Node $node, CompilerChecker $checker): void
-    {
-        $this->validateDependencyInjection($node);
+    public function check(Node $node, CompilerChecker $checker): void {
+        $this->validateLifeCycleDefinition($node);
+        $this->willCheck($node->body->children, $checker);
         return;
     }
 
-    private function validateDependencyInjection($node)
-    {
+    private function validateLifeCycleDefinition($node) {
         if (
             $node->type !== 'trait' &&
             !\in_array('abstract', $node->modifiers) &&
             \is_null($node->typeDependencyInjection)
         ) {
             throw new CompileException(
-                $node->token->value . " " . $node->name .
-                    " doesn't has a definition of dependency injection. Please " .
-                    "define it with \"as scoped\" or \"as singleton\" after defining name!",
+                $node->type . " " . $node->name .
+                    " doesn't has a definition of life cycle. Please " .
+                    "define it with \"as scoped\", \"as singleton\", \"as transient\"" .
+                    " or \"newable\" after defining name of " . $node->type . "!",
                 $node->token->line,
                 $node->token->column
             );

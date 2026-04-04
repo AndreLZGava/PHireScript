@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Checker\Expression;
 
-use Exception;
 use PHireScript\Compiler\Checker as CompilerChecker;
 use PHireScript\Compiler\Checker\Checker;
 use PHireScript\Compiler\Parser\Ast\Nodes\FunctionNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\QueueNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\VariableDeclarationNode;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
-class MethodConsumptionChecker implements Checker
+class MethodConsumptionChecker extends Checker
 {
     public function mustCheck(Node $node): bool
     {

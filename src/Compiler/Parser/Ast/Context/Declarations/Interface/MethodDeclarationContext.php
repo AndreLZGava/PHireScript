@@ -46,7 +46,7 @@ class MethodDeclarationContext extends AbstractContext
             }
         }
         throw new CompileException(
-            $token->value . ' is not supported in method declaration context!',
+            $token->value . ' is not supported in method declaration of interface context!',
             $token->line,
             $token->column
         );

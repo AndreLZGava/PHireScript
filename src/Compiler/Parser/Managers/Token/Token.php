@@ -14,6 +14,10 @@ class Token {
     ) {
     }
 
+    public function isDependencyScope(): bool {
+        return $this->type === 'T_DEPENDENCY_SCOPE';
+    }
+
     public function isComment(): bool {
         return $this->type === 'T_COMMENT';
     }

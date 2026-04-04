@@ -34,6 +34,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\AssignmentNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\CommaResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
@@ -85,6 +86,7 @@ class ArgumentAssignmentContext extends AbstractContext
 
         new VariableConsumptionResolver(),
         new ClosingParamsDeclarationResolver(),
+        new CommaResolver(),
         ];
     }
 
@@ -99,7 +101,7 @@ class ArgumentAssignmentContext extends AbstractContext
             }
         }
         throw new CompileException(
-            $token->value . ' is not supported in assignment context!',
+            $token->value . ' is not supported in argument assignment context!',
             $token->line,
             $token->column
         );

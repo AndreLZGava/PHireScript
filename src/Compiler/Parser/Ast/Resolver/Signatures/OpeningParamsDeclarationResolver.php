@@ -11,12 +11,11 @@ use PHireScript\Compiler\Parser\Ast\Nodes\ParamsListNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 
-class OpeningParamsDeclarationResolver implements ContextTokenResolver
-{
-    public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
-    {
+class OpeningParamsDeclarationResolver implements ContextTokenResolver {
+    public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool {
+        $before = $parseContext->tokenManager->getPreviousTokenBeforeCurrent();
         return $token->isOpeningParenthesis() &&
-        $parseContext->tokenManager->getPreviousTokenBeforeCurrent()->isIdentifier();
+            ($before->isIdentifier() || $before->isMagicMethod());
     }
 
     public function resolve(

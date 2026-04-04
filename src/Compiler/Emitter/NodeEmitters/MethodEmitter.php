@@ -10,15 +10,12 @@ use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\MethodDeclarationNode;
 use PHireScript\Helper\Debug\Debug;
 
-class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter
-{
-    public function supports(object $node, EmitContext $ctx): bool
-    {
+class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter {
+    public function supports(object $node, EmitContext $ctx): bool {
         return $node instanceof MethodDeclarationNode;
     }
 
-    public function emit(object $node, EmitContext $ctx): string
-    {
+    public function emit(object $node, EmitContext $ctx): string {
         $indent = '    ';
 
         // --------------------
@@ -40,20 +37,13 @@ class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter
         }
 
         $signature = \implode(' ', $modifiers);
-        $signature .= ' function ' . $this->removeEndPunctuation($node->name);
+        $signature .= ' function ' . $this->removeEndPunctuation($node->implements?->related ?? $node->name);
 
         // --------------------
         // params
         // --------------------
-        $params = [];
-        $ctx->insideMethodSignature = true;
 
-        foreach ($node->args ?? [] as $param) {
-            $params[] = $ctx->emitter->emit($param, $ctx);
-        }
-        $ctx->insideMethodSignature = false;
-
-        $signature .= '(' . \implode(', ', $params) . ')';
+        $signature .= $ctx->emitter->emit($node->parameters, $ctx);
 
         // --------------------
         // return type (PHP)

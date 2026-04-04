@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast\Nodes;
 
 use PHireScript\Compiler\Parser\Managers\Token\Token;
+use PHireScript\Runtime\CustomClasses\MagicBaseMethods;
 use PHireScript\Runtime\CustomClasses\MagicMethods;
 
 class MethodDeclarationNode extends Node
@@ -18,7 +19,7 @@ class MethodDeclarationNode extends Node
         public ?ReturnTypeNode $returnType = null,
         public bool $mustBeBool = false,
         public bool $mustBeVoid = false,
-        public ?MagicMethods $implements = null,
+        public ?MagicBaseMethods $implements = null,
     ) {
     }
 }

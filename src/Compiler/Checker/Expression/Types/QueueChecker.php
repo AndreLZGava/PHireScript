@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Nodes\QueueNode;
 use PHireScript\Compiler\Checker as CompilerChecker;
 
-class QueueChecker implements Checker
+class QueueChecker extends Checker
 {
     public function mustCheck(Node $node): bool
     {

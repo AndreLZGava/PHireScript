@@ -19,7 +19,7 @@ class Scanner
         'T_STRING_LIT'  => '/^"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|^\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'/',
         'T_RANGE' => '/^-?\d+\.\.-?\d+/',
         'T_NUMBER'      => '/^\d+(\.\d+)?/',
-        'T_DEPENDENCY_SCOPE'     => '/^\b(singleton|scoped)\b/',
+        'T_DEPENDENCY_SCOPE'     => '/^\b(singleton|scoped|transient|newable)\b/',
         'T_KEYWORD'     => '/^\b(class|interface|trait|type|extends|with|' .
             'implements|inject|async|spawn|return|immutable|try|handle|always' .
             'if|else|elseif|this|self|super|pkg|use|as|external|abstract|' .

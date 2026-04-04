@@ -13,7 +13,7 @@ class KeywordDependencyInjectionResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->value == 'singleton' || $token->value == 'scoped';
+        return $token->isDependencyScope();
     }
 
     public function resolve(
