@@ -141,9 +141,9 @@ clearScreen();
 echo "\n--- PHireScript Initializer ---\n";
 echo "(Done!)\n\n";
 
-$jsonContent = \json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-if (\file_put_contents(getcwd() . '/PHireScript.json', $jsonContent)) {
-  chmod(getcwd() . '/PHireScript.json', 0755);
+$jsonContent = json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+if (file_put_contents('PHireScript.json', $jsonContent)) {
   echo "[SUCCESS] PHireScript.json file created successfully in the project root! You can modify it anytime.\n";
   echo "----------------------------------------------------------------------\n";
 } else {
