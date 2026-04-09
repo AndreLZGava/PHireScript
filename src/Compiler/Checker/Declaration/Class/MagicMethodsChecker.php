@@ -12,17 +12,21 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
-class MagicMethodsChecker extends Checker {
-    public function mustCheck(Node $node): bool {
+class MagicMethodsChecker extends Checker
+{
+    public function mustCheck(Node $node): bool
+    {
         return $node instanceof MethodDeclarationNode && $node->token->isMagicMethod();
     }
 
-    public function check(Node $node, CompilerChecker $checker): void {
+    public function check(Node $node, CompilerChecker $checker): void
+    {
         $this->validateParamsAndReturnType($node);
         return;
     }
 
-    private function validateParamsAndReturnType($node): void {
+    private function validateParamsAndReturnType($node): void
+    {
         /** @var MethodDeclarationNode $node */
         $implements = $node->implements;
 
@@ -38,8 +42,8 @@ class MagicMethodsChecker extends Checker {
                     implode('|', $implements->return) .
                     ", got: " .
                     implode('|', $node->returnType->types ?? []),
-                    $node->token->line,
-                    $node->token->column,
+                $node->token->line,
+                $node->token->column,
             );
         }
 
@@ -55,8 +59,8 @@ class MagicMethodsChecker extends Checker {
             throw new CompileException(
                 "Magic method '{$node->name}' expects " . count($expectedParams) .
                     " parameters, got " . count($declaredParams),
-                    $node->token->line,
-                    $node->token->column,
+                $node->token->line,
+                $node->token->column,
             );
         }
 
@@ -76,8 +80,8 @@ class MagicMethodsChecker extends Checker {
                     "Invalid type for parameter \${$param->name} in magic method '{$node->name}'. " .
                         "Expected: " . implode('|', $expectedTypes) .
                         ", got: " . implode('|', $declaredTypes),
-                        $node->token->line,
-                        $node->token->column,
+                    $node->token->line,
+                    $node->token->column,
                 );
             }
         }

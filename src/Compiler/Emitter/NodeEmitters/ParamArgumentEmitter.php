@@ -10,12 +10,15 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Nodes\ParamArgumentNode;
 use PHireScript\Helper\Debug\Debug;
 
-class ParamArgumentEmitter extends NodeEmitterAbstract implements NodeEmitter {
-    public function supports(object $node, EmitContext $ctx): bool {
+class ParamArgumentEmitter extends NodeEmitterAbstract implements NodeEmitter
+{
+    public function supports(object $node, EmitContext $ctx): bool
+    {
         return $node instanceof ParamArgumentNode;
     }
 
-    public function emit(object $node, EmitContext $ctx): string {
+    public function emit(object $node, EmitContext $ctx): string
+    {
         $code = \implode('|', $node->types);
         $variable = " $" . $node->name;
         $value = $node->value ? ' = ' . ($node->value instanceof Node ? $node->value->value : $node->value) : '';

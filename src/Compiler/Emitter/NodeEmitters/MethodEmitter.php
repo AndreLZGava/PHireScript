@@ -10,12 +10,15 @@ use PHireScript\Compiler\Emitter\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\MethodDeclarationNode;
 use PHireScript\Helper\Debug\Debug;
 
-class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter {
-    public function supports(object $node, EmitContext $ctx): bool {
+class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter
+{
+    public function supports(object $node, EmitContext $ctx): bool
+    {
         return $node instanceof MethodDeclarationNode;
     }
 
-    public function emit(object $node, EmitContext $ctx): string {
+    public function emit(object $node, EmitContext $ctx): string
+    {
         $indent = '    ';
 
         // --------------------

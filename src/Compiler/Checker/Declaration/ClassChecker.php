@@ -12,18 +12,22 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
-class ClassChecker extends Checker {
-    public function mustCheck(Node $node): bool {
+class ClassChecker extends Checker
+{
+    public function mustCheck(Node $node): bool
+    {
         return $node instanceof ClassNode;
     }
 
-    public function check(Node $node, CompilerChecker $checker): void {
+    public function check(Node $node, CompilerChecker $checker): void
+    {
         $this->validateLifeCycleDefinition($node);
         $this->willCheck($node->body->children, $checker);
         return;
     }
 
-    private function validateLifeCycleDefinition($node) {
+    private function validateLifeCycleDefinition($node)
+    {
         if (
             $node->type !== 'trait' &&
             !\in_array('abstract', $node->modifiers) &&
