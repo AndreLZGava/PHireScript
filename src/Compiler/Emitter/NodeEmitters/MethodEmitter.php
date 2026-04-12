@@ -20,11 +20,11 @@ class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter
     public function emit(object $node, EmitContext $ctx): string
     {
         $indent = '    ';
-
+        $isMagicMethod  = !is_null($node->implements);
         // --------------------
         // modifiers
         // --------------------
-        $modifiers = [];
+        $modifiers = $isMagicMethod ? $node->implements->defaultModifiers : [];
 
         if ($node->final ?? false) {
             $modifiers[] = 'final';
@@ -47,11 +47,13 @@ class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter
         // --------------------
 
         $signature .= $ctx->emitter->emit($node->parameters, $ctx);
-
         // --------------------
         // return type (PHP)
         // --------------------
-        $phpReturnType = $ctx->emitter->emit($node->returnType, $ctx);
+        $phpReturnType = '';
+        if (!$isMagicMethod || $node->implements?->supportsReturn) {
+            $phpReturnType = $ctx->emitter->emit($node->returnType, $ctx);
+        }
         // --------------------
         // abstract method
         // --------------------

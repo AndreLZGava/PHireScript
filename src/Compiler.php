@@ -6,6 +6,7 @@ namespace PHireScript;
 
 use PHireScript\Compiler\FileManager;
 use PHireScript\Core\CompilerContext;
+use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\FatalErrorException;
 use PHireScript\Transpiler;
 use PHireScript\TranspilerDependencyTree;
@@ -31,6 +32,7 @@ class Compiler
         $config = $this->loader->getConfigFile();
         $sourceDir = $sourceDir ?? $config['paths']['source'] . '/';
         $distDir = $distDir ?? $config['paths']['dist'] . '/';
+        $this->context->targetWatch = $distDir;
 
         $transpilerDependencyTree = new TranspilerDependencyTree($config, $this->context);
 

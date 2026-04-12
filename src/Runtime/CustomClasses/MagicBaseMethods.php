@@ -11,6 +11,8 @@ class MagicBaseMethods
         public string $related,
         public array $return,
         public array $params = [],
+        public bool $supportsReturn = true,
+        public array $defaultModifiers = [],
     ) {
     }
 }

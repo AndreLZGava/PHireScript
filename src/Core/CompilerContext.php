@@ -6,7 +6,8 @@ namespace PHireScript\Core;
 
 use PHireScript\Runtime\RuntimeClass;
 
-class CompilerContext {
+class CompilerContext
+{
     public function __construct(
         public readonly CompileMode $mode,
         public readonly bool $inMemory = false,
@@ -14,16 +15,18 @@ class CompilerContext {
         public readonly bool $clean = false,
         public readonly bool $displayInsideCompiler = false,
         public readonly string $file = '',
-        public readonly string $targetWatch = '',
+        public string $targetWatch = '',
     ) {
     }
 
-    public function shouldPersist(): bool {
+    public function shouldPersist(): bool
+    {
         return ($this->mode !== CompileMode::CHECK && !$this->inMemory) ||
             $this->mode !== CompileMode::DEBUG;
     }
 
-    public function getExtensionToPersist(): array {
+    public function getExtensionToPersist(): array
+    {
         return match ($this->mode) {
             CompileMode::TEST => [RuntimeClass::DEFAULT_FILE_TEST_EXTENSION],
             CompileMode::BUILD => [RuntimeClass::DEFAULT_FILE_EXTENSION],
@@ -32,20 +35,24 @@ class CompilerContext {
         };
     }
 
-    public function shouldLoadTestCase(): bool {
+    public function shouldLoadTestCase(): bool
+    {
         $extensions = $this->getExtensionToPersist();
         return \in_array(RuntimeClass::DEFAULT_FILE_TEST_EXTENSION, $extensions);
     }
 
-    public function processExclusiveFile() {
+    public function processExclusiveFile()
+    {
         return $this->mode === CompileMode::BUILD;
     }
 
-    public function persistSnapshot() {
+    public function persistSnapshot()
+    {
         return $this->mode === CompileMode::SNAPSHOT;
     }
 
-    public function isTemporary(): bool {
+    public function isTemporary(): bool
+    {
         return $this->mode === CompileMode::CHECK || $this->mode === CompileMode::DEBUG;
     }
 }

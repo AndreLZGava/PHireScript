@@ -17,7 +17,8 @@ class MagicMethods
             return: ['Void'],
             params: [
                 new BaseParams(name: '@params', type: 'mixed', required: false)
-            ]
+            ],
+            supportsReturn: false,
         );
     }
 
@@ -27,6 +28,7 @@ class MagicMethods
             name: 'onDestroy',
             related: '__destruct',
             return: ['Void'],
+            supportsReturn: false,
         );
     }
 
@@ -101,7 +103,8 @@ class MagicMethods
             params: [
                 new BaseParams(name: '@method', type: 'string', required: true),
                 new BaseParams(name: '@arguments', type: 'array', required: true),
-            ]
+            ],
+            defaultModifiers: ['static']
         );
     }
 
