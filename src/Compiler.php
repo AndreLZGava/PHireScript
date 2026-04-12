@@ -24,7 +24,6 @@ class Compiler
 
     public function compile(?string $sourceDir = null, ?string $distDir = null)
     {
-
         set_exception_handler(function (Throwable $e) {
             FatalErrorException::prettyException($e);
         });
@@ -39,7 +38,6 @@ class Compiler
         $listPrograms = $this->loader->load($sourceDir, $transpilerDependencyTree);
         $this->dependencyManager->buildGraph($listPrograms, $config);
         $transpiler = new Transpiler($config, $this->dependencyManager, $this->context);
-
         $this->loader->loadAndCompile($sourceDir, $distDir, $transpiler);
     }
 }

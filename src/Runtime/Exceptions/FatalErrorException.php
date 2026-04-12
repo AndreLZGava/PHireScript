@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript\Runtime\Exceptions;
 
+use PHireScript\Helper\Messenger;
 use Throwable;
 
 class FatalErrorException
@@ -26,39 +27,31 @@ class FatalErrorException
 
         exit;
     }
-
     private static function renderCli(Throwable $e): void
     {
-        $red = "\033[31m";
-        $yellow = "\033[33m";
-        $blue = "\033[36m";
-        $gray = "\033[90m";
-        $reset = "\033[0m";
+        $class = get_class($e);
+        $message = $e->getMessage();
+        $file = $e->getFile();
+        $line = $e->getLine();
 
-        echo "\n{$red}💥 " . \get_class($e) . "{$reset}\n";
-        echo $e->getMessage() . "\n\n";
+        Messenger::text("");
 
-        echo "📄 {$blue}" . $e->getFile() . "{$reset}:{$yellow}" . $e->getLine() . "{$reset}\n";
+        Messenger::banner('orange', "{$class}");
 
-        echo self::renderCliCodePreview($e->getFile(), $e->getLine());
+        Messenger::error($message);
+        Messenger::text("");
+        Messenger::info("📄 {$file}:{$line}");
 
-        echo "\nStack trace:\n";
+        Messenger::text(self::renderCliCodePreview($file, $line));
 
-        foreach ($e->getTrace() as $i => $trace) {
-            $file = $trace['file'] ?? '[internal]';
-            $line = $trace['line'] ?? '-';
-            $class = $trace['class'] ?? '';
-            $type = $trace['type'] ?? '';
-            $function = $trace['function'] ?? '';
+        Messenger::text("");
+        Messenger::warning("Stack trace:");
 
-            $shortFile = basename($file);
+        Messenger::trace(
+            $e->getTrace()
+        );
 
-            echo "{$gray}#$i{$reset} ";
-            echo "{$blue}{$shortFile}{$reset}:{$yellow}{$line}{$reset} → ";
-            echo "{$class}{$type}{$function}()\n";
-        }
-
-        echo "\n";
+        Messenger::text("");
     }
 
     private static function renderCliCodePreview(string $file, int $line, int $padding = 2): string

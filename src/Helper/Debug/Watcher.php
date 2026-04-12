@@ -18,9 +18,9 @@ class Watcher
         }
 
         self::$watchedVariables[$name] = [
-        'value'   => $variable,
-        'ref'     => &$variable,
-        'history' => []
+            'value'   => $variable,
+            'ref'     => &$variable,
+            'history' => []
         ];
     }
 
@@ -32,11 +32,11 @@ class Watcher
                 $caller = $trace[1] ?? $trace[0];
 
                 $data['history'][] = [
-                'from' => $data->value,
-                'to'   => $data['ref'],
-                'file' => $caller['file'] ?? 'unknown',
-                'line' => $caller->line ?? 0,
-                'time' => microtime(true)
+                    'from' => $data->value,
+                    'to'   => $data['ref'],
+                    'file' => $caller['file'] ?? 'unknown',
+                    'line' => $caller->line ?? 0,
+                    'time' => microtime(true)
                 ];
 
                 $data->value = $data['ref'];

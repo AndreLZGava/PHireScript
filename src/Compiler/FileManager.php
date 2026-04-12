@@ -8,6 +8,8 @@ use Exception;
 use FilesystemIterator;
 use PHireScript\Core\CompileMode;
 use PHireScript\Core\CompilerContext;
+use PHireScript\Helper\Debug\Debug;
+use PHireScript\Helper\Messenger;
 use PHireScript\Runtime\Exceptions\CompileException;
 use PHireScript\Runtime\RuntimeClass;
 use RecursiveDirectoryIterator;
@@ -32,7 +34,6 @@ class FileManager
         }
         $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
         $iterator = new RecursiveIteratorIterator($directory);
-
         foreach ($iterator as $file) {
             $relativePath = substr($file->getPathname(), strlen($sourceDir));
 
@@ -70,9 +71,9 @@ class FileManager
     {
         $extensionsToWatch = $this->context->getExtensionToPersist();
         $targetDir = $this->context->targetWatch;
-        echo "--- PHireScript started the process ---\n";
+        Messenger::info("PHireScript started", true);
         $watching = implode(', ', $extensionsToWatch);
-        echo "Watching files .$watching in: $targetDir\n";
+        Messenger::text("Watching files: .{$watching} in: {$targetDir}");
         $filesHash = [];
         while (true) {
             try {
@@ -120,21 +121,32 @@ class FileManager
 
 
                                 if (isset($filesHash[$filePath])) {
-                                    echo "[" . date('H:i:s') . "] Changes found in : " . $filePath . "\n";
+                                    Messenger::info(
+                                        "[" . date('H:i:s') . "] Changes detected: {$filePath}",
+                                        true
+                                    );
                                     $this->compileFile($file->getPathname(), $outputFile, $transpiler);
                                 } else {
-                                    echo "[" . date('H:i:s') . "] Watching: " . $filePath . "\n";
+                                    Messenger::text(
+                                        "[" . date('H:i:s') . "] Watching: {$filePath}"
+                                    );
                                 }
 
                                 $filesHash[$filePath] = $currentHash;
                             }
                         } catch (Throwable $e) {
-                            echo "\033[1;31m✗ Error processing $filePath: " . $e->getMessage() . "\033[0m\n";
+                            Messenger::error(
+                                "[" . date('H:i:s') . "] Error processing {$filePath}: " . $e->getMessage(),
+                                true
+                            );
                         }
                     }
                 }
             } catch (Throwable $e) {
-                echo "\033[1;31m✗ Watcher error: " . $e->getMessage() . "\033[0m\n";
+                Messenger::error(
+                    "[" . date('H:i:s') . "] Watcher error: " . $e->getMessage(),
+                    true
+                );
             }
 
             clearstatcache();
@@ -159,7 +171,10 @@ class FileManager
                     $sourceCode = file_get_contents($file->getPathname());
                     $result[] = $transpiler->compile($sourceCode, $file->getPathname());
                 } catch (Exception $e) {
-                    echo "\033[1;31m✗ Error in {$file->getPathname()}: " . $e->getMessage() . "\033[0m\n";
+                    Messenger::error(
+                        "Error in {$file->getPathname()}: " . $e->getMessage(),
+                        true
+                    );
                     $this->getErrorInterface($e, $transpiler, $sourceCode);
                 }
             }
@@ -188,23 +203,32 @@ class FileManager
                         $input
                     );
                     file_put_contents($preCompiledCode, $preParserCode);
-                    echo "\n\033[1;32m✔ $input -> $preCompiledCode\033[0m\n";
+                    Messenger::success(
+                        "$input → $preCompiledCode",
+                        true
+                    );
                 }
 
                 $output_text = [];
                 $return_var = 0;
                 exec("php -l " . escapeshellarg($output), $output_text, $return_var);
                 if ($return_var !== 0) {
-                    echo "✗ Syntax Error in generated file $output:\n";
-                    echo \implode("\n", $output_text) . "\n";
+                    Messenger::error(
+                        "Syntax Error in generated file $output:",
+                        true
+                    );
+                    Messenger::text(\implode("\n", $output_text));
                 } else {
-                    echo "\n\033[1;32m✔ $input -> $output\033[0m\n";
+                    Messenger::success(
+                        "$input → $output",
+                        true
+                    );
                 }
             }
 
             if ($this->context->inMemory && !$this->context->displayInsideCompiler) {
-                echo "\n\033[1;32m✔ SUCCESSFUL PHP OUTPUT\033[0m\n";
-                echo $result . "\n";
+                Messenger::success("SUCCESSFUL PHP OUTPUT", true);
+                Messenger::text($result);
             }
             if ($this->context->inMemory && $this->context->displayInsideCompiler) {
                 $this->getExecutionInterface($sourceCode, $result);
@@ -214,7 +238,7 @@ class FileManager
                 $this->getErrorInterfaceWeb($e, $transpiler, $sourceCode);
                 return;
             }
-            echo "\033[1;31m✗ Error in $input: " . $e->getMessage() . "\033[0m\n";
+            Messenger::error("Error in $input: " . $e->getMessage(), true);
             $this->getErrorInterface($e, $transpiler, $sourceCode);
         }
     }
@@ -248,7 +272,6 @@ class FileManager
         $blue   = "\033[1;34m";
         $cyan   = "\033[1;36m";
         $gray   = "\033[0;90m";
-        $yellow = "\033[1;33m";
         $reset  = "\033[0m";
 
         $codeGenerated = $transpiler->getCodeBeforeGenerator();
@@ -264,9 +287,8 @@ class FileManager
             $errorLine = $e->line;
         }
 
-        echo "\n{$red}" . \str_repeat('=', $width) . "{$reset}\n";
-        echo "  {$red}PHire Script DEBUGGER - COMPILATION ERROR{$reset}\n";
-        echo "{$red}" . \str_repeat('=', $width) . "{$reset}\n\n";
+        Messenger::banner('orange', "PHire Script DEBUGGER - COMPILATION ERROR");
+        Messenger::text("");
 
         if ($hasTranspiled) {
             $colWidth = (int) ($availableWidth / 2) - 2;
@@ -319,9 +341,9 @@ class FileManager
             }
         }
 
-        echo "\n{$yellow}ERROR MESSAGE:{$reset}\n";
-        echo "{$red}» {$message}{$reset}\n";
-        echo "{$red}" . str_repeat('=', $width) . "{$reset}\n";
+        Messenger::error("ERROR MESSAGE", true);
+        Messenger::warning("» {$message}");
+        Messenger::text(str_repeat('─', $width));
     }
 
     private function getErrorInterfaceWeb($e, $transpiler, $code): string
@@ -388,7 +410,7 @@ class FileManager
             }
 
             if ($isError) {
-                $html .= '<span style="background:#3b0d0d;color:#ff7b72;">→ ' . $line . "</span>\n";
+                $html .= '<span style="background:#3b0d0d;color:#ff7b72;"> → ' . $line . "</span>\n";
             } else {
                 $html .= '  ' . $line . "\n";
             }
@@ -555,6 +577,6 @@ class FileManager
 
         copy($input, $output);
 
-        echo "\033[1;34m[Copied]: $input -> $output\033[0m\n";
+        Messenger::info("[Copied]: {$input} → {$output}");
     }
 }
