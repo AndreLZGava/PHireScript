@@ -32,7 +32,6 @@ class Compiler
         $sourceDir = $sourceDir ?? $config['paths']['source'] . '/';
         $distDir = $distDir ?? $config['paths']['dist'] . '/';
         $this->context->targetWatch = $distDir;
-
         $transpilerDependencyTree = new TranspilerDependencyTree($config, $this->context);
 
         $listPrograms = $this->loader->load($sourceDir, $transpilerDependencyTree);
