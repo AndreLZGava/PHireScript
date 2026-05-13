@@ -40,7 +40,7 @@ class SequenceBuilderTest extends TestCase
     }
 
     /**
-     * Cria um mock do TokenManager ajustado para uma posição inicial específica
+     * Creates a TokenManager mock adjusted to a specific initial position
      */
     private function createMockManager(int $currentPosition = 0): TokenManager
     {
@@ -106,7 +106,7 @@ class SequenceBuilderTest extends TestCase
 
         $isMatch = $builder
             ->once(fn($t) => $t->value === '(')
-            ->optional(function(SequenceBuilder $b) {
+            ->optional(function (SequenceBuilder $b) {
                 $b->once(fn($t) => $t->value === 'Float')
                   ->then(fn($t) => $t->value === 'price');
             })
@@ -123,7 +123,7 @@ class SequenceBuilderTest extends TestCase
 
         $isMatch = $builder
             ->once(fn($t) => $t->value === '(')
-            ->optional(function(SequenceBuilder $b) {
+            ->optional(function (SequenceBuilder $b) {
                 $b->once(fn($t) => $t->value === 'Int');
             })
             ->then(fn($t) => $t->value === 'Float')
@@ -154,7 +154,7 @@ class SequenceBuilderTest extends TestCase
         $builder = new SequenceBuilder($manager);
 
         $isMatch = $builder
-            ->group(function(SequenceBuilder $b) {
+            ->group(function (SequenceBuilder $b) {
                 $b->once(fn($t) => $t->type === 'T_PRIMITIVE')
                   ->then(fn($t) => $t->type === 'T_IDENTIFIER');
             })
@@ -213,7 +213,6 @@ class SequenceBuilderTest extends TestCase
 
         $isMatch = $builder
             ->around(
-
                 fn(SequenceBuilder $b) => $b->once(fn($t) => $t->value === '=>')->then(fn($t) => $t->type === 'T_PRIMITIVE'),
                 fn(SequenceBuilder $b) => $b->once(fn($t) => $t->value === '=>')->then(fn($t) => $t->value === '{')
             )
@@ -268,11 +267,11 @@ class SequenceBuilderTest extends TestCase
         $this->assertFalse($isMatch);
     }
     /**
-     * Função utilitária para contornar a construção da classe Token
-     * Substitua pelo `new Token(...)` original de acordo com a assinatura do seu projeto
+     * Utility function to work around Token class construction
+     * Replace with the original `new Token(...)` according to your project's constructor signature
      */
-    private function cloneToken(string $type, string $value, int $line, int $column) {
+    private function cloneToken(string $type, string $value, int $line, int $column)
+    {
         return new Token($type, $value, $line, $column);
     }
 }
-

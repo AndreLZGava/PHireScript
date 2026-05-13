@@ -19,10 +19,10 @@ use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
-// possiveis cenários:
-// Tenho uma função que retorna string e a proxima chama string, está consumindo a variavel de foco
-// Tenho uma função que retorna uma string e a proxima é um array, está
-// Tenho função que retorna mais de um tipo
+// possible scenarios:
+// A function returns a string and the next one calls string, consuming the focus variable
+// A function returns a string and the next one is an array
+// A function returns more than one type
 class FunctionCallResolver implements ContextTokenResolver
 {
     private bool $assignmentContext = false;

@@ -135,7 +135,7 @@ class Binder
         if ($this->verifyUses($typeName)) {
             return ['category' => 'custom', 'name' => $typeName];
         }
-        // Se não for nada acima, verificamos se é uma classe que já registramos na Passagem 1
+        // If none of the above, check whether it is a class registered in Pass 1
         $isRegistered = $this->globalTable->getTypeDefinition($typeName);
 
         return [
