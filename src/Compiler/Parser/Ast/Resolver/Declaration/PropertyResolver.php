@@ -8,7 +8,7 @@ use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Declarations\PropertyDeclarationContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\ModifiersResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\PropertyNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
@@ -21,11 +21,11 @@ class PropertyResolver implements ContextTokenResolver
             ->sequence()
             ->lookAhead()
             ->separated(
-                match: fn($t) => $t->isType(),
-                separator: fn($t) => $t->isPipe()
+                match: fn ($t) => $t->isType(),
+                separator: fn ($t) => $t->isPipe()
             )
-            ->once(fn($t) => $t->isIdentifier())
-            ->until(fn($t) => $t->isEndOfLine())
+            ->once(fn ($t) => $t->isIdentifier())
+            ->until(fn ($t) => $t->isEndOfLine())
             ->match();
     }
 

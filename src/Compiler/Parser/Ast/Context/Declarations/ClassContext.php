@@ -12,7 +12,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\WithResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\ModifiersResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ClassNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\ClassBodyResolver;
@@ -25,7 +25,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class ClassContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(ClassNode $node)
     {
@@ -47,7 +47,7 @@ class ClassContext extends AbstractContext
         $this->handleModifiers($parseContext->consumePrevious());
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleClassProperties($token, $keyResolver);
 

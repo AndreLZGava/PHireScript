@@ -11,7 +11,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundRes
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\FunctionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\FunctionNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -23,7 +23,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class FunctionCallContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(FunctionNode $node)
     {
@@ -42,7 +42,7 @@ class FunctionCallContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleParameters($resolver, $parseContext, $token);
                 return null;

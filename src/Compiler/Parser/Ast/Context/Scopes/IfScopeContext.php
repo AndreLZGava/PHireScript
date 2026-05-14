@@ -17,7 +17,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\MethodScopeNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Scopes\MethodScopeNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -29,14 +29,14 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Root\PrimitiveResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\SuperTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\IfResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\ReturnResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\IfScopeNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Scopes\IfScopeNode;
 
 /**
  * @extends AbstractContext<ParamsNode>
  */
 class IfScopeContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(IfScopeNode $node)
     {
@@ -48,6 +48,7 @@ class IfScopeContext extends AbstractContext
             new VariableResolver(),
             new VariableConsumptionResolver(),
             new AssignmentResolver(),
+            new IfResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
 
@@ -55,8 +56,6 @@ class IfScopeContext extends AbstractContext
             new PrimitiveResolver(),
             new SuperTypeCastingResolver(),
             new MetaTypeCastingResolver(),
-
-            new IfResolver(),
 
             // for closing
             new RootClosingCurlyBracketResolver(),
@@ -70,7 +69,7 @@ class IfScopeContext extends AbstractContext
 
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleClassProperties($token, $keyResolver);
 
@@ -93,7 +92,10 @@ class IfScopeContext extends AbstractContext
     public function afterClose(Token $token, ParseContext $parseContext): void
     {
         if ($token->isClosingCurlyBracket()) {
-            $parseContext->contextManager->exit();
+            $next = $parseContext->tokenManager->getNextTokenAfterCurrent();
+            if ($next->value !== 'else') {
+                $parseContext->contextManager->exit();
+            }
         }
     }
 

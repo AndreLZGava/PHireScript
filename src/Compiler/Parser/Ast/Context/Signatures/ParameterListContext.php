@@ -8,7 +8,7 @@ use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\ArgumentResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\ParamsListNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ParamsListNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\EmptyArgumentResolver;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -35,7 +35,7 @@ class ParameterListContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->processProperty();
                 return null;

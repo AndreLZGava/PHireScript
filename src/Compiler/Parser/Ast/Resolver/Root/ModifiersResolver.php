@@ -7,7 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast\Resolver\Root;
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Root\ExternalContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\ExternalNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ExternalNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
@@ -28,7 +28,7 @@ class ModifiersResolver implements ContextTokenResolver
 
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return \in_array($token->value, self::MODIFIERS);
+        return \in_array($token->value, self::MODIFIERS, true);
     }
 
     public function resolve(
@@ -50,7 +50,7 @@ class ModifiersResolver implements ContextTokenResolver
     {
         return array_values(array_filter(
             $previousModifiers,
-            fn($item) => \in_array($item, self::MODIFIERS, true)
+            fn ($item) => \in_array($item, self::MODIFIERS, true)
         ));
     }
 }

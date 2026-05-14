@@ -29,10 +29,10 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\AssignmentNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\AssignmentNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\ReturnNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\ReturnNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\IdentifierResolver;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -44,7 +44,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class ReturnContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(ReturnNode $node)
     {
@@ -85,7 +85,7 @@ class ReturnContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleReturn($token);
                 return null;

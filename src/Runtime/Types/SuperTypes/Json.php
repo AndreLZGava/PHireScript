@@ -12,10 +12,10 @@ class Json extends SuperTypes
     {
         if (\is_string($value)) {
             $decoded = json_decode($value, true);
-            return (json_last_error() === JSON_ERROR_NONE) ? $decoded : (array) $value;
+            return (json_last_error() === JSON_ERROR_NONE) ? $decoded : $value;
         }
 
-        return (array) $value;
+        return $value;
     }
 
     protected static function validate(mixed $preparedValue): bool

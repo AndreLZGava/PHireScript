@@ -11,9 +11,9 @@ use PHireScript\Compiler\Checker\Expression\MethodConsumptionChecker;
 use PHireScript\Compiler\Checker\Root\ProgramChecker;
 use PHireScript\Compiler\Checker\Expression\Types\QueueChecker;
 use PHireScript\SymbolTable;
-use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\MethodDeclarationNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\MethodDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CheckerException;
 
@@ -71,8 +71,8 @@ class Checker
                 }
 
                 if (
-                    !\in_array('abstract', $classNode->modifiers) &&
-                    \in_array('abstract', $member->modifiers)
+                    !\in_array('abstract', $classNode->modifiers, true) &&
+                    \in_array('abstract', $member->modifiers, true)
                 ) {
                     throw new \Exception(
                         "Semantic error in property '{$propertyName}': " .

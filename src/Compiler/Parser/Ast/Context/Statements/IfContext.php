@@ -9,8 +9,9 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Scopes\IfScopeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Scopes\MethodScopeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\OpeningIfConditionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\OpeningParamsDeclarationResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\ElseResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\IfNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\IfNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -32,6 +33,7 @@ class IfContext extends AbstractContext
         new EndOfLineResolver(),
         'condition' => new OpeningIfConditionResolver(),
         'statements' => new IfScopeResolver(),
+        'elseStatements' => new ElseResolver(),
         ];
     }
 
@@ -39,7 +41,7 @@ class IfContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->processResolvers($token, $keyResolver);
                 return null;

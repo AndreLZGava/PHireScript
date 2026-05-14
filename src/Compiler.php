@@ -7,6 +7,7 @@ namespace PHireScript;
 use PHireScript\Compiler\FileManager;
 use PHireScript\Core\CompilerContext;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Helper\Messenger;
 use PHireScript\Runtime\Exceptions\FatalErrorException;
 use PHireScript\Transpiler;
 use PHireScript\TranspilerDependencyTree;
@@ -14,9 +15,9 @@ use Throwable;
 
 class Compiler
 {
-    private FileManager $loader;
-    private DependencyGraphBuilder $dependencyManager;
-    public function __construct(private CompilerContext $context)
+    private readonly FileManager $loader;
+    private readonly DependencyGraphBuilder $dependencyManager;
+    public function __construct(private readonly CompilerContext $context)
     {
         $this->loader = new FileManager($context);
         $this->dependencyManager = new DependencyGraphBuilder();
@@ -24,13 +25,15 @@ class Compiler
 
     public function compile(?string $sourceDir = null, ?string $distDir = null)
     {
+        $startTime = microtime(true);
+
         set_exception_handler(function (Throwable $e) {
             FatalErrorException::prettyException($e);
         });
 
         $config = $this->loader->getConfigFile();
-        $sourceDir = $sourceDir ?? $config['paths']['source'] . '/';
-        $distDir = $distDir ?? $config['paths']['dist'] . '/';
+        $sourceDir ??= $config['paths']['source'] . '/';
+        $distDir ??= $config['paths']['dist'] . '/';
         $this->context->targetWatch = $distDir;
         $transpilerDependencyTree = new TranspilerDependencyTree($config, $this->context);
 
@@ -38,5 +41,9 @@ class Compiler
         $this->dependencyManager->buildGraph($listPrograms, $config);
         $transpiler = new Transpiler($config, $this->dependencyManager, $this->context);
         $this->loader->loadAndCompile($sourceDir, $distDir, $transpiler);
+
+        $elapsedMs = (int) round((microtime(true) - $startTime) * 1000);
+        $peakMemory = Messenger::formatBytes(memory_get_peak_usage(true));
+        Messenger::muted("Done in {$elapsedMs}ms · peak memory: {$peakMemory}");
     }
 }

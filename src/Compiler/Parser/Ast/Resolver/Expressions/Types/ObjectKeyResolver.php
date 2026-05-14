@@ -7,9 +7,9 @@ namespace PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types;
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Expressions\ObjectKeyContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\KeyValuePairNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\StringNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\VariableReferenceNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\KeyValuePairNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\StringNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\VariableReferenceNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 
@@ -18,8 +18,8 @@ class ObjectKeyResolver implements ContextTokenResolver
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
         return (
-        $token->isStringLiteral() ||
-        $token->isIdentifier()) &&
+            $token->isStringLiteral() ||
+            $token->isIdentifier()) &&
         $parseContext->tokenManager->getNextTokenAfterCurrent()->isColon();
     }
 

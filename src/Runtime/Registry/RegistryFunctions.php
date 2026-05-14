@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHireScript\Runtime\Registry;
 
 class FunctionRegistry
@@ -13,10 +15,7 @@ class FunctionRegistry
 
     public static function getFunction($name)
     {
-        if (isset(self::$functions[$name])) {
-            return self::$functions[$name];
-        }
-        return null;
+        return self::$functions[$name] ?? null;
     }
 
     public static function listFunctions()

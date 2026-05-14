@@ -8,7 +8,7 @@ use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\CommaResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\ComplexObjects\IdentifierResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\ImplementsNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\ImplementsNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -19,7 +19,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class ImplementsContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(ImplementsNode $node)
     {
@@ -35,7 +35,7 @@ class ImplementsContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleClassProperties($token, $keyResolver);
 

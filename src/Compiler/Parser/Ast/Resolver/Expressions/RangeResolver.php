@@ -6,8 +6,8 @@ namespace PHireScript\Compiler\Parser\Ast\Resolver\Expressions;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\BoolNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\RangeNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\BoolNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\RangeNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 

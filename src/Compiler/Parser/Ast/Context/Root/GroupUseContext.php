@@ -10,7 +10,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\CommaResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Use\IdentifierResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\GroupUseNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\GroupUseNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -21,7 +21,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class GroupUseContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
     public bool $alias = false;
     public bool $shouldProcessAsAlias = false;
 
@@ -43,7 +43,7 @@ class GroupUseContext extends AbstractContext
         foreach ($this->resolvers as $key => $resolver) {
             $this->shouldProcessAsAlias = $this->alias;
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
 
                 $this->handleSaveGroup($token);
@@ -64,7 +64,7 @@ class GroupUseContext extends AbstractContext
         $parts = $this->node->parts;
         if (!$this->shouldProcessAsAlias) {
             foreach ($this->children as $key => $item) {
-                if (!\in_array($item, $parts) && !\array_key_exists($item, $parts)) {
+                if (!\in_array($item, $parts, true) && !\array_key_exists($item, $parts)) {
                     $parts[] = $item;
                 }
             }

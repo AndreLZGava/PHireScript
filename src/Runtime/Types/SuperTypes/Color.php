@@ -27,7 +27,11 @@ class Color extends SuperTypes
 
     protected static function validate(mixed $preparedValue): bool
     {
-        $hex = \ltrim((string) $preparedValue, '#');
+        if (!\is_string($preparedValue)) {
+            return false;
+        }
+
+        $hex = \ltrim($preparedValue, '#');
 
         return preg_match('/^[0-9A-F]{6}$/', $hex) === 1;
     }

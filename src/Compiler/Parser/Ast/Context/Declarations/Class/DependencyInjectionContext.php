@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Parser\Ast\Context\Declarations\Class;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\DependencyInjectionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\DependencyInjectionNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\KeywordDependencyInjectionResolver;
@@ -18,7 +18,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class DependencyInjectionContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(DependencyInjectionNode $node)
     {
@@ -33,7 +33,7 @@ class DependencyInjectionContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleClassProperties($token, $keyResolver);
 

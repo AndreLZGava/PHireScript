@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Managers;
 
-use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\VariableDeclarationNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\VariableReferenceNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\VariableDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\VariableReferenceNode;
 use PHireScript\Helper\Debug\Debug;
 
 class VariableManager

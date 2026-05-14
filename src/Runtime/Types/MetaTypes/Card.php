@@ -11,11 +11,11 @@ use PHireScript\Runtime\Types\SuperTypes\ExpiryDate;
 
 class Card extends MetaTypes
 {
-    public CardNumber $number;
-    public Cvv $cvv;
+    public string $number;
+    public string $cvv;
     public string $holderName;
     public string $brand;
-    public ExpiryDate $expiry;
+    public string $expiry;
 
     public function __construct(
         mixed $number = null,
@@ -43,7 +43,7 @@ class Card extends MetaTypes
         $n = preg_replace('/\D/', '', $number);
         return match (true) {
             str_starts_with((string) $n, '4') => 'Visa',
-            preg_match('/^5[1-5]/', (string) $n) => 'Mastercard',
+            (bool) preg_match('/^5[1-5]/', (string) $n) => 'Mastercard',
             str_starts_with((string) $n, '34') || str_starts_with((string) $n, '37') => 'Amex',
             default => 'Unknown'
         };

@@ -6,10 +6,10 @@ namespace PHireScript\Compiler\Parser\Ast\Resolver\Declaration\Interface;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Declarations\Interface\MethodDeclarationContext;
-use PHireScript\Compiler\Parser\Ast\Nodes\InterfaceMethodDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\InterfaceMethodDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\ModifiersResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\MethodDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\MethodDeclarationNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 
@@ -33,8 +33,8 @@ class MethodDeclarationResolver implements ContextTokenResolver
             token: $token,
             name: $token->value,
             modifiers: empty($modifiers) ? ['public'] : $modifiers,
-            mustBeBool: \str_ends_with('?', $token->value),
-            mustBeVoid: \str_ends_with('!', $token->value),
+            mustBeBool: \str_ends_with((string) $token->value, '?'),
+            mustBeVoid: \str_ends_with((string) $token->value, '!'),
         );
 
         $parseContext->contextManager->enter(

@@ -154,7 +154,7 @@ class Debug
         }
 
         if ($depth > $maxDepth && (is_array($val) || is_object($val))) {
-            $type = is_object($val) ? 'Object (' . \get_class($val) . ')' : 'Array';
+            $type = is_object($val) ? 'Object (' . $val::class . ')' : 'Array';
             return "<span style='color: #999; font-style: italic;'>* " .
                 "$type (Limit of $maxDepth reached) *</span>";
         }
@@ -182,7 +182,7 @@ class Debug
         }
 
         if (is_object($val)) {
-            $class = \get_class($val);
+            $class = $val::class;
             $arrayMap = (array)$val;
 
             if (empty($arrayMap)) {
@@ -199,7 +199,7 @@ class Debug
                 $visibility = 'public';
                 $propName = $k;
 
-                if (strpos((string)$k, "\0") === 0) {
+                if (str_starts_with((string)$k, "\0")) {
                     $parts = \explode("\0", (string)$k);
                     $propName = $parts[2] ?? $k;
                     $visibility = ($parts[1] === '*') ? 'protected' : 'private';

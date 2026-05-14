@@ -63,9 +63,9 @@ class Time extends MetaTypes
 
     public function format(string $style = 'short'): string
     {
-        $h = str_pad($this->hour, 2, '0', STR_PAD_LEFT);
-        $m = str_pad($this->minute, 2, '0', STR_PAD_LEFT);
-        $s = str_pad($this->second, 2, '0', STR_PAD_LEFT);
+        $h = str_pad((string) $this->hour, 2, '0', STR_PAD_LEFT);
+        $m = str_pad((string) $this->minute, 2, '0', STR_PAD_LEFT);
+        $s = str_pad((string) $this->second, 2, '0', STR_PAD_LEFT);
 
         return match ($style) {
             'short' => "$h:$m",

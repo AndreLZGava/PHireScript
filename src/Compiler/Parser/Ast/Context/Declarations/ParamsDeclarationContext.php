@@ -15,7 +15,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\VariableReference
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\ParamsNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ParamsNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
 
@@ -24,7 +24,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class ParamsDeclarationContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(ParamsNode $node)
     {
@@ -47,7 +47,7 @@ class ParamsDeclarationContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->node->params = $this->children;
                 return null;

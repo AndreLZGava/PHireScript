@@ -2,3 +2,4 @@
 /src/Source/Compiled/
 /coverage-report
 .phpunit.result.cache
+.php-cs-fixer.cache

@@ -78,14 +78,14 @@ class CurrencyTest extends TestCase
     {
         $money = new Currency($value, $currency);
         $this->assertStringContainsString(
-            preg_replace('/\s+/', '', $expected),
-            preg_replace('/\s+/', '', $money->format($locale))
+            preg_replace('/[\s\p{Z}]+/u', '', $expected),
+            preg_replace('/[\s\p{Z}]+/u', '', $money->format($locale))
         );
     }
 
     public function testToStringUsesDefaultFormat(): void
     {
-        $money = new Currency(10, 'BRL');
+        $money = new Currency(1000, 'BRL', 'pt_BR');
         $this->assertStringContainsString('10,00', (string)$money);
     }
 

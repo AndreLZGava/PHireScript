@@ -12,9 +12,9 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Root\ClosingCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\External\GroupUseResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\IdentifierResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\ExternalNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\GroupUseNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\NamespaceNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ExternalNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\GroupUseNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\NamespaceNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -25,7 +25,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class ExternalContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(ExternalNode $node)
     {
@@ -45,7 +45,7 @@ class ExternalContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
 
                 return null;

@@ -12,14 +12,15 @@ use PHireScript\Compiler\Binder\Declaration\InterfaceBinder;
 use PHireScript\Compiler\Binder\Root\ProgramBinder;
 use PHireScript\Compiler\Binder\Signatures\ModifiersBinder;
 use PHireScript\SymbolTable;
-use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\UseNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\DependencyStatement;
-use PHireScript\Compiler\Parser\Ast\Nodes\InterfaceNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\MethodDeclarationNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\ParamArgumentNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\UseNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\DependencyStatementNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\InterfaceNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\MethodDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ParamArgumentNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Helper\TypeResolver;
 
 class Binder
 {
@@ -108,39 +109,19 @@ class Binder
 
     protected function categorizeType(string $typeName): array
     {
-
-        $primitives = [
-            'String' => 'string',
-            'Int'    => 'int',
-            'Float'  => 'float',
-            'Bool'   => 'bool',
-            'Object' => 'object',
-            'Array'  => 'array'
-        ];
-
-        if (isset($primitives[$typeName])) {
-            return ['category' => 'primitive', 'native' => $primitives[$typeName]];
-        }
-
-        $metaTypes = ['Date', 'Currency', 'Phone'];
-        if (\in_array($typeName, $metaTypes, true)) {
-            return ['category' => 'metatype', 'class' => "PHireScript\\Runtime\\Types\\MetaTypes\\$typeName"];
-        }
-
-        $superTypes = ['Email', 'Ipv4', 'Ipv6', 'Url'];
-        if (\in_array($typeName, $superTypes, true)) {
-            return ['category' => 'supertype', 'class' => "PHireScript\\Runtime\\Types\\SuperTypes\\$typeName"];
+        $info = TypeResolver::classify($typeName);
+        if ($info !== null) {
+            return $info;
         }
 
         if ($this->verifyUses($typeName)) {
             return ['category' => 'custom', 'name' => $typeName];
         }
-        // If none of the above, check whether it is a class registered in Pass 1
-        $isRegistered = $this->globalTable->getTypeDefinition($typeName);
 
+        $isRegistered = $this->globalTable->getTypeDefinition($typeName);
         return [
             'category' => $isRegistered ? 'custom' : 'unknown',
-            'name' => $typeName
+            'name' => $typeName,
         ];
     }
 
@@ -152,7 +133,7 @@ class Binder
         foreach ($this->program->statements as $statement) {
             if ($statement instanceof UseNode) {
                 foreach ($statement->packages as $package) {
-                    if ($package instanceof DependencyStatement) {
+                    if ($package instanceof DependencyStatementNode) {
                         $usingPackage = \explode('.', $package->package);
                         $namedPackage  = !empty($package->alias) ?
                             $package->alias :

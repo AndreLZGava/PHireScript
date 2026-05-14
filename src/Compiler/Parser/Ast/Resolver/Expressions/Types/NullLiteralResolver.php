@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\NullNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\NullNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 

@@ -7,7 +7,7 @@ namespace PHireScript\Compiler\Checker\Declaration\Class;
 use Exception;
 use PHireScript\Compiler\Checker as CompilerChecker;
 use PHireScript\Compiler\Checker\Checker;
-use PHireScript\Compiler\Parser\Ast\Nodes\MethodDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\MethodDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -30,8 +30,8 @@ class MagicMethodsChecker extends Checker
         /** @var MethodDeclarationNode $node */
         $implements = $node->implements;
 
-        $declaredReturnTypes = array_map('strtolower', $node->returnType->types ?? []);
-        $expectedReturnTypes = array_map('strtolower', $implements->return ?? []);
+        $declaredReturnTypes = array_map(strtolower(...), $node->returnType->types ?? []);
+        $expectedReturnTypes = array_map(strtolower(...), $implements->return ?? []);
 
         sort($declaredReturnTypes);
         sort($expectedReturnTypes);
@@ -67,10 +67,10 @@ class MagicMethodsChecker extends Checker
         foreach ($declaredParams as $index => $param) {
             $expected = $expectedParams[$index];
 
-            $declaredTypes = array_map('strtolower', $param->types ?? []);
+            $declaredTypes = array_map(strtolower(...), $param->types ?? []);
             $expectedTypes = is_array($expected->type)
-                ? array_map('strtolower', $expected->type)
-                : [strtolower($expected->type)];
+                ? array_map(strtolower(...), $expected->type)
+                : [strtolower((string) $expected->type)];
 
             sort($declaredTypes);
             sort($expectedTypes);

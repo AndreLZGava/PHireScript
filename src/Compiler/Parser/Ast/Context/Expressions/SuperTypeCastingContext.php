@@ -16,7 +16,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\SuperTypeNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\SuperTypeNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -26,7 +26,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class SuperTypeCastingContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(SuperTypeNode $node)
     {
@@ -50,7 +50,7 @@ class SuperTypeCastingContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $param = null;
                 if (!empty($this->children) && !empty($this->children[0]->params)) {

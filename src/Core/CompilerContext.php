@@ -38,7 +38,7 @@ class CompilerContext
     public function shouldLoadTestCase(): bool
     {
         $extensions = $this->getExtensionToPersist();
-        return \in_array(RuntimeClass::DEFAULT_FILE_TEST_EXTENSION, $extensions);
+        return \in_array(RuntimeClass::DEFAULT_FILE_TEST_EXTENSION, $extensions, true);
     }
 
     public function processExclusiveFile()

@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Checker\Expression\Types;
 
 use PHireScript\Compiler\Checker\Checker;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\QueueNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Collections\QueueNode;
 use PHireScript\Compiler\Checker as CompilerChecker;
 
 class QueueChecker extends Checker

@@ -9,10 +9,12 @@
             "vendor/bin/phpstan analyse",
             "vendor/bin/phpmd src text phpmd.xml"
         ],
+        "test": "vendor/bin/phpunit --no-coverage",
         "quality": [
             "@refactor",
             "@format",
-            "@analyse"
+            "@analyse",
+            "@test"
         ]
     },
     "minimum-stability": "dev",

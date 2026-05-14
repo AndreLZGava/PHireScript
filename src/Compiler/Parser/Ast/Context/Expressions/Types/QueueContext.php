@@ -12,7 +12,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\PipeResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\QueueNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Collections\QueueNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
 
@@ -21,7 +21,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class QueueContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(QueueNode $node)
     {
@@ -39,7 +39,7 @@ class QueueContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $parseContext->contextManager->current()->addChild($this->getChildrenValues());
 

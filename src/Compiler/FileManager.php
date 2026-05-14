@@ -35,7 +35,7 @@ class FileManager
         $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
         $iterator = new RecursiveIteratorIterator($directory);
         foreach ($iterator as $file) {
-            $relativePath = substr($file->getPathname(), strlen($sourceDir));
+            $relativePath = substr((string) $file->getPathname(), strlen((string) $sourceDir));
 
             $extension = $file->getExtension();
 
@@ -84,9 +84,9 @@ class FileManager
                     if ($file->isFile()) {
                         try {
                             $filePath = $file->getRealPath();
-                            $relativePath = \substr($file->getPathname(), \strlen($sourceDir) + 1);
+                            $relativePath = \substr((string) $file->getPathname(), \strlen((string) $sourceDir) + 1);
                             $fileExtension = $file->getExtension();
-                            $isNotWatchedExtension = !\in_array($fileExtension, $extensionsToWatch);
+                            $isNotWatchedExtension = !\in_array($fileExtension, $extensionsToWatch, true);
                             $currentHash =  $isNotWatchedExtension ? \filemtime($filePath) : \md5_file($filePath);
                             if (!isset($filesHash[$filePath]) || $filesHash[$filePath] !== $currentHash) {
                                 if (
@@ -165,7 +165,7 @@ class FileManager
         $result = [];
         foreach ($iterator as $file) {
             if (
-                \in_array($file->getExtension(), $allowed)
+                \in_array($file->getExtension(), $allowed, true)
             ) {
                 try {
                     $sourceCode = file_get_contents($file->getPathname());
@@ -186,10 +186,11 @@ class FileManager
     private function compileFile($input, $output, $transpiler)
     {
         try {
+            $startTime = microtime(true);
             $sourceCode = file_get_contents($input);
             $result = $transpiler->compile($sourceCode, $input);
             if ($this->context->shouldPersist()) {
-                $outputSubDir = dirname($output);
+                $outputSubDir = dirname((string) $output);
                 if (!is_dir($outputSubDir)) {
                     mkdir($outputSubDir, 0755, true);
                 }
@@ -211,7 +212,8 @@ class FileManager
 
                 $output_text = [];
                 $return_var = 0;
-                exec("php -l " . escapeshellarg($output), $output_text, $return_var);
+                exec("php -l " . escapeshellarg((string) $output), $output_text, $return_var);
+                $elapsedMs = (int) round((microtime(true) - $startTime) * 1000);
                 if ($return_var !== 0) {
                     Messenger::error(
                         "Syntax Error in generated file $output:",
@@ -220,7 +222,7 @@ class FileManager
                     Messenger::text(\implode("\n", $output_text));
                 } else {
                     Messenger::success(
-                        "$input → $output",
+                        "$input → $output  [{$elapsedMs}ms]",
                         true
                     );
                 }
@@ -276,10 +278,10 @@ class FileManager
 
         $codeGenerated = $transpiler->getCodeBeforeGenerator();
 
-        $hasTranspiled = !empty(\trim($codeGenerated));
+        $hasTranspiled = !empty(\trim((string) $codeGenerated));
 
-        $originalLines = \explode("\n", \rtrim($code));
-        $preParserLines = $hasTranspiled ? \explode("\n", \rtrim($codeGenerated)) : [];
+        $originalLines = \explode("\n", \rtrim((string) $code));
+        $preParserLines = $hasTranspiled ? \explode("\n", \rtrim((string) $codeGenerated)) : [];
         $maxLines = \max(\count($originalLines), \count($preParserLines));
         $errorLine = 0;
         $message = $e->getMessage();
@@ -353,13 +355,13 @@ class FileManager
         $availableWidth = $width - $gutterWidth;
 
         $codeGenerated = $transpiler->getCodeBeforeGenerator();
-        $hasTranspiled = !empty(\trim($codeGenerated));
+        $hasTranspiled = !empty(\trim((string) $codeGenerated));
 
-        $originalLines   = \explode("\n", \rtrim($code));
-        $preParserLines  = $hasTranspiled ? \explode("\n", \rtrim($codeGenerated)) : [];
+        $originalLines   = \explode("\n", \rtrim((string) $code));
+        $preParserLines  = $hasTranspiled ? \explode("\n", \rtrim((string) $codeGenerated)) : [];
         $maxLines        = \max(\count($originalLines), \count($preParserLines));
 
-        $message = htmlspecialchars($e->getMessage());
+        $message = htmlspecialchars((string) $e->getMessage());
         $errorLine = ($e instanceof CompileException) ? $e->line : null;
 
         $html = '';
@@ -518,7 +520,7 @@ class FileManager
                         if (is_array($tokens[$j]) && $tokens[$j][0] === T_EXTENDS) {
                             $extends = '';
                             for ($k = $j + 2; isset($tokens[$k]); $k++) {
-                                if (\in_array($tokens[$k][0], [T_STRING, T_NS_SEPARATOR])) {
+                                if (\in_array($tokens[$k][0], [T_STRING, T_NS_SEPARATOR], true)) {
                                     $extends .= $tokens[$k][1];
                                 } else {
                                     break;

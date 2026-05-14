@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast\Context\Declarations;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast\Nodes\ArrowFunctionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ArrowFunctionNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Scopes\MethodScopeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\OpeningParamsDeclarationResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\ReturnTypeResolver;
@@ -39,7 +39,7 @@ class ArrowFunctionDeclarationContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->processResolvers($token, $keyResolver, $parseContext);
                 return null;
@@ -63,7 +63,7 @@ class ArrowFunctionDeclarationContext extends AbstractContext
             $this->node->$key =  $value ?: [];
             $this->children = [];
             return;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             Debug::show($parseContext->tokenManager->getProcessedTokens(10));
             exit;
         }

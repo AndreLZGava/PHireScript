@@ -7,7 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types;
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Expressions\Types\QueueContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\BinaryExpressionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\BinaryExpressionNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
@@ -29,18 +29,18 @@ class NumericExpressionResolver implements ContextTokenResolver
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
         $next = $parseContext->tokenManager->getNextTokenAfterCurrent();
-        $hasOperator = \in_array($next->value, self::MATH_OPERATORS);
+        $hasOperator = \in_array($next->value, self::MATH_OPERATORS, true);
 
         return ($token->isNumber() && $hasOperator) ||
         (
-          $token->isIdentifier() &&
+            $token->isIdentifier() &&
           $parseContext->variables->getVariable($token->value) &&
           $hasOperator
         ) ||
         (
-          $token->isOpeningParenthesis() &&
+            $token->isOpeningParenthesis() &&
           (
-            $next->isNumber() ||
+              $next->isNumber() ||
             $token->isIdentifier() &&
             $parseContext->variables->getVariable($next->value)
           )
@@ -52,16 +52,16 @@ class NumericExpressionResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
-      // this must create a BinaryExpressionNode
+        // this must create a BinaryExpressionNode
         $expression = new BinaryExpressionNode($token);
-      // this must create a new context
-      // related to src/Compiler/Parser/IdentifyTokenFactories/Symbols/VariableAssignmentFactory.php
+        // this must create a new context
+        // related to src/Compiler/Parser/IdentifyTokenFactories/Symbols/VariableAssignmentFactory.php
         $parseContext->contextManager->enter(
             new QueueContext($expression)
         );
 
-      // $parseContext->definePrevious($expression);
+        // $parseContext->definePrevious($expression);
 
-      // $context->addChild($expression);
+        // $context->addChild($expression);
     }
 }

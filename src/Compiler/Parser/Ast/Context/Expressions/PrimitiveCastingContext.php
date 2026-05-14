@@ -14,7 +14,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\StringLiteralReso
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\VariableReferenceResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\PrimitiveCastingNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\PrimitiveCastingNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -25,7 +25,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class PrimitiveCastingContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(PrimitiveCastingNode $node)
     {
@@ -49,7 +49,7 @@ class PrimitiveCastingContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $param = null;
                 if (!empty($this->children) && !empty($this->children[0]->params)) {

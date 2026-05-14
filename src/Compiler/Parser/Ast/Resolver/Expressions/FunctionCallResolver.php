@@ -8,12 +8,12 @@ use Exception;
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Expressions\FunctionCallContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\ArrayLiteralNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\BoolNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\FunctionNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\NumberNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\ObjectLiteralNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\StringNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\ArrayLiteralNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\BoolNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\FunctionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\NumberNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\ObjectLiteralNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\StringNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
@@ -36,9 +36,8 @@ class FunctionCallResolver implements ContextTokenResolver
                     $parseContext->symbolTable->from(
                         $parseContext->variables->getVariableOnFocus()?->type?->getRawType()
                     )->getFunction($token->value)
-
                 );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             Debug::display($parseContext->variables->getVariableOnFocus());
             exit;
         }
