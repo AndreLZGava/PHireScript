@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PHireScript\Runtime\Types\MetaTypes;
 
 use NumberFormatter;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Types\MetaTypes;
 
 class Currency extends MetaTypes
@@ -33,15 +32,7 @@ class Currency extends MetaTypes
     protected function parseValue(mixed $value): int
     {
         if (\is_string($value)) {
-            $formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
-            $number = $formatter->formatCurrency($value, $this->currency);
-            // Debug::show($value, $number, $this->locale);exit;
-            //$clean = preg_replace('/[^\d.,-]/', '', $value);
-            $formatter = new NumberFormatter($this->locale, NumberFormatter::TYPE_DOUBLE);
-            $number = $formatter->parse($number);
-            Debug::show($value, $number, (int) round($number * 100));
-            exit;
-            return ($number === false) ? 0 : (int) round($number * 100);
+            return self::transform($value);
         }
 
         return self::transform($value);
@@ -52,13 +43,33 @@ class Currency extends MetaTypes
         if (\is_int($value)) {
             return $value;
         }
-        if (is_float($value)) {
+        if (\is_float($value)) {
             return (int) round($value * 100);
         }
 
         if (\is_string($value)) {
-            $clean = \str_replace(',', '.', preg_replace('/[^\d.,-]/', '', $value));
-            return (int) round((float) $clean * 100);
+            $clean = preg_replace('/[^\d.,]/', '', $value);
+
+            if (\str_contains((string) $clean, ',') && \str_contains((string) $clean, '.')) {
+                // Both separators present: determine which is the decimal one
+                // by which appears last (e.g. 1,250.50 vs 1.250,50)
+                if (\strrpos((string) $clean, ',') > \strrpos((string) $clean, '.')) {
+                    // BR format: dot=thousands, comma=decimal  (1.250,50)
+                    $clean = \str_replace('.', '', $clean);
+                    $clean = \str_replace(',', '.', $clean);
+                } else {
+                    // US format: comma=thousands, dot=decimal  (1,250.50)
+                    $clean = \str_replace(',', '', $clean);
+                }
+            } elseif (\str_contains((string) $clean, ',')) {
+                // Only comma: treat as decimal separator (50,25 → 50.25)
+                $clean = \str_replace(',', '.', $clean);
+            }
+
+            $number = (float) $clean;
+            return $number === 0.0 && $clean !== '0' && $clean !== '0.0' && $clean !== '0.00'
+                ? 0
+                : (int) round($number * 100);
         }
 
         return 0;

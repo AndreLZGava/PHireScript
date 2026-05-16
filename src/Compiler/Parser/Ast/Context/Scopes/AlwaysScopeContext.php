@@ -13,7 +13,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\AlwaysScopeNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Scopes\AlwaysScopeNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -32,7 +32,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\TryResolver;
  */
 class AlwaysScopeContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(AlwaysScopeNode $node)
     {
@@ -44,6 +44,8 @@ class AlwaysScopeContext extends AbstractContext
             new VariableResolver(),
             new VariableConsumptionResolver(),
             new AssignmentResolver(),
+            new IfResolver(),
+            new TryResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
 
@@ -51,9 +53,6 @@ class AlwaysScopeContext extends AbstractContext
             new PrimitiveResolver(),
             new SuperTypeCastingResolver(),
             new MetaTypeCastingResolver(),
-
-            new IfResolver(),
-            new TryResolver(),
 
             // for closing
             new RootClosingCurlyBracketResolver(),
@@ -66,7 +65,7 @@ class AlwaysScopeContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleClassProperties($token, $keyResolver);
 

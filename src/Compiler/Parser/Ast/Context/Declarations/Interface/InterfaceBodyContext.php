@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\PropertyResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\InterfaceBodyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\InterfaceBodyNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\Interface\MethodDeclarationResolver;
@@ -22,7 +22,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class InterfaceBodyContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(InterfaceBodyNode $node)
     {
@@ -41,7 +41,7 @@ class InterfaceBodyContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleClassProperties($token, $keyResolver);
 

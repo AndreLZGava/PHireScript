@@ -6,9 +6,9 @@ namespace PHireScript\Compiler\Binder\Declaration;
 
 use PHireScript\Compiler\Binder as CompilerBinder;
 use PHireScript\Compiler\Binder\Binder;
-use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ClassNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\InterfaceNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\InterfaceNode;
 use PHireScript\Helper\Debug\Debug;
 
 class ClassBinder implements Binder

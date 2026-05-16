@@ -29,7 +29,7 @@ class FatalErrorException
     }
     private static function renderCli(Throwable $e): void
     {
-        $class = get_class($e);
+        $class = $e::class;
         $message = $e->getMessage();
         $file = $e->getFile();
         $line = $e->getLine();
@@ -151,8 +151,8 @@ class FatalErrorException
     </style>';
 
         echo '<div class="box">';
-        echo '<div class="title">💥 ' . \get_class($e) . '</div>';
-        echo '<div>' . htmlspecialchars($e->getMessage()) . '</div>';
+        echo '<div class="title">💥 ' . $e::class . '</div>';
+        echo '<div>' . htmlspecialchars((string) $e->getMessage()) . '</div>';
 
         echo '<div class="meta">';
         echo '📄 <span class="file">' . $e->getFile() . '</span> ';

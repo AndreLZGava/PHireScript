@@ -7,7 +7,7 @@ namespace PHireScript\Compiler\Checker\Declaration;
 use Exception;
 use PHireScript\Compiler\Checker as CompilerChecker;
 use PHireScript\Compiler\Checker\Checker;
-use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ClassNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -30,7 +30,7 @@ class ClassChecker extends Checker
     {
         if (
             $node->type !== 'trait' &&
-            !\in_array('abstract', $node->modifiers) &&
+            !\in_array('abstract', $node->modifiers, true) &&
             \is_null($node->typeDependencyInjection)
         ) {
             throw new CompileException(

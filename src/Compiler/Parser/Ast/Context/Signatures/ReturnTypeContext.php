@@ -8,7 +8,7 @@ use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\TypeResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\ReturnTypeNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ReturnTypeNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\IgnoreArrowResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\PipeResolver;
@@ -40,7 +40,7 @@ class ReturnTypeContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
 
                 $resolver->resolve($token, $parseContext, $this);
                 $this->processReturningTypes();

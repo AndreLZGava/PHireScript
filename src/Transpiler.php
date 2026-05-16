@@ -24,8 +24,8 @@ class Transpiler implements TranspilerInterface
 
     public function __construct(
         private readonly array $config,
-        private DependencyGraphBuilder $dependencyManager,
-        private CompilerContext $context,
+        private readonly DependencyGraphBuilder $dependencyManager,
+        private readonly CompilerContext $context,
     ) {
         $this->generator = new PhpFileGeneratorHandler(false);
     }

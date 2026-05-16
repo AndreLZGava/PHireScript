@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHireScript\Compiler\DependencyGraphBuilder\DependencyTree;
 
 use PHireScript\Compiler\Parser\Ast\Context\Root\ProgramContext;
@@ -16,9 +18,9 @@ use PHireScript\Runtime\RuntimeClass;
 class Parser
 {
     public function __construct(
-        private array $config,
+        private readonly array $config,
         protected DependencyGraphBuilder $dependencyBuilder,
-        private CompilerContext $context,
+        private readonly CompilerContext $context,
     ) {
     }
 

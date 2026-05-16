@@ -14,7 +14,7 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
-use PHireScript\Compiler\Parser\Ast\Nodes\HandleNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\HandleNode;
 use PHireScript\Helper\Debug\Debug;
 
 /**
@@ -22,7 +22,7 @@ use PHireScript\Helper\Debug\Debug;
  */
 class HandleContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(HandleNode $node)
     {
@@ -38,7 +38,7 @@ class HandleContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleProperties($token, $keyResolver);
 
@@ -60,7 +60,7 @@ class HandleContext extends AbstractContext
         }
         $key = $this->sanitizeKeys($keyResolver);
         $value = $this->getChildrenValues($keyResolver);
-        if (\str_contains($keyResolver, '[]')) {
+        if (\str_contains((string) $keyResolver, '[]')) {
             $this->node->$key[] =  $value ?: [];
             $this->children = [];
             return;

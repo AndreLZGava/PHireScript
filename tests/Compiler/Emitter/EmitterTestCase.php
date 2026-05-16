@@ -1,0 +1,154 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PHireScript\Tests\Compiler\Emitter;
+
+use PHPUnit\Framework\TestCase;
+use PHireScript\Compiler\Emitter\Base\EmitContext;
+use PHireScript\Compiler\Emitter\Base\EmitterDispatcher;
+use PHireScript\Compiler\Emitter\Base\UseRegistry;
+use PHireScript\Compiler\Emitter\Base\Type\PhpTypeResolver;
+use PHireScript\DependencyGraphBuilder;
+use PHireScript\Compiler\Parser\Managers\Token\Token;
+// Root
+use PHireScript\Compiler\Emitter\Root\ProgramEmitter;
+// Declarations
+use PHireScript\Compiler\Emitter\Declarations\PackageEmitter;
+use PHireScript\Compiler\Emitter\Declarations\UseEmitter;
+use PHireScript\Compiler\Emitter\Declarations\ExternalEmitter;
+use PHireScript\Compiler\Emitter\Declarations\ClassEmitter;
+use PHireScript\Compiler\Emitter\Declarations\InterfaceEmitter;
+use PHireScript\Compiler\Emitter\Declarations\TraitEmitter;
+use PHireScript\Compiler\Emitter\Declarations\FunctionEmitter;
+use PHireScript\Compiler\Emitter\Declarations\ArrowFunctionEmitter;
+// OOP
+use PHireScript\Compiler\Emitter\OOP\ClassBodyEmitter;
+use PHireScript\Compiler\Emitter\OOP\InterfaceBodyEmitter;
+use PHireScript\Compiler\Emitter\OOP\InterfaceMethodEmitter;
+use PHireScript\Compiler\Emitter\OOP\MethodEmitter;
+use PHireScript\Compiler\Emitter\OOP\ReturnTypeEmitter;
+use PHireScript\Compiler\Emitter\OOP\MethodScopeEmitter;
+use PHireScript\Compiler\Emitter\OOP\WithEmitter;
+use PHireScript\Compiler\Emitter\OOP\PropertyDeclarationEmitter;
+use PHireScript\Compiler\Emitter\OOP\PropertyEmitter;
+// Statements
+use PHireScript\Compiler\Emitter\Statements\ReturnEmitter;
+use PHireScript\Compiler\Emitter\Statements\AssignmentEmitter;
+use PHireScript\Compiler\Emitter\Statements\VariableDeclarationEmitter;
+use PHireScript\Compiler\Emitter\Statements\VariableEmitter;
+use PHireScript\Compiler\Emitter\Statements\CommentStatementEmitter;
+use PHireScript\Compiler\Emitter\Statements\GlobalConstEmitter;
+use PHireScript\Compiler\Emitter\Statements\GlobalStatementEmitter;
+use PHireScript\Compiler\Emitter\Statements\IfStatementEmitter;
+use PHireScript\Compiler\Emitter\Statements\TryEmitter;
+use PHireScript\Compiler\Emitter\Statements\HandleEmitter;
+use PHireScript\Compiler\Emitter\Statements\AlwaysEmitter;
+use PHireScript\Compiler\Emitter\Statements\IssetOperatorEmitter;
+use PHireScript\Compiler\Emitter\Statements\NotOperatorEmitter;
+use PHireScript\Compiler\Emitter\Statements\ThrowStatementEmitter;
+use PHireScript\Compiler\Emitter\Statements\NewExceptionEmitter;
+use PHireScript\Compiler\Emitter\Statements\VariableReferenceAssignEmitter;
+// Expressions
+use PHireScript\Compiler\Emitter\Expressions\ObjectLiteralEmitter;
+use PHireScript\Compiler\Emitter\Expressions\KeyValuePairEmitter;
+use PHireScript\Compiler\Emitter\Expressions\ArrayLiteralEmitter;
+use PHireScript\Compiler\Emitter\Expressions\LiteralEmitter;
+use PHireScript\Compiler\Emitter\Expressions\NullEmitter;
+use PHireScript\Compiler\Emitter\Expressions\RangeEmitter;
+use PHireScript\Compiler\Emitter\Expressions\BoolEmitter;
+use PHireScript\Compiler\Emitter\Expressions\StringEmitter;
+use PHireScript\Compiler\Emitter\Expressions\NumberEmitter;
+use PHireScript\Compiler\Emitter\Expressions\BinaryExpressionEmitter;
+use PHireScript\Compiler\Emitter\Expressions\SuperTypeEmitter;
+use PHireScript\Compiler\Emitter\Expressions\ThisExpressionEmitter;
+use PHireScript\Compiler\Emitter\Expressions\VoidExpressionEmitter;
+use PHireScript\Compiler\Emitter\Expressions\PropertyAccessEmitter;
+use PHireScript\Compiler\Emitter\Expressions\CastingEmitter;
+// Collections
+use PHireScript\Compiler\Emitter\Collections\QueueEmitter;
+use PHireScript\Compiler\Emitter\Collections\ListEmitter;
+use PHireScript\Compiler\Emitter\Collections\StackEmitter;
+use PHireScript\Compiler\Emitter\Collections\MapEmitter;
+// Signatures
+use PHireScript\Compiler\Emitter\Signatures\ParameterEmitter;
+use PHireScript\Compiler\Emitter\Signatures\ParamsListEmitter;
+use PHireScript\Compiler\Emitter\Signatures\ParamArgumentEmitter;
+
+abstract class EmitterTestCase extends TestCase
+{
+    protected function makeToken(string $type = 'T_IDENTIFIER', mixed $value = 'test'): Token
+    {
+        return new Token($type, $value, 1, 1);
+    }
+
+    protected function makeCtx(): EmitContext
+    {
+        $dispatcher = new EmitterDispatcher([
+            new ProgramEmitter(),
+            new PackageEmitter(),
+            new UseEmitter(),
+            new ExternalEmitter(),
+            new GlobalConstEmitter(),
+            new InterfaceEmitter(),
+            new InterfaceBodyEmitter(),
+            new ClassEmitter(),
+            new ClassBodyEmitter(),
+            new TraitEmitter(),
+            new InterfaceMethodEmitter(),
+            new MethodEmitter(),
+            new ReturnTypeEmitter(),
+            new MethodScopeEmitter(),
+            new FunctionEmitter(),
+            new WithEmitter(),
+            new ObjectLiteralEmitter(),
+            new ReturnEmitter(),
+            new KeyValuePairEmitter(),
+            new ArrayLiteralEmitter(),
+            new LiteralEmitter(),
+            new NullEmitter(),
+            new RangeEmitter(),
+            new BoolEmitter(),
+            new StringEmitter(),
+            new NumberEmitter(),
+            new BinaryExpressionEmitter(),
+            new VariableReferenceAssignEmitter(),
+            new SuperTypeEmitter(),
+            new QueueEmitter(),
+            new ListEmitter(),
+            new StackEmitter(),
+            new MapEmitter(),
+            new PropertyDeclarationEmitter(),
+            new VoidExpressionEmitter(),
+            new VariableEmitter(),
+            new VariableDeclarationEmitter(),
+            new AssignmentEmitter(),
+            new ThisExpressionEmitter(),
+            new PropertyAccessEmitter(),
+            new ParameterEmitter(),
+            new PropertyEmitter(),
+            new CommentStatementEmitter(),
+            new GlobalStatementEmitter(),
+            new IfStatementEmitter(),
+            new TryEmitter(),
+            new HandleEmitter(),
+            new AlwaysEmitter(),
+            new IssetOperatorEmitter(),
+            new NotOperatorEmitter(),
+            new ThrowStatementEmitter(),
+            new NewExceptionEmitter(),
+            new CastingEmitter(),
+            new ParamsListEmitter(),
+            new ParamArgumentEmitter(),
+            new ArrowFunctionEmitter(),
+        ]);
+
+        return new EmitContext(
+            dev: false,
+            uses: new UseRegistry(),
+            types: new PhpTypeResolver(),
+            dependencyManager: new DependencyGraphBuilder(),
+            emitter: $dispatcher,
+        );
+    }
+}

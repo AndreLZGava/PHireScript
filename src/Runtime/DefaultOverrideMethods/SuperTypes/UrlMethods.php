@@ -53,11 +53,11 @@ class UrlMethods extends GeneralType
         );
     }
 
-  /**
-   * Isso pode dar problema a entrada de self deveria ser um array
-   *
-   * @return void
-   */
+    /**
+     * Isso pode dar problema a entrada de self deveria ser um array
+     *
+     * @return void
+     */
     public function setQuery()
     {
         return new BaseMethods(

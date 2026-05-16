@@ -85,7 +85,7 @@ class Scanner
         $length = strlen($this->code);
         $patterns = self::PATTERNS;
         $isTestingFile = \str_ends_with($this->path, '.' . RuntimeClass::DEFAULT_FILE_TEST_EXTENSION);
-        if($isTestingFile) {
+        if ($isTestingFile) {
             $patterns = array_merge(self::TEST_PATTERNS, $patterns);
         }
 

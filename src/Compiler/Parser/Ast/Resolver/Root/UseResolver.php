@@ -7,7 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast\Resolver\Root;
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Root\UseContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\UseNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\UseNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 

@@ -30,10 +30,10 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\AssignmentNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\AssignmentNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\CommaResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -45,7 +45,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class ArgumentAssignmentContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
     public bool $assignmentContext = true;
 
     public function __construct(AssignmentNode|PropertyNode $node)
@@ -94,7 +94,7 @@ class ArgumentAssignmentContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->node->left->value = $this->children[0] ?? null;
                 return null;

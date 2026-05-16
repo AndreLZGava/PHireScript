@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast\Context\Root;
 
 use Exception;
-use PHireScript\Compiler\Emitter\NodeEmitters\AssignmentEmitter;
+use PHireScript\Compiler\Emitter\Statements\AssignmentEmitter;
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Declarations\ValidateContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\ClassResolver;
@@ -43,10 +43,12 @@ use PHireScript\Runtime\Exceptions\CompileException;
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class ProgramContext extends AbstractContext {
+class ProgramContext extends AbstractContext
+{
     private array $resolvers = [];
 
-    public function __construct(ParseContext $parseContext) {
+    public function __construct(ParseContext $parseContext)
+    {
         if ($parseContext->tokenManager->getContext() === 'pre') {
             $this->resolvers = [
                 new PackageResolver(),
@@ -63,6 +65,8 @@ class ProgramContext extends AbstractContext {
             new VariableResolver(),
             new VariableConsumptionResolver(),
             new AssignmentResolver(),
+            new IfResolver(),
+            new TryResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
 
@@ -70,9 +74,6 @@ class ProgramContext extends AbstractContext {
             new PrimitiveResolver(),
             new SuperTypeCastingResolver(),
             new MetaTypeCastingResolver(),
-
-            new IfResolver(),
-            new TryResolver(),
 
             // these won't appear in any other sub context
             // declaration
@@ -94,11 +95,12 @@ class ProgramContext extends AbstractContext {
         }
     }
 
-    public function handle(Token $token, ParseContext $parseContext): ?Node {
+    public function handle(Token $token, ParseContext $parseContext): ?Node
+    {
 
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $parseContext->program->statements = $this->children;
                 return $parseContext->program;

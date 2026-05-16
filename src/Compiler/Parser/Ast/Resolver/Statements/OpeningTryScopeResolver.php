@@ -8,8 +8,8 @@ use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Declarations\Class\ClassBodyContext;
 use PHireScript\Compiler\Parser\Ast\Context\Scopes\TryScopeContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\ClassBodyNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\TryScopeNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\ClassBodyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Scopes\TryScopeNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 

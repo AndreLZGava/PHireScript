@@ -68,13 +68,14 @@ class ExpiryDateTest extends TestCase
     {
         $currentMonth = (int)date('n');
         $currentYear  = (int)date('y');
+        $previousYear = $currentYear - 1;
 
         if ($currentMonth === 1) {
-            $pastMonth = 12;
-            $pastYear  = $currentYear - 1;
+            $pastMonth     = 12;
+            $pastMonthYear = $currentYear - 1;
         } else {
-            $pastMonth = $currentMonth - 1;
-            $pastYear  = $currentYear;
+            $pastMonth     = $currentMonth - 1;
+            $pastMonthYear = $currentYear;
         }
 
         return [
@@ -86,11 +87,11 @@ class ExpiryDateTest extends TestCase
         'object_input'      => [(object) []],
         'invalid_month_00'  => ['00/29'],
         'invalid_month_13'  => ['13/29'],
-        'past_year'         => ["12/$pastYear"],
+        'past_year'         => ["12/" . str_pad((string)$previousYear, 2, '0', STR_PAD_LEFT)],
         'past_month_same_year' => [
         str_pad((string)$pastMonth, 2, '0', STR_PAD_LEFT)
           . '/'
-          . str_pad((string)$pastYear, 2, '0', STR_PAD_LEFT)
+          . str_pad((string)$pastMonthYear, 2, '0', STR_PAD_LEFT)
         ],
         'too_short'         => ['129'],
         'too_long'          => ['12299'],

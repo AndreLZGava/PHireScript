@@ -16,9 +16,9 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\PipeResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\ParamArgumentNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\ParamsListNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\PropertyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ParamArgumentNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ParamsListNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\PropertyNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -51,7 +51,7 @@ class ParameterArgumentContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->processProperty($token, $keyResolver, $parseContext);
                 return null;

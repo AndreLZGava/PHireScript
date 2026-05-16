@@ -6,7 +6,7 @@ namespace PHireScript\Compiler\Checker\Expression;
 
 use PHireScript\Compiler\Checker as CompilerChecker;
 use PHireScript\Compiler\Checker\Checker;
-use PHireScript\Compiler\Parser\Ast\Nodes\FunctionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\FunctionNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Runtime\Exceptions\CompileException;
 
@@ -50,10 +50,10 @@ class MethodConsumptionChecker extends Checker
         foreach ($params as $number => $param) {
             $paramRawType = $param->getRawType();
 
-            if ($expected[$number]->relatedKeyParam && \in_array($paramRawType, $allowedKeys)) {
+            if ($expected[$number]->relatedKeyParam && \in_array($paramRawType, $allowedKeys, true)) {
                 continue;
             }
-            if ($expected[$number]->relatedKeyParam && !\in_array($paramRawType, $allowedKeys)) {
+            if ($expected[$number]->relatedKeyParam && !\in_array($paramRawType, $allowedKeys, true)) {
                 throw new CompileException(
                     'Param of type ' . $paramRawType .
                         ' not allowed for key of ' . $type .
@@ -65,7 +65,7 @@ class MethodConsumptionChecker extends Checker
 
             if (
                 !empty($variableTypes) &&
-                !\in_array($paramRawType, $variableTypes)
+                !\in_array($paramRawType, $variableTypes, true)
             ) {
                 throw new CompileException(
                     'Param of type ' . $paramRawType .

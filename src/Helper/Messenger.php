@@ -151,6 +151,25 @@ class Messenger
         }
     }
 
+    /**
+     * MUTED message (dark gray)
+     */
+    public static function muted(string $message): void
+    {
+        self::render($message, 'muted');
+    }
+
+    public static function formatBytes(int $bytes): string
+    {
+        if ($bytes < 1024) {
+            return "{$bytes} B";
+        }
+        if ($bytes < 1048576) {
+            return round($bytes / 1024, 1) . ' KB';
+        }
+        return round($bytes / 1048576, 2) . ' MB';
+    }
+
     public static function banner(string $type, string $title): void
     {
         $width = (int) shell_exec('tput cols') ?: 120;

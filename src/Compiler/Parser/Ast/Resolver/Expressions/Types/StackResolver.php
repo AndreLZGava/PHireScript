@@ -7,7 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types;
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Expressions\Types\StackContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\StackNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Collections\StackNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 

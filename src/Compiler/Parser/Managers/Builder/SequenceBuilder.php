@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHireScript\Compiler\Parser\Managers\Builder;
 
 use PHireScript\Compiler\Parser\Managers\TokenManager;
@@ -16,7 +18,7 @@ class SequenceBuilder
     private const MAX_BACKWARD = 10;
 
     public function __construct(
-        private TokenManager $tokenManager
+        private readonly TokenManager $tokenManager
     ) {
     }
 
@@ -196,7 +198,7 @@ class SequenceBuilder
 
                     while (true) {
                         if ($steps >= $limit) {
-                              return false;
+                            return false;
                         }
 
                         $token = $this->peek($offset);
@@ -255,10 +257,10 @@ class SequenceBuilder
                         $sub = $this->spawnSubBuilder($builderFn, $offset);
 
                         if ($sub['matched']) {
-                              $offset = $sub['finalOffset'];
-                              $steps += $sub['consumed'];
-                              $matched = true;
-                              break;
+                            $offset = $sub['finalOffset'];
+                            $steps += $sub['consumed'];
+                            $matched = true;
+                            break;
                         }
                     }
 
@@ -325,7 +327,7 @@ class SequenceBuilder
 
                     while (true) {
                         if ($steps >= $limit) {
-                              return ['matched' => false, 'consumed' => 0, 'finalOffset' => $startOffset];
+                            return ['matched' => false, 'consumed' => 0, 'finalOffset' => $startOffset];
                         }
 
                         $token = $this->peek($offset);
@@ -342,7 +344,7 @@ class SequenceBuilder
                             $offset += $builder->direction;
                             $steps++;
                         } else {
-                          // it is a builder (group)
+                            // it is a builder (group)
                             $sub = $this->executeSub(
                                 $this->buildSub($rule['match'], $builder),
                                 $offset
@@ -384,8 +386,8 @@ class SequenceBuilder
                     );
 
                     if ($sub['matched']) {
-                          $offset = $sub['finalOffset'];
-                          $steps += $sub['consumed'];
+                        $offset = $sub['finalOffset'];
+                        $steps += $sub['consumed'];
                     }
                     break;
 
@@ -396,7 +398,7 @@ class SequenceBuilder
                     );
 
                     if (!$sub['matched']) {
-                          return ['matched' => false, 'consumed' => 0, 'finalOffset' => $startOffset];
+                        return ['matched' => false, 'consumed' => 0, 'finalOffset' => $startOffset];
                     }
 
                     $offset = $sub['finalOffset'];
@@ -413,10 +415,10 @@ class SequenceBuilder
                         );
 
                         if ($sub['matched']) {
-                                  $offset = $sub['finalOffset'];
-                                  $steps += $sub['consumed'];
-                                  $matched = true;
-                                  break;
+                            $offset = $sub['finalOffset'];
+                            $steps += $sub['consumed'];
+                            $matched = true;
+                            break;
                         }
                     }
 

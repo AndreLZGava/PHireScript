@@ -7,8 +7,8 @@ namespace PHireScript\Compiler\Parser\Ast\Resolver\Signatures;
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Signatures\ArgumentAssignmentContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\AssignmentNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\ParamArgumentNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\AssignmentNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ParamArgumentNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 

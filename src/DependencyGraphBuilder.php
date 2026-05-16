@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHireScript;
 
 use PHireScript\Compiler\DependencyGraphBuilder\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\PackageNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\UseNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\InterfaceNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\PackageNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\UseNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\InterfaceNode;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
@@ -84,7 +86,14 @@ class DependencyGraphBuilder
                     $depPackage = $dep->package;
 
                     if (!isset($this->nodes[$depPackage])) {
-                        throw new \Exception("Dependency '{$depPackage}' not found!");
+                        $file = $currentPackage && isset($this->nodes[$currentPackage])
+                            ? $this->nodes[$currentPackage]->file
+                            : 'unknown file';
+
+                        throw new \Exception(
+                            "Dependency '{$depPackage}' not found!\n" .
+                            "Required by package '{$currentPackage}' in file '{$file}'"
+                        );
                     }
 
                     $this->nodes[$currentPackage]->dependsOn[] = $depPackage;
@@ -161,7 +170,7 @@ class DependencyGraphBuilder
     public function isDependencyOf($currentPackage, $package): bool
     {
         foreach ($this->getDependenciesOf($currentPackage) as $item) {
-            if (\is_string($item) && \str_ends_with($item, $package)) {
+            if (\is_string($item) && \str_ends_with($item, (string) $package)) {
                 return true;
             }
         }

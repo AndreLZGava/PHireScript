@@ -10,13 +10,11 @@ use PHireScript\Helper\Debug\Debug;
 
 class ContextManager
 {
-    private AbstractContext $current;
     private $path;
     private $config;
 
-    public function __construct(AbstractContext $root)
+    public function __construct(private AbstractContext $current)
     {
-        $this->current = $root;
     }
 
     public function current(): AbstractContext

@@ -9,14 +9,16 @@ use PHireScript\Compiler\Program;
 use PHireScript\Compiler\Scanner;
 use PHireScript\Core\CompilerContext;
 
-class TranspilerDependencyTree {
+class TranspilerDependencyTree
+{
     public function __construct(
         private readonly array $config,
-        private CompilerContext $context,
+        private readonly CompilerContext $context,
     ) {
     }
 
-    public function compile(string $code, string $path): Program {
+    public function compile(string $code, string $path): Program
+    {
         $scanner = new Scanner($code, $path);
         $tokens = $scanner->tokenize();
 
@@ -30,7 +32,8 @@ class TranspilerDependencyTree {
         return $ast;
     }
 
-    public function getCodeBeforeGenerator(): string {
+    public function getCodeBeforeGenerator(): string
+    {
         return $this->codeBeforeGenerator ?? '';
     }
 }

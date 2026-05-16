@@ -8,7 +8,7 @@ use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\VariableDeclarationNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -33,7 +33,7 @@ class VariableDeclarationContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 return null;
             }

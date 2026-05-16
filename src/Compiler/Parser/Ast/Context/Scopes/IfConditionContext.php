@@ -25,7 +25,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\MethodScopeNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Scopes\MethodScopeNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -38,7 +38,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Root\SuperTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\ClosingParamsDeclarationResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\IfResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\ReturnResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\IfConditionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Scopes\IfConditionNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
 
 /**
@@ -46,7 +46,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
  */
 class IfConditionContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(IfConditionNode $node)
     {
@@ -86,7 +86,7 @@ class IfConditionContext extends AbstractContext
 
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleConditions($token, $keyResolver);
 

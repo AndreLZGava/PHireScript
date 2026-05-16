@@ -12,7 +12,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\OpeningAlwaysScopeResolv
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\OpeningTryScopeResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\TryNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\TryNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -40,7 +40,7 @@ class TryContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->processResolvers($token, $keyResolver);
                 return null;
@@ -60,7 +60,7 @@ class TryContext extends AbstractContext
         }
         $key = $this->sanitizeKeys($keyResolver);
         $value = $this->getChildrenValues($keyResolver);
-        if (\str_contains($keyResolver, '[]')) {
+        if (\str_contains((string) $keyResolver, '[]')) {
             $this->node->$key[] =  $value ?: [];
             $this->children = [];
             return;

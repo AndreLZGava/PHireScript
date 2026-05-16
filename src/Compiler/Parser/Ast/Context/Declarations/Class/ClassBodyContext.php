@@ -11,7 +11,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ClosingCurlyBrack
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\ModifiersResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\ClassBodyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\OOP\ClassBodyNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -22,7 +22,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class ClassBodyContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(ClassBodyNode $node)
     {
@@ -42,7 +42,7 @@ class ClassBodyContext extends AbstractContext
 
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleClassProperties($token, $keyResolver);
 

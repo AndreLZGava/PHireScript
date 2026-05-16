@@ -11,7 +11,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\OpeningAngleBrack
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\TypeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\PipeResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\MapNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Collections\MapNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -22,7 +22,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class MapContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(MapNode $node)
     {
@@ -40,7 +40,7 @@ class MapContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $parseContext->contextManager->current()->addChild($this->getChildrenValues());
 

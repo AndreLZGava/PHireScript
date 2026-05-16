@@ -21,7 +21,7 @@ class Parser
     public function __construct(
         private readonly array $config,
         protected DependencyGraphBuilder $dependencyBuilder,
-        private CompilerContext $context,
+        private readonly CompilerContext $context,
     ) {
     }
 

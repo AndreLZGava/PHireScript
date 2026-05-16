@@ -7,7 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast\Context\Scopes;
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\OpeningAlwaysScopeResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\AlwaysNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\AlwaysNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -18,7 +18,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class AlwaysContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(AlwaysNode $node)
     {
@@ -33,7 +33,7 @@ class AlwaysContext extends AbstractContext
     {
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleClassProperties($token, $keyResolver);
 

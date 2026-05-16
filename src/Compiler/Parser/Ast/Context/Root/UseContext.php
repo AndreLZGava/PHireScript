@@ -11,11 +11,11 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Root\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\IdentifierResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Use\GroupUseResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\GroupUseNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\PackageDependencyNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\GroupUseNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\PackageDependencyNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\UseNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\UseNode;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
 
@@ -24,7 +24,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class UseContext extends AbstractContext
 {
-    private array $resolvers;
+    private readonly array $resolvers;
 
     public function __construct(UseNode $node)
     {
@@ -43,7 +43,7 @@ class UseContext extends AbstractContext
     {
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
 
                 return null;

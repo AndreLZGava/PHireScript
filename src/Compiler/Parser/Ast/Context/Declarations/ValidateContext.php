@@ -12,10 +12,10 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\WithResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\ModifiersResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ClassNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\ValidateNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ValidateNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\ClassBodyResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\DependencyInjectionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\Validate\ValidateBodyResolver;
@@ -25,10 +25,12 @@ use PHireScript\Runtime\Exceptions\CompileException;
 /**
  * @extends AbstractContext<ParamsNode>
  */
-class ValidateContext extends AbstractContext {
-    private array $resolvers;
+class ValidateContext extends AbstractContext
+{
+    private readonly array $resolvers;
 
-    public function __construct(ValidateNode $node) {
+    public function __construct(ValidateNode $node)
+    {
         parent::__construct($node);
         $this->resolvers = [
             'name' => new IdentifierResolver(),
@@ -41,11 +43,12 @@ class ValidateContext extends AbstractContext {
         ];
     }
 
-    public function handle(Token $token, ParseContext $parseContext): ?Node {
+    public function handle(Token $token, ParseContext $parseContext): ?Node
+    {
         $this->handleModifiers($parseContext->consumePrevious());
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
-                $token->processedBy = \get_class($resolver);
+                $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
                 $this->handleClassProperties($token, $keyResolver);
 
@@ -60,14 +63,16 @@ class ValidateContext extends AbstractContext {
         );
     }
 
-    private function handleModifiers($previousModifiers) {
+    private function handleModifiers($previousModifiers)
+    {
         $modifiers = $previousModifiers ? ModifiersResolver::getModifiers($previousModifiers) : [];
         if (!empty($modifiers)) {
             $this->node->modifiers = $modifiers;
         }
     }
 
-    private function handleClassProperties(Token $token, int|string $keyResolver): void {
+    private function handleClassProperties(Token $token, int|string $keyResolver): void
+    {
         if (\is_int($keyResolver)) {
             return;
         }
@@ -78,7 +83,8 @@ class ValidateContext extends AbstractContext {
         return;
     }
 
-    public function canClose(Token $token, ParseContext $parseContext): bool {
+    public function canClose(Token $token, ParseContext $parseContext): bool
+    {
         return $token->isClosingCurlyBracket();
     }
 }
