@@ -25,6 +25,12 @@ class IfStatementEmitter extends NodeEmitterAbstract implements NodeEmitter
 
         $code = "if ($condition) {\n $body\n}";
 
+        foreach ($node->elseIfClauses as $elseIfClause) {
+            $elseIfCondition = $ctx->emitter->emit($elseIfClause->condition->children[0], $ctx);
+            $elseIfBody = $this->emitBody($elseIfClause->statements->children, $ctx);
+            $code .= " elseif ($elseIfCondition) {\n $elseIfBody\n}";
+        }
+
         if ($node->elseStatements !== null) {
             $elseBody = $this->emitBody($node->elseStatements->children, $ctx);
             $code .= " else {\n $elseBody\n}";

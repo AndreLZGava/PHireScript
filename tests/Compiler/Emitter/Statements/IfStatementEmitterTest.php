@@ -23,7 +23,7 @@ class IfStatementEmitterTest extends EmitterTestCase
 
         $condition = new IfConditionNode($token, [new NumberNode($numToken, 1)]);
         $body = new IfScopeNode($token, [new ReturnNode($retToken, new NumberNode($retValToken, 42))]);
-        $node = new IfNode($token, $condition, $body, null);
+        $node = new IfNode($token, $condition, $body);
 
         $ctx = $this->makeCtx();
         $result = $ctx->emitter->emit($node, $ctx);
@@ -42,7 +42,7 @@ class IfStatementEmitterTest extends EmitterTestCase
         $condition = new IfConditionNode($token, [new NumberNode($numToken, 1)]);
         $body = new IfScopeNode($token, [new ReturnNode($retToken, new NumberNode($retValToken, 42))]);
         $elseBody = new ElseScopeNode($token, [new ReturnNode($retToken, new NumberNode($elseValToken, 0))]);
-        $node = new IfNode($token, $condition, $body, $elseBody);
+        $node = new IfNode($token, $condition, $body, [], $elseBody);
 
         $ctx = $this->makeCtx();
         $result = $ctx->emitter->emit($node, $ctx);
@@ -57,7 +57,7 @@ class IfStatementEmitterTest extends EmitterTestCase
 
         $condition = new IfConditionNode($token, [new NumberNode($numToken, 0)]);
         $body = new IfScopeNode($token, []);
-        $node = new IfNode($token, $condition, $body, null);
+        $node = new IfNode($token, $condition, $body);
 
         $ctx = $this->makeCtx();
         $result = $ctx->emitter->emit($node, $ctx);
@@ -70,7 +70,7 @@ class IfStatementEmitterTest extends EmitterTestCase
         $token = $this->makeToken('T_KEYWORD', 'if');
         $condition = new IfConditionNode($token, []);
         $body = new IfScopeNode($token, []);
-        $node = new IfNode($token, $condition, $body, null);
+        $node = new IfNode($token, $condition, $body);
 
         $ctx = $this->makeCtx();
         $emitter = new \PHireScript\Compiler\Emitter\Statements\IfStatementEmitter();

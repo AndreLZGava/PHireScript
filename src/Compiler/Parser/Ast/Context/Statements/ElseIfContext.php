@@ -5,37 +5,30 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast\Context\Statements;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast\Resolver\Scopes\IfScopeResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Scopes\MethodScopeResolver;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\ElseIfNode;
+use PHireScript\Compiler\Parser\Ast\Resolver\Scopes\ElseIfScopeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\OpeningIfConditionResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\OpeningParamsDeclarationResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Statements\ElseIfResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Statements\ElseResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Ast\Nodes\Statements\IfNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
- * @extends AbstractContext<ParamsNode>
+ * @extends AbstractContext<ElseIfNode>
  */
-class IfContext extends AbstractContext
+class ElseIfContext extends AbstractContext
 {
     private array $resolvers = [];
 
-    public function __construct(IfNode $node)
+    public function __construct(ElseIfNode $node)
     {
         parent::__construct($node);
 
         $this->resolvers = [
-        new EndOfLineResolver(),
-        'condition' => new OpeningIfConditionResolver(),
-        'statements' => new IfScopeResolver(),
-        new ElseIfResolver(),
-        'elseStatements' => new ElseResolver(),
+            new EndOfLineResolver(),
+            'condition' => new OpeningIfConditionResolver(),
+            'statements' => new ElseIfScopeResolver(),
         ];
     }
 
@@ -45,27 +38,26 @@ class IfContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
-                $this->processResolvers($token, $keyResolver);
+                $this->processResolvers($keyResolver);
                 return null;
             }
         }
         throw new CompileException(
-            $token->value . ' is not supported in if declaration context!',
+            $token->value . ' is not supported in elseif declaration context!',
             $token->line,
             $token->column
         );
     }
 
-    private function processResolvers($token, $keyResolver)
+    private function processResolvers(int|string $keyResolver): void
     {
         if (\is_int($keyResolver)) {
             return;
         }
         $key = $this->sanitizeKeys($keyResolver);
         $value = $this->getChildrenValues($keyResolver);
-        $this->node->$key =  $value ?: [];
+        $this->node->$key = $value ?: [];
         $this->children = [];
-        return;
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool
