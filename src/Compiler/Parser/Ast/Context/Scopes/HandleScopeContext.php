@@ -10,6 +10,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\PropertyResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ComparisonExpressionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\ModifiersResolver;
@@ -54,6 +55,7 @@ class HandleScopeContext extends AbstractContext
             new TryResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
+            new ComparisonExpressionResolver(),
 
             new TypesTypeResolver(),
             new PrimitiveResolver(),

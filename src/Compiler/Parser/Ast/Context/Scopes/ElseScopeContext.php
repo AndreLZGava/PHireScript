@@ -9,6 +9,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Scopes\ElseScopeNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ComparisonExpressionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\TypeResolver as TypesTypeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\ClosingCurlyBracketResolver as RootClosingCurlyBracketResolver;
@@ -17,6 +18,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Root\PrimitiveResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\SuperTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\OpeningElseScopeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\IfResolver;
@@ -38,6 +40,7 @@ class ElseScopeContext extends AbstractContext
     {
         parent::__construct($node);
         $this->resolvers = [
+            new OpeningElseScopeResolver(),
             new CommentResolver(),
             new EndOfLineResolver(),
             new DotResolver(),
@@ -48,6 +51,7 @@ class ElseScopeContext extends AbstractContext
             new TryResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
+            new ComparisonExpressionResolver(),
 
             new TypesTypeResolver(),
             new PrimitiveResolver(),

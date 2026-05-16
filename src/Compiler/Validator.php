@@ -12,6 +12,7 @@ class Validator
 {
     private array $open = ['(' => 0, '{' => 0, '[' => 0, '<' => 0];
     private array $close = [')' => 0, '}' => 0, ']' => 0, '>' => 0];
+    private int $parenDepth = 0;
     private array $forbidden = [
         'namespace' => 'Use "pkg" to declare a package',
 
@@ -98,7 +99,14 @@ class Validator
             $this->countCounterPart($token, '(', ')');
             $this->countCounterPart($token, '{', '}');
             $this->countCounterPart($token, '[', ']');
-            $this->countCounterPart($token, '<', '>');
+            if ($token->value === '(') {
+                $this->parenDepth++;
+            } elseif ($token->value === ')') {
+                $this->parenDepth--;
+            }
+            if ($this->parenDepth === 0) {
+                $this->countCounterPart($token, '<', '>');
+            }
         }
 
         $this->validateCounting('(', ')');

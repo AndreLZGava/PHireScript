@@ -33,6 +33,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Statements\AssignmentNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ArrowFunctionResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ComparisonExpressionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
@@ -68,6 +69,7 @@ class AssignmentContext extends AbstractContext
             new ObjectLiteralResolver(),
 
             new VariableReferenceResolver(),
+            new ComparisonExpressionResolver(),
 
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
