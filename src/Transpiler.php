@@ -11,29 +11,37 @@ use PHireScript\Compiler\Emitter;
 use PHireScript\Compiler\Parser;
 use PHireScript\Compiler\Processors\PhpFileGeneratorHandler;
 use PHireScript\Compiler\Processors\PreprocessorInterface;
+use PHireScript\Compiler\Program;
 use PHireScript\Compiler\Scanner;
 use PHireScript\Compiler\Validator;
 use PHireScript\Core\CompilerContext;
-use PHireScript\Helper\Debug\Debug;
 
 class Transpiler implements TranspilerInterface
 {
     private readonly PreprocessorInterface $generator;
     private string $codeBeforeGenerator;
+    private readonly SymbolTable $symbolTable;
+
+    /** @var array<string, Program> */
+    private array $boundAsts = [];
 
     public function __construct(
         private readonly array $config,
         private readonly DependencyGraphBuilder $dependencyManager,
         private readonly CompilerContext $context,
         private readonly ?CacheManager $cache = null,
+        ?SymbolTable $symbolTable = null,
     ) {
-        $this->generator = new PhpFileGeneratorHandler(false);
+        $this->generator  = new PhpFileGeneratorHandler(false);
+        $this->symbolTable = $symbolTable ?? new SymbolTable();
     }
 
-    public function compile(string $code, string $path): string
+    /**
+     * Phase 1 — parse and bind one file, storing the bound AST for Phase 2.
+     * Populates the shared SymbolTable with type definitions from this file.
+     */
+    public function parseAndBind(string $code, string $path): Program
     {
-        $this->codeBeforeGenerator = '';
-
         $tokens = $this->resolveTokens($code, $path);
 
         $validator = new Validator();
@@ -49,19 +57,48 @@ class Transpiler implements TranspilerInterface
         );
         $ast = $parser->parse($tokens, $path);
 
-        $symbolTable = new SymbolTable();
-        $binder = new Binder($symbolTable);
-        $updatedAst = $binder->bind($ast);
+        $binder = new Binder($this->symbolTable);
+        $boundAst = $binder->bind($ast);
+        $this->boundAsts[$path] = $boundAst;
 
-        $checker = new Checker($symbolTable);
-        $checker->check($updatedAst);
+        return $boundAst;
+    }
+
+    /**
+     * Phase 2 — type-check and emit one already-bound AST.
+     * Uses the shared SymbolTable (fully populated by Phase 1).
+     */
+    public function checkAndEmit(Program $ast): string
+    {
+        $checker = new Checker($this->symbolTable);
+        $checker->check($ast);
 
         $emitter = new Emitter($this->config, $this->dependencyManager);
-        $preCompiledPhpCode = $emitter->emit($updatedAst);
+        $preCompiledPhpCode = $emitter->emit($ast);
 
         $this->codeBeforeGenerator = $preCompiledPhpCode;
-        $result = $this->generator->process($preCompiledPhpCode);
-        return $result;
+
+        return $this->generator->process($preCompiledPhpCode);
+    }
+
+    /**
+     * Full pipeline for a single file. Uses a Phase-1 bound AST when available
+     * (populated by Compiler before loadAndCompile), otherwise falls back to a
+     * fresh parse+bind inline.
+     */
+    public function compile(string $code, string $path): string
+    {
+        $this->codeBeforeGenerator = '';
+
+        if (isset($this->boundAsts[$path])) {
+            $ast = $this->boundAsts[$path];
+            unset($this->boundAsts[$path]);
+        } else {
+            $ast = $this->parseAndBind($code, $path);
+            unset($this->boundAsts[$path]);
+        }
+
+        return $this->checkAndEmit($ast);
     }
 
     public function getCodeBeforeGenerator(): string
