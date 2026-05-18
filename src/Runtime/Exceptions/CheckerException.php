@@ -10,8 +10,8 @@ class CheckerException extends RuntimeException
 {
     public function __construct(
         string $message,
-        public readonly int $line,
-        public readonly ?int $column,
+        public int $line,
+        public ?int $column,
     ) {
         parent::__construct($message);
     }

@@ -78,20 +78,26 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
     private function normalizeParams($sentParams, $expected, $code, $ctx)
     {
         $params = [];
-        $last = \end($expected) ?: (object) ['name' => ''];
-        foreach ($sentParams as $methodParamId => $param) {
+
+        foreach ($expected as $methodParamId => $expectedParam) {
             if (isset($sentParams[$methodParamId])) {
-                $params[$methodParamId] = $ctx->emitter->emit($sentParams[$methodParamId], $ctx);
-                $expectedParam = $expected[$methodParamId] ?? $last;
-                $expectedParamName = $expectedParam->name === '@params' ? '' : $expectedParam->name;
-                $code = $this->processNamedParams($expectedParamName, $params[$methodParamId], $code);
-                continue;
+                $value = $ctx->emitter->emit($sentParams[$methodParamId], $ctx);
+            } else {
+                $value = $this->processDefaultValue($expectedParam);
             }
-            $code = $this->processNamedParams($param->name, $this->processDefaultValue($param), $code);
+
+            $params[$methodParamId] = $value;
+            $expectedParamName = $expectedParam->name === '@params' ? '' : $expectedParam->name;
+            $code = $this->processNamedParams($expectedParamName, $value, $code);
+        }
+
+        foreach ($sentParams as $methodParamId => $param) {
+            if (!isset($expected[$methodParamId])) {
+                $params[$methodParamId] = $ctx->emitter->emit($param, $ctx);
+            }
         }
 
         $code = \preg_replace('/@(?!(params)\b)\w+/', '', (string) $code);
-
 
         return (object) ['params' => $params, 'code' => $code];
     }
@@ -101,7 +107,7 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
         $type = $param->type;
 
         if (!$param->required && $param->defaultValue === null) {
-            return '';
+            return 'null';
         }
 
         if ($type === 'string') {

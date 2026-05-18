@@ -7,61 +7,19 @@ parameters:
 			path: src/Compiler.php
 
 		-
-			message: '#^Access to an undefined property object\:\:\$body\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Compiler/Binder.php
+			message: '#^Binary operation "\." between mixed and ''\/'' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: src/Compiler.php
 
 		-
-			message: '#^Cannot access property \$children on PHireScript\\Compiler\\Parser\\Ast\\Nodes\\OOP\\ClassBodyNode\|PHireScript\\Compiler\\Parser\\Ast\\Nodes\\OOP\\InterfaceBodyNode\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Compiler/Binder.php
-
-		-
-			message: '#^Cannot access property \$params on PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Signatures\\ParamsListNode\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Compiler/Binder.php
+			message: '#^Cannot access offset ''(source|dist)'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: src/Compiler.php
 
 		-
 			message: '#^Method PHireScript\\Compiler\\Binder\:\:bind\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Binder.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Binder\:\:bindClassBody\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Binder.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Binder\:\:bindWithToBody\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Binder.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Binder\:\:bindWithToBody\(\) has parameter \$class with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Binder.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Binder\:\:categorizeType\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Binder.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Binder\:\:resolvePropertyTypeForMethods\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Binder.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Binder\:\:resolvePropertyTypes\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
 			path: src/Compiler/Binder.php
@@ -121,88 +79,46 @@ parameters:
 			path: src/Compiler/Binder/Root/ProgramBinder.php
 
 		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Node\:\:\$statements\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Binder/Root/TypeRegistrationBinder.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Node\:\:\$body\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Binder/Declaration/ClassBodyBinder.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Node\:\:\$types\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Binder/Declaration/PropertyTypeResolutionBinder.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Node\:\:\$resolvedTypeInfo\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Binder/Declaration/PropertyTypeResolutionBinder.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Binder\\Declaration\\PropertyTypeResolutionBinder\:\:categorizeType\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Compiler/Binder/Declaration/PropertyTypeResolutionBinder.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>params" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Compiler/Binder/Declaration/Class/MethodParamResolutionBinder.php
+
+		-
 			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Node\:\:\$modifiers\.$#'
 			identifier: property.notFound
 			count: 2
 			path: src/Compiler/Binder/Signatures/ModifiersBinder.php
-
-		-
-			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\Ast\\Nodes\\OOP\\PropertyNode\:\:\$defaultValue\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Access to property \$elements on an unknown class PHireScript\\Compiler\\Parser\\Ast\\Nodes\\ArrayLiteralNode\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Access to property \$expression on an unknown class PHireScript\\Compiler\\Parser\\Ast\\Nodes\\ReturnNode\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Access to property \$line on an unknown class PHireScript\\Compiler\\Parser\\Ast\\Nodes\\VariableDeclarationNode\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Access to property \$name on an unknown class PHireScript\\Compiler\\Parser\\Ast\\Nodes\\VariableDeclarationNode\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Access to property \$rawType on an unknown class PHireScript\\Compiler\\Parser\\Ast\\Nodes\\LiteralNode\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Argument of an invalid type PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Scopes\\MethodScopeNode\|null supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Binary operation "\." between non\-falsy\-string and PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Signatures\\ReturnTypeNode\|null results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 2
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Cannot cast PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Signatures\\ReturnTypeNode\|null to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Class PHireScript\\Compiler\\Parser\\Ast\\Nodes\\ArrayLiteralNode not found\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Class PHireScript\\Compiler\\Parser\\Ast\\Nodes\\LiteralNode not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Class PHireScript\\Compiler\\Parser\\Ast\\Nodes\\ReturnNode not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Class PHireScript\\Compiler\\Parser\\Ast\\Nodes\\VariableDeclarationNode not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Compiler/Checker.php
 
 		-
 			message: '#^Method PHireScript\\Compiler\\Checker\:\:check\(\) has no return type specified\.$#'
@@ -211,104 +127,8 @@ parameters:
 			path: src/Compiler/Checker.php
 
 		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:checkClassBody\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:checkClassBody\(\) has parameter \$classNode with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:checkPrimitive\(\) has parameter \$valueNode with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:checkTypeCompatibility\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:checkTypeCompatibility\(\) has parameter \$declaredType with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:checkTypeCompatibility\(\) has parameter \$expressionNode with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:checkTypeCompatibility\(\) has parameter \$methodName with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:ensureReturnsForMethods\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:ensureTypeCompatibility\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:ensureTypeCompatibility\(\) has parameter \$valueNode with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:ensureTypeCompatibility\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:getNodeType\(\) has parameter \$node with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:isCompatible\(\) has parameter \$typeInfo with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:isCompatible\(\) has parameter \$valueNode with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:validateMethodReturn\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
 			message: '#^Property PHireScript\\Compiler\\Checker\:\:\$checkers type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
-			message: '#^Property PHireScript\\Compiler\\Checker\:\:\$table has no type specified\.$#'
-			identifier: missingType.property
 			count: 1
 			path: src/Compiler/Checker.php
 
@@ -1213,254 +1033,38 @@ parameters:
 			path: src/Compiler/Emitter/Statements/VariableReferenceAssignEmitter.php
 
 		-
-			message: '#^Cannot access offset ''metatypes'' on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Cannot access offset ''php'' on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Cannot access offset ''supertypes'' on mixed\.$#'
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Cannot call method getExtension\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 4
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Cannot call method getPathname\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 13
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Cannot call method getRealPath\(\) on mixed\.$#'
+			message: '#^Cannot call method getCodeBeforeGenerator\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 2
-			path: src/Compiler/FileManager.php
+			path: src/Compiler/FileManager/ErrorRenderer.php
 
 		-
-			message: '#^Cannot call method isDir\(\) on mixed\.$#'
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: src/Compiler/FileManager/ErrorRenderer.php
+
+		-
+			message: '#^Cannot call method compile\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: src/Compiler/FileManager.php
+			path: src/Compiler/FileManager/FileCompiler.php
 
 		-
-			message: '#^Cannot call method isFile\(\) on mixed\.$#'
+			message: '#^Cannot call method getCodeBeforeGenerator\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:cleanDirectory\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:cleanDirectory\(\) has parameter \$dir with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:cleanDirectory\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:compileFile\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:compileFile\(\) has parameter \$input with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:compileFile\(\) has parameter \$output with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:compileFile\(\) has parameter \$transpiler with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:getConfigFile\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:getErrorInterface\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:getErrorInterface\(\) has parameter \$code with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:getErrorInterface\(\) has parameter \$e with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:getErrorInterface\(\) has parameter \$transpiler with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:getErrorInterfaceWeb\(\) has parameter \$code with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:getErrorInterfaceWeb\(\) has parameter \$e with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:getErrorInterfaceWeb\(\) has parameter \$transpiler with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:getExecutionInterface\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:listClassesExtending\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:load\(\) has parameter \$sourceDir with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:load\(\) has parameter \$transpiler with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:load\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:loadAndCompile\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:loadAndCompile\(\) has parameter \$distDir with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:loadAndCompile\(\) has parameter \$sourceDir with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:loadAndCompile\(\) has parameter \$transpiler with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:watch\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:watch\(\) has parameter \$distDir with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:watch\(\) has parameter \$sourceDir with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\FileManager\:\:watch\(\) has parameter \$transpiler with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Parameter \#1 \$code of function token_get_all expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Parameter \#1 \$compiledCode of method PHireScript\\Compiler\\FileManager\:\:getExecutionInterface\(\) expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Variable \$filePath might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: src/Compiler/FileManager.php
-
-		-
-			message: '#^Variable \$sourceCode might not be defined\.$#'
-			identifier: variable.undefined
-			count: 3
-			path: src/Compiler/FileManager.php
+			path: src/Compiler/FileManager/FileCompiler.php
 
 		-
 			message: '#^While loop condition is always true\.$#'
 			identifier: while.alwaysTrue
+			count: 1
+			path: src/Compiler/FileManager/FileWatcher.php
+
+		-
+			message: '#^Cannot call method compile\(\) on mixed\.$#'
+			identifier: method.nonObject
 			count: 1
 			path: src/Compiler/FileManager.php
 
@@ -7021,18 +6625,6 @@ parameters:
 			path: src/Compiler/Parser/Managers/Builder/SequenceBuilder.php
 
 		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\Builder\\SequenceBuilder\:\:peek\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Parser/Managers/Builder/SequenceBuilder.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\Builder\\SequenceBuilder\:\:shouldStop\(\) has parameter \$token with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Parser/Managers/Builder/SequenceBuilder.php
-
-		-
 			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\Builder\\SequenceBuilder\:\:spawnDirectionalSub\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -7041,24 +6633,6 @@ parameters:
 		-
 			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\Builder\\SequenceBuilder\:\:spawnSubBuilder\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Parser/Managers/Builder/SequenceBuilder.php
-
-		-
-			message: '#^Parameter \#1 \$builderFn of method PHireScript\\Compiler\\Parser\\Managers\\Builder\\SequenceBuilder\:\:buildSub\(\) expects callable\(\)\: mixed, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Compiler/Parser/Managers/Builder/SequenceBuilder.php
-
-		-
-			message: '#^Property PHireScript\\Compiler\\Parser\\Managers\\Builder\\SequenceBuilder\:\:\$rules type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Parser/Managers/Builder/SequenceBuilder.php
-
-		-
-			message: '#^Property PHireScript\\Compiler\\Parser\\Managers\\Builder\\SequenceBuilder\:\:\$untilCallback has no type specified\.$#'
-			identifier: missingType.property
 			count: 1
 			path: src/Compiler/Parser/Managers/Builder/SequenceBuilder.php
 
@@ -7531,70 +7105,16 @@ parameters:
 			path: src/Compiler/Scanner.php
 
 		-
-			message: '#^Method PHireScript\\Compiler\\Validator\:\:countCounterPart\(\) has no return type specified\.$#'
-			identifier: missingType.return
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
 			count: 1
-			path: src/Compiler/Validator.php
+			path: src/Compiler/Validator/Structure/BracketBalanceRule.php
 
 		-
-			message: '#^Method PHireScript\\Compiler\\Validator\:\:countCounterPart\(\) has parameter \$close with no type specified\.$#'
-			identifier: missingType.parameter
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
 			count: 1
-			path: src/Compiler/Validator.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Validator\:\:countCounterPart\(\) has parameter \$open with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Validator.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Validator\:\:countCounterPart\(\) has parameter \$token with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Validator.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Validator\:\:validate\(\) has parameter \$tokens with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Validator.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Validator\:\:validateCounting\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Validator.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Validator\:\:validateCounting\(\) has parameter \$close with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Validator.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Validator\:\:validateCounting\(\) has parameter \$open with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Validator.php
-
-		-
-			message: '#^Property PHireScript\\Compiler\\Validator\:\:\$close type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Validator.php
-
-		-
-			message: '#^Property PHireScript\\Compiler\\Validator\:\:\$forbidden type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Validator.php
-
-		-
-			message: '#^Property PHireScript\\Compiler\\Validator\:\:\$open type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Validator.php
+			path: src/Compiler/Validator/Tokens/ForbiddenTokenRule.php
 
 		-
 			message: '#^Method PHireScript\\Core\\CompilerContext\:\:getExtensionToPersist\(\) return type has no value type specified in iterable type array\.$#'

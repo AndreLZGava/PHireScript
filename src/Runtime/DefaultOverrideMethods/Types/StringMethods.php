@@ -65,7 +65,7 @@ class StringMethods extends GeneralType
             ],
             returnOfPhpExecution: ['String'],
             params: [
-                new BaseParams('@search', 'string|null', false, null),
+                new BaseParams('@characters', 'string|null', false, null),
             ]
         );
     }
@@ -74,10 +74,10 @@ class StringMethods extends GeneralType
     {
         return new BaseMethods(
             'removeSpacesLeft',
-            phpCodeForConversion: 'return @characters !== null ? \\ltrim(@self, @search) : \\ltrim(@self);',
+            phpCodeForConversion: 'return @characters !== null ? \\ltrim(@self, @characters) : \\ltrim(@self);',
             returnOfPhpExecution: ['String'],
             params: [
-                new BaseParams('@search', 'string|null', false, null),
+                new BaseParams('@characters', 'string|null', false, null),
             ]
         );
     }
@@ -86,10 +86,10 @@ class StringMethods extends GeneralType
     {
         return new BaseMethods(
             'removeSpacesRight',
-            phpCodeForConversion: 'return @characters !== null ? \rtrim(@self, @search) : \rtrim(@self);',
+            phpCodeForConversion: 'return @characters !== null ? \rtrim(@self, @characters) : \rtrim(@self);',
             returnOfPhpExecution: ['String'],
             params: [
-                new BaseParams('@search', 'string|null', false, null),
+                new BaseParams('@characters', 'string|null', false, null),
             ]
         );
     }

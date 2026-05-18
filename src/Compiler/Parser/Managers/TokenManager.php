@@ -38,7 +38,8 @@ class TokenManager
 
     public function getProcessedTokens(int $limit = 100): array
     {
-        return array_slice($this->getTokens(), $this->getCurrentPosition() - $limit, $limit);
+        $start = (int) max(0, $this->getCurrentPosition() - $limit);
+        return array_slice($this->getTokens(), $start, $limit);
     }
 
     public function getAll()

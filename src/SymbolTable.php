@@ -45,14 +45,15 @@ class SymbolTable
 
     public function setType($name, $type, $linePosition)
     {
-        $this->scopes[$name][$linePosition] = $type;
+        $depth = \count($this->scopes) - 1;
+        $this->scopes[$depth][$name][$linePosition] = $type;
     }
 
     public function getType($name, $linePosition)
     {
         for ($i = \count($this->scopes) - 1; $i >= 0; $i--) {
-            if (isset($this->scopes[$name][$linePosition])) {
-                return $this->scopes[$name][$linePosition];
+            if (isset($this->scopes[$i][$name][$linePosition])) {
+                return $this->scopes[$i][$name][$linePosition];
             }
         }
         return 'UNKNOWN';

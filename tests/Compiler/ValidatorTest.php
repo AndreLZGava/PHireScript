@@ -241,4 +241,184 @@ class ValidatorTest extends TestCase
         ];
         (new Validator())->validate($tokens);
     }
+
+    public function testClassAndInterfaceInSameFileThrows(): void
+    {
+        $this->expectException(CompileException::class);
+        $tokens = [
+            new Token('T_KEYWORD', 'pkg', 1, 1),
+            new Token('T_IDENTIFIER', 'App.Foo', 1, 5),
+            new Token('T_EOL', "\n", 1, 12),
+            new Token('T_KEYWORD', 'class', 2, 1),
+            new Token('T_IDENTIFIER', 'Foo', 2, 7),
+            new Token('T_SYMBOL', '{', 2, 11),
+            new Token('T_SYMBOL', '}', 2, 12),
+            new Token('T_EOL', "\n", 2, 13),
+            new Token('T_KEYWORD', 'interface', 3, 1),
+            new Token('T_IDENTIFIER', 'Bar', 3, 10),
+        ];
+        (new Validator())->validate($tokens);
+    }
+
+    // -------------------------------------------------------------------------
+    // Remaining forbidden tokens
+    // -------------------------------------------------------------------------
+
+    public function testForbidsIntLowercase(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_IDENTIFIER', 'int');
+    }
+
+    public function testForbidsFloatLowercase(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_IDENTIFIER', 'float');
+    }
+
+    public function testForbidsBoolLowercase(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_IDENTIFIER', 'bool');
+    }
+
+    public function testForbidsStdClass(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_IDENTIFIER', 'stdClass');
+    }
+
+    public function testForbidsArray(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_IDENTIFIER', 'array');
+    }
+
+    public function testForbidsArrayKeyExists(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_IDENTIFIER', 'array_key_exists');
+    }
+
+    public function testForbidsConstructKeyword(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_IDENTIFIER', '__construct');
+    }
+
+    // -------------------------------------------------------------------------
+    // Remaining forbidden accessor tokens
+    // -------------------------------------------------------------------------
+
+    public function testForbidsAccessorHashLeft(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_ACCESSORS', '#<');
+    }
+
+    public function testForbidsAccessorAsteriskLeft(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_ACCESSORS', '*<');
+    }
+
+    public function testForbidsAccessorOpenCloseAngle(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_ACCESSORS', '<>');
+    }
+
+    public function testForbidsAccessorHashRight(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_ACCESSORS', '#>');
+    }
+
+    public function testForbidsAccessorAsteriskRight(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_ACCESSORS', '*>');
+    }
+
+    public function testForbidsAccessorPlusRight(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validateSingleToken('T_ACCESSORS', '+>');
+    }
+
+    // -------------------------------------------------------------------------
+    // Angle bracket balancing (only counted outside parentheses)
+    // -------------------------------------------------------------------------
+
+    public function testUnbalancedOpenAngleBracketThrows(): void
+    {
+        $this->expectException(CompileException::class);
+        // A lone '<' outside any parentheses must cause an imbalance.
+        $this->validateSingleToken('T_SYMBOL', '<');
+    }
+
+    public function testAngleBracketsInsideParensAreNotCounted(): void
+    {
+        $this->expectNotToPerformAssertions();
+        // An unmatched '<' inside '()' must not count toward bracket balance
+        // because the validator only tracks '<>' when parenDepth === 0.
+        $this->validate('( < )');
+    }
+
+    public function testBalancedAngleBracketsOutsideParensPass(): void
+    {
+        $this->expectNotToPerformAssertions();
+        // Token-level '<' and '>' pair, outside any parentheses.
+        $tokens = [
+            new Token('T_SYMBOL', '<', 1, 1),
+            new Token('T_SYMBOL', '>', 1, 2),
+        ];
+        (new Validator())->validate($tokens);
+    }
+
+    // -------------------------------------------------------------------------
+    // pkg rules — interface and trait
+    // -------------------------------------------------------------------------
+
+    public function testInterfaceWithoutPkgThrows(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validate('interface Foo { }');
+    }
+
+    public function testTraitWithoutPkgThrows(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->validate('trait Foo { }');
+    }
+
+    public function testPkgWithInterfacePasses(): void
+    {
+        $this->expectNotToPerformAssertions();
+        $this->validate("pkg App.Foo\ninterface Foo { }");
+    }
+
+    public function testPkgWithTraitPasses(): void
+    {
+        $this->expectNotToPerformAssertions();
+        $this->validate("pkg App.Foo\ntrait Foo { }");
+    }
+
+    // -------------------------------------------------------------------------
+    // Error message content
+    // -------------------------------------------------------------------------
+
+    public function testForbiddenTokenExceptionMessageContainsForbiddenWord(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->expectExceptionMessageMatches('/namespace/');
+        $this->validateSingleToken('T_IDENTIFIER', 'namespace');
+    }
+
+    public function testForbiddenTokenExceptionMessageContainsHint(): void
+    {
+        $this->expectException(CompileException::class);
+        $this->expectExceptionMessageMatches('/pkg/');
+        $this->validateSingleToken('T_IDENTIFIER', 'namespace');
+    }
 }
