@@ -19,10 +19,9 @@ use PHireScript\SymbolTable;
  */
 class Checker
 {
-    public ?SymbolTable $table = null;
     public array $checkers = [];
 
-    public function __construct()
+    public function __construct(public readonly SymbolTable $table)
     {
         $this->checkers = [
             new QueueChecker(),
@@ -35,10 +34,8 @@ class Checker
         ];
     }
 
-    public function check(Program $ast, SymbolTable $table)
+    public function check(Program $ast): void
     {
-        $this->table = $table;
-
         foreach ($this->checkers as $check) {
             if ($check->mustCheck($ast)) {
                 $check->check($ast, $this);

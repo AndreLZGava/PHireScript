@@ -121,12 +121,6 @@ parameters:
 			path: src/Compiler/Binder/Signatures/ModifiersBinder.php
 
 		-
-			message: '#^Method PHireScript\\Compiler\\Checker\:\:check\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Checker.php
-
-		-
 			message: '#^Property PHireScript\\Compiler\\Checker\:\:\$checkers type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -7189,12 +7183,6 @@ parameters:
 			path: src/DependencyGraphBuilder.php
 
 		-
-			message: '#^Property PHireScript\\DependencyGraphBuilder\:\:\$config is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: src/DependencyGraphBuilder.php
-
-		-
 			message: '#^Property PHireScript\\DependencyGraphBuilder\:\:\$config type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -9007,24 +8995,6 @@ parameters:
 			path: src/SymbolTable.php
 
 		-
-			message: '#^Method PHireScript\\SymbolTable\:\:getType\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/SymbolTable.php
-
-		-
-			message: '#^Method PHireScript\\SymbolTable\:\:getType\(\) has parameter \$linePosition with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/SymbolTable.php
-
-		-
-			message: '#^Method PHireScript\\SymbolTable\:\:getType\(\) has parameter \$name with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/SymbolTable.php
-
-		-
 			message: '#^Method PHireScript\\SymbolTable\:\:getTypeDefinition\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
@@ -9068,30 +9038,6 @@ parameters:
 
 		-
 			message: '#^Method PHireScript\\SymbolTable\:\:registerTypeDefinition\(\) has parameter \$node with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/SymbolTable.php
-
-		-
-			message: '#^Method PHireScript\\SymbolTable\:\:setType\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/SymbolTable.php
-
-		-
-			message: '#^Method PHireScript\\SymbolTable\:\:setType\(\) has parameter \$linePosition with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/SymbolTable.php
-
-		-
-			message: '#^Method PHireScript\\SymbolTable\:\:setType\(\) has parameter \$name with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/SymbolTable.php
-
-		-
-			message: '#^Method PHireScript\\SymbolTable\:\:setType\(\) has parameter \$type with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
 			path: src/SymbolTable.php

@@ -43,17 +43,17 @@ class SymbolTable
         \array_pop($this->scopes);
     }
 
-    public function setType($name, $type, $linePosition)
+    public function setType(string $name, mixed $type): void
     {
         $depth = \count($this->scopes) - 1;
-        $this->scopes[$depth][$name][$linePosition] = $type;
+        $this->scopes[$depth][$name] = $type;
     }
 
-    public function getType($name, $linePosition)
+    public function getType(string $name): mixed
     {
         for ($i = \count($this->scopes) - 1; $i >= 0; $i--) {
-            if (isset($this->scopes[$i][$name][$linePosition])) {
-                return $this->scopes[$i][$name][$linePosition];
+            if (isset($this->scopes[$i][$name])) {
+                return $this->scopes[$i][$name];
             }
         }
         return 'UNKNOWN';

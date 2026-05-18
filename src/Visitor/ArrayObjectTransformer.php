@@ -94,10 +94,9 @@ class ArrayObjectTransformer extends NodeVisitorAbstract
         if ($node instanceof MethodCall && $node->name instanceof Identifier) {
             $methodName = $node->name->toString();
 
-            if ($node->var instanceof \PhpParser\Node\Expr\Variable) {
+            if ($node->var instanceof \PhpParser\Node\Expr\Variable && is_string($node->var->name)) {
                 $varName = $node->var->name;
-                $type = $this->symbolTable
-                ->getType($varName, $node->var->getStartLine());
+                $type = $this->symbolTable->getType($varName);
 
                 if ($type !== 'ARRAY' && $type !== 'UNKNOWN' && $type !== null) {
                     return null;

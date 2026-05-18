@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript;
 
-use Exception;
+use PHireScript\Cache\CacheManager;
 use PHireScript\Compiler\Binder;
 use PHireScript\Compiler\Checker;
 use PHireScript\Compiler\Emitter;
@@ -15,7 +15,6 @@ use PHireScript\Compiler\Scanner;
 use PHireScript\Compiler\Validator;
 use PHireScript\Core\CompilerContext;
 use PHireScript\Helper\Debug\Debug;
-use Symfony\Component\DependencyInjection\Compiler\Compiler;
 
 class Transpiler implements TranspilerInterface
 {
@@ -26,6 +25,7 @@ class Transpiler implements TranspilerInterface
         private readonly array $config,
         private readonly DependencyGraphBuilder $dependencyManager,
         private readonly CompilerContext $context,
+        private readonly ?CacheManager $cache = null,
     ) {
         $this->generator = new PhpFileGeneratorHandler(false);
     }
@@ -33,29 +33,33 @@ class Transpiler implements TranspilerInterface
     public function compile(string $code, string $path): string
     {
         $this->codeBeforeGenerator = '';
-        $scanner = new Scanner($code, $path);
-        $tokens = $scanner->tokenize();
 
-        //Debug::show($tokens);exit;
+        $tokens = $this->resolveTokens($code, $path);
+
         $validator = new Validator();
-        $validator->validate($tokens);
+        /** @var array<\PHireScript\Compiler\Parser\Managers\Token\Token> $typedTokens */
+        $typedTokens = $tokens;
+        $validator->validate($typedTokens);
 
-        $parser = new Parser($this->config, $this->dependencyManager, $this->context);
+        $parser = new Parser(
+            $this->config,
+            $this->dependencyManager,
+            $this->context,
+            $this->cache,
+        );
         $ast = $parser->parse($tokens, $path);
-        // Debug::show($ast); exit;
+
         $symbolTable = new SymbolTable();
         $binder = new Binder($symbolTable);
         $updatedAst = $binder->bind($ast);
 
-        $checker = new Checker();
-        $checker->check($updatedAst, $symbolTable);
+        $checker = new Checker($symbolTable);
+        $checker->check($updatedAst);
 
-        //Debug::show($updatedAst);exit;
         $emitter = new Emitter($this->config, $this->dependencyManager);
         $preCompiledPhpCode = $emitter->emit($updatedAst);
 
         $this->codeBeforeGenerator = $preCompiledPhpCode;
-        // /Debug::show($preCompiledPhpCode);exit;
         $result = $this->generator->process($preCompiledPhpCode);
         return $result;
     }
@@ -63,5 +67,30 @@ class Transpiler implements TranspilerInterface
     public function getCodeBeforeGenerator(): string
     {
         return $this->codeBeforeGenerator ?? '';
+    }
+
+    /**
+     * Resolve tokens from cache or by scanning the source file.
+     *
+     * @return array<int, mixed>
+     */
+    private function resolveTokens(string $code, string $path): array
+    {
+        if ($this->cache !== null) {
+            $cached = $this->cache->getTokens($path);
+
+            if ($cached !== null) {
+                return $cached;
+            }
+        }
+
+        $scanner = new Scanner($code, $path);
+        $tokens = $scanner->tokenize();
+
+        if ($this->cache !== null) {
+            $this->cache->setTokens($path, $tokens);
+        }
+
+        return $tokens;
     }
 }

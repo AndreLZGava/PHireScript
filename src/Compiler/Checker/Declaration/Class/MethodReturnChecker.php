@@ -122,7 +122,8 @@ class MethodReturnChecker extends Checker
         }
 
         if ($node instanceof VariableDeclarationNode) {
-            return $checker->table?->getType($node->name, $node->line) ?? 'unknown';
+            $resolved = $checker->table->getType($node->name);
+            return is_string($resolved) ? $resolved : 'unknown';
         }
 
         return 'unknown';
