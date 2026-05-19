@@ -1,5 +1,6 @@
 /vendor
 /src/Source/Compiled/
 /coverage-report
+/.cache
 .phpunit.result.cache
 .php-cs-fixer.cache
