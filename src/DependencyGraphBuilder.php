@@ -11,6 +11,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\UseNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\InterfaceNode;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
+use PHireScript\Runtime\Exceptions\CompileException;
 
 class DependencyGraphBuilder
 {
@@ -46,7 +47,11 @@ class DependencyGraphBuilder
             if ($stmt instanceof PackageNode) {
                 $packageName = $stmt->completePackage;
                 if (isset($this->nodes[$packageName])) {
-                    throw new \Exception("Package '{$packageName}' was already defined!");
+                    throw new CompileException(
+                        "Package '{$packageName}' was already defined!",
+                        $stmt->token->line,
+                        $stmt->token->column,
+                    );
                 }
 
                 $this->nodes[$packageName] = new Node(
@@ -77,7 +82,7 @@ class DependencyGraphBuilder
         }
 
         if ($shouldHavePackage && !$currentPackage) {
-            throw new \Exception("File does not have a package defined!");
+            throw new \RuntimeException("File does not have a package defined!");
         }
 
         foreach ($ast->statements as $stmt) {
@@ -90,7 +95,7 @@ class DependencyGraphBuilder
                             ? $this->nodes[$currentPackage]->file
                             : 'unknown file';
 
-                        throw new \Exception(
+                        throw new \RuntimeException(
                             "Dependency '{$depPackage}' not found!\n" .
                             "Required by package '{$currentPackage}' in file '{$file}'"
                         );
@@ -110,7 +115,58 @@ class DependencyGraphBuilder
 
     private function validateGraph(): void
     {
-        // Here i'll implement cycles check using DFS
+        $visited = [];
+        $stack   = [];
+
+        foreach (array_keys($this->nodes) as $pkg) {
+            if (isset($visited[$pkg])) {
+                continue;
+            }
+
+            /** @var array<int, string> $cycle */
+            $cycle = [];
+
+            if ($this->hasCycle($pkg, $visited, $stack, $cycle)) {
+                $path = implode(' → ', array_reverse($cycle));
+                throw new \RuntimeException("Circular dependency detected: {$path}");
+            }
+        }
+    }
+
+    /**
+     * @param array<string, bool> $visited
+     * @param array<string, bool> $stack
+     * @param array<int, string>  $cycle
+     */
+    private function hasCycle(
+        string $node,
+        array &$visited,
+        array &$stack,
+        array &$cycle,
+    ): bool {
+        $visited[$node] = true;
+        $stack[$node]   = true;
+
+        foreach ($this->nodes[$node]->dependsOn as $rawDep) {
+            $dep = (string) $rawDep;
+
+            if (!isset($this->nodes[$dep])) {
+                continue;
+            }
+
+            if (!isset($visited[$dep])) {
+                if ($this->hasCycle($dep, $visited, $stack, $cycle)) {
+                    $cycle[] = $node;
+                    return true;
+                }
+            } elseif (isset($stack[$dep])) {
+                $cycle = [$dep, $node];
+                return true;
+            }
+        }
+
+        unset($stack[$node]);
+        return false;
     }
 
     public function getCompilationOrder(): array
@@ -153,7 +209,7 @@ class DependencyGraphBuilder
         }
 
         if (\count($result) !== \count($this->nodes)) {
-            throw new \Exception("Cyclic dependency found!");
+            throw new \RuntimeException("Cyclic dependency found!");
         }
 
         return $result;
@@ -181,5 +237,81 @@ class DependencyGraphBuilder
     public function getNodes(): array
     {
         return $this->nodes;
+    }
+
+    /** @return array<string, array<string>> */
+    public function getEdges(): array
+    {
+        return $this->edges;
+    }
+
+    /**
+     * Returns a package → file-path map for all registered packages.
+     *
+     * @return array<string, string>
+     */
+    public function getPackageToFileMap(): array
+    {
+        $map = [];
+
+        foreach ($this->nodes as $pkg => $node) {
+            $map[$pkg] = $node->file;
+        }
+
+        return $map;
+    }
+
+    /**
+     * Serialize the current graph state for persistent caching.
+     *
+     * @return array{nodes: array<string, mixed>, edges: array<string, array<string>>, config: array<mixed>}
+     */
+    public function exportForCache(): array
+    {
+        return [
+            'nodes'  => $this->nodes,
+            'edges'  => $this->edges,
+            'config' => $this->config,
+        ];
+    }
+
+    /**
+     * Restore graph state from a value previously returned by exportForCache().
+     *
+     * @param array{nodes: array<string, mixed>, edges: array<string, array<string>>, config: array<mixed>} $data
+     */
+    public function restoreFromCache(array $data): void
+    {
+        /** @var array<string, Node> $nodes */
+        $nodes = $data['nodes'];
+        $this->nodes  = $nodes;
+        $this->edges  = $data['edges'];
+        $this->config = $data['config'];
+    }
+
+    public function isReady(): bool
+    {
+        return $this->nodes !== [];
+    }
+
+    /**
+     * Returns true when any Node in the cached graph references a file that
+     * no longer exists on disk.  Used to decide whether to discard the cache.
+     *
+     * @param array{nodes: array<string, mixed>, edges: array<string, array<string>>, config: array<mixed>} $graphData
+     */
+    public static function hasOrphanedNodes(array $graphData): bool
+    {
+        foreach ($graphData['nodes'] as $node) {
+            if (!($node instanceof Node)) {
+                return true;
+            }
+
+            if (!file_exists($node->file)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
