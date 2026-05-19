@@ -44,11 +44,6 @@ class Compiler
         $sourceDir ??= $config['paths']['source'] . '/';
         $distDir ??= $config['paths']['dist'] . '/';
         $this->context->targetWatch = $distDir;
-        $transpilerDependencyTree = new TranspilerDependencyTree(
-            $config,
-            $this->context,
-            $this->cache,
-        );
 
         $sourceFiles = $this->collectSourceFiles($sourceDir);
         $cachedGraph = $this->cache->getDependencyGraph();
@@ -56,17 +51,6 @@ class Compiler
         $graphIsUsable = $cachedGraph !== null
             && $this->cache->allFilesValid($sourceFiles)
             && !DependencyGraphBuilder::hasOrphanedNodes($cachedGraph);
-
-        if ($graphIsUsable) {
-            $this->dependencyManager->restoreFromCache($cachedGraph);
-        } else {
-            if ($cachedGraph !== null) {
-                $this->cache->invalidateDependencyGraph();
-            }
-            $listPrograms = $this->loader->load($sourceDir, $transpilerDependencyTree);
-            $this->dependencyManager->buildGraph($listPrograms, $config);
-            $this->cache->setDependencyGraph($this->dependencyManager->exportForCache());
-        }
 
         $sharedTable = new SymbolTable();
         $transpiler  = new Transpiler(
@@ -77,14 +61,53 @@ class Compiler
             $sharedTable,
         );
 
-        // Phase 1 (non-watch): parse + bind all files in topological order so that
+        /** @var array<string, \PHireScript\Compiler\Program> $parsedPrograms */
+        $parsedPrograms = [];
+
+        if ($graphIsUsable) {
+            $this->dependencyManager->restoreFromCache($cachedGraph);
+        } else {
+            if ($cachedGraph !== null) {
+                $this->cache->invalidateDependencyGraph();
+            }
+
+            // Pre-build pass: light parse (pkg/use only) to register the dependency graph
+            // before the full parse. The full parser relies on isDependencyOf() to correctly
+            // identify custom types in method signatures; the graph must exist first.
+            $depTreeParser = new TranspilerDependencyTree($config, $this->context, $this->cache);
+            $preBuildPrograms = [];
+            foreach ($sourceFiles as $filePath) {
+                $preBuildPrograms[] = $depTreeParser->compile(
+                    (string) file_get_contents($filePath),
+                    $filePath,
+                );
+            }
+            $this->dependencyManager->buildGraph($preBuildPrograms, $config);
+            $this->cache->setDependencyGraph($this->dependencyManager->exportForCache());
+
+            // Full parse pass: dep graph is now populated, custom types resolve correctly.
+            foreach ($sourceFiles as $filePath) {
+                $parsedPrograms[$filePath] = $transpiler->parseOnly(
+                    (string) file_get_contents($filePath),
+                    $filePath,
+                );
+            }
+        }
+
+        // Phase 1 (non-watch): bind all files in topological order so that
         // the shared SymbolTable is fully populated before any Checker runs.
         if ($this->context->mode !== CompileMode::WATCH) {
             $packageToFile = $this->dependencyManager->getPackageToFileMap();
             foreach ($this->dependencyManager->getCompilationOrder() as $package) {
                 $filePath = $packageToFile[$package] ?? null;
                 if ($filePath !== null && is_file($filePath)) {
-                    $transpiler->parseAndBind((string) file_get_contents($filePath), $filePath);
+                    if (isset($parsedPrograms[$filePath])) {
+                        // Graph-miss path: AST already in memory, just bind it.
+                        $transpiler->bindProgram($parsedPrograms[$filePath], $filePath);
+                    } else {
+                        // Graph-hit path: parse + bind from disk.
+                        $transpiler->parseAndBind((string) file_get_contents($filePath), $filePath);
+                    }
                 }
             }
         }
