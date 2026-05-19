@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace PHireScript\Compiler;
 
 use Exception;
+use PHireScript\Cache\CacheManager;
 use PHireScript\Compiler\FileManager\ClassScanner;
 use PHireScript\Compiler\FileManager\ErrorRenderer;
 use PHireScript\Compiler\FileManager\FileCompiler;
 use PHireScript\Compiler\FileManager\FileWatcher;
 use PHireScript\Core\CompileMode;
 use PHireScript\Core\CompilerContext;
+use PHireScript\DependencyGraphBuilder;
 use PHireScript\Helper\Messenger;
 use PHireScript\Runtime\RuntimeClass;
 use PHireScript\Runtime\Types\MetaTypes;
@@ -26,26 +28,42 @@ class FileManager
     private readonly FileCompiler $fileCompiler;
     private readonly FileWatcher $fileWatcher;
 
-    public function __construct(private readonly CompilerContext $context)
-    {
+    public function __construct(
+        private readonly CompilerContext $context,
+        private readonly ?CacheManager $cache = null,
+    ) {
         $this->classScanner  = new ClassScanner();
         $this->errorRenderer = new ErrorRenderer();
-        $this->fileCompiler  = new FileCompiler($context, $this->errorRenderer);
-        $this->fileWatcher   = new FileWatcher($context, $this->fileCompiler);
+        $this->fileCompiler  = new FileCompiler($context, $this->errorRenderer, $this->cache);
+        $this->fileWatcher   = new FileWatcher(
+            $context,
+            $this->fileCompiler,
+            $this->cache,
+        );
     }
 
-    public function loadAndCompile(string $sourceDir, string $distDir, mixed $transpiler): void
-    {
+    public function loadAndCompile(
+        string $sourceDir,
+        string $distDir,
+        mixed $transpiler,
+        ?DependencyGraphBuilder $dependencyManager = null,
+    ): void {
         if ($this->context->mode === CompileMode::WATCH) {
-            $this->fileWatcher->watch($sourceDir, $distDir, $transpiler);
+            $this->fileWatcher->watch($sourceDir, $distDir, $transpiler, $dependencyManager);
         }
 
-        $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
+        $directory = new RecursiveDirectoryIterator(
+            $sourceDir,
+            RecursiveDirectoryIterator::SKIP_DOTS,
+        );
         $iterator  = new RecursiveIteratorIterator($directory);
 
         foreach ($iterator as $file) {
             /** @var SplFileInfo $file */
-            $relativePath = substr((string) $file->getPathname(), strlen($sourceDir));
+            $relativePath = substr(
+                (string) $file->getPathname(),
+                strlen($sourceDir),
+            );
             $extension    = $file->getExtension();
 
             if (
@@ -58,16 +76,27 @@ class FileManager
                         '.php',
                         $relativePath
                     );
-                    $this->fileCompiler->compileFile((string) $file->getPathname(), $outputFile, $transpiler);
+                    $this->fileCompiler->compileFile(
+                        (string) $file->getPathname(),
+                        $outputFile,
+                        $transpiler,
+                    );
                 } elseif ($extension === RuntimeClass::DEFAULT_FILE_TEST_EXTENSION) {
                     $outputFile = $distDir . str_replace(
                         '.' . $extension,
                         'Test.php',
                         $relativePath
                     );
-                    $this->fileCompiler->compileFile((string) $file->getPathname(), $outputFile, $transpiler);
+                    $this->fileCompiler->compileFile(
+                        (string) $file->getPathname(),
+                        $outputFile,
+                        $transpiler,
+                    );
                 } else {
-                    $this->fileCompiler->copyFile((string) $file->getPathname(), $distDir . $relativePath);
+                    $this->fileCompiler->copyFile(
+                        (string) $file->getPathname(),
+                        $distDir . $relativePath,
+                    );
                 }
             }
         }
@@ -76,7 +105,10 @@ class FileManager
     /** @return array<int, mixed> */
     public function load(string $sourceDir, mixed $transpiler): array
     {
-        $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
+        $directory = new RecursiveDirectoryIterator(
+            $sourceDir,
+            RecursiveDirectoryIterator::SKIP_DOTS,
+        );
         $iterator  = new RecursiveIteratorIterator($directory);
         $allowed   = [
             RuntimeClass::DEFAULT_FILE_EXTENSION,
@@ -94,7 +126,10 @@ class FileManager
 
             try {
                 $sourceCode = (string) file_get_contents($file->getPathname());
-                $result[]   = $transpiler->compile($sourceCode, $file->getPathname());
+                $result[]   = $transpiler->compile(
+                    $sourceCode,
+                    $file->getPathname(),
+                );
             } catch (Exception $e) {
                 Messenger::error(
                     "Error in {$file->getPathname()}: " . $e->getMessage(),
@@ -110,8 +145,24 @@ class FileManager
     /** @return array<string, mixed> */
     public function getConfigFile(): array
     {
+        // Try cache first
+        if ($this->cache !== null) {
+            $configJsonPath = getcwd() . '/PHireScript.json';
+
+            if ($this->cache->isFileValid($configJsonPath)) {
+                $cached = $this->cache->getConfig();
+
+                if ($cached !== null) {
+                    return $cached;
+                }
+            }
+        }
+
         /** @var array<string, mixed> $configs */
-        $configs               = json_decode((string) file_get_contents('PHireScript.json'), true);
+        $configs               = json_decode(
+            (string) file_get_contents('PHireScript.json'),
+            true,
+        );
         $configs['php']        = phpversion();
         $configs['metatypes']  = $this->classScanner->listClassesExtending(
             __DIR__ . '/../../src/Runtime/Types/MetaTypes/',
@@ -121,6 +172,13 @@ class FileManager
             __DIR__ . '/../../src/Runtime/Types/SuperTypes/',
             SuperTypes::class
         );
+
+        // Write to cache
+        if ($this->cache !== null) {
+            $configJsonPath = getcwd() . '/PHireScript.json';
+            $this->cache->setConfig($configs);
+            $this->cache->touchFile($configJsonPath);
+        }
 
         return $configs;
     }

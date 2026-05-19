@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\FileManager;
 
+use PHireScript\Cache\CacheManager;
 use PHireScript\Core\CompilerContext;
+use PHireScript\DependencyGraphBuilder;
 use PHireScript\Helper\Messenger;
 use PHireScript\Runtime\RuntimeClass;
 use RecursiveDirectoryIterator;
@@ -17,11 +19,16 @@ class FileWatcher
     public function __construct(
         private readonly CompilerContext $context,
         private readonly FileCompiler $fileCompiler,
+        private readonly ?CacheManager $cache = null,
     ) {
     }
 
-    public function watch(string $sourceDir, string $distDir, mixed $transpiler): never
-    {
+    public function watch(
+        string $sourceDir,
+        string $distDir,
+        mixed $transpiler,
+        ?DependencyGraphBuilder $dependencyManager = null,
+    ): never {
         $extensionsToWatch = $this->context->getExtensionToPersist();
         $targetDir         = $this->context->targetWatch;
 
@@ -29,12 +36,16 @@ class FileWatcher
         $watching = implode(', ', $extensionsToWatch);
         Messenger::text("Watching files: .{$watching} in: {$targetDir}");
 
-        $filesHash = [];
+        // Load persisted hashes from cache when available
+        $filesHash = $this->cache?->getFileHashes() ?? [];
 
         while (true) {
             try {
-                $directory = new RecursiveDirectoryIterator($sourceDir, RecursiveDirectoryIterator::SKIP_DOTS);
-                $iterator  = new RecursiveIteratorIterator($directory);
+                $directory = new RecursiveDirectoryIterator(
+                    $sourceDir,
+                    RecursiveDirectoryIterator::SKIP_DOTS,
+                );
+                $iterator = new RecursiveIteratorIterator($directory);
 
                 foreach ($iterator as $file) {
                     /** @var SplFileInfo $file */
@@ -43,19 +54,36 @@ class FileWatcher
                     }
 
                     $filePath      = (string) $file->getRealPath();
-                    $relativePath  = \substr((string) $file->getPathname(), \strlen($sourceDir) + 1);
+                    $relativePath  = \substr(
+                        (string) $file->getPathname(),
+                        \strlen($sourceDir) + 1,
+                    );
                     $fileExtension = $file->getExtension();
 
-                    $isNotWatchedExtension = !\in_array($fileExtension, $extensionsToWatch, true);
-                    $currentHash           = $isNotWatchedExtension
+                    $isNotWatchedExtension = !\in_array(
+                        $fileExtension,
+                        $extensionsToWatch,
+                        true,
+                    );
+                    $currentHash = $isNotWatchedExtension
                         ? \filemtime($filePath)
                         : \md5_file($filePath);
 
+                    if ($currentHash === false) {
+                        continue;
+                    }
+
                     try {
-                        if (!isset($filesHash[$filePath]) || $filesHash[$filePath] !== $currentHash) {
+                        if (
+                            !isset($filesHash[$filePath])
+                            || $filesHash[$filePath] !== $currentHash
+                        ) {
                             if ($isNotWatchedExtension) {
                                 $outputFile = $distDir . '/' . $relativePath;
-                                $this->fileCompiler->copyFile((string) $file->getPathname(), $outputFile);
+                                $this->fileCompiler->copyFile(
+                                    (string) $file->getPathname(),
+                                    $outputFile,
+                                );
                                 $filesHash[$filePath] = $currentHash;
                                 continue;
                             }
@@ -83,31 +111,66 @@ class FileWatcher
                             }
 
                             if (isset($filesHash[$filePath])) {
-                                Messenger::info("[" . date('H:i:s') . "] Changes detected: {$filePath}", true);
+                                Messenger::info(
+                                    "[" . date('H:i:s') . "] Changes detected: {$filePath}",
+                                    true,
+                                );
                                 $this->fileCompiler->compileFile(
                                     (string) $file->getPathname(),
                                     $outputFile,
                                     $transpiler,
                                 );
+                                $this->invalidateChangedFile($filePath, $dependencyManager);
                             } else {
-                                Messenger::text("[" . date('H:i:s') . "] Watching: {$filePath}");
+                                Messenger::text(
+                                    "[" . date('H:i:s') . "] Watching: {$filePath}",
+                                );
                             }
 
                             $filesHash[$filePath] = $currentHash;
                         }
                     } catch (Throwable $e) {
                         Messenger::error(
-                            "[" . date('H:i:s') . "] Error processing {$filePath}: " . $e->getMessage(),
+                            "[" . date('H:i:s') . "] Error: {$filePath}: "
+                                . $e->getMessage(),
                             true
                         );
                     }
                 }
+
+                $this->cache?->setFileHashes($filesHash);
+                $this->cache?->persist();
             } catch (Throwable $e) {
-                Messenger::error("[" . date('H:i:s') . "] Watcher error: " . $e->getMessage(), true);
+                Messenger::error(
+                    "[" . date('H:i:s') . "] Watcher error: "
+                        . $e->getMessage(),
+                    true,
+                );
             }
 
             clearstatcache();
             usleep(900000);
         }
+    }
+
+    private function invalidateChangedFile(
+        string $filePath,
+        ?DependencyGraphBuilder $dependencyManager,
+    ): void {
+        if ($this->cache === null) {
+            return;
+        }
+
+        $this->cache->invalidateDependencyGraph();
+
+        if ($dependencyManager === null || !$dependencyManager->isReady()) {
+            return;
+        }
+
+        $this->cache->invalidateCascade(
+            $filePath,
+            $dependencyManager->getEdges(),
+            $dependencyManager->getPackageToFileMap(),
+        );
     }
 }

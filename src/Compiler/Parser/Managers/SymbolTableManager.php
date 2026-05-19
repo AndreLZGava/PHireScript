@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Parser\Managers;
 
+use PHireScript\Cache\CacheManager;
 use PHireScript\Compiler\Parser\Ast\Nodes\OOP\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Statements\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Statements\VariableReferenceNode;
@@ -12,15 +13,19 @@ use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 
 class SymbolTableManager
 {
+    private const TYPES_DIR = __DIR__ . '/../../../../src/Runtime/DefaultOverrideMethods/Types';
+
+    /** @var array<string, array<string, BaseMethods>>|null In-memory registry shared across all instances in one process. */
+    private static ?array $staticRegistry = null;
+
     private array $typeDefinitions = [];
     private ?string $rawType = null;
     private array $lastExecution = [];
 
-    public function __construct()
+    public function __construct(?CacheManager $cache = null)
     {
-        $targetDir = __DIR__ . '/../../../../src/Runtime/DefaultOverrideMethods/Types';
-        $getDefaultOverrideMethods = $this->scanAndBuildRegistry($targetDir);
-        $this->typeDefinitions = $getDefaultOverrideMethods;
+        $targetDir = realpath(self::TYPES_DIR) ?: self::TYPES_DIR;
+        $this->typeDefinitions = $this->loadRegistry($targetDir, $cache);
     }
 
     public function from($rawType): self
@@ -29,8 +34,10 @@ class SymbolTableManager
         return $this;
     }
 
-    public function getFunctionFromLastExecution(string $functionName, bool $mustUpdate = false): ?BaseMethods
-    {
+    public function getFunctionFromLastExecution(
+        string $functionName,
+        bool $mustUpdate = false,
+    ): ?BaseMethods {
         if (empty($this->lastExecution)) {
             return null;
         }
@@ -68,6 +75,40 @@ class SymbolTableManager
         return $function ?? null;
     }
 
+    /**
+     * Load the type-method registry, using the CacheManager when available.
+     *
+     * @return array<string, array<string, BaseMethods>>
+     */
+    private function loadRegistry(string $directory, ?CacheManager $cache): array
+    {
+        // Ultra-fast path: in-memory static (same PHP process).
+        if (self::$staticRegistry !== null) {
+            return self::$staticRegistry;
+        }
+
+        // Fast path: disk cache hit.
+        if ($cache !== null && $cache->areTypeSourcesValid($directory)) {
+            /** @var array<string, array<string, BaseMethods>>|null $cached */
+            $cached = $cache->getTypeMethods();
+
+            if ($cached !== null) {
+                self::$staticRegistry = $cached;
+                return self::$staticRegistry;
+            }
+        }
+
+        // Slow path: reflection-based discovery.
+        $registry = $this->scanAndBuildRegistry($directory);
+
+        if ($cache !== null) {
+            $cache->setTypeMethods($registry);
+            $cache->touchTypesSources($directory);
+        }
+
+        self::$staticRegistry = $registry;
+        return self::$staticRegistry;
+    }
 
     private function scanAndBuildRegistry(string $directory): array
     {

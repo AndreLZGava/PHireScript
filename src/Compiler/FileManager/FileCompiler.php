@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\FileManager;
 
 use Exception;
+use PHireScript\Cache\CacheManager;
 use PHireScript\Core\CompilerContext;
 use PHireScript\Helper\Messenger;
 use PHireScript\Runtime\RuntimeClass;
@@ -14,6 +15,7 @@ class FileCompiler
     public function __construct(
         private readonly CompilerContext $context,
         private readonly ErrorRenderer $errorRenderer,
+        private readonly ?CacheManager $cache = null,
     ) {
     }
 
@@ -22,9 +24,10 @@ class FileCompiler
         $sourceCode = '';
 
         try {
-            $startTime  = microtime(true);
-            $sourceCode = (string) file_get_contents($input);
-            $result     = $transpiler->compile($sourceCode, $input);
+            $startTime    = microtime(true);
+            $tokensCached = $this->cache?->isFileValid($input) ?? false;
+            $sourceCode   = (string) file_get_contents($input);
+            $result       = $transpiler->compile($sourceCode, $input);
 
             if ($this->context->shouldPersist()) {
                 $outputSubDir = dirname((string) $output);
@@ -46,17 +49,21 @@ class FileCompiler
                     Messenger::success("$input → $preCompiledCode", true);
                 }
 
-                $output_text = [];
-                $return_var  = 0;
-                exec("php -l " . escapeshellarg((string) $output), $output_text, $return_var);
                 $elapsedMs = (int) round((microtime(true) - $startTime) * 1000);
 
-                if ($return_var !== 0) {
-                    Messenger::error("Syntax Error in generated file $output:", true);
-                    Messenger::text(\implode("\n", $output_text));
-                } else {
-                    Messenger::success("$input → $output  [{$elapsedMs}ms]", true);
+                if (!$tokensCached) {
+                    $output_text = [];
+                    $return_var  = 0;
+                    exec("php -l " . escapeshellarg((string) $output), $output_text, $return_var);
+
+                    if ($return_var !== 0) {
+                        Messenger::error("Syntax Error in generated file $output:", true);
+                        Messenger::text(\implode("\n", $output_text));
+                        return;
+                    }
                 }
+
+                Messenger::success("$input → $output  [{$elapsedMs}ms]", true);
             }
 
             if ($this->context->inMemory && !$this->context->displayInsideCompiler) {

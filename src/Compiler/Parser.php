@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler;
 
+use PHireScript\Cache\CacheManager;
 use PHireScript\Compiler\Parser\Ast\Context\Root\ProgramContext;
 use PHireScript\Compiler\Parser\Managers\ContextManager;
 use PHireScript\Compiler\Parser\Managers\TokenManager;
@@ -22,6 +23,7 @@ class Parser
         private readonly array $config,
         protected DependencyGraphBuilder $dependencyBuilder,
         private readonly CompilerContext $context,
+        private readonly ?CacheManager $cache = null,
     ) {
     }
 
@@ -41,7 +43,7 @@ class Parser
             program: $program,
             tokenManager: $tokenManager,
             contextManager: null,
-            symbolTable: new SymbolTableManager(),
+            symbolTable: new SymbolTableManager($this->cache),
             dependencyBuilder: $this->dependencyBuilder,
             compilerContext: $this->context,
         );
