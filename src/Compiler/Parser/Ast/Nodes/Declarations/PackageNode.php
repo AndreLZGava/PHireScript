@@ -65,18 +65,27 @@ class PackageNode extends Statement
     public function generateNamespace(ParseContext $context): void
     {
         $config = $context->contextManager->getConfig();
-        $namespace = '';
-        $namespace = \current(\explode('/' . $this->object, $this->file));
-        $baseDir = \rtrim((string) $config['paths']['source'], '/') . '/';
 
-        if (str_starts_with($namespace, $baseDir)) {
-            $namespace = substr($namespace, strlen($baseDir));
+        // Extract the directory part of the file path (everything before /{objectName})
+        $fileDir = \current(\explode('/' . $this->object, $this->file));
+
+        // Build the namespace segment from cwd-relative path so that:
+        //   cwd = /project, file = /project/src/output/Foo.ps → segment = src\output
+        //   cwd = /project, file = /project/samples/case_1/Foo.ps → segment = samples\case_1
+        $cwd = \rtrim((string) \getcwd(), '/');
+
+        if (\str_starts_with($fileDir, $cwd . '/')) {
+            $relative = \substr($fileDir, \strlen($cwd) + 1);
+        } else {
+            $relative = '';
         }
 
-        $namespace = \str_replace('/', '\\', $namespace);
+        $relative = \str_replace('/', '\\', $relative);
 
         $this->completePackage = $this->package . '.' . $this->object;
-        $this->namespace = $config['namespace'] . '\\' . $namespace;
+        $this->namespace = !empty($relative)
+            ? $config['namespace'] . '\\' . $relative
+            : (string) $config['namespace'];
         $this->completeObjectReference = '\\' . $this->namespace . '\\' . $this->object . '::class';
         $context->setCurrentPackage($this->completePackage);
     }
