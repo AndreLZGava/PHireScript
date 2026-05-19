@@ -6,10 +6,12 @@ namespace PHireScript\Compiler\Checker\Expression;
 
 use PHireScript\Compiler\Checker as CompilerChecker;
 use PHireScript\Compiler\Checker\Checker;
+use PHireScript\Compiler\CompilerPass;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\FunctionNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Runtime\Exceptions\CompileException;
 
+#[CompilerPass(order: 2)]
 class MethodConsumptionChecker extends Checker
 {
     public function mustCheck(Node $node): bool

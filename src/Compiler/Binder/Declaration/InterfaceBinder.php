@@ -6,9 +6,11 @@ namespace PHireScript\Compiler\Binder\Declaration;
 
 use PHireScript\Compiler\Binder as CompilerBinder;
 use PHireScript\Compiler\Binder\Binder;
+use PHireScript\Compiler\CompilerPass;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\InterfaceNode;
 
+#[CompilerPass(order: 4)]
 class InterfaceBinder implements Binder
 {
     public function mustBind(Node $node): bool

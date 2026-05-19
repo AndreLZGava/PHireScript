@@ -6,11 +6,13 @@ namespace PHireScript\Compiler\Binder\Declaration\Class;
 
 use PHireScript\Compiler\Binder as CompilerBinder;
 use PHireScript\Compiler\Binder\Binder;
+use PHireScript\Compiler\CompilerPass;
 use PHireScript\Compiler\Parser\Ast\Nodes\OOP\MethodDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\CustomClasses\MagicMethods;
 
+#[CompilerPass(order: 6)]
 class MagicMethodDeclarationBinder implements Binder
 {
     public function mustBind(Node $node): bool

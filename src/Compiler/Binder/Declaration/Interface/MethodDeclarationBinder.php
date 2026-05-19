@@ -6,10 +6,12 @@ namespace PHireScript\Compiler\Binder\Declaration\Interface;
 
 use PHireScript\Compiler\Binder as CompilerBinder;
 use PHireScript\Compiler\Binder\Binder;
+use PHireScript\Compiler\CompilerPass;
 use PHireScript\Compiler\Parser\Ast\Nodes\OOP\InterfaceMethodDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Helper\Debug\Debug;
 
+#[CompilerPass(order: 7)]
 class MethodDeclarationBinder implements Binder
 {
     public function mustBind(Node $node): bool

@@ -13,16 +13,25 @@ use SplFileInfo;
 
 class ClassScanner
 {
+    /** @var array<string, array<int, string>> In-process cache keyed by "directory:baseClass". */
+    private static array $memo = [];
+
     /** @return array<int, string> */
     public function listClassesExtending(string $directory, string $baseClass): array
     {
+        $key = $directory . ':' . $baseClass;
+
+        if (isset(self::$memo[$key])) {
+            return self::$memo[$key];
+        }
+
         $directory = realpath($directory);
 
         if ($directory === false || !is_dir($directory)) {
             throw new RuntimeException("Invalid path: {$directory}");
         }
 
-        if (!class_exists($baseClass)) {
+        if (!class_exists($baseClass) && !interface_exists($baseClass)) {
             throw new RuntimeException("Base class does not exists: {$baseClass}");
         }
 
@@ -90,6 +99,8 @@ class ClassScanner
                 $classes[] = $fqcn;
             }
         }
+
+        self::$memo[$key] = $classes;
 
         return $classes;
     }

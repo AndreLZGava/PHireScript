@@ -6,10 +6,12 @@ namespace PHireScript\Compiler\Checker\Root;
 
 use PHireScript\Compiler\Checker as CompilerChecker;
 use PHireScript\Compiler\Checker\Checker;
+use PHireScript\Compiler\CompilerPass;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Program;
 use PHireScript\Helper\Debug\Debug;
 
+#[CompilerPass(order: 4)]
 class ProgramChecker extends Checker
 {
     public function mustCheck(Node $node): bool

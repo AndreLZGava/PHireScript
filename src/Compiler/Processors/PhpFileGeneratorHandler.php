@@ -11,7 +11,7 @@ class PhpFileGeneratorHandler implements PreprocessorInterface
 {
     private $parser;
     private $printer;
-    public function __construct(private readonly bool $strictDebugMode = false)
+    public function __construct()
     {
         $this->parser = (new ParserFactory())->createForNewestSupportedVersion();
         $this->printer = new PrettyPrinter\Standard();
@@ -36,10 +36,7 @@ class PhpFileGeneratorHandler implements PreprocessorInterface
 
             return $this->printer->prettyPrintFile($ast);
         } catch (\PhpParser\Error $error) {
-            if (!$this->strictDebugMode) {
-                throw new \Exception("Compilation error: " . $error->getMessage());
-            }
-            throw new \Exception("Compilation error: " . $error->getMessage());
+            throw new \RuntimeException("Compilation error: " . $error->getMessage());
         }
     }
 }

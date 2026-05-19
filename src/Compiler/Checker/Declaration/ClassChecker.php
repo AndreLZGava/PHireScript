@@ -7,11 +7,13 @@ namespace PHireScript\Compiler\Checker\Declaration;
 use Exception;
 use PHireScript\Compiler\Checker as CompilerChecker;
 use PHireScript\Compiler\Checker\Checker;
+use PHireScript\Compiler\CompilerPass;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ClassNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
+#[CompilerPass(order: 5)]
 class ClassChecker extends Checker
 {
     public function mustCheck(Node $node): bool

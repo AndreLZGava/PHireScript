@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Checker\Expression\Types;
 
 use PHireScript\Compiler\Checker\Checker;
-use PHireScript\Compiler\Parser\Ast\Nodes\Node;
+use PHireScript\Compiler\CompilerPass;
 use PHireScript\Compiler\Parser\Ast\Nodes\Collections\QueueNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Checker as CompilerChecker;
 
+#[CompilerPass(order: 1)]
 class QueueChecker extends Checker
 {
     public function mustCheck(Node $node): bool

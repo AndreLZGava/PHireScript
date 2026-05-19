@@ -32,16 +32,25 @@ class Transpiler implements TranspilerInterface
         private readonly ?CacheManager $cache = null,
         ?SymbolTable $symbolTable = null,
     ) {
-        $this->generator  = new PhpFileGeneratorHandler(false);
+        $this->generator  = new PhpFileGeneratorHandler();
         $this->symbolTable = $symbolTable ?? new SymbolTable();
     }
 
     /**
-     * Phase 1 — parse and bind one file, storing the bound AST for Phase 2.
-     * Populates the shared SymbolTable with type definitions from this file.
+     * Phase 0 — scan, validate, and parse one file; no binding.
+     * Returns an unbound AST suitable for dependency-graph construction.
+     * The result is persisted to the AST cache so unchanged files are not
+     * re-parsed on the next build.
      */
-    public function parseAndBind(string $code, string $path): Program
+    public function parseOnly(string $code, string $path): Program
     {
+        if ($this->cache !== null) {
+            $cached = $this->cache->getProgram($path);
+            if ($cached !== null) {
+                return $cached;
+            }
+        }
+
         $tokens = $this->resolveTokens($code, $path);
 
         $validator = new Validator();
@@ -57,11 +66,33 @@ class Transpiler implements TranspilerInterface
         );
         $ast = $parser->parse($tokens, $path);
 
-        $binder = new Binder($this->symbolTable);
+        if ($this->cache !== null) {
+            $this->cache->setProgram($path, $ast);
+        }
+
+        return $ast;
+    }
+
+    /**
+     * Phase 1a — bind an already-parsed AST, storing it for Phase 2.
+     * Populates the shared SymbolTable with type definitions from this file.
+     */
+    public function bindProgram(Program $ast, string $path): Program
+    {
+        $binder   = new Binder($this->symbolTable);
         $boundAst = $binder->bind($ast);
         $this->boundAsts[$path] = $boundAst;
 
         return $boundAst;
+    }
+
+    /**
+     * Phase 1 — parse and bind one file, storing the bound AST for Phase 2.
+     * Populates the shared SymbolTable with type definitions from this file.
+     */
+    public function parseAndBind(string $code, string $path): Program
+    {
+        return $this->bindProgram($this->parseOnly($code, $path), $path);
     }
 
     /**

@@ -6,9 +6,11 @@ namespace PHireScript\Compiler\Binder\Signatures;
 
 use PHireScript\Compiler\Binder as CompilerBinder;
 use PHireScript\Compiler\Binder\Binder;
+use PHireScript\Compiler\CompilerPass;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Helper\Debug\Debug;
 
+#[CompilerPass(order: 11)]
 class ModifiersBinder implements Binder
 {
     public function mustBind(Node $node): bool

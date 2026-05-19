@@ -6,6 +6,7 @@ namespace PHireScript\Compiler\Binder\Declaration;
 
 use PHireScript\Compiler\Binder as CompilerBinder;
 use PHireScript\Compiler\Binder\Binder;
+use PHireScript\Compiler\CompilerPass;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\UseNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\OOP\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ParamArgumentNode;
@@ -13,6 +14,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Statements\DependencyStatementNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Helper\TypeResolver;
 
+#[CompilerPass(order: 10)]
 class PropertyTypeResolutionBinder implements Binder
 {
     public function mustBind(Node $node): bool

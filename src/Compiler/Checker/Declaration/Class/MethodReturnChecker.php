@@ -6,6 +6,7 @@ namespace PHireScript\Compiler\Checker\Declaration\Class;
 
 use PHireScript\Compiler\Checker as CompilerChecker;
 use PHireScript\Compiler\Checker\Checker;
+use PHireScript\Compiler\CompilerPass;
 use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\LiteralNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
@@ -15,6 +16,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Statements\ReturnNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Statements\VariableDeclarationNode;
 use PHireScript\Runtime\Exceptions\CheckerException;
 
+#[CompilerPass(order: 7)]
 class MethodReturnChecker extends Checker
 {
     public function mustCheck(Node $node): bool
