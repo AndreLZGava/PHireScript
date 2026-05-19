@@ -96,6 +96,7 @@ class MethodScopeContext extends AbstractContext
     {
         if ($token->isClosingCurlyBracket()) {
             $parseContext->contextManager->exit();
+            $parseContext->variables->exitScope();
         }
     }
 

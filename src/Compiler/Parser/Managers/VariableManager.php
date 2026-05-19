@@ -11,54 +11,77 @@ use PHireScript\Helper\Debug\Debug;
 
 class VariableManager
 {
+    /** @var array<int, array<string, VariableDeclarationNode|VariableReferenceNode>> */
+    private array $scopes = [[]];
+
     private mixed $variableOnFocus = null;
-    public function __construct(
-        private array $variables = [],
-        private array $properties = [],
-    ) {
+
+    public function __construct(private array $properties = [])
+    {
     }
 
-    public function addProperty(PropertyNode $property)
+    public function enterScope(): void
+    {
+        $this->scopes[] = [];
+    }
+
+    public function exitScope(): void
+    {
+        if (count($this->scopes) > 1) {
+            array_pop($this->scopes);
+        }
+    }
+
+    public function addProperty(PropertyNode $property): void
     {
         $this->properties[$property->name] = $property;
     }
 
-    public function addVariable(VariableDeclarationNode|VariableReferenceNode $variable)
+    public function addVariable(VariableDeclarationNode|VariableReferenceNode $variable): void
     {
-        $this->variables[$variable->name] = $variable;
+        $depth = count($this->scopes) - 1;
+        $this->scopes[$depth][$variable->name] = $variable;
         $this->variableOnFocus = $variable;
     }
 
-    public function getVariables()
+    /** @return array<string, VariableDeclarationNode|VariableReferenceNode> */
+    public function getVariables(): array
     {
-        return $this->variables;
+        $all = [];
+        foreach ($this->scopes as $scope) {
+            $all = array_merge($all, $scope);
+        }
+        return $all;
     }
 
     public function getVariable(string $variableName): null|VariableDeclarationNode|VariableReferenceNode
     {
-        if (isset($this->variables[$variableName])) {
-            $this->variableOnFocus = $this->variables[$variableName];
+        for ($i = count($this->scopes) - 1; $i >= 0; $i--) {
+            if (isset($this->scopes[$i][$variableName])) {
+                $this->variableOnFocus = $this->scopes[$i][$variableName];
+                return $this->scopes[$i][$variableName];
+            }
         }
-
-        return  $this->variables[$variableName] ?? null;
+        return null;
     }
 
-    public function getProperties()
+    /** @return array<string, PropertyNode> */
+    public function getProperties(): array
     {
         return $this->properties;
     }
 
     public function getProperty(string $propertyName): ?PropertyNode
     {
-        return $this->properties[$propertyName]  ?? null;
+        return $this->properties[$propertyName] ?? null;
     }
 
-    public function getVariableOnFocus()
+    public function getVariableOnFocus(): mixed
     {
         return $this->variableOnFocus;
     }
 
-    public function setVirtualVariable($variable)
+    public function setVirtualVariable(mixed $variable): void
     {
         $this->variableOnFocus = $variable;
     }

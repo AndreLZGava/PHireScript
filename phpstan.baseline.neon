@@ -3367,6 +3367,12 @@ parameters:
 			path: src/Compiler/Parser/Ast/Context/Scopes/MethodScopeContext.php
 
 		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$variables\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Context/Scopes/MethodScopeContext.php
+
+		-
 			message: '#^PHPDoc tag @extends has invalid type PHireScript\\Compiler\\Parser\\Ast\\Context\\Scopes\\ParamsNode\.$#'
 			identifier: class.notFound
 			count: 1
@@ -6163,6 +6169,12 @@ parameters:
 			path: src/Compiler/Parser/Ast/Resolver/Scopes/MethodScopeResolver.php
 
 		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$variables\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Scopes/MethodScopeResolver.php
+
+		-
 			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$contextManager\.$#'
 			identifier: property.notFound
 			count: 1
@@ -6891,54 +6903,6 @@ parameters:
 		-
 			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\VariableManager\:\:__construct\(\) has parameter \$properties with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Parser/Managers/VariableManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\VariableManager\:\:__construct\(\) has parameter \$variables with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Parser/Managers/VariableManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\VariableManager\:\:addProperty\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Parser/Managers/VariableManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\VariableManager\:\:addVariable\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Parser/Managers/VariableManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\VariableManager\:\:getProperties\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Parser/Managers/VariableManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\VariableManager\:\:getVariableOnFocus\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Parser/Managers/VariableManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\VariableManager\:\:getVariables\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Parser/Managers/VariableManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\VariableManager\:\:setVirtualVariable\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Parser/Managers/VariableManager.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Managers\\VariableManager\:\:setVirtualVariable\(\) has parameter \$variable with no type specified\.$#'
-			identifier: missingType.parameter
 			count: 1
 			path: src/Compiler/Parser/Managers/VariableManager.php
 

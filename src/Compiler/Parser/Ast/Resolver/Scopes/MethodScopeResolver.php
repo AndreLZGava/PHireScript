@@ -27,6 +27,7 @@ class MethodScopeResolver implements ContextTokenResolver
             token: $token,
         );
 
+        $parseContext->variables->enterScope();
         $parseContext->contextManager->enter(
             new MethodScopeContext($node)
         );
