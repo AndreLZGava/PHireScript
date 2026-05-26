@@ -91,7 +91,7 @@ class CheckerTest extends TestCase
     public function testCheckEmptyProgramDoesNotThrow(): void
     {
         $this->expectNotToPerformAssertions();
-        (new Checker())->check($this->makeProgram(), new SymbolTable());
+        (new Checker(new SymbolTable()))->check($this->makeProgram());
     }
 
     public function testCheckProgramWithNoClassNodesDoesNotThrow(): void
@@ -103,7 +103,7 @@ class CheckerTest extends TestCase
         // stdClass won't match ClassNode, so check() does nothing harmful.
         // We need a Program, not stmts that trigger instanceof ClassNode.
         $program->statements = [];
-        (new Checker())->check($program, new SymbolTable());
+        (new Checker(new SymbolTable()))->check($program);
     }
 
     // -------------------------------------------------------------------------
@@ -113,33 +113,33 @@ class CheckerTest extends TestCase
     public function testClassWithoutLifecycleThrowsCompileException(): void
     {
         $this->expectException(CompileException::class);
-        $checker = new Checker();
+        $checker = new Checker(new SymbolTable());
         $classNode = $this->makeClassNode('class'); // no modifiers, no DI
-        $checker->check($this->makeProgram([$classNode]), new SymbolTable());
+        $checker->check($this->makeProgram([$classNode]));
     }
 
     public function testAbstractClassPassesLifecycleCheck(): void
     {
         $this->expectNotToPerformAssertions();
-        $checker = new Checker();
+        $checker = new Checker(new SymbolTable());
         $classNode = $this->makeClassNode('class', ['abstract']);
-        $checker->check($this->makeProgram([$classNode]), new SymbolTable());
+        $checker->check($this->makeProgram([$classNode]));
     }
 
     public function testTraitPassesLifecycleCheck(): void
     {
         $this->expectNotToPerformAssertions();
-        $checker = new Checker();
+        $checker = new Checker(new SymbolTable());
         $classNode = $this->makeClassNode('trait');
-        $checker->check($this->makeProgram([$classNode]), new SymbolTable());
+        $checker->check($this->makeProgram([$classNode]));
     }
 
     public function testClassWithDependencyInjectionPassesLifecycleCheck(): void
     {
         $this->expectNotToPerformAssertions();
-        $checker = new Checker();
+        $checker = new Checker(new SymbolTable());
         $classNode = $this->makeClassNode('class', [], true); // withDI = true
-        $checker->check($this->makeProgram([$classNode]), new SymbolTable());
+        $checker->check($this->makeProgram([$classNode]));
     }
 
     // -------------------------------------------------------------------------
@@ -157,7 +157,7 @@ class CheckerTest extends TestCase
         $classNode->readOnly = true;
         $classNode->body->children = [$prop];
 
-        $this->callCheckClassBody(new Checker(), $classNode);
+        $this->callCheckClassBody(new Checker(new SymbolTable()), $classNode);
     }
 
     public function testReadonlyClassWithNullDefaultValueDoesNotThrow(): void
@@ -170,7 +170,7 @@ class CheckerTest extends TestCase
         $classNode->readOnly = true;
         $classNode->body->children = [$prop];
 
-        $this->callCheckClassBody(new Checker(), $classNode);
+        $this->callCheckClassBody(new Checker(new SymbolTable()), $classNode);
     }
 
     public function testNonReadonlyClassWithDefaultValueDoesNotThrow(): void
@@ -183,7 +183,7 @@ class CheckerTest extends TestCase
         $classNode = $this->makeClassNode();
         $classNode->body->children = [$prop];
 
-        $this->callCheckClassBody(new Checker(), $classNode);
+        $this->callCheckClassBody(new Checker(new SymbolTable()), $classNode);
     }
 
     // -------------------------------------------------------------------------
@@ -199,7 +199,7 @@ class CheckerTest extends TestCase
         $classNode = $this->makeClassNode(); // non-abstract class
         $classNode->body->children = [$prop];
 
-        $this->callCheckClassBody(new Checker(), $classNode);
+        $this->callCheckClassBody(new Checker(new SymbolTable()), $classNode);
     }
 
     public function testAbstractPropertyInAbstractClassDoesNotThrow(): void
@@ -211,7 +211,7 @@ class CheckerTest extends TestCase
         $classNode = $this->makeClassNode('class', ['abstract']);
         $classNode->body->children = [$prop];
 
-        $this->callCheckClassBody(new Checker(), $classNode);
+        $this->callCheckClassBody(new Checker(new SymbolTable()), $classNode);
     }
 
     public function testNonAbstractPropertyInNonAbstractClassDoesNotThrow(): void
@@ -223,7 +223,7 @@ class CheckerTest extends TestCase
         $classNode = $this->makeClassNode();
         $classNode->body->children = [$prop];
 
-        $this->callCheckClassBody(new Checker(), $classNode);
+        $this->callCheckClassBody(new Checker(new SymbolTable()), $classNode);
     }
 
     public function testEmptyBodyDoesNotThrow(): void
@@ -233,7 +233,7 @@ class CheckerTest extends TestCase
         $classNode = $this->makeClassNode();
         // body->children already empty from makeClassNode()
 
-        $this->callCheckClassBody(new Checker(), $classNode);
+        $this->callCheckClassBody(new Checker(new SymbolTable()), $classNode);
     }
 
     // -------------------------------------------------------------------------
@@ -244,7 +244,7 @@ class CheckerTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
         $this->callEnsureReturnsForMethods(
-            new Checker(),
+            new Checker(new SymbolTable()),
             $this->makeMethod('isValid', 'Bool', mustBeBool: true)
         );
     }
@@ -253,7 +253,7 @@ class CheckerTest extends TestCase
     {
         $this->expectException(CheckerException::class);
         $this->callEnsureReturnsForMethods(
-            new Checker(),
+            new Checker(new SymbolTable()),
             $this->makeMethod('isValid', 'String', mustBeBool: true)
         );
     }
@@ -263,7 +263,7 @@ class CheckerTest extends TestCase
         $this->expectException(CheckerException::class);
         // Union types are forbidden even when Bool is one of the types.
         $this->callEnsureReturnsForMethods(
-            new Checker(),
+            new Checker(new SymbolTable()),
             $this->makeMethod('isValid', 'Bool|String', mustBeBool: true)
         );
     }
@@ -272,7 +272,7 @@ class CheckerTest extends TestCase
     {
         $this->expectException(CheckerException::class);
         $this->callEnsureReturnsForMethods(
-            new Checker(),
+            new Checker(new SymbolTable()),
             $this->makeMethod('isValid', 'Void', mustBeBool: true)
         );
     }
@@ -285,7 +285,7 @@ class CheckerTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
         $this->callEnsureReturnsForMethods(
-            new Checker(),
+            new Checker(new SymbolTable()),
             $this->makeMethod('doAction', 'Void', mustBeVoid: true)
         );
     }
@@ -294,7 +294,7 @@ class CheckerTest extends TestCase
     {
         $this->expectException(CheckerException::class);
         $this->callEnsureReturnsForMethods(
-            new Checker(),
+            new Checker(new SymbolTable()),
             $this->makeMethod('doAction', 'Int', mustBeVoid: true)
         );
     }
@@ -303,7 +303,7 @@ class CheckerTest extends TestCase
     {
         $this->expectException(CheckerException::class);
         $this->callEnsureReturnsForMethods(
-            new Checker(),
+            new Checker(new SymbolTable()),
             $this->makeMethod('doAction', 'Void|Int', mustBeVoid: true)
         );
     }
@@ -312,7 +312,7 @@ class CheckerTest extends TestCase
     {
         $this->expectException(CheckerException::class);
         $this->callEnsureReturnsForMethods(
-            new Checker(),
+            new Checker(new SymbolTable()),
             $this->makeMethod('doAction', 'Bool', mustBeVoid: true)
         );
     }
@@ -325,7 +325,7 @@ class CheckerTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
         $this->callEnsureReturnsForMethods(
-            new Checker(),
+            new Checker(new SymbolTable()),
             $this->makeMethod('getData', 'String|Int|Bool')
         );
     }
@@ -334,7 +334,7 @@ class CheckerTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
         $this->callEnsureReturnsForMethods(
-            new Checker(),
+            new Checker(new SymbolTable()),
             $this->makeMethod('getData', 'Bool') // no mustBeBool flag
         );
     }
@@ -343,7 +343,7 @@ class CheckerTest extends TestCase
     {
         $this->expectNotToPerformAssertions();
         $this->callEnsureReturnsForMethods(
-            new Checker(),
+            new Checker(new SymbolTable()),
             $this->makeMethod('doThing', 'Void') // no mustBeVoid flag
         );
     }
@@ -354,18 +354,18 @@ class CheckerTest extends TestCase
 
     public function testCheckersFieldIsPublicAndReplaceable(): void
     {
-        $checker = new Checker();
+        $checker = new Checker(new SymbolTable());
         $checker->checkers = [];
-        $checker->check($this->makeProgram(), new SymbolTable());
+        $checker->check($this->makeProgram());
         $this->assertSame([], $checker->checkers);
     }
 
     public function testReplacingCheckersSkipsSubCheckerValidation(): void
     {
         $this->expectNotToPerformAssertions();
-        $checker           = new Checker();
+        $checker           = new Checker(new SymbolTable());
         $checker->checkers = []; // no ClassChecker → lifecycle not enforced
         $classNode = $this->makeClassNode('class'); // would normally fail lifecycle check
-        $checker->check($this->makeProgram([$classNode]), new SymbolTable());
+        $checker->check($this->makeProgram([$classNode]));
     }
 }

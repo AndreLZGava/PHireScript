@@ -6,8 +6,9 @@ namespace PHireScript\Compiler\Parser\Ast\Context\Declarations;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ArrowFunctionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Scopes\MethodScopeResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\OpeningParamsDeclarationResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ArrowFunctionOpeningParensResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\ReturnTypeResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
@@ -17,7 +18,7 @@ use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
- * @extends AbstractContext<ParamsNode>
+ * @extends AbstractContext<ArrowFunctionNode>
  */
 class ArrowFunctionDeclarationContext extends AbstractContext
 {
@@ -28,7 +29,7 @@ class ArrowFunctionDeclarationContext extends AbstractContext
         parent::__construct($node);
 
         $this->resolvers = [
-            'parameters' => new OpeningParamsDeclarationResolver(),
+            'parameters' => new ArrowFunctionOpeningParensResolver(),
             'returnType' => new ReturnTypeResolver(),
             'bodyCode' => new MethodScopeResolver(),
             new IgnoreArrowResolver(),
@@ -62,6 +63,18 @@ class ArrowFunctionDeclarationContext extends AbstractContext
             $value = $this->getChildrenValues($keyResolver);
             $this->node->$key =  $value ?: [];
             $this->children = [];
+
+            if ($key === 'bodyCode' && $this->node->parameters !== null) {
+                foreach ($this->node->parameters->params as $param) {
+                    $name = \is_string($param->name) ? $param->name : null;
+                    if ($name !== null) {
+                        $parseContext->variables->addVariable(
+                            new VariableDeclarationNode($token, $name)
+                        );
+                    }
+                }
+            }
+
             return;
         } catch (\Exception) {
             Debug::show($parseContext->tokenManager->getProcessedTokens(10));

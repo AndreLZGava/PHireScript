@@ -9,7 +9,7 @@ use ReflectionClass;
 
 class PassDiscovery
 {
-    private ClassScanner $scanner;
+    private readonly ClassScanner $scanner;
 
     public function __construct()
     {
@@ -48,7 +48,7 @@ class PassDiscovery
             $passes[] = ['order' => $pass->order, 'instance' => $instance];
         }
 
-        usort($passes, fn(array $a, array $b): int => $a['order'] <=> $b['order']);
+        usort($passes, fn (array $a, array $b): int => $a['order'] <=> $b['order']);
 
         return array_column($passes, 'instance');
     }

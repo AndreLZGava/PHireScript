@@ -30,7 +30,22 @@ class TypeCollector extends NodeVisitorAbstract
 
             foreach ($node->params as $param) {
                 if ($param->var instanceof \PhpParser\Node\Expr\Variable && is_string($param->var->name)) {
-                    $type = $param->type ? (string)$param->type : 'UNKNOWN';
+                    if ($param->type instanceof \PhpParser\Node\UnionType) {
+                        $type = implode('|', array_map(
+                            fn ($t) => $t instanceof \PhpParser\Node\Identifier
+                                || $t instanceof \PhpParser\Node\Name
+                                ? (string) $t
+                                : 'UNKNOWN',
+                            $param->type->types
+                        ));
+                    } elseif (
+                        $param->type instanceof \PhpParser\Node\Identifier
+                        || $param->type instanceof \PhpParser\Node\Name
+                    ) {
+                        $type = (string) $param->type;
+                    } else {
+                        $type = 'UNKNOWN';
+                    }
                     $this->symbolTable->setType($param->var->name, strtoupper($type));
                 }
             }

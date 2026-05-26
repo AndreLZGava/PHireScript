@@ -33,7 +33,7 @@ class CacheManager
     private const DIR_GRAPH    = 'graph';
     private const DIR_CONFIG   = 'config';
 
-    private string $cacheDir;
+    private readonly string $cacheDir;
 
     /** @var array<string, string> filePath → md5 hash */
     private array $manifest = [];

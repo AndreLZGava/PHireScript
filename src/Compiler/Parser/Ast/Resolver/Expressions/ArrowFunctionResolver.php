@@ -6,13 +6,10 @@ namespace PHireScript\Compiler\Parser\Ast\Resolver\Expressions;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Declarations\ArrowFunctionDeclarationContext;
-use PHireScript\Compiler\Parser\Ast\Context\Signatures\ParameterListContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ArrowFunctionNode;
-use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ParamsListNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 
 class ArrowFunctionResolver implements ContextTokenResolver
 {
@@ -37,7 +34,6 @@ class ArrowFunctionResolver implements ContextTokenResolver
         AbstractContext $context
     ): void {
 
-        Debug::show($parseContext->tokenManager->getTokens());
         $arrowFunction = new ArrowFunctionNode($token);
 
         $arrowFunctionContext = new ArrowFunctionDeclarationContext($arrowFunction);
@@ -45,6 +41,8 @@ class ArrowFunctionResolver implements ContextTokenResolver
         $parseContext->contextManager->enter(
             $arrowFunctionContext
         );
+
+        $arrowFunctionContext->handle($token, $parseContext);
 
         $context->addChild($arrowFunction);
     }

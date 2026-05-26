@@ -21,6 +21,7 @@ class ArrowFunctionNode extends Node implements Type
         public ?ParamsListNode $parameters = null,
         public ?ReturnTypeNode $returnType = null,
     ) {
+        parent::__construct($token);
     }
 
     public function getRawType(): string

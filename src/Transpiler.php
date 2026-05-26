@@ -20,7 +20,6 @@ class Transpiler implements TranspilerInterface
 {
     private readonly PreprocessorInterface $generator;
     private string $codeBeforeGenerator;
-    private readonly SymbolTable $symbolTable;
 
     /** @var array<string, Program> */
     private array $boundAsts = [];
@@ -30,10 +29,9 @@ class Transpiler implements TranspilerInterface
         private readonly DependencyGraphBuilder $dependencyManager,
         private readonly CompilerContext $context,
         private readonly ?CacheManager $cache = null,
-        ?SymbolTable $symbolTable = null,
+        private readonly ?SymbolTable $symbolTable = new SymbolTable(),
     ) {
         $this->generator  = new PhpFileGeneratorHandler();
-        $this->symbolTable = $symbolTable ?? new SymbolTable();
     }
 
     /**
@@ -79,7 +77,7 @@ class Transpiler implements TranspilerInterface
      */
     public function bindProgram(Program $ast, string $path): Program
     {
-        $binder   = new Binder($this->symbolTable);
+        $binder   = new Binder($this->symbolTable ?? new SymbolTable());
         $boundAst = $binder->bind($ast);
         $this->boundAsts[$path] = $boundAst;
 
@@ -101,7 +99,7 @@ class Transpiler implements TranspilerInterface
      */
     public function checkAndEmit(Program $ast): string
     {
-        $checker = new Checker($this->symbolTable);
+        $checker = new Checker($this->symbolTable ?? new SymbolTable());
         $checker->check($ast);
 
         $emitter = new Emitter($this->config, $this->dependencyManager);
