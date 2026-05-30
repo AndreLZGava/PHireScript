@@ -19,6 +19,12 @@ use PHireScript\Runtime\RuntimeClass;
 
 class ParseContext
 {
+    /** @var array<string, string> alias → FQCN for external class declarations */
+    public array $externalAliases = [];
+
+    /** @var array<string, string> varName → external alias for variables inferred as external type */
+    public array $externalVarTypes = [];
+
     public function __construct(
         public VariableManager $variables,
         public Program $program,
@@ -31,6 +37,26 @@ class ParseContext
         private mixed $previous = null,
         private ?string $currentPackage = null,
     ) {
+    }
+
+    public function registerExternalAlias(string $alias, string $fqcn): void
+    {
+        $this->externalAliases[$alias] = $fqcn;
+    }
+
+    public function isExternalAlias(string $name): bool
+    {
+        return isset($this->externalAliases[$name]);
+    }
+
+    public function registerExternalVarType(string $varName, string $externalAlias): void
+    {
+        $this->externalVarTypes[$varName] = $externalAlias;
+    }
+
+    public function isExternalVarType(string $varName): bool
+    {
+        return isset($this->externalVarTypes[$varName]);
     }
 
     public function setCurrentPackage(string $package)

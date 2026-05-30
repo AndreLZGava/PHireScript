@@ -6,6 +6,7 @@ namespace PHireScript\Compiler\Parser\Ast\Context\Expressions;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ConsumptionParams\ClosingParamsConsumptionResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ConsumptionParams\InstantiationParamsResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ConsumptionParams\OpeningParamsConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
@@ -29,6 +30,7 @@ class FunctionCallContext extends AbstractContext
     {
         parent::__construct($node);
         $this->resolvers = [
+            new InstantiationParamsResolver(),
             new OpeningParamsConsumptionResolver(),
             new ClosingParamsConsumptionResolver(),
             new EndOfLineResolver(),

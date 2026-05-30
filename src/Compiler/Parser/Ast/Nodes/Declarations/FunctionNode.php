@@ -20,6 +20,9 @@ class FunctionNode extends Node implements Type
     public self $type;
     public bool $overrideVariableFocus = false;
     public bool $generateNewVariable = false;
+    public bool $isExternalInstantiation = false;
+    public bool $isExternalMethodCall = false;
+    public string $externalMethodName = '';
     public function __construct(public Token $token)
     {
         $this->type = $this;

@@ -102,7 +102,7 @@ class Transpiler implements TranspilerInterface
         $checker = new Checker($this->symbolTable ?? new SymbolTable());
         $checker->check($ast);
 
-        $emitter = new Emitter($this->config, $this->dependencyManager);
+        $emitter = new Emitter($this->config, $this->dependencyManager, $this->symbolTable);
         $preCompiledPhpCode = $emitter->emit($ast);
 
         $this->codeBeforeGenerator = $preCompiledPhpCode;

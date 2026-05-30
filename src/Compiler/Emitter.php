@@ -57,6 +57,7 @@ use PHireScript\Compiler\Emitter\Statements\VariableReferenceAssignEmitter;
 use PHireScript\Compiler\Emitter\Expressions\StringEmitter;
 use PHireScript\Compiler\Emitter\Expressions\SuperTypeEmitter;
 use PHireScript\Compiler\Emitter\Expressions\ThisExpressionEmitter;
+use PHireScript\Compiler\Emitter\Declarations\ExternalCallEmitter;
 use PHireScript\Compiler\Emitter\Declarations\TraitEmitter;
 use PHireScript\Compiler\Emitter\Statements\VariableDeclarationEmitter;
 use PHireScript\Compiler\Emitter\Statements\VariableEmitter;
@@ -65,13 +66,17 @@ use PHireScript\Compiler\Emitter\OOP\WithEmitter;
 use PHireScript\Compiler\Emitter\Base\Type\PhpTypeResolver;
 use PHireScript\Compiler\Emitter\Base\UseRegistry;
 use PHireScript\DependencyGraphBuilder;
+use PHireScript\SymbolTable;
 
 class Emitter
 {
     private readonly EmitterDispatcher $dispatcher;
 
-    public function __construct(private array $config, private readonly DependencyGraphBuilder $dependencyManager)
-    {
+    public function __construct(
+        private array $config,
+        private readonly DependencyGraphBuilder $dependencyManager,
+        private readonly ?SymbolTable $symbolTable = null,
+    ) {
         $this->dispatcher = new EmitterDispatcher([
             new ProgramEmitter(),
             new PackageEmitter(),
@@ -89,6 +94,7 @@ class Emitter
             new MethodEmitter(),
             new ReturnTypeEmitter(),
             new MethodScopeEmitter(),
+            new ExternalCallEmitter(),
             new FunctionEmitter(),
             new WithEmitter(),
 
@@ -149,6 +155,7 @@ class Emitter
             emitter: $this->dispatcher,
             types: new PhpTypeResolver($this->config),
             dependencyManager: $this->dependencyManager,
+            symbolTable: $this->symbolTable,
         );
 
         return $this->dispatcher->emit($program, $context);

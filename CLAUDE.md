@@ -116,13 +116,13 @@ Features are classified into three tiers. When working on the compiler, respect 
 - **Range**
 - **Super Types (all)** — `Email`, `Ipv4`, `Ipv6`, `Uuid`, `Color`, `Url`, `Cron`, `Duration`, `Json`, `Mac`, `Slug`, `CardNumber`, `Cvv`, `ExpiryDate`
 - **Try / Handle / Always** — maps to PHP `try / catch / finally`
+- **`external` declarations** — `external ClassName [as Alias]` resolves static/instance/constant access via Reflection; validates member existence and accessibility; propagates return types for chained calls; sandbox cases 39, 40, 41
 
 ### Partial — syntax parses and compiles, but with known gaps
 
 - **Arrow Functions** — basic cases work; edge cases may not
 - **Getter / Setter on properties** — `<`, `>`, `<>` syntax compiles, but not all scenarios covered
 - **Collections** — `List<T>`, `Map<T>`, `Queue<T>`, `Stack<T>` — type declarations compile; full runtime behavior incomplete
-- **`external` declarations** — translates to a PHP `use` statement only; instantiating or calling anything from the external class does not work
 - **Testing / Validate blocks (`.pst`)** — compiles to `*Test.php`, but with limitations
 
 ### Sketch — syntax may exist in the parser/emitter, but the feature is not usable

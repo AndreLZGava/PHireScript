@@ -6,6 +6,8 @@ namespace PHireScript\Compiler\Parser\Ast\Context\Expressions;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableConsumptionResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalClassAccessResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalMethodCallResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ArrayLiteralResolver;
@@ -60,6 +62,9 @@ class AssignmentContext extends AbstractContext
             new PrimitiveCastingResolver(),
             new ArrayResolver(),
 
+            new ExternalClassAccessResolver(),
+            new ExternalMethodCallResolver(),
+
             new GlobalConstantResolver(),
             new NullLiteralResolver(),
             new StringLiteralResolver(),
@@ -96,9 +101,25 @@ class AssignmentContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
+
                 $this->node->right = $this->children[0] ?? null;
                 $this->node->left->value = $this->children[0] ?? null;
                 $this->node->left->type = $this->children[0] ?? null;
+
+                // When the right side is an external class access, register the left variable as external type
+                if (
+                    $resolver instanceof ExternalClassAccessResolver ||
+                    $resolver instanceof ExternalMethodCallResolver
+                ) {
+                    $focus = $parseContext->variables->getVariableOnFocus();
+                    if ($focus instanceof \PHireScript\Compiler\Parser\Ast\Nodes\Expressions\LiteralNode) {
+                        $varName = $this->node->left->name ?? null;
+                        if ($varName !== null) {
+                            $parseContext->registerExternalVarType($varName, $focus->value);
+                        }
+                    }
+                }
+
                 return null;
             }
         }

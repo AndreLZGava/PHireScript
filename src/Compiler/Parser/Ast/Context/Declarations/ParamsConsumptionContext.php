@@ -7,7 +7,11 @@ namespace PHireScript\Compiler\Parser\Ast\Context\Declarations;
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ConsumptionParams\ClosingParamsConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\CommaResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalClassAccessResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalMethodCallResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalPropertyAccessResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ArrayLiteralResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\BoolLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\StringLiteralResolver;
@@ -30,6 +34,10 @@ class ParamsConsumptionContext extends AbstractContext
     {
         parent::__construct($node);
         $this->resolvers = [
+            new ExternalClassAccessResolver(),
+            new ExternalMethodCallResolver(),
+            new ExternalPropertyAccessResolver(),
+            new DotResolver(),
             new StringLiteralResolver(),
             new NumberLiteralResolver(),
             new BoolLiteralResolver(),

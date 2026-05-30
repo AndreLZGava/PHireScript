@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace PHireScript;
 
+use PHireScript\Compiler\External\ExternalClassDescriptor;
+use PHireScript\Runtime\Exceptions\CompileException;
+
 class SymbolTable
 {
     private array $scopes = [[]];
 
     private array $functionReturns = [];
     private array $typeDefinitions = [];
+    /** @var array<string, ExternalClassDescriptor> */
+    private array $externals = [];
 
     private $functions = [];
 
@@ -77,5 +82,29 @@ class SymbolTable
     public function isFunction($name)
     {
         return isset($this->functions[$name]);
+    }
+
+    public function registerExternal(string $alias, ExternalClassDescriptor $descriptor): void
+    {
+        if (isset($this->typeDefinitions[$alias])) {
+            throw new CompileException(
+                "External class '{$descriptor->className}' conflicts with a PHireScript"
+                . " native class named '{$alias}'."
+                . " Use 'external {$descriptor->className} as Alias'.",
+                0,
+                0,
+            );
+        }
+        $this->externals[$alias] = $descriptor;
+    }
+
+    public function getExternal(string $alias): ?ExternalClassDescriptor
+    {
+        return $this->externals[$alias] ?? null;
+    }
+
+    public function isExternalClass(string $name): bool
+    {
+        return isset($this->externals[$name]);
     }
 }

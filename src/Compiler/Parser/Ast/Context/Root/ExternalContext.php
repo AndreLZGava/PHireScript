@@ -9,6 +9,8 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\CommaResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\TypeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\BackSlashResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\ClosingCurlyBracketResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Root\External\ExternalAliasResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Root\External\ExternalConstNameResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\External\GroupUseResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\IdentifierResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
@@ -21,16 +23,20 @@ use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
- * @extends AbstractContext<ParamsNode>
+ * @extends AbstractContext<ExternalNode>
  */
 class ExternalContext extends AbstractContext
 {
+    public bool $collectingAlias = false;
+
     private readonly array $resolvers;
 
     public function __construct(ExternalNode $node)
     {
         parent::__construct($node);
         $this->resolvers = [
+            new ExternalAliasResolver(),
+            new ExternalConstNameResolver(),
             new IdentifierResolver(),
             new TypeResolver(),
             new BackSlashResolver(),
@@ -61,28 +67,42 @@ class ExternalContext extends AbstractContext
     public function afterClose(Token $token, ParseContext $parseContext): void
     {
         $package = '';
+        $alias   = null;
         $namespaces = [];
         $hasGroup = false;
+
+        $seenAs = false;
         foreach ($this->children as $item) {
             if (\is_string($item)) {
-                $package .= $item;
+                if ($item === '__AS__') {
+                    $seenAs = true;
+                    continue;
+                }
+                if ($seenAs) {
+                    $alias = $item;
+                } else {
+                    $package .= $item;
+                }
                 continue;
             }
 
             if ($item instanceof GroupUseNode) {
-                foreach ($item->parts as $alias => $part) {
+                foreach ($item->parts as $itemAlias => $part) {
                     $hasGroup = true;
                     $packageNode = new NamespaceNode($token);
                     $packageNode->package = $package . $part;
-                    $packageNode->alias = \is_string($alias) ? $alias : null;
+                    $packageNode->alias = \is_string($itemAlias) ? $itemAlias : null;
                     $namespaces[] = $packageNode;
                 }
             }
         }
+
         if (!$hasGroup) {
             $packageNode = new NamespaceNode($token);
             $packageNode->namespace = $package;
+            $packageNode->alias     = $alias;
             $namespaces[] = $packageNode;
+            $parseContext->registerExternalAlias($alias ?? $package, $package);
         }
 
         $this->node->namespaces = $namespaces;

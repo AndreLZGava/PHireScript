@@ -18,8 +18,10 @@ class AssignmentEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        $left  = $ctx->emitter->emit($node->left, $ctx);
-        $right = $ctx->emitter->emit($node->right, $ctx);
+        $left               = $ctx->emitter->emit($node->left, $ctx);
+        $ctx->insideExpression = true;
+        $right              = $ctx->emitter->emit($node->right, $ctx);
+        $ctx->insideExpression = false;
         return "{$left} = {$right};";
     }
 }

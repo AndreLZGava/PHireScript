@@ -14,6 +14,8 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\InterfaceResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\TraitResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalClassAccessResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalMethodCallResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
@@ -67,6 +69,8 @@ class ProgramContext extends AbstractContext
             new AssignmentResolver(),
             new IfResolver(),
             new TryResolver(),
+            new ExternalClassAccessResolver(),
+            new ExternalMethodCallResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
 

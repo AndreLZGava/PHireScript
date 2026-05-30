@@ -6,6 +6,7 @@ namespace PHireScript\Compiler\Emitter\Base;
 
 use PHireScript\Compiler\Emitter\Base\Type\PhpTypeResolver;
 use PHireScript\DependencyGraphBuilder;
+use PHireScript\SymbolTable;
 
 class EmitContext
 {
@@ -19,6 +20,8 @@ class EmitContext
         public bool $insideClass = false,
         public bool $insideMethodSignature = false,
         public ?string $currentMethodReturnType = null,
+        public readonly ?SymbolTable $symbolTable = null,
+        public bool $insideExpression = false,
     ) {
     }
 }
