@@ -15,9 +15,11 @@ class OpeningParamsConsumptionResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
+        $prevId = $parseContext->tokenManager->getPreviousTokenBeforeCurrent();
+        $prevDot = $parseContext->tokenManager->getPreviousToken();
         return $token->isOpeningParenthesis() &&
-        $parseContext->tokenManager->getPreviousTokenBeforeCurrent()->isIdentifier() &&
-        $parseContext->tokenManager->getPreviousToken()->isDot();
+            $prevId->isIdentifier() &&
+            ($prevDot->isDot() || $prevDot->isSafeNavigation());
     }
 
     public function resolve(

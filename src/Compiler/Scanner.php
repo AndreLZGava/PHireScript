@@ -65,6 +65,7 @@ class Scanner
             'CardNumber|Cron|Cvv|Duration|ExpiryDate|Json|Mac|Slug)\b/',
         'T_CONST' => '/^[A-Z][A-Z0-9_]*\b/',
         'T_IDENTIFIER' => '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff!?]*/',
+        'T_SAFE_NAV'    => '/^\?\\./',
         'T_SYMBOL'      => '/^([{}();,:=+<>\#!?\[\]\.$*\/%|-])/',
         'T_BACKSLASH' => '/^\\\\/',
     ];

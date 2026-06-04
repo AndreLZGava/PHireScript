@@ -73,6 +73,36 @@ parameters:
 			path: src/Compiler/Binder/Declaration/ClassBodyBinder.php
 
 		-
+			message: '#^Method PHireScript\\Compiler\\Binder\\Declaration\\ExternalBinder\:\:buildConstants\(\) has parameter \$ref with generic class ReflectionClass but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Binder/Declaration/ExternalBinder.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Binder\\Declaration\\ExternalBinder\:\:buildConstructor\(\) has parameter \$ref with generic class ReflectionClass but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Binder/Declaration/ExternalBinder.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Binder\\Declaration\\ExternalBinder\:\:buildConstructor\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Compiler/Binder/Declaration/ExternalBinder.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Binder\\Declaration\\ExternalBinder\:\:buildMethods\(\) has parameter \$ref with generic class ReflectionClass but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Binder/Declaration/ExternalBinder.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Binder\\Declaration\\ExternalBinder\:\:buildProperties\(\) has parameter \$ref with generic class ReflectionClass but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Binder/Declaration/ExternalBinder.php
+
+		-
 			message: '#^Using nullsafe property access "\?\-\>children" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 1
@@ -421,6 +451,24 @@ parameters:
 			path: src/Compiler/Emitter/Declarations/ClassEmitter.php
 
 		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: src/Compiler/Emitter/Declarations/ExternalCallEmitter.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: src/Compiler/Emitter/Declarations/ExternalCallEmitter.php
+
+		-
+			message: '#^Parameter \#1 \$node of method PHireScript\\Compiler\\Emitter\\Base\\EmitterDispatcher\:\:emit\(\) expects object, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Compiler/Emitter/Declarations/ExternalCallEmitter.php
+
+		-
 			message: '#^Access to an undefined property object\:\:\$namespaces\.$#'
 			identifier: property.notFound
 			count: 1
@@ -429,11 +477,17 @@ parameters:
 		-
 			message: '#^Access to an undefined property object\:\:\$method\.$#'
 			identifier: property.notFound
-			count: 1
+			count: 3
 			path: src/Compiler/Emitter/Declarations/FunctionEmitter.php
 
 		-
 			message: '#^Access to an undefined property object\:\:\$params\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Compiler/Emitter/Declarations/FunctionEmitter.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$variableBase\.$#'
 			identifier: property.notFound
 			count: 1
 			path: src/Compiler/Emitter/Declarations/FunctionEmitter.php
@@ -567,7 +621,7 @@ parameters:
 		-
 			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, mixed given\.$#'
 			identifier: argument.type
-			count: 1
+			count: 2
 			path: src/Compiler/Emitter/Declarations/FunctionEmitter.php
 
 		-
@@ -699,7 +753,7 @@ parameters:
 		-
 			message: '#^Access to an undefined property object\:\:\$object\.$#'
 			identifier: property.notFound
-			count: 1
+			count: 3
 			path: src/Compiler/Emitter/Expressions/PropertyAccessEmitter.php
 
 		-
@@ -2107,9 +2161,21 @@ parameters:
 			path: src/Compiler/Parser/Ast/Context/Expressions/ArrayLiteralContext.php
 
 		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$tokenManager\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Context/Expressions/AssignmentContext.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$variables\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Context/Expressions/AssignmentContext.php
+
+		-
 			message: '#^Access to property \$left on an unknown class PHireScript\\Compiler\\Parser\\Ast\\Context\\Expressions\\ParamsNode\.$#'
 			identifier: class.notFound
-			count: 2
+			count: 3
 			path: src/Compiler/Parser/Ast/Context/Expressions/AssignmentContext.php
 
 		-
@@ -2121,6 +2187,12 @@ parameters:
 		-
 			message: '#^Binary operation "\." between mixed and '' is not supported…'' results in an error\.$#'
 			identifier: binaryOp.invalid
+			count: 1
+			path: src/Compiler/Parser/Ast/Context/Expressions/AssignmentContext.php
+
+		-
+			message: '#^Call to an undefined method PHireScript\\Compiler\\Parser\\ParseContext\:\:registerExternalVarType\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Compiler/Parser/Ast/Context/Expressions/AssignmentContext.php
 
@@ -2228,6 +2300,12 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$contextManager\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Context/Expressions/FunctionCallContext.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$tokenManager\.$#'
 			identifier: property.notFound
 			count: 1
 			path: src/Compiler/Parser/Ast/Context/Expressions/FunctionCallContext.php
@@ -2719,44 +2797,20 @@ parameters:
 			path: src/Compiler/Parser/Ast/Context/Root/ExternalContext.php
 
 		-
-			message: '#^Access to property \$namespaces on an unknown class PHireScript\\Compiler\\Parser\\Ast\\Context\\Root\\ParamsNode\.$#'
-			identifier: class.notFound
-			count: 2
-			path: src/Compiler/Parser/Ast/Context/Root/ExternalContext.php
-
-		-
 			message: '#^Binary operation "\." between mixed and '' is not supported…'' results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
 			path: src/Compiler/Parser/Ast/Context/Root/ExternalContext.php
 
 		-
-			message: '#^PHPDoc tag @extends has invalid type PHireScript\\Compiler\\Parser\\Ast\\Context\\Root\\ParamsNode\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Compiler/Parser/Ast/Context/Root/ExternalContext.php
-
-		-
-			message: '#^Parameter \#1 \$node of method PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext\<PHireScript\\Compiler\\Parser\\Ast\\Context\\Root\\ParamsNode\>\:\:__construct\(\) expects PHireScript\\Compiler\\Parser\\Ast\\Context\\Root\\ParamsNode, PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Declarations\\ExternalNode given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Compiler/Parser/Ast/Context/Root/ExternalContext.php
-
-		-
-			message: '#^Parameter \$node of method PHireScript\\Compiler\\Parser\\Ast\\Context\\Root\\ExternalContext\:\:__construct\(\) has invalid type PHireScript\\Compiler\\Parser\\Ast\\Context\\Root\\ParamsNode\.$#'
-			identifier: class.notFound
+			message: '#^Call to an undefined method PHireScript\\Compiler\\Parser\\ParseContext\:\:registerExternalAlias\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Compiler/Parser/Ast/Context/Root/ExternalContext.php
 
 		-
 			message: '#^Property PHireScript\\Compiler\\Parser\\Ast\\Context\\Root\\ExternalContext\:\:\$resolvers type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Parser/Ast/Context/Root/ExternalContext.php
-
-		-
-			message: '#^Type PHireScript\\Compiler\\Parser\\Ast\\Context\\Root\\ParamsNode in generic type PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext\<PHireScript\\Compiler\\Parser\\Ast\\Context\\Root\\ParamsNode\> in PHPDoc tag @extends is not subtype of template type T of PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Node of class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext\.$#'
-			identifier: generics.notSubtype
 			count: 1
 			path: src/Compiler/Parser/Ast/Context/Root/ExternalContext.php
 
@@ -4803,7 +4857,7 @@ parameters:
 		-
 			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$variables\.$#'
 			identifier: property.notFound
-			count: 1
+			count: 2
 			path: src/Compiler/Parser/Ast/Resolver/Declaration/VariableResolver.php
 
 		-
@@ -4966,6 +5020,30 @@ parameters:
 			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$contextManager\.$#'
 			identifier: property.notFound
 			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ConsumptionParams/InstantiationParamsResolver.php
+
+		-
+			message: '#^Access to property \$isExternalInstantiation on an unknown class PHireScript\\Compiler\\Parser\\Ast\\Context\\Expressions\\ParamsNode\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ConsumptionParams/InstantiationParamsResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ConsumptionParams\\InstantiationParamsResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ConsumptionParams/InstantiationParamsResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ConsumptionParams\\InstantiationParamsResolver\:\:resolve\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ConsumptionParams/InstantiationParamsResolver.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$contextManager\.$#'
+			identifier: property.notFound
+			count: 1
 			path: src/Compiler/Parser/Ast/Resolver/Expressions/ConsumptionParams/OpeningParamsConsumptionResolver.php
 
 		-
@@ -4985,6 +5063,162 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: src/Compiler/Parser/Ast/Resolver/Expressions/ConsumptionParams/OpeningParamsConsumptionResolver.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$contextManager\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalClassAccessResolver.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$tokenManager\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalClassAccessResolver.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$variables\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalClassAccessResolver.php
+
+		-
+			message: '#^Call to an undefined method PHireScript\\Compiler\\Parser\\ParseContext\:\:isExternalAlias\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalClassAccessResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ExternalClassAccessResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalClassAccessResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ExternalClassAccessResolver\:\:resolve\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalClassAccessResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ExternalClassAccessResolver\:\:resolveInstantiation\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalClassAccessResolver.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$contextManager\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalInstantiationResolver.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$variables\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalInstantiationResolver.php
+
+		-
+			message: '#^Call to an undefined method PHireScript\\Compiler\\Parser\\ParseContext\:\:isExternalAlias\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalInstantiationResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ExternalInstantiationResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalInstantiationResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ExternalInstantiationResolver\:\:resolve\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalInstantiationResolver.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$contextManager\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalMethodCallResolver.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$tokenManager\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalMethodCallResolver.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$variables\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalMethodCallResolver.php
+
+		-
+			message: '#^Call to an undefined method PHireScript\\Compiler\\Parser\\ParseContext\:\:isExternalAlias\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalMethodCallResolver.php
+
+		-
+			message: '#^Call to an undefined method PHireScript\\Compiler\\Parser\\ParseContext\:\:isExternalVarType\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalMethodCallResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ExternalMethodCallResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalMethodCallResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ExternalMethodCallResolver\:\:resolve\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalMethodCallResolver.php
+
+		-
+			message: '#^Parameter \$name of class PHireScript\\Runtime\\DefaultOverrideMethods\\BaseMethods constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalMethodCallResolver.php
+
+		-
+			message: '#^Property PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Declarations\\FunctionNode\:\:\$externalMethodName \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalMethodCallResolver.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$variables\.$#'
+			identifier: property.notFound
+			count: 3
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalPropertyAccessResolver.php
+
+		-
+			message: '#^Call to an undefined method PHireScript\\Compiler\\Parser\\ParseContext\:\:isExternalAlias\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalPropertyAccessResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ExternalPropertyAccessResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalPropertyAccessResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ExternalPropertyAccessResolver\:\:resolve\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalPropertyAccessResolver.php
+
+		-
+			message: '#^Parameter \#3 \$property of class PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Expressions\\PropertyAccessNode constructor expects PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Node\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/ExternalPropertyAccessResolver.php
 
 		-
 			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$tokenManager\.$#'
@@ -5047,6 +5281,18 @@ parameters:
 			path: src/Compiler/Parser/Ast/Resolver/Expressions/FunctionCallResolver.php
 
 		-
+			message: '#^Cannot access property \$type on mixed\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/FunctionCallResolver.php
+
+		-
+			message: '#^Cannot call method getRawType\(\) on class\-string\|object\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/FunctionCallResolver.php
+
+		-
 			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\FunctionCallResolver\:\:getNewVirtualVariable\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
@@ -5097,6 +5343,18 @@ parameters:
 		-
 			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\FunctionCallResolver\:\:resolve\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
 			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/FunctionCallResolver.php
+
+		-
+			message: '#^Parameter \#1 \$object_or_class of function method_exists expects object\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/FunctionCallResolver.php
+
+		-
+			message: '#^Parameter \#1 \$object_or_class of function property_exists expects object\|string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Compiler/Parser/Ast/Resolver/Expressions/FunctionCallResolver.php
 
@@ -5623,6 +5881,12 @@ parameters:
 			path: src/Compiler/Parser/Ast/Resolver/Expressions/Types/StackResolver.php
 
 		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$variables\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Expressions/Types/StringLiteralResolver.php
+
+		-
 			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\Types\\StringLiteralResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
@@ -5669,12 +5933,6 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: src/Compiler/Parser/Ast/Resolver/Expressions/Types/TypeResolver.php
-
-		-
-			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$tokenManager\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Compiler/Parser/Ast/Resolver/Expressions/Types/VariableReferenceResolver.php
 
 		-
 			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$variables\.$#'
@@ -5861,6 +6119,30 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: src/Compiler/Parser/Ast/Resolver/Root/DotResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Root\\External\\ExternalAliasResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Root/External/ExternalAliasResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Root\\External\\ExternalAliasResolver\:\:resolve\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Root/External/ExternalAliasResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Root\\External\\ExternalConstNameResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Root/External/ExternalConstNameResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Root\\External\\ExternalConstNameResolver\:\:resolve\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Root/External/ExternalConstNameResolver.php
 
 		-
 			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$contextManager\.$#'
@@ -6439,6 +6721,12 @@ parameters:
 			path: src/Compiler/Parser/Ast/Resolver/Statements/CommentResolver.php
 
 		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$variables\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Compiler/Parser/Ast/Resolver/Statements/DotResolver.php
+
+		-
 			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Statements\\DotResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
@@ -6629,6 +6917,30 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: src/Compiler/Parser/Ast/Resolver/Statements/ReturnResolver.php
+
+		-
+			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$variables\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Compiler/Parser/Ast/Resolver/Statements/SafeNavigationResolver.php
+
+		-
+			message: '#^Access to property \$safeNavigation on an unknown class PHireScript\\Compiler\\Parser\\Ast\\Context\\Expressions\\ParamsNode\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Compiler/Parser/Ast/Resolver/Statements/SafeNavigationResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Statements\\SafeNavigationResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Statements/SafeNavigationResolver.php
+
+		-
+			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Statements\\SafeNavigationResolver\:\:resolve\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Compiler/Parser/Ast/Resolver/Statements/SafeNavigationResolver.php
 
 		-
 			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$contextManager\.$#'

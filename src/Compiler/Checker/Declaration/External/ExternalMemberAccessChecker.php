@@ -63,7 +63,7 @@ class ExternalMemberAccessChecker extends Checker
             if (is_array($inferredType)) {
                 // Union type — validate against all types, warn if partial
                 /** @var string[] $unionTypes */
-                $unionTypes = array_filter($inferredType, 'is_string');
+                $unionTypes = array_filter($inferredType, is_string(...));
                 $this->validateUnionTypeMember($unionTypes, $property, $node, $table);
             }
         }

@@ -30,6 +30,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Root\SuperTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\SafeNavigationResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\Statements\AssignmentNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
@@ -86,6 +87,7 @@ class AssignmentContext extends AbstractContext
             new MetaTypeCastingResolver(),
 
             new DotResolver(),
+            new SafeNavigationResolver(),
             new EndOfLineResolver(),
             new CommentResolver(),
 
@@ -102,9 +104,10 @@ class AssignmentContext extends AbstractContext
                 $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
 
-                $this->node->right = $this->children[0] ?? null;
-                $this->node->left->value = $this->children[0] ?? null;
-                $this->node->left->type = $this->children[0] ?? null;
+                $lastChild = !empty($this->children) ? end($this->children) : null;
+                $this->node->right = $lastChild;
+                $this->node->left->value = $lastChild;
+                $this->node->left->type = $lastChild;
 
                 // When the right side is an external class access, register the left variable as external type
                 if (
@@ -132,6 +135,14 @@ class AssignmentContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        return $token->isEndOfLine() || $token->isComment();
+        if ($token->isEndOfLine()) {
+            $next = $parseContext->tokenManager->getNextTokenAfterCurrent();
+            // Multi-line chain: EOL followed by . or ?. continues the chain
+            if ($next->isDot() || $next->isSafeNavigation()) {
+                return false;
+            }
+            return true;
+        }
+        return $token->isComment();
     }
 }

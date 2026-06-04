@@ -45,9 +45,11 @@ class MethodConsumptionChecker extends Checker
 
     private function validateSubTypes($node, $params)
     {
-        $type = $node->variableBase?->type?->getRawType() ?? $node->variableBase?->getRawType();
-        $variableTypes = $node->variableBase?->type?->types ?? $node->variableBase->type?->type?->types ?? [];
-        $allowedKeys = $node->variableBase?->type?->keys ?? $node->variableBase?->type?->type?->keys ?? [];
+        $vb = $node->variableBase ?? null;
+        $vbType = ($vb !== null && property_exists($vb, 'type')) ? $vb->type : null;
+        $type = $vbType?->getRawType() ?? $vb?->getRawType();
+        $variableTypes = $vbType?->types ?? ($vbType?->type?->types ?? []);
+        $allowedKeys = $vbType?->keys ?? ($vbType?->type?->keys ?? []);
         $expected = $node->method->params;
         foreach ($params as $number => $param) {
             $paramRawType = $param->getRawType();

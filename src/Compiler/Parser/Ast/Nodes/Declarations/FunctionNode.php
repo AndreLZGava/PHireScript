@@ -23,6 +23,8 @@ class FunctionNode extends Node implements Type
     public bool $isExternalInstantiation = false;
     public bool $isExternalMethodCall = false;
     public string $externalMethodName = '';
+    public bool $safeNavigation = false;
+    public bool $isChainLink = false;
     public function __construct(public Token $token)
     {
         $this->type = $this;
@@ -31,6 +33,12 @@ class FunctionNode extends Node implements Type
 
     public function getRawType(): string
     {
+        if (isset($this->method) && !empty($this->method->returnOfPhpExecution)) {
+            $type = current($this->method->returnOfPhpExecution);
+            if ($type !== 'Void' && $type !== '') {
+                return $type;
+            }
+        }
         return $this->raw;
     }
 }

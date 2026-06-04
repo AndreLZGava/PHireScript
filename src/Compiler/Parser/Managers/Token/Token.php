@@ -211,6 +211,11 @@ class Token
         return $this->value === '.';
     }
 
+    public function isSafeNavigation(): bool
+    {
+        return $this->type === 'T_SAFE_NAV';
+    }
+
     public function isColon(): bool
     {
         return $this->value === ':';

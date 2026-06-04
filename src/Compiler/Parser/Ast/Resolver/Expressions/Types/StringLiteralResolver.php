@@ -29,5 +29,6 @@ class StringLiteralResolver implements ContextTokenResolver
     ): void {
         $nodeString = new StringNode($token, $token->value);
         $context->addChild($nodeString);
+        $parseContext->variables->setVirtualVariable($nodeString);
     }
 }

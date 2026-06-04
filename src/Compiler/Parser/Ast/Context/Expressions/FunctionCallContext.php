@@ -11,6 +11,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ConsumptionParams\Openi
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\SafeNavigationResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\FunctionNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
@@ -35,6 +36,7 @@ class FunctionCallContext extends AbstractContext
             new ClosingParamsConsumptionResolver(),
             new EndOfLineResolver(),
             new DotResolver(),
+            new SafeNavigationResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
         ];
@@ -65,7 +67,11 @@ class FunctionCallContext extends AbstractContext
     public function afterClose(Token $token, ParseContext $parseContext): void
     {
         if ($token->isEndOfLine()) {
-            $parseContext->contextManager->exit();
+            $next = $parseContext->tokenManager->getNextTokenAfterCurrent();
+            // Multi-line chain: do NOT exit AssignmentContext if next token is . or ?.
+            if (!$next->isDot() && !$next->isSafeNavigation()) {
+                $parseContext->contextManager->exit();
+            }
         }
     }
 
@@ -76,6 +82,6 @@ class FunctionCallContext extends AbstractContext
          * .myAnotherFunction().
          * myNewMethod()
          */
-        return $token->isDot() || $token->isEndOfLine();
+        return $token->isDot() || $token->isSafeNavigation() || $token->isEndOfLine();
     }
 }

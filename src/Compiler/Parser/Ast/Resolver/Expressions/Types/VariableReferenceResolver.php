@@ -22,8 +22,7 @@ class VariableReferenceResolver implements ContextTokenResolver
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
         return $token->isIdentifier() &&
-            $parseContext->variables->getVariable($token->value) &&
-            $parseContext->tokenManager->getNextTokenAfterCurrent()->value !== '.';
+            $parseContext->variables->getVariable($token->value);
     }
 
     public function resolve(

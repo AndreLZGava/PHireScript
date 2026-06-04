@@ -10,11 +10,11 @@ use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 
-class DotResolver implements ContextTokenResolver
+class SafeNavigationResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->isDot();
+        return $token->isSafeNavigation();
     }
 
     public function resolve(
@@ -23,9 +23,10 @@ class DotResolver implements ContextTokenResolver
         AbstractContext $context
     ): void {
         // When inside a FunctionCallContext, the new focus is the FunctionNode itself
-        // (not end(children) which would be a param value)
         if ($context instanceof FunctionCallContext) {
-            $parseContext->variables->setVirtualVariable($context->node);
+            $node = $context->node;
+            $node->safeNavigation = true;
+            $parseContext->variables->setVirtualVariable($node);
             return;
         }
 

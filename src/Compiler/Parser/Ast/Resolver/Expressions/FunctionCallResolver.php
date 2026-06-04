@@ -11,6 +11,8 @@ use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\BoolNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\FunctionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\LiteralNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\NullNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\NumberNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\ObjectLiteralNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\StringNode;
@@ -26,15 +28,33 @@ use PHireScript\Runtime\Exceptions\CompileException;
 class FunctionCallResolver implements ContextTokenResolver
 {
     private bool $assignmentContext = false;
+
+    private function getFocusRawType(mixed $focus): ?string
+    {
+        if ($focus === null) {
+            return null;
+        }
+        // Try ->type->getRawType() first (VariableDeclarationNode, VariableReferenceNode)
+        if (property_exists($focus, 'type') && $focus->type !== null && method_exists($focus->type, 'getRawType')) {
+            return $focus->type->getRawType();
+        }
+        // Fall back to direct getRawType() (StringNode, NumberNode, FunctionNode, etc.)
+        if (method_exists($focus, 'getRawType')) {
+            return $focus->getRawType();
+        }
+        return null;
+    }
+
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
         try {
+            $focus = $parseContext->variables->getVariableOnFocus();
             return $token->isIdentifier() &&
                 $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningParenthesis() &&
                 (
                     $parseContext->symbolTable->getFunctionFromLastExecution($token->value) ||
                     $parseContext->symbolTable->from(
-                        $parseContext->variables->getVariableOnFocus()?->type?->getRawType()
+                        $this->getFocusRawType($focus)
                     )->getFunction($token->value)
                 );
         } catch (\Exception) {
@@ -48,12 +68,13 @@ class FunctionCallResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
-        $variableType = $parseContext->variables->getVariableOnFocus()?->type?->getRawType();
+        $focus = $parseContext->variables->getVariableOnFocus();
+        $variableType = $this->getFocusRawType($focus);
         $functionDefinition = $parseContext->symbolTable->from(
             $variableType
         )->getFunction($token->value);
 
-        $onFocus = $parseContext->variables->getVariableOnFocus();
+        $onFocus = $focus;
 
         if (empty($functionDefinition)) {
             $this->assignmentContext = $context->assignmentContext ?: false;
@@ -82,8 +103,10 @@ class FunctionCallResolver implements ContextTokenResolver
         $function->method = $functionDefinition;
         $function->variableBase = $onFocus;
 
+        $function->isChainLink = $onFocus instanceof FunctionNode;
+
         $this->overrideVariableOnFocus($function, $functionDefinition, $token);
-        //$parseContext->variables->setVirtualVariable($function);
+        $parseContext->variables->setVirtualVariable($function);
 
         $parseContext->contextManager->enter(
             new FunctionCallContext($function)
@@ -104,8 +127,18 @@ class FunctionCallResolver implements ContextTokenResolver
             if (property_exists($newVariable, 'types')) {
                 $newVariable->types = $function->method->subTypes;
             }
-            $function->variableBase->value = $newVariable;
-            $function->variableBase->type = $newVariable;
+            // Only update value/type on VariableDeclarationNode (left side of assignment)
+            // FunctionNode manages its own return type via getRawType(), so skip it
+            $isVarDecl = $function->variableBase
+                instanceof \PHireScript\Compiler\Parser\Ast\Nodes\Statements\VariableDeclarationNode;
+            if ($isVarDecl) {
+                $function->variableBase->value = $newVariable;
+                $function->variableBase->type = $newVariable;
+            } elseif (!($function->variableBase instanceof FunctionNode)) {
+                if (property_exists($function->variableBase, 'type')) {
+                    $function->variableBase->type = $newVariable;
+                }
+            }
         }
     }
 
@@ -114,12 +147,14 @@ class FunctionCallResolver implements ContextTokenResolver
         return match (true) {
             $value === 'Array'  => new ArrayLiteralNode($token),
             $value === 'String' => new StringNode($token, $value),
-
             $value === 'Int', $value === 'Float' => new NumberNode($token, floatval($value)),
-
             $value === 'Object' => new ObjectLiteralNode($token, $value),
             $value === 'Bool'   => new BoolNode($token, boolval($value)),
-            default => throw new CompileException('Type not supported: ' . $value, $token->line, $token->column),
+            $value === 'Null'   => new NullNode($token),
+            $value === 'Void'   => new NullNode($token),
+            $value === 'Mixed'  => new LiteralNode($token, null, 'Mixed'),
+            // SuperTypes and custom types — use LiteralNode with the raw type name
+            default => new LiteralNode($token, null, $value),
         };
     }
 }

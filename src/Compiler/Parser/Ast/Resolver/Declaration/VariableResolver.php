@@ -27,9 +27,12 @@ class VariableResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
+        $existing = $parseContext->variables->getVariable($token->value);
+
         $variable = new VariableDeclarationNode(
             token: $token,
             name: $token->value,
+            type: $existing?->type,
         );
 
         $parseContext->definePrevious($variable);

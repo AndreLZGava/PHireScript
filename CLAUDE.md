@@ -117,6 +117,7 @@ Features are classified into three tiers. When working on the compiler, respect 
 - **Super Types (all)** — `Email`, `Ipv4`, `Ipv6`, `Uuid`, `Color`, `Url`, `Cron`, `Duration`, `Json`, `Mac`, `Slug`, `CardNumber`, `Cvv`, `ExpiryDate`
 - **Try / Handle / Always** — maps to PHP `try / catch / finally`
 - **`external` declarations** — `external ClassName [as Alias]` resolves static/instance/constant access via Reflection; validates member existence and accessibility; propagates return types for chained calls; sandbox cases 39, 40, 41
+- **Method Chaining** — `.` and `?.` (safe navigation) on variables and literals; inline nested PHP emission; multi-line chains; cross-type chains (String→Array→Int); `ChainConsistencyChecker` enforces type continuity, void termination, nullable guard, Mixed guard; sandbox cases 42–49
 
 ### Partial — syntax parses and compiles, but with known gaps
 

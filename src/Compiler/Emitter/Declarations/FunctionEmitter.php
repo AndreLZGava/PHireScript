@@ -21,8 +21,22 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        $code = $this->overrideVariable($node, $ctx);
+        $insideExpression = $ctx->insideExpression;
+
+        // Safe navigation: variableBase has safeNavigation=true
+        $variableBase = $node->variableBase ?? null;
+        $isSafeNav = $variableBase instanceof FunctionNode && $variableBase->safeNavigation;
+
+        if ($isSafeNav) {
+            return $this->emitSafeNavigation($node, $ctx, $insideExpression);
+        }
+
+        $code = $insideExpression ? '' : $this->overrideVariable($node, $ctx);
+
+        $ctx->insideExpression = true;
         $code .= $this->overrideSelf($node, $ctx);
+        $ctx->insideExpression = $insideExpression;
+
         $normalized = $this->normalizeParams(
             $node->params->params,
             $node->method->params,
@@ -30,8 +44,49 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
             $ctx
         );
         $code = $this->overrideParams($normalized);
-        $code .= ";\n";
+
+        if (!$insideExpression) {
+            $code .= ";\n";
+        }
+
         return $code;
+    }
+
+    private function emitSafeNavigation(object $node, EmitContext $ctx, bool $insideExpression): string
+    {
+        static $chainCounter = 0;
+        $tmpVar = '$__chain_' . $chainCounter++;
+
+        // Emit the nullable variableBase (e.g. between()) into a temp var
+        $ctx->insideExpression = true;
+        $nullableExpr = $ctx->emitter->emit($node->variableBase, $ctx);
+        $ctx->insideExpression = $insideExpression;
+
+        // Now emit the current method using the temp var as @self
+        $method = $node->method->phpCodeForConversion;
+        if (\is_array($method)) {
+            $lines = [];
+            foreach ($method as $line) {
+                $lines[] = \str_replace('@self', $tmpVar, $line);
+            }
+            $selfCode = $this->wrapAsIIFE($lines, $tmpVar);
+        } else {
+            $selfCode = \str_replace('@self', $tmpVar, $method);
+        }
+
+        $normalized = $this->normalizeParams(
+            $node->params->params,
+            $node->method->params,
+            $selfCode,
+            $ctx
+        );
+        $currentExpr = $this->overrideParams($normalized);
+
+        if ($insideExpression) {
+            return "({$tmpVar} = {$nullableExpr}) !== null ? {$currentExpr} : null";
+        }
+
+        return "{$tmpVar} = {$nullableExpr};\n{$tmpVar} !== null ? {$currentExpr} : null;\n";
     }
 
     private function overrideVariable($node, $ctx)
@@ -130,7 +185,7 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
     private function processNamedParams($paramName, $paramValue, $originalCode)
     {
         if (\gettype($paramName) !== 'integer') {
-            return \str_replace($paramName, $paramValue, $originalCode);
+            return \str_replace($paramName, (string) $paramValue, $originalCode);
         }
         return '';
     }
