@@ -11,6 +11,8 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ComparisonExpressionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisPropertyAccessResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\TypeResolver as TypesTypeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\ClosingCurlyBracketResolver as RootClosingCurlyBracketResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\MetaTypeCastingResolver;
@@ -43,7 +45,9 @@ class ElseScopeContext extends AbstractContext
             new OpeningElseScopeResolver(),
             new CommentResolver(),
             new EndOfLineResolver(),
+            new ThisResolver(),
             new DotResolver(),
+            new ThisPropertyAccessResolver(),
             new VariableResolver(),
             new VariableConsumptionResolver(),
             new AssignmentResolver(),

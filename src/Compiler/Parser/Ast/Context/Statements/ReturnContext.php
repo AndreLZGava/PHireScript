@@ -8,6 +8,8 @@ use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisPropertyAccessResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ArrayLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ArrayResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\BoolLiteralResolver;
@@ -37,7 +39,6 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ComparisonExpressionRes
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\IdentifierResolver;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
@@ -69,6 +70,8 @@ class ReturnContext extends AbstractContext
             new VariableReferenceResolver(),
             new ComparisonExpressionResolver(),
 
+            new ThisResolver(),
+            new ThisPropertyAccessResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
 

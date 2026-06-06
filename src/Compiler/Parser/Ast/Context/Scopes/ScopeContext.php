@@ -10,6 +10,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\ParseContext;
 
 /**
+ * this is sketch, verify other files, maybe this is not necessary anymore, but if you implement it remove this doc line
  * @extends AbstractContext<ParamsNode>
  */
 class ScopeContext extends AbstractContext

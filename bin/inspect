@@ -1,0 +1,355 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use PHireScript\Compiler\Binder;
+use PHireScript\Compiler\Checker;
+use PHireScript\Compiler\Emitter;
+use PHireScript\Compiler\Parser;
+use PHireScript\Compiler\Processors\PhpFileGeneratorHandler;
+use PHireScript\Compiler\Scanner;
+use PHireScript\Compiler\Validator;
+use PHireScript\Core\CompileMode;
+use PHireScript\Core\CompilerContext;
+use PHireScript\DependencyGraphBuilder;
+use PHireScript\SymbolTable;
+
+// ─── arg parsing ────────────────────────────────────────────────────────────
+
+$file      = null;
+$phase     = null;    // tokens | parse | bind | emit | processed  (null = all)
+$json      = false;
+$processed = false;   // shorthand for --phase=processed
+
+foreach (array_slice($argv, 1) as $arg) {
+    if (str_starts_with($arg, '--phase=')) {
+        $phase = substr($arg, strlen('--phase='));
+    } elseif ($arg === '--json') {
+        $json = true;
+    } elseif ($arg === '--processed') {
+        $processed = true;
+    } elseif ($file === null) {
+        $file = $arg;
+    }
+}
+
+if ($processed) {
+    $phase = 'processed';
+}
+
+if ($file === null || !file_exists($file)) {
+    fwrite(STDERR, "Usage: php bin/inspect <file.ps> [--phase=tokens|parse|bind|emit|processed] [--processed] [--json]\n");
+    fwrite(STDERR, "  --processed   Show all tokens after parse with the resolver class that handled each one\n");
+    exit(1);
+}
+
+$validPhases = ['tokens', 'parse', 'bind', 'emit', 'processed'];
+if ($phase !== null && !in_array($phase, $validPhases, true)) {
+    fwrite(STDERR, "Unknown phase '{$phase}'. Valid values: " . implode(', ', $validPhases) . "\n");
+    exit(1);
+}
+
+// ─── minimal config (no PHireScript.json dependency) ────────────────────────
+
+$config = [
+    'dev'       => true,
+    'namespace' => 'App',
+    'currency'  => 'USD',
+    'resolver'  => 'laravel',
+    'paths'     => ['source' => '', 'dist' => '', 'test' => ''],
+];
+
+$context          = new CompilerContext(CompileMode::DEBUG, inMemory: true);
+$dependencyGraph  = new DependencyGraphBuilder();
+$symbolTable      = new SymbolTable();
+$code             = (string) file_get_contents($file);
+$realPath         = (string) realpath($file);
+
+// ─── helpers ────────────────────────────────────────────────────────────────
+
+function sectionHeader(string $title, bool $json): void
+{
+    if ($json) {
+        return;
+    }
+    $line = str_repeat('─', 60);
+    echo "\n\033[1;34m=== {$title} ===\033[0m\n{$line}\n";
+}
+
+function nodeToArray(mixed $node, int $depth = 0): mixed
+{
+    if ($depth > 12) {
+        return '(max depth)';
+    }
+
+    if (is_null($node) || is_scalar($node) || is_bool($node)) {
+        return $node;
+    }
+
+    if (is_array($node)) {
+        $result = [];
+        foreach ($node as $k => $v) {
+            $result[$k] = nodeToArray($v, $depth + 1);
+        }
+        return $result;
+    }
+
+    if (is_object($node)) {
+        $class  = (new \ReflectionClass($node))->getShortName();
+        $result = ['_type' => $class];
+
+        foreach ((array) $node as $rawKey => $value) {
+            // strip visibility prefix (\0ClassName\0prop → prop)
+            $key = preg_replace('/^\x00[^\x00]*\x00/', '', $rawKey) ?? $rawKey;
+            if (in_array($key, ['resolvers', 'binders'], true)) {
+                continue; // skip internal registries
+            }
+            $result[$key] = nodeToArray($value, $depth + 1);
+        }
+
+        return $result;
+    }
+
+    return (string) $node;
+}
+
+function printNode(mixed $node, int $indent = 0): void
+{
+    $pad = str_repeat('  ', $indent);
+
+    if (is_null($node)) {
+        echo "{$pad}\033[0;90mnull\033[0m\n";
+        return;
+    }
+
+    if (is_bool($node)) {
+        echo "{$pad}\033[0;36m" . ($node ? 'true' : 'false') . "\033[0m\n";
+        return;
+    }
+
+    if (is_scalar($node)) {
+        echo "{$pad}\033[0;32m{$node}\033[0m\n";
+        return;
+    }
+
+    if (is_array($node)) {
+        if (isset($node['_type'])) {
+            $type = $node['_type'];
+            echo "{$pad}\033[1;33m{$type}\033[0m\n";
+            foreach ($node as $k => $v) {
+                if ($k === '_type') {
+                    continue;
+                }
+                echo "{$pad}  \033[0;37m{$k}\033[0m: ";
+                if (is_array($v) || is_object($v)) {
+                    echo "\n";
+                    printNode($v, $indent + 2);
+                } else {
+                    echo "\033[0;32m" . var_export($v, true) . "\033[0m\n";
+                }
+            }
+        } else {
+            foreach ($node as $k => $v) {
+                echo "{$pad}[\033[0;90m{$k}\033[0m] ";
+                if (is_array($v) || is_object($v)) {
+                    echo "\n";
+                    printNode($v, $indent + 1);
+                } else {
+                    echo "\033[0;32m" . var_export($v, true) . "\033[0m\n";
+                }
+            }
+        }
+        return;
+    }
+}
+
+$output = [];
+
+// ─── phase: tokens ──────────────────────────────────────────────────────────
+
+$showAll        = $phase === null;
+$showTokens     = $showAll || $phase === 'tokens';
+$showParse      = $showAll || $phase === 'parse';
+$showBind       = $showAll || $phase === 'bind';
+$showEmit       = $showAll || $phase === 'emit';
+$showProcessed  = $phase === 'processed';
+
+$scanner = new Scanner($code, $realPath);
+$tokens  = $scanner->tokenize();
+
+if ($showTokens) {
+    sectionHeader('TOKENS', $json);
+
+    if ($json) {
+        $tokenData = array_map(function (mixed $t): array {
+            $arr = (array) $t;
+            $clean = [];
+            foreach ($arr as $k => $v) {
+                $key = preg_replace('/^\x00[^\x00]*\x00/', '', $k) ?? $k;
+                $clean[$key] = $v;
+            }
+            return $clean;
+        }, $tokens);
+        $output['tokens'] = $tokenData;
+    } else {
+        foreach ($tokens as $t) {
+            $arr   = (array) $t;
+            $clean = [];
+            foreach ($arr as $k => $v) {
+                $key = preg_replace('/^\x00[^\x00]*\x00/', '', $k) ?? $k;
+                $clean[$key] = $v;
+            }
+            $type  = $clean['type']  ?? '?';
+            $value = $clean['value'] ?? '';
+            $line  = $clean['line']  ?? '';
+            $col   = $clean['column'] ?? '';
+            printf(
+                "\033[0;36m%-30s\033[0m \033[0;32m%-30s\033[0m L%s:%s\n",
+                $type,
+                is_string($value) ? "'{$value}'" : $value,
+                $line,
+                $col,
+            );
+        }
+    }
+}
+
+if (!$showParse && !$showBind && !$showEmit && !$showProcessed) {
+    if ($json) {
+        echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n";
+    }
+    exit(0);
+}
+
+// ─── phase: parse ───────────────────────────────────────────────────────────
+
+$validator = new Validator();
+/** @var array<\PHireScript\Compiler\Parser\Managers\Token\Token> $typedTokens */
+$typedTokens = $tokens;
+$validator->validate($typedTokens);
+
+$parser = new Parser($config, $dependencyGraph, $context);
+$ast    = $parser->parse($tokens, $realPath);
+
+// ─── phase: processed ───────────────────────────────────────────────────────
+// Shows every token after parse, annotated with the resolver class that handled it.
+// processedBy === null means the token was consumed implicitly (EOL, whitespace, delimiters).
+
+if ($showProcessed) {
+    sectionHeader('PROCESSED TOKENS (after parse)', $json);
+
+    $tokenData = [];
+    foreach ($tokens as $t) {
+        $arr   = (array) $t;
+        $clean = [];
+        foreach ($arr as $k => $v) {
+            $key = preg_replace('/^\x00[^\x00]*\x00/', '', $k) ?? $k;
+            $clean[$key] = $v;
+        }
+
+        $type        = (string) ($clean['type']        ?? '?');
+        $value       = $clean['value']       ?? '';
+        $line        = (string) ($clean['line']         ?? '');
+        $col         = (string) ($clean['column']       ?? '');
+        $processedBy = $clean['processedBy'] ?? null;
+
+        if ($json) {
+            $tokenData[] = [
+                'type'        => $type,
+                'value'       => $value,
+                'line'        => $line,
+                'column'      => $col,
+                'processedBy' => $processedBy,
+            ];
+        } else {
+            $resolverShort = $processedBy !== null
+                ? basename(str_replace('\\', '/', $processedBy))
+                : "\033[0;90m(implicit)\033[0m";
+
+            $statusColor = $processedBy !== null ? "\033[0;32m" : "\033[0;90m";
+
+            printf(
+                "\033[0;36m%-28s\033[0m %-32s L%-6s %s%s\033[0m\n",
+                $type,
+                is_string($value) ? "'{$value}'" : $value,
+                "{$line}:{$col}",
+                $statusColor,
+                $resolverShort,
+            );
+        }
+    }
+
+    if ($json) {
+        $output['processed'] = $tokenData;
+        echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n";
+    }
+    exit(0);
+}
+
+if ($showParse) {
+    sectionHeader('AST (after parse)', $json);
+
+    $astArray = nodeToArray($ast);
+
+    if ($json) {
+        $output['parse'] = $astArray;
+    } else {
+        printNode($astArray);
+    }
+}
+
+if (!$showBind && !$showEmit) {
+    if ($json) {
+        echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n";
+    }
+    exit(0);
+}
+
+// ─── phase: bind ────────────────────────────────────────────────────────────
+
+$binder  = new Binder($symbolTable);
+$boundAst = $binder->bind($ast);
+
+if ($showBind) {
+    sectionHeader('AST (after bind)', $json);
+
+    $boundArray = nodeToArray($boundAst);
+
+    if ($json) {
+        $output['bind'] = $boundArray;
+    } else {
+        printNode($boundArray);
+    }
+}
+
+if (!$showEmit) {
+    if ($json) {
+        echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n";
+    }
+    exit(0);
+}
+
+// ─── phase: emit ────────────────────────────────────────────────────────────
+
+sectionHeader('EMITTED PHP', $json);
+
+$checker = new Checker($symbolTable);
+$checker->check($boundAst);
+
+$emitter        = new Emitter($config, $dependencyGraph, $symbolTable);
+$prePhp         = $emitter->emit($boundAst);
+$generator      = new PhpFileGeneratorHandler();
+$finalPhp       = $generator->process($prePhp);
+
+if ($json) {
+    $output['emit'] = ['pre_php' => $prePhp, 'final_php' => $finalPhp];
+    echo json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n";
+} else {
+    echo "\033[0;90m--- pre-generator ---\033[0m\n";
+    echo $prePhp . "\n";
+    echo "\033[0;90m--- final PHP ---\033[0m\n";
+    echo $finalPhp . "\n";
+}

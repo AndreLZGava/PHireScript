@@ -10,6 +10,8 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalClassAccessReso
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalMethodCallResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisPropertyAccessResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ArrayLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ArrayResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\BoolLiteralResolver;
@@ -32,6 +34,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\SafeNavigationResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\PropertyAccessNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Statements\AssignmentNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
@@ -74,6 +77,8 @@ class AssignmentContext extends AbstractContext
             new BoolLiteralResolver(),
             new ObjectLiteralResolver(),
 
+            new ThisResolver(),
+            new ThisPropertyAccessResolver(),
             new VariableReferenceResolver(),
             new ComparisonExpressionResolver(),
 
@@ -106,8 +111,15 @@ class AssignmentContext extends AbstractContext
 
                 $lastChild = !empty($this->children) ? end($this->children) : null;
                 $this->node->right = $lastChild;
-                $this->node->left->value = $lastChild;
-                $this->node->left->type = $lastChild;
+                if (property_exists($this->node->left, 'value')) {
+                    $this->node->left->value = $lastChild;
+                }
+                if (
+                    property_exists($this->node->left, 'type') &&
+                    !($this->node->left instanceof PropertyAccessNode)
+                ) {
+                    $this->node->left->type = $lastChild;
+                }
 
                 // When the right side is an external class access, register the left variable as external type
                 if (

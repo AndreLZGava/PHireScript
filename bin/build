@@ -6,16 +6,26 @@ require __DIR__ . '/../vendor/autoload.php';
 use PHireScript\Compiler;
 use PHireScript\Core\CompileMode;
 use PHireScript\Core\CompilerContext;
-$sourceDir = null;
-$distDir = null;
 
-if ($argc > 3) {
-    $sourceDir = \rtrim($argv[1], '/');
-    $distDir = \rtrim($argv[2], '/');
+$sourceDir = null;
+$distDir   = null;
+$noCache   = false;
+
+$positional = [];
+foreach (array_slice($argv, 1) as $arg) {
+    if ($arg === '--no-cache') {
+        $noCache = true;
+    } else {
+        $positional[] = $arg;
+    }
 }
 
+if (count($positional) >= 2) {
+    $sourceDir = rtrim($positional[0], '/');
+    $distDir   = rtrim($positional[1], '/');
+}
 
-$context = new CompilerContext(CompileMode::BUILD);
+$context = new CompilerContext(CompileMode::BUILD, clean: $noCache);
 
 $compiler = new Compiler($context);
 $compiler->compile($sourceDir, $distDir);

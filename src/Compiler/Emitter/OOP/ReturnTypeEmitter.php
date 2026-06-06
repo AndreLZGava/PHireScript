@@ -9,7 +9,6 @@ use Exception;
 use PHireScript\Compiler\Emitter\Base\EmitContext;
 use PHireScript\Compiler\Emitter\Base\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ReturnTypeNode;
-use PHireScript\Helper\Debug\Debug;
 
 class ReturnTypeEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
@@ -23,6 +22,10 @@ class ReturnTypeEmitter extends NodeEmitterAbstract implements NodeEmitter
         $code = ': ';
         $types = [];
         foreach ($node->types as $type) {
+            if ($type === 'Self') {
+                $types[] = 'static';
+                continue;
+            }
             $types[] = \mb_strtolower($type);
         }
 

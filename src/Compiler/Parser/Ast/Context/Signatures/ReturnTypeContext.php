@@ -10,10 +10,10 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ReturnTypeNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\IgnoreArrowResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\SelfReturnTypeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\PipeResolver;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
@@ -29,6 +29,7 @@ class ReturnTypeContext extends AbstractContext
         parent::__construct($node);
 
         $this->resolvers = [
+            new SelfReturnTypeResolver(),
             new TypeResolver(),
             new EndOfLineResolver(),
             new PipeResolver(),

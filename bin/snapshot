@@ -7,15 +7,23 @@ use PHireScript\Core\CompileMode;
 use PHireScript\Core\CompilerContext;
 
 $sourceDir = null;
-$distDir = null;
+$distDir   = null;
+$file      = '';
 
-if ($argc > 3) {
+if ($argc === 2) {
+    $file = $argv[1];
+
+    if (!file_exists($file)) {
+        die("File not found: $file\n");
+    }
+
+    $sourceDir = dirname($file) . '/';
+} elseif ($argc === 3) {
     $sourceDir = \rtrim($argv[1], '/');
-    $distDir = \rtrim($argv[2], '/');
+    $distDir   = \rtrim($argv[2], '/');
 }
 
-
-$context = new CompilerContext(CompileMode::SNAPSHOT);
+$context = new CompilerContext(CompileMode::SNAPSHOT, file: $file);
 
 $compiler = new Compiler($context);
 $compiler->compile($sourceDir, $distDir);

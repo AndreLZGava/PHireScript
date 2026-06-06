@@ -370,6 +370,91 @@ class CacheManager
     }
 
     // =========================================================================
+    //  Config file staleness
+    // =========================================================================
+
+    /**
+     * Returns true when the file was previously recorded in the manifest AND
+     * its content has changed since then.
+     *
+     * Returns false when the file is not yet in the manifest (fresh cache —
+     * nothing to invalidate) or when it is unchanged.
+     */
+    public function hasChangedSinceLastBuild(string $filePath): bool
+    {
+        $realPath = $this->normalizePath($filePath);
+
+        if (!isset($this->manifest[$realPath])) {
+            return false;
+        }
+
+        return $this->manifest[$realPath] !== $this->hashFile($realPath);
+    }
+
+    // =========================================================================
+    //  Compiler source staleness
+    // =========================================================================
+
+    /**
+     * Returns true when any PHP file inside the compiler source directory is
+     * newer than the last recorded compiler timestamp.
+     * When true the caller should flush() the cache before compiling.
+     */
+    public function isCompilerStale(string $compilerSrcDir): bool
+    {
+        $stampFile = $this->path(self::DIR_CONFIG, 'compiler_mtime');
+
+        $lastStamp = 0;
+        if (file_exists($stampFile)) {
+            $raw = file_get_contents($stampFile);
+            $lastStamp = $raw !== false ? (int) $raw : 0;
+        }
+
+        $latestMtime = $this->latestMtime($compilerSrcDir);
+
+        return $latestMtime > $lastStamp;
+    }
+
+    /**
+     * Record the current latest mtime of the compiler source directory.
+     * Call after a successful build so subsequent builds know the baseline.
+     */
+    public function touchCompilerTimestamp(string $compilerSrcDir): void
+    {
+        $stampFile = $this->path(self::DIR_CONFIG, 'compiler_mtime');
+        file_put_contents($stampFile, (string) $this->latestMtime($compilerSrcDir));
+    }
+
+    /**
+     * Walk a directory recursively and return the highest mtime found.
+     */
+    private function latestMtime(string $dir): int
+    {
+        $realDir = realpath($dir);
+
+        if ($realDir === false || !is_dir($realDir)) {
+            return 0;
+        }
+
+        $latest = 0;
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($realDir, \RecursiveDirectoryIterator::SKIP_DOTS),
+        );
+
+        foreach ($iterator as $file) {
+            /** @var \SplFileInfo $file */
+            if ($file->isFile() && $file->getExtension() === 'php') {
+                $mtime = $file->getMTime();
+                if ($mtime > $latest) {
+                    $latest = $mtime;
+                }
+            }
+        }
+
+        return $latest;
+    }
+
+    // =========================================================================
     //  Lifecycle
     // =========================================================================
 

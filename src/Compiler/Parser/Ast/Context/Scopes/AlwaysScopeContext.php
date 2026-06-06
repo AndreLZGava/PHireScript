@@ -10,6 +10,8 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ComparisonExpressionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisPropertyAccessResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
@@ -41,7 +43,9 @@ class AlwaysScopeContext extends AbstractContext
         $this->resolvers = [
             new CommentResolver(),
             new EndOfLineResolver(),
+            new ThisResolver(),
             new DotResolver(),
+            new ThisPropertyAccessResolver(),
             new VariableResolver(),
             new VariableConsumptionResolver(),
             new AssignmentResolver(),

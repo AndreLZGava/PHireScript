@@ -93,6 +93,23 @@ class Debug
         echo "</pre>";
     }
 
+    /**
+     * Write a debug value to /tmp/phirescript_debug.log, bypassing the output buffer.
+     * Safe to call from any point in the compiler pipeline (Resolvers, Contexts, Emitters).
+     */
+    public static function dump(mixed $value, string $label = ''): void
+    {
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
+        $file = basename($backtrace[0]['file'] ?? 'unknown');
+        $line = $backtrace[0]['line'] ?? 0;
+
+        $formatted = self::formatValue($value);
+        $prefix    = $label !== '' ? "[{$label}] " : '';
+        $entry     = "[{$file}:{$line}] {$prefix}{$formatted}\n";
+
+        file_put_contents('/tmp/phirescript_debug.log', $entry, FILE_APPEND);
+    }
+
     public static function display(...$args): void
     {
         self::$callCount++;

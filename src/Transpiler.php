@@ -45,6 +45,7 @@ class Transpiler implements TranspilerInterface
         if ($this->cache !== null) {
             $cached = $this->cache->getProgram($path);
             if ($cached !== null) {
+                $this->cacheBanner($path, 'ast cached');
                 return $cached;
             }
         }
@@ -136,6 +137,20 @@ class Transpiler implements TranspilerInterface
     }
 
     /**
+     * Emit a [CACHE HIT] notice to STDERR when dev mode is active.
+     * Uses STDERR so the message bypasses any output buffer in the orchestrator.
+     */
+    private function cacheBanner(string $path, string $detail): void
+    {
+        if (!($this->config['dev'] ?? false)) {
+            return;
+        }
+
+        $short = basename($path);
+        fwrite(STDERR, "\033[0;90m[CACHE HIT] {$short} → {$detail}\033[0m\n");
+    }
+
+    /**
      * Resolve tokens from cache or by scanning the source file.
      *
      * @return array<int, mixed>
@@ -146,6 +161,7 @@ class Transpiler implements TranspilerInterface
             $cached = $this->cache->getTokens($path);
 
             if ($cached !== null) {
+                $this->cacheBanner($path, 'tokens cached');
                 return $cached;
             }
         }

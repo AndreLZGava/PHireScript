@@ -28,6 +28,20 @@ class Compiler
     public function __construct(private readonly CompilerContext $context)
     {
         $this->cache = new CacheManager(getcwd() ?: '.');
+
+        if ($context->clean) {
+            $this->cache->flush();
+        } else {
+            $compilerSrc = __DIR__ . '/';
+            if ($this->cache->isCompilerStale($compilerSrc)) {
+                $this->cache->flush();
+                Messenger::muted('[cache] compiler source changed — cache invalidated');
+            } elseif ($this->cache->hasChangedSinceLastBuild(getcwd() . '/PHireScript.json')) {
+                $this->cache->flush();
+                Messenger::muted('[cache] PHireScript.json changed — cache invalidated');
+            }
+        }
+
         $this->loader = new FileManager($context, $this->cache);
         $this->dependencyManager = new DependencyGraphBuilder();
     }
@@ -114,6 +128,7 @@ class Compiler
 
         $this->loader->loadAndCompile($sourceDir, $distDir, $transpiler, $this->dependencyManager);
 
+        $this->cache->touchCompilerTimestamp(__DIR__ . '/');
         $this->cache->close();
 
         $elapsedMs = (int) round((microtime(true) - $startTime) * 1000);
