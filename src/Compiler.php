@@ -27,7 +27,7 @@ class Compiler
 
     public function __construct(private readonly CompilerContext $context)
     {
-        $this->cache = new CacheManager(getcwd() ?: '.');
+        $this->cache = new CacheManager(dirname(__DIR__));
 
         if ($context->clean) {
             $this->cache->flush();
