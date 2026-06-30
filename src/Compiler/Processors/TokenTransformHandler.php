@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PHireScript\Compiler\Processors;
 
-class AccessorHandler implements PreprocessorInterface
+class TokenTransformHandler implements PreprocessorInterface
 {
     public function process(string $code): string
     {

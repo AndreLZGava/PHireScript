@@ -654,17 +654,6 @@ parameters:
 			count: 1
 			path: src/Compiler/Emitter/Declarations/PackageEmitter.php
 
-		-
-			message: '#^Access to an undefined property object\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Compiler/Emitter/Declarations/TraitEmitter.php
-
-		-
-			message: '#^Using nullsafe property access "\?\-\>children" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Compiler/Emitter/Declarations/TraitEmitter.php
 
 		-
 			message: '#^Access to an undefined property object\:\:\$packages\.$#'
@@ -792,17 +781,6 @@ parameters:
 			count: 1
 			path: src/Compiler/Emitter/Expressions/SuperTypeEmitter.php
 
-		-
-			message: '#^Access to an undefined property object\:\:\$children\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Compiler/Emitter/OOP/ClassBodyEmitter.php
-
-		-
-			message: '#^Access to an undefined property object\:\:\$type\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Compiler/Emitter/OOP/ClassBodyEmitter.php
 
 		-
 			message: '#^Access to an undefined property object\:\:\$children\.$#'
@@ -2175,7 +2153,7 @@ parameters:
 		-
 			message: '#^Access to property \$left on an unknown class PHireScript\\Compiler\\Parser\\Ast\\Context\\Expressions\\ParamsNode\.$#'
 			identifier: class.notFound
-			count: 3
+			count: 6
 			path: src/Compiler/Parser/Ast/Context/Expressions/AssignmentContext.php
 
 		-
@@ -2286,17 +2264,6 @@ parameters:
 			count: 1
 			path: src/Compiler/Parser/Ast/Context/Expressions/CallExpressionContext.php
 
-		-
-			message: '#^PHPDoc tag @extends has invalid type PHireScript\\Compiler\\Parser\\Ast\\Context\\Expressions\\ParamsNode\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Compiler/Parser/Ast/Context/Expressions/ExpressionContext.php
-
-		-
-			message: '#^Type PHireScript\\Compiler\\Parser\\Ast\\Context\\Expressions\\ParamsNode in generic type PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext\<PHireScript\\Compiler\\Parser\\Ast\\Context\\Expressions\\ParamsNode\> in PHPDoc tag @extends is not subtype of template type T of PHireScript\\Compiler\\Parser\\Ast\\Nodes\\Node of class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext\.$#'
-			identifier: generics.notSubtype
-			count: 1
-			path: src/Compiler/Parser/Ast/Context/Expressions/ExpressionContext.php
 
 		-
 			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$contextManager\.$#'
@@ -4746,17 +4713,6 @@ parameters:
 			count: 1
 			path: src/Compiler/Parser/Ast/Resolver/Declaration/PropertyResolver.php
 
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Declaration\\PropertyResolver\:\:handleModifiers\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Parser/Ast/Resolver/Declaration/PropertyResolver.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Declaration\\PropertyResolver\:\:handleModifiers\(\) has parameter \$previousModifiers with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Compiler/Parser/Ast/Resolver/Declaration/PropertyResolver.php
 
 		-
 			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Declaration\\PropertyResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
@@ -4974,41 +4930,6 @@ parameters:
 			count: 1
 			path: src/Compiler/Parser/Ast/Resolver/Expressions/CommaResolver.php
 
-		-
-			message: '#^Access to an undefined property PHireScript\\Compiler\\Parser\\ParseContext\:\:\$contextManager\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Compiler/Parser/Ast/Resolver/Expressions/ComparisonExpressionResolver.php
-
-		-
-			message: '#^Call to an undefined method PHireScript\\Compiler\\Parser\\ParseContext\:\:consumePrevious\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Compiler/Parser/Ast/Resolver/Expressions/ComparisonExpressionResolver.php
-
-		-
-			message: '#^Call to an undefined method PHireScript\\Compiler\\Parser\\ParseContext\:\:peekPrevious\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Compiler/Parser/Ast/Resolver/Expressions/ComparisonExpressionResolver.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ComparisonExpressionResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Compiler/Parser/Ast/Resolver/Expressions/ComparisonExpressionResolver.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ComparisonExpressionResolver\:\:resolve\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Compiler/Parser/Ast/Resolver/Expressions/ComparisonExpressionResolver.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ConsumptionParams\\ClosingParamsConsumptionResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Compiler/Parser/Ast/Resolver/Expressions/ConsumptionParams/ClosingParamsConsumptionResolver.php
 
 		-
 			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Expressions\\ConsumptionParams\\ClosingParamsConsumptionResolver\:\:resolve\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
@@ -6264,17 +6185,6 @@ parameters:
 			count: 1
 			path: src/Compiler/Parser/Ast/Resolver/Root/ModifiersResolver.php
 
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Root\\ModifiersResolver\:\:getModifiers\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: src/Compiler/Parser/Ast/Resolver/Root/ModifiersResolver.php
-
-		-
-			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Root\\ModifiersResolver\:\:getModifiers\(\) has parameter \$previousModifiers with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Compiler/Parser/Ast/Resolver/Root/ModifiersResolver.php
 
 		-
 			message: '#^Method PHireScript\\Compiler\\Parser\\Ast\\Resolver\\Root\\ModifiersResolver\:\:isTheCase\(\) has parameter \$context with generic class PHireScript\\Compiler\\Parser\\Ast\\Context\\AbstractContext but does not specify its types\: T$#'
@@ -7289,12 +7199,6 @@ parameters:
 			identifier: offsetAccess.invalidOffset
 			count: 1
 			path: src/Compiler/Parser/Transformers/ModifiersTransform.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function str_replace expects array\<string\>\|string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Compiler/Processors/AccessorHandler.php
 
 		-
 			message: '#^Method PHireScript\\Compiler\\Processors\\FunctionBodyProcessor\:\:process\(\) should return string but returns string\|null\.$#'

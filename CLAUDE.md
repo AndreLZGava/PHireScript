@@ -118,11 +118,11 @@ Features are classified into three tiers. When working on the compiler, respect 
 - **Try / Handle / Always** — maps to PHP `try / catch / finally`
 - **`external` declarations** — `external ClassName [as Alias]` resolves static/instance/constant access via Reflection; validates member existence and accessibility; propagates return types for chained calls; sandbox cases 39, 40, 41
 - **Method Chaining** — `.` and `?.` (safe navigation) on variables and literals; inline nested PHP emission; multi-line chains; cross-type chains (String→Array→Int); `ChainConsistencyChecker` enforces type continuity, void termination, nullable guard, Mixed guard; sandbox cases 42–49
+- **Getter / Setter on properties** — `<` (getter) and `>` (setter) markers on property lines; optional visibility modifiers (`*`/`+`/`#`) before each marker; combined `T_ACCESSORS` tokens (`#<`, `+>`, `<>`, etc.); explicit method override suppresses generated version; applies to `class`, `type`, `immutable`, `trait`; sandbox cases 55–60
 
 ### Partial — syntax parses and compiles, but with known gaps
 
 - **Arrow Functions** — basic cases work; edge cases may not
-- **Getter / Setter on properties** — `<`, `>`, `<>` syntax compiles, but not all scenarios covered
 - **Collections** — `List<T>`, `Map<T>`, `Queue<T>`, `Stack<T>` — type declarations compile; full runtime behavior incomplete
 - **Testing / Validate blocks (`.pst`)** — compiles to `*Test.php`, but with limitations
 

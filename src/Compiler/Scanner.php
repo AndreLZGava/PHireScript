@@ -56,7 +56,7 @@ class Scanner
         'T_EOL'         => '/^[\r\n]+/',
         'T_WHITESPACE'  => '/^[ \t]+/',
         'T_ACCESSORS'   => '/^(\+>|<>|#>|\*>|\+<|><|#<|\*<)/',
-        'T_MODIFIER'    => '/^(\->|=>|::|\.\.\.|\+\+|--|===|!==|==|!=|<=|>=|&&|\|\|)/',
+        'T_MODIFIER'    => '/^(\*\*|\->|=>|::|\.\.\.|\+\+|--|===|!==|==|!=|<=|>=|&&|\|\|)/',
         'T_PRIMITIVE' => '/^\b(Int|String|Float|Bool|Object|Array|Void|' .
             'Null|Mixed|Any|Queue|List|Stack|Map|Struct)\b/',
         'T_META_TYPE' => '/^\b(Card|Currency|Date|DateTime|Password' .

@@ -347,33 +347,15 @@ class ValidatorTest extends TestCase
     }
 
     // -------------------------------------------------------------------------
-    // Angle bracket balancing (only counted outside parentheses)
+    // Angle bracket balancing — '<' and '>' are NOT tracked by BracketBalanceRule
+    // because they are valid standalone accessor tokens (getter/setter syntax).
     // -------------------------------------------------------------------------
 
-    public function testUnbalancedOpenAngleBracketThrows(): void
+    public function testAngleBracketsAreNotTrackedAsBrackets(): void
     {
-        $this->expectException(CompileException::class);
-        // A lone '<' outside any parentheses must cause an imbalance.
+        $this->expectNotToPerformAssertions();
+        // '<' alone must NOT cause a CompileException — it is a valid getter accessor.
         $this->validateSingleToken('T_SYMBOL', '<');
-    }
-
-    public function testAngleBracketsInsideParensAreNotCounted(): void
-    {
-        $this->expectNotToPerformAssertions();
-        // An unmatched '<' inside '()' must not count toward bracket balance
-        // because the validator only tracks '<>' when parenDepth === 0.
-        $this->validate('( < )');
-    }
-
-    public function testBalancedAngleBracketsOutsideParensPass(): void
-    {
-        $this->expectNotToPerformAssertions();
-        // Token-level '<' and '>' pair, outside any parentheses.
-        $tokens = [
-            new Token('T_SYMBOL', '<', 1, 1),
-            new Token('T_SYMBOL', '>', 1, 2),
-        ];
-        (new Validator())->validate($tokens);
     }
 
     // -------------------------------------------------------------------------

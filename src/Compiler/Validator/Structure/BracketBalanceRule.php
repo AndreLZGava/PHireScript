@@ -12,12 +12,10 @@ use PHireScript\Runtime\Exceptions\CompileException;
 class BracketBalanceRule implements ValidatorRule
 {
     /** @var array<string, int> */
-    private array $open = ['(' => 0, '{' => 0, '[' => 0, '<' => 0];
+    private array $open = ['(' => 0, '{' => 0, '[' => 0];
 
     /** @var array<string, int> */
-    private array $close = [')' => 0, '}' => 0, ']' => 0, '>' => 0];
-
-    private int $parenDepth = 0;
+    private array $close = [')' => 0, '}' => 0, ']' => 0];
 
     public function handleToken(Token $token, CompilerValidator $validator): void
     {
@@ -26,16 +24,6 @@ class BracketBalanceRule implements ValidatorRule
         $this->count($value, '(', ')');
         $this->count($value, '{', '}');
         $this->count($value, '[', ']');
-
-        if ($value === '(') {
-            $this->parenDepth++;
-        } elseif ($value === ')') {
-            $this->parenDepth--;
-        }
-
-        if ($this->parenDepth === 0) {
-            $this->count($value, '<', '>');
-        }
     }
 
     public function afterTokens(CompilerValidator $validator): void
@@ -43,7 +31,6 @@ class BracketBalanceRule implements ValidatorRule
         $this->assertBalanced('(', ')');
         $this->assertBalanced('{', '}');
         $this->assertBalanced('[', ']');
-        $this->assertBalanced('<', '>');
     }
 
     private function count(string $value, string $open, string $close): void
