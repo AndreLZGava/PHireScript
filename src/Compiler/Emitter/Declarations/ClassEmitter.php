@@ -28,27 +28,6 @@ class ClassEmitter extends NodeEmitterAbstract implements NodeEmitter
             '';
         $code .= "class {$node->name}{$extends}{$implements}\n";
         $code .= $ctx->emitter->emit($node->body, $ctx);
-
-        /*
-        @todo this will be properly emitted by its own emitters.
-        // ---- properties
-        foreach ($node->body as $member) {
-            if ($member instanceof PropertyNode) {
-                $code .= $ctx->emitter->emit($node->body, $ctx);
-            }
-        }
-
-        // ---- constructor
-
-
-        // ---- methods
-        foreach ($node->body as $member) {
-            if ($member instanceof MethodDeclarationNode) {
-                $code .= $ctx->emitter->emit($member, $ctx);
-            }
-        }
-        return $code . "}\n";
-*/
         return $code;
     }
 }

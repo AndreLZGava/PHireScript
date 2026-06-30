@@ -7,6 +7,7 @@ namespace PHireScript\Compiler\Emitter\Declarations;
 use PHireScript\Compiler\Emitter\Base\NodeEmitterAbstract;
 use PHireScript\Compiler\Emitter\Base\EmitContext;
 use PHireScript\Compiler\Emitter\Base\NodeEmitter;
+use PHireScript\Compiler\Emitter\OOP\GetterSetterEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\OOP\MethodDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\OOP\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\TraitNode;
@@ -20,6 +21,8 @@ class TraitEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     public function emit(object $node, EmitContext $ctx): string
     {
+        assert($node instanceof TraitNode);
+
         $members = $node->body?->children ?? [];
 
         $code = "trait {$node->name} {\n";
@@ -34,6 +37,10 @@ class TraitEmitter extends NodeEmitterAbstract implements NodeEmitter
             if ($member instanceof MethodDeclarationNode) {
                 $code .= $ctx->emitter->emit($member, $ctx);
             }
+        }
+
+        if ($node->body !== null) {
+            $code .= (new GetterSetterEmitter())->emit($node->body, $ctx);
         }
 
         return $code . "}\n";

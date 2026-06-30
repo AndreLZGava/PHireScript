@@ -53,7 +53,11 @@ class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter
         // --------------------
         $phpReturnType = '';
         if (!$isMagicMethod || $node->implements?->supportsReturn) {
-            $phpReturnType = $ctx->emitter->emit($node->returnType, $ctx);
+            if ($node->returnType !== null) {
+                $phpReturnType = $ctx->emitter->emit($node->returnType, $ctx);
+            } elseif ($node->mustBeVoid) {
+                $phpReturnType = ': void';
+            }
         }
         // --------------------
         // abstract method

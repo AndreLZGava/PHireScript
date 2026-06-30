@@ -104,16 +104,26 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
         $method = $node->method->phpCodeForConversion;
 
         if (\is_array($method)) {
-            $lines = [];
-
-            foreach ($method as $line) {
-                $lines[] = \str_replace('@self', $variable, $line);
-            }
-
-            return $this->wrapAsIIFE($lines, $variable);
+            return $this->emitChainedExpression($method, $variable);
         }
 
         return \str_replace('@self', $variable, $method);
+    }
+
+    private function emitChainedExpression(array $lines, string $self): string
+    {
+        if (\count($lines) === 1 && \str_starts_with(\ltrim($lines[0]), 'return ')) {
+            $expr = \preg_replace('/^\s*return\s+/', '', $lines[0]);
+            $expr = \rtrim($expr, '; ');
+            return \str_replace('@self', $self, $expr);
+        }
+
+        static $counter = 0;
+        $tmpVar = '$__chain_' . $counter++;
+        $substituted = \array_map(fn($l) => \str_replace('@self', $tmpVar, $l), $lines);
+        $indented = \implode("\n    ", $substituted);
+
+        return "({$tmpVar} = {$self}) !== null ? (function() use ({$tmpVar}) {\n    {$indented}\n})() : null";
     }
 
     private function wrapAsIIFE(array $lines, string $variable): string
@@ -184,7 +194,7 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     private function processNamedParams($paramName, $paramValue, $originalCode)
     {
-        if (\gettype($paramName) !== 'integer') {
+        if (!\is_int($paramName)) {
             return \str_replace($paramName, (string) $paramValue, $originalCode);
         }
         return '';

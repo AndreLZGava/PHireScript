@@ -18,6 +18,8 @@ use PHireScript\Compiler\Emitter\Expressions\ArrayLiteralEmitter;
 use PHireScript\Compiler\Emitter\Declarations\ArrowFunctionEmitter;
 use PHireScript\Compiler\Emitter\Statements\AssignmentEmitter;
 use PHireScript\Compiler\Emitter\Expressions\BinaryExpressionEmitter;
+use PHireScript\Compiler\Emitter\Expressions\GroupedExpressionEmitter;
+use PHireScript\Compiler\Emitter\Expressions\UnaryExpressionEmitter;
 use PHireScript\Compiler\Emitter\Expressions\BoolEmitter;
 use PHireScript\Compiler\Emitter\Expressions\CastingEmitter;
 use PHireScript\Compiler\Emitter\OOP\ClassBodyEmitter;
@@ -110,6 +112,8 @@ class Emitter
             new StringEmitter(),
             new NumberEmitter(),
             new BinaryExpressionEmitter(),
+            new GroupedExpressionEmitter(),
+            new UnaryExpressionEmitter(),
             new VariableReferenceAssignEmitter(),
             new SuperTypeEmitter(),
             new QueueEmitter(),
