@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast\Context\Declarations;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\VariableDeclarationNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Scopes\MethodScopeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\OpeningParamsDeclarationResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\ReturnTypeResolver;
@@ -40,7 +41,7 @@ class MethodDeclarationContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
-                $this->processResolvers($token, $keyResolver);
+                $this->processResolvers($token, $keyResolver, $parseContext);
                 return null;
             }
         }
@@ -51,7 +52,7 @@ class MethodDeclarationContext extends AbstractContext
         );
     }
 
-    private function processResolvers($token, $keyResolver)
+    private function processResolvers($token, $keyResolver, ParseContext $parseContext): void
     {
         if (\is_int($keyResolver)) {
             return;
@@ -60,7 +61,17 @@ class MethodDeclarationContext extends AbstractContext
         $value = $this->getChildrenValues($keyResolver);
         $this->node->$key =  $value ?: [];
         $this->children = [];
-        return;
+
+        if ($key === 'bodyCode' && $this->node->parameters !== null) {
+            foreach ($this->node->parameters->params as $param) {
+                $name = \is_string($param->name) ? $param->name : null;
+                if ($name !== null) {
+                    $parseContext->variables->addVariable(
+                        new VariableDeclarationNode($token, $name)
+                    );
+                }
+            }
+        }
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool

@@ -61,18 +61,27 @@ class SymbolTableManager
 
     public function getFunction($functionName): ?BaseMethods
     {
-        if (
-            is_null($this->rawType) ||
-            is_null($functionName) ||
-            !\array_key_exists($this->rawType . 'Methods', $this->typeDefinitions)
-        ) {
+        if (is_null($this->rawType) || is_null($functionName)) {
             return null;
         }
-        $function = $this->typeDefinitions[$this->rawType . 'Methods'][$functionName] ?? null;
-        if ($function) {
-            $this->lastExecution = $function->returnOfPhpExecution;
+
+        $typeKey = $this->rawType . 'Methods';
+        if (\array_key_exists($typeKey, $this->typeDefinitions)) {
+            $function = $this->typeDefinitions[$typeKey][$functionName] ?? null;
+            if ($function) {
+                $this->lastExecution = $function->returnOfPhpExecution;
+                return $function;
+            }
         }
-        return $function ?? null;
+
+        // Fallback to GeneralType for methods available on all types (defined?, is?, show!, etc.)
+        $general = $this->typeDefinitions['GeneralType'][$functionName] ?? null;
+        if ($general) {
+            $this->lastExecution = $general->returnOfPhpExecution;
+            return $general;
+        }
+
+        return null;
     }
 
     /**

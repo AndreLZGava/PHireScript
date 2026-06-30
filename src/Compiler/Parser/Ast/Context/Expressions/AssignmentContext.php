@@ -39,8 +39,10 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Statements\AssignmentNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ArrowFunctionResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ComparisonExpressionResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\BinaryExpressionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\OpeningParenthesisResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\UnaryNegationResolver;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -80,7 +82,7 @@ class AssignmentContext extends AbstractContext
             new ThisResolver(),
             new ThisPropertyAccessResolver(),
             new VariableReferenceResolver(),
-            new ComparisonExpressionResolver(),
+            new BinaryExpressionResolver(),
 
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
@@ -90,6 +92,9 @@ class AssignmentContext extends AbstractContext
 
             new SuperTypeCastingResolver(),
             new MetaTypeCastingResolver(),
+
+            new OpeningParenthesisResolver(),
+            new UnaryNegationResolver(),
 
             new DotResolver(),
             new SafeNavigationResolver(),
@@ -109,16 +114,18 @@ class AssignmentContext extends AbstractContext
                 $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
 
-                $lastChild = !empty($this->children) ? end($this->children) : null;
-                $this->node->right = $lastChild;
-                if (property_exists($this->node->left, 'value')) {
-                    $this->node->left->value = $lastChild;
-                }
-                if (
-                    property_exists($this->node->left, 'type') &&
-                    !($this->node->left instanceof PropertyAccessNode)
-                ) {
-                    $this->node->left->type = $lastChild;
+                if (!($resolver instanceof CommentResolver)) {
+                    $lastChild = !empty($this->children) ? end($this->children) : null;
+                    $this->node->right = $lastChild;
+                    if (property_exists($this->node->left, 'value')) {
+                        $this->node->left->value = $lastChild;
+                    }
+                    if (
+                        property_exists($this->node->left, 'type') &&
+                        !($this->node->left instanceof PropertyAccessNode)
+                    ) {
+                        $this->node->left->type = $lastChild;
+                    }
                 }
 
                 // When the right side is an external class access, register the left variable as external type

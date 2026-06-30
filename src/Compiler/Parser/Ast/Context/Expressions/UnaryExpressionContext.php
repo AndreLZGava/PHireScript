@@ -5,20 +5,18 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast\Context\Expressions;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\BinaryExpressionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\UnaryExpressionNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\BinaryExpressionResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\OpeningParenthesisResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisPropertyAccessResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\BoolLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\NullLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\StringLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\VariableReferenceResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\ClosingParamsDeclarationResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
@@ -28,54 +26,34 @@ use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
- * @extends AbstractContext<BinaryExpressionNode>
+ * @extends AbstractContext<UnaryExpressionNode>
  */
-class BinaryExpressionContext extends AbstractContext
+class UnaryExpressionContext extends AbstractContext
 {
-    private const BINARY_OPERATORS = [
-        '&&', '||',
-        '>', '<', '==', '===', '!=', '!==', '>=', '<=',
-        '+', '-', '*', '/', '%', '**',
-    ];
-    private const VALUE_TYPES = ['T_NUMBER', 'T_STRING_LIT', 'T_BOOL', 'T_NULL', 'T_IDENTIFIER'];
-
     private readonly array $resolvers;
 
-    public function __construct(BinaryExpressionNode $node)
+    public function __construct(UnaryExpressionNode $node)
     {
         parent::__construct($node);
         $this->resolvers = [
-            new NumberLiteralResolver(),
-            new StringLiteralResolver(),
-            new BoolLiteralResolver(),
             new NullLiteralResolver(),
+            new StringLiteralResolver(),
+            new NumberLiteralResolver(),
+            new BoolLiteralResolver(),
             new GlobalConstantResolver(),
             new ThisResolver(),
             new ThisPropertyAccessResolver(),
             new VariableReferenceResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
-            new OpeningParenthesisResolver(),
             new DotResolver(),
-            new BinaryExpressionResolver(),
             new EndOfLineResolver(),
             new CommentResolver(),
-            new ClosingParamsDeclarationResolver(),
         ];
     }
 
     public function handle(Token $token, ParseContext $parseContext): ?Node
     {
-        if (in_array($token->value, self::BINARY_OPERATORS, true) && !empty($this->children)) {
-            if ($this->node->right === null && !empty($this->children)) {
-                $this->node->right = array_shift($this->children);
-                $this->children = [];
-            }
-            $this->node = new BinaryExpressionNode($this->node, $token->value, null);
-            $this->children = [];
-            return null;
-        }
-
         foreach ($this->resolvers as $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = $resolver::class;
@@ -85,7 +63,7 @@ class BinaryExpressionContext extends AbstractContext
         }
 
         throw new CompileException(
-            $token->value . ' is not supported in binary expression context!',
+            $token->value . ' is not supported in unary expression context!',
             $token->line,
             $token->column,
         );
@@ -93,39 +71,21 @@ class BinaryExpressionContext extends AbstractContext
 
     public function canClose(Token $token, ParseContext $parseContext): bool
     {
-        // A dot or safe-navigation means the current child is a chain head — do not close yet
-        if ($token->isDot() || $token->isSafeNavigation()) {
+        if (empty($this->children)) {
             return false;
         }
-
-        $next = $parseContext->tokenManager->getNextTokenAfterCurrent();
-        $nextValue = $next->value;
-
-        if (in_array($nextValue, self::BINARY_OPERATORS, true)) {
-            return false;
-        }
-
-        if ($next->isDot() || $next->isSafeNavigation()) {
-            return false;
-        }
-
-        if ($this->node->right === null) {
-            if (!empty($this->children)) {
-                $this->node->right = array_shift($this->children);
-                $this->children = [];
-            } elseif ($parseContext->peekPrevious() !== null) {
-                $this->node->right = $parseContext->consumePrevious();
-            }
-        }
-
-        return $this->node->right !== null;
+        return $token->isEndOfLine() || $token->isComment();
     }
 
     public function afterClose(Token $token, ParseContext $parseContext): void
     {
+        if (!empty($this->children)) {
+            $this->node->operand = $this->children[0];
+        }
         $parseContext->contextManager->current()->addChild($this->node);
 
-        if (!in_array($token->type, self::VALUE_TYPES, true)) {
+        // Walk back so the closing token (EOL/comment) is reprocessed by the parent context
+        if ($token->isEndOfLine() || $token->isComment()) {
             $parseContext->tokenManager->walk(-1);
         }
     }

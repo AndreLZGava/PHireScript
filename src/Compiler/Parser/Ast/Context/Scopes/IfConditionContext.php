@@ -41,7 +41,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Signatures\ClosingParamsDeclaration
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\IfResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\ReturnResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\Scopes\IfConditionNode;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ComparisonExpressionResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\BinaryExpressionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
 
 /**
@@ -69,7 +69,7 @@ class IfConditionContext extends AbstractContext
             new PrimitiveCastingResolver(),
             new ArrayResolver(),
 
-            new ComparisonExpressionResolver(),
+            new BinaryExpressionResolver(),
             new GlobalConstantResolver(),
             new NullLiteralResolver(),
             new StringLiteralResolver(),

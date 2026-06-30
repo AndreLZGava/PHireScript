@@ -10,7 +10,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\PropertyResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ComparisonExpressionResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\BinaryExpressionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisPropertyAccessResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisResolver;
@@ -31,7 +31,9 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Root\MetaTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\PrimitiveResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\SuperTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\IfResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\LoopResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\ReturnResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\SwitchResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\TryResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\Statements\HandleNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Scopes\TryScopeNode;
@@ -56,10 +58,12 @@ class HandleScopeContext extends AbstractContext
             new VariableConsumptionResolver(),
             new AssignmentResolver(),
             new IfResolver(),
+            new LoopResolver(),
+            new SwitchResolver(),
             new TryResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
-            new ComparisonExpressionResolver(),
+            new BinaryExpressionResolver(),
 
             new TypesTypeResolver(),
             new PrimitiveResolver(),

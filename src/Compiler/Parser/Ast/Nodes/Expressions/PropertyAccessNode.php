@@ -11,7 +11,8 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Expression\Types\Type;
 
 class PropertyAccessNode extends Expression implements Type
 {
-    public self $type;
+    public Type $type;
+    public ?string $resolvedType = null;
 
     public function __construct(
         Token $token,
@@ -23,6 +24,6 @@ class PropertyAccessNode extends Expression implements Type
 
     public function getRawType(): string
     {
-        return 'PropertyAccess';
+        return $this->resolvedType ?? 'PropertyAccess';
     }
 }

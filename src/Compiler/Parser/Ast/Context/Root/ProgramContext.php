@@ -10,6 +10,7 @@ use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Declarations\ValidateContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\ClassResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\ImmutableResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\EnumResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\InterfaceResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\TraitResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableConsumptionResolver;
@@ -32,6 +33,8 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Root\PrimitiveResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\SuperTypeCastingResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\UseResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\IfResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\LoopResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\SwitchResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\TryResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
@@ -68,6 +71,8 @@ class ProgramContext extends AbstractContext
             new VariableConsumptionResolver(),
             new AssignmentResolver(),
             new IfResolver(),
+            new LoopResolver(),
+            new SwitchResolver(),
             new TryResolver(),
             new ExternalClassAccessResolver(),
             new ExternalMethodCallResolver(),
@@ -90,6 +95,7 @@ class ProgramContext extends AbstractContext
             new TraitResolver(),
             new TypeResolver(),
             new ImmutableResolver(),
+            new EnumResolver(),
             // interface
             new InterfaceResolver(),
         ];

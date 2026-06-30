@@ -75,9 +75,9 @@ class FunctionCallResolver implements ContextTokenResolver
         )->getFunction($token->value);
 
         $onFocus = $focus;
+        $this->assignmentContext = ($context->assignmentContext ?? false) || ($context->returnContext ?? false);
 
         if (empty($functionDefinition)) {
-            $this->assignmentContext = $context->assignmentContext ?: false;
             $functionDefinition = $parseContext->symbolTable->getFunctionFromLastExecution($token->value, true);
             /**$onFocus = \end($parseContext->program->statements);
             if($onFocus instanceof AssignmentNode) {

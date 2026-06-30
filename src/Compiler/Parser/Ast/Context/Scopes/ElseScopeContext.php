@@ -9,7 +9,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Scopes\ElseScopeNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallNotFoundResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ComparisonExpressionResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\BinaryExpressionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\FunctionCallResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisPropertyAccessResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ThisResolver;
@@ -24,7 +24,9 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\OpeningElseScopeResolver
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\IfResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\LoopResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\ReturnResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\SwitchResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\TryResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
@@ -52,10 +54,12 @@ class ElseScopeContext extends AbstractContext
             new VariableConsumptionResolver(),
             new AssignmentResolver(),
             new IfResolver(),
+            new LoopResolver(),
+            new SwitchResolver(),
             new TryResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
-            new ComparisonExpressionResolver(),
+            new BinaryExpressionResolver(),
 
             new TypesTypeResolver(),
             new PrimitiveResolver(),

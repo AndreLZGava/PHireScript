@@ -35,7 +35,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Statements\AssignmentNode;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Nodes\Statements\ReturnNode;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ComparisonExpressionResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\BinaryExpressionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\GlobalConstantResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\IdentifierResolver;
 use PHireScript\Compiler\Parser\ParseContext;
@@ -46,6 +46,7 @@ use PHireScript\Runtime\Exceptions\CompileException;
  */
 class ReturnContext extends AbstractContext
 {
+    public bool $returnContext = true;
     private readonly array $resolvers;
 
     public function __construct(ReturnNode $node)
@@ -68,7 +69,7 @@ class ReturnContext extends AbstractContext
             new ObjectLiteralResolver(),
 
             new VariableReferenceResolver(),
-            new ComparisonExpressionResolver(),
+            new BinaryExpressionResolver(),
 
             new ThisResolver(),
             new ThisPropertyAccessResolver(),
@@ -105,7 +106,7 @@ class ReturnContext extends AbstractContext
 
     public function handleReturn($token)
     {
-        $this->node->expression = $this->children[0] ?? null;
+        $this->node->expression = !empty($this->children) ? end($this->children) : null;
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool

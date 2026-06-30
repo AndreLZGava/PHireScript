@@ -16,6 +16,8 @@ class PropertyNode extends Node
         public ?Node $value = null,
         public array $modifiers = [],
         public array $resolvedTypeInfo = [],
+        public ?string $getter = null,
+        public ?string $setter = null,
     ) {
     }
 }

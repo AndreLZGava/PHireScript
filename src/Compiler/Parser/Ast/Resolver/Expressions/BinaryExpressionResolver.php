@@ -11,9 +11,13 @@ use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 
-class ComparisonExpressionResolver implements ContextTokenResolver
+class BinaryExpressionResolver implements ContextTokenResolver
 {
-    private const OPERATORS = ['>', '<', '==', '===', '!=', '!==', '>=', '<='];
+    private const OPERATORS = [
+        '+', '-', '*', '/', '%', '**',
+        '>', '<', '==', '===', '!=', '!==', '>=', '<=',
+        '&&', '||',
+    ];
 
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {

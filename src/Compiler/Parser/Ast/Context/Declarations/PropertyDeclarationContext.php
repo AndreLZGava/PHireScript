@@ -14,6 +14,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Nodes\OOP\PropertyNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\TypeResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\PipeResolver;
+use PHireScript\Compiler\Parser\Managers\VariableManager;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -25,9 +26,12 @@ class PropertyDeclarationContext extends AbstractContext
 {
     private array $resolvers = [];
 
-    public function __construct(PropertyNode $node)
+    private ?VariableManager $variables;
+
+    public function __construct(PropertyNode $node, ?VariableManager $variables = null)
     {
         parent::__construct($node);
+        $this->variables = $variables;
 
         $this->resolvers = [
             'types[]' => new TypeResolver(),
@@ -71,6 +75,13 @@ class PropertyDeclarationContext extends AbstractContext
         $this->node->$key =  $value ?: [];
         $this->children = [];
         return;
+    }
+
+    public function onClose(Token $token, ParseContext $parseContext): void
+    {
+        if ($this->variables !== null && !empty($this->node->name)) {
+            $this->variables->addProperty($this->node);
+        }
     }
 
     public function canClose(Token $token, ParseContext $parseContext): bool

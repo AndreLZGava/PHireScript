@@ -33,6 +33,11 @@ class ThisPropertyAccessResolver implements ContextTokenResolver
         $focus = $parseContext->variables->getVariableOnFocus();
         $propertyAccess = new PropertyAccessNode($token, $focus, $token->value);
 
+        $prop = $parseContext->variables->getProperty($token->value);
+        if ($prop !== null && !empty($prop->types)) {
+            $propertyAccess->resolvedType = $prop->types[0];
+        }
+
         $parseContext->variables->setVirtualVariable($propertyAccess);
 
         if (!empty($context->children) && end($context->children) instanceof ThisExpressionNode) {

@@ -18,6 +18,8 @@ class ModifiersResolver implements ContextTokenResolver
     '*',
     '#',
     '+',
+    '<',
+    '>',
     'public',
     'protected',
     'private',
@@ -28,7 +30,7 @@ class ModifiersResolver implements ContextTokenResolver
 
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return \in_array($token->value, self::MODIFIERS, true);
+        return \in_array($token->value, self::MODIFIERS, true) || $token->isAccessor();
     }
 
     public function resolve(
@@ -42,11 +44,14 @@ class ModifiersResolver implements ContextTokenResolver
             $previousModifiers = [];
         }
         $previousModifiers[] = $token->value;
-        $previousModifiers = self::getModifiers($previousModifiers);
         $parseContext->definePrevious($previousModifiers);
     }
 
-    public static function getModifiers(array $previousModifiers)
+    /**
+     * @param string[] $previousModifiers
+     * @return string[]
+     */
+    public static function getModifiers(array $previousModifiers): array
     {
         return array_values(array_filter(
             $previousModifiers,
