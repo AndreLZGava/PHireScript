@@ -227,4 +227,37 @@ class FloatMethods extends GeneralType
             ],
         );
     }
+
+    public function root()
+    {
+        return new BaseMethods(
+            name: 'root',
+            phpCodeForConversion: '@self ** (1.0 / @n)',
+            returnOfPhpExecution: ['Float'],
+            params: [
+            new BaseParams('@n', 'float', true)
+            ]
+        );
+    }
+
+    public function log()
+    {
+        return new BaseMethods(
+            name: 'log',
+            phpCodeForConversion: '\log(@self)',
+            returnOfPhpExecution: ['Float']
+        );
+    }
+
+    public function logBase()
+    {
+        return new BaseMethods(
+            name: 'logBase',
+            phpCodeForConversion: '\log(@self, @base)',
+            returnOfPhpExecution: ['Float'],
+            params: [
+            new BaseParams('@base', 'float', true)
+            ]
+        );
+    }
 }

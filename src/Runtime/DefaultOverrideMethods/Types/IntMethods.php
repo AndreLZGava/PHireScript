@@ -306,4 +306,64 @@ class IntMethods extends GeneralType
             ]
         );
     }
+
+    public function root()
+    {
+        return new BaseMethods(
+            'root',
+            phpCodeForConversion: '@self ** (1.0 / @n)',
+            returnOfPhpExecution: ['Float'],
+            params: [
+            new BaseParams('@n', 'int|float', true),
+            ]
+        );
+    }
+
+    public function log()
+    {
+        return new BaseMethods(
+            'log',
+            phpCodeForConversion: '\log(@self)',
+            returnOfPhpExecution: ['Float']
+        );
+    }
+
+    public function logBase()
+    {
+        return new BaseMethods(
+            'logBase',
+            phpCodeForConversion: '\log(@self, @base)',
+            returnOfPhpExecution: ['Float'],
+            params: [
+            new BaseParams('@base', 'float', true),
+            ]
+        );
+    }
+
+    public function round()
+    {
+        return new BaseMethods(
+            'round',
+            phpCodeForConversion: '\round(@self)',
+            returnOfPhpExecution: ['Int']
+        );
+    }
+
+    public function floor()
+    {
+        return new BaseMethods(
+            'floor',
+            phpCodeForConversion: '\floor(@self)',
+            returnOfPhpExecution: ['Int']
+        );
+    }
+
+    public function ceil()
+    {
+        return new BaseMethods(
+            'ceil',
+            phpCodeForConversion: '\ceil(@self)',
+            returnOfPhpExecution: ['Int']
+        );
+    }
 }

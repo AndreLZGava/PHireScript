@@ -86,7 +86,7 @@ class StringMethods extends GeneralType
     {
         return new BaseMethods(
             'removeSpacesRight',
-            phpCodeForConversion: 'return @characters !== null ? \rtrim(@self, @characters) : \rtrim(@self);',
+            phpCodeForConversion: 'return @characters !== null ? \\rtrim(@self, @characters) : \\rtrim(@self);',
             returnOfPhpExecution: ['String'],
             params: [
                 new BaseParams('@characters', 'string|null', false, null),

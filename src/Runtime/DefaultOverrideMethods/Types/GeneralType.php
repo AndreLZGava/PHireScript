@@ -28,6 +28,15 @@ class GeneralType
         );
     }
 
+    public function empty()
+    {
+        return new BaseMethods(
+            name: 'empty?',
+            phpCodeForConversion: 'empty(@self)',
+            returnOfPhpExecution: ['Bool'],
+        );
+    }
+
     public function getClass()
     {
         return new BaseMethods(
