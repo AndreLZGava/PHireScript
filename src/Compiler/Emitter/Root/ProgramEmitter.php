@@ -21,7 +21,7 @@ class ProgramEmitter extends NodeEmitterAbstract implements NodeEmitter
     public function emit(object $node, EmitContext $ctx): string
     {
         //Debug::show($node->statements);exit;
-        $code['init'] = "<?php\n\n";
+        $code['init'] = "<?php\n\ndeclare(strict_types=1);\n\n";
         foreach ($node->statements as $position => $stmt) {
             $code[$stmt::class . '_' . $position] = $ctx->emitter->emit($stmt, $ctx);
         }

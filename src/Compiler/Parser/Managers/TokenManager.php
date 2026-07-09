@@ -10,6 +10,8 @@ use PHireScript\Compiler\Parser\Managers\Token\Token;
 
 class TokenManager
 {
+    private const DEFAULT_TOKEN_WINDOW = 100;
+
     private $tokenLookup;
     public $positionLookup;
 
@@ -31,12 +33,12 @@ class TokenManager
         $this->positionLookup = $this->currentPosition;
     }
 
-    public function getLeftTokens(int $limit = 100): array
+    public function getLeftTokens(int $limit = self::DEFAULT_TOKEN_WINDOW): array
     {
         return array_slice($this->getTokens(), $this->getCurrentPosition(), $limit);
     }
 
-    public function getProcessedTokens(int $limit = 100): array
+    public function getProcessedTokens(int $limit = self::DEFAULT_TOKEN_WINDOW): array
     {
         $start = (int) max(0, $this->getCurrentPosition() - $limit);
         return array_slice($this->getTokens(), $start, $limit);
