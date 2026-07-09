@@ -9,8 +9,10 @@ use Exception;
 use PHireScript\Compiler\Emitter\Base\EmitContext;
 use PHireScript\Compiler\Emitter\Base\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\FunctionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\NamedArgNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
+use PHireScript\Runtime\Exceptions\CompileException;
 
 class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
@@ -142,6 +144,31 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     private function normalizeParams($sentParams, $expected, $code, $ctx)
     {
+        $sentParams = $sentParams ?? [];
+
+        $hasNamed = false;
+        $hasPositional = false;
+        foreach ($sentParams as $param) {
+            if ($param instanceof NamedArgNode) {
+                $hasNamed = true;
+            } else {
+                $hasPositional = true;
+            }
+        }
+
+        if ($hasNamed && $hasPositional) {
+            $token = \current($sentParams)->token ?? null;
+            throw new CompileException(
+                'Cannot mix positional and named arguments in the same call',
+                $token?->line ?? 0,
+                $token?->column ?? 0,
+            );
+        }
+
+        if ($hasNamed) {
+            return $this->normalizeNamedParams($sentParams, $expected, $code, $ctx);
+        }
+
         $params = [];
 
         foreach ($expected as $methodParamId => $expectedParam) {
@@ -164,6 +191,67 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
             if (!isset($expected[$methodParamId])) {
                 $params[$methodParamId] = $ctx->emitter->emit($param, $ctx);
             }
+        }
+
+        $code = \preg_replace('/@(?!(params)\b)\w+/', '', (string) $code);
+
+        return (object) ['params' => $params, 'code' => $code];
+    }
+
+    private function normalizeNamedParams(array $sentParams, array $expected, string $code, $ctx): object
+    {
+        $sentMap = [];
+        foreach ($sentParams as $namedArg) {
+            $name = $namedArg->paramName;
+            if (isset($sentMap[$name])) {
+                throw new CompileException(
+                    "Duplicate named argument: '{$name}'",
+                    $namedArg->token->line,
+                    $namedArg->token->column,
+                );
+            }
+            $sentMap[$name] = $namedArg;
+        }
+
+        $expectedNames = [];
+        foreach ($expected as $expectedParam) {
+            $expectedNames[] = \ltrim($expectedParam->name, '@');
+        }
+
+        foreach (\array_keys($sentMap) as $sentName) {
+            if (!\in_array($sentName, $expectedNames, true)) {
+                $namedArg = $sentMap[$sentName];
+                throw new CompileException(
+                    "Unknown named argument: '{$sentName}'",
+                    $namedArg->token->line,
+                    $namedArg->token->column,
+                );
+            }
+        }
+
+        $params = [];
+        foreach ($expected as $methodParamId => $expectedParam) {
+            $normalizedName = \ltrim($expectedParam->name, '@');
+
+            if (isset($sentMap[$normalizedName])) {
+                $value = $ctx->emitter->emit($sentMap[$normalizedName]->value, $ctx);
+            } elseif ($expectedParam->required) {
+                throw new CompileException(
+                    "Missing required named argument: '{$normalizedName}'",
+                    0,
+                    0,
+                );
+            } else {
+                if ($expectedParam->relatedKeyParam) {
+                    $code = \str_replace('[' . $expectedParam->name . ']', '[]', $code);
+                    continue;
+                }
+                $value = $this->processDefaultValue($expectedParam);
+            }
+
+            $params[$methodParamId] = $value;
+            $expectedParamName = $expectedParam->name === '@params' ? '' : $expectedParam->name;
+            $code = $this->processNamedParams($expectedParamName, $value, $code);
         }
 
         $code = \preg_replace('/@(?!(params)\b)\w+/', '', (string) $code);

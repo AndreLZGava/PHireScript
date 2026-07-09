@@ -5,51 +5,45 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast\Context\Declarations;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ConsumptionParams\ClosingParamsConsumptionResolver;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\NamedArgNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\CommaResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ConsumptionParams\ClosingParamsConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalClassAccessResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalMethodCallResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalPropertyAccessResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\IgnoreColonResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ArrayLiteralResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Statements\DotResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\BoolLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\StringLiteralResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\NamedArgResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\VariableReferenceResolver;
-use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
-use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
-use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ParamsNode;
+use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
- * @extends AbstractContext<ParamsNode>
+ * @extends AbstractContext<NamedArgNode>
  */
-class ParamsConsumptionContext extends AbstractContext
+class NamedArgContext extends AbstractContext
 {
     private readonly array $resolvers;
 
-    public function __construct(ParamsNode $node)
+    public function __construct(NamedArgNode $node)
     {
         parent::__construct($node);
         $this->resolvers = [
-            new NamedArgResolver(),
+            new IgnoreColonResolver(),
+            new ClosingParamsConsumptionResolver(),
+            new CommaResolver(),
             new ExternalClassAccessResolver(),
             new ExternalMethodCallResolver(),
             new ExternalPropertyAccessResolver(),
-            new DotResolver(),
             new StringLiteralResolver(),
             new NumberLiteralResolver(),
             new BoolLiteralResolver(),
             new ArrayLiteralResolver(),
             new VariableReferenceResolver(),
-
-            new ClosingParamsConsumptionResolver(),
-            new CommaResolver(),
-
-            new EndOfLineResolver(),
         ];
     }
 
@@ -59,27 +53,26 @@ class ParamsConsumptionContext extends AbstractContext
             if ($resolver->isTheCase($token, $parseContext, $this)) {
                 $token->processedBy = $resolver::class;
                 $resolver->resolve($token, $parseContext, $this);
-                $this->node->params = $this->children;
                 return null;
             }
         }
-        // Debug::show($parseContext->tokenManager->getProcessedTokens(10));exit;
         throw new CompileException(
-            $token->value . ' is not supported in params context!',
+            $token->value . ' is not supported as a named argument value!',
             $token->line,
-            $token->column
+            $token->column,
         );
+    }
+
+    public function canClose(Token $token, ParseContext $parseContext): bool
+    {
+        return $token->isComma() || $token->isClosingParenthesis();
     }
 
     public function afterClose(Token $token, ParseContext $parseContext): void
     {
-        //$parseContext->contextManager->exit();
-        return;
-    }
-
-
-    public function canClose(Token $token, ParseContext $parseContext): bool
-    {
-        return $token->isClosingParenthesis();
+        $value = end($this->children);
+        if ($value !== false) {
+            $this->node->value = $value;
+        }
     }
 }

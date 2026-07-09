@@ -8,6 +8,7 @@ use PHireScript\Compiler\Checker as CompilerChecker;
 use PHireScript\Compiler\Checker\Checker;
 use PHireScript\Compiler\CompilerPass;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\FunctionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\NamedArgNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Runtime\Exceptions\CompileException;
 
@@ -30,6 +31,10 @@ class MethodConsumptionChecker extends Checker
 
     private function validateRequiredParams($node, $params)
     {
+        if (!empty($params) && $params[0] instanceof NamedArgNode) {
+            return;
+        }
+
         $expectedParams = $node->method->params;
         foreach ($expectedParams as $key => $expected) {
             if ($expected->required && !isset($params[$key])) {
