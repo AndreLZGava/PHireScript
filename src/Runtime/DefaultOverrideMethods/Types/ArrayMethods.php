@@ -105,7 +105,8 @@ class ArrayMethods extends GeneralType
             returnOfPhpExecution: ['Array'],
             params: [
                 new BaseParams('@key', 'mixed', true)
-            ]
+            ],
+            overridesSelfParam: false,
         );
     }
 

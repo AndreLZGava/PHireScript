@@ -25,8 +25,21 @@ class OpeningParenthesisResolver implements ContextTokenResolver
             return false;
         }
 
-        // Do not intercept if immediately after a closing paren (e.g. chained calls)
-        // or if context has no children yet and next is a type keyword
+        // Do not intercept zero-param arrow function: (): ReturnType => ...
+        if ($next->isClosingParenthesis()) {
+            $isArrow = $parseContext->tokenManager->sequence()
+                ->lookAhead()
+                ->once(fn ($t) => $t->isOpeningParenthesis())
+                ->once(fn ($t) => $t->isClosingParenthesis())
+                ->once(fn ($t) => $t->isColon())
+                ->skipUntil(fn ($t) => $t->isArrow())
+                ->once(fn ($t) => $t->isArrow())
+                ->match();
+            if ($isArrow) {
+                return false;
+            }
+        }
+
         return true;
     }
 

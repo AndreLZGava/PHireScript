@@ -8,7 +8,11 @@ use PHireScript\Compiler\Emitter\Base\NodeEmitterAbstract;
 use PHireScript\Compiler\Emitter\Base\EmitContext;
 use PHireScript\Compiler\Emitter\Base\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ArrowFunctionNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\PropertyAccessNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\ThisExpressionNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Scopes\MethodScopeNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\AssignmentNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Statements\ExpressionStatementNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Statements\ReturnNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Statements\VariableReferenceNode;
 
@@ -21,7 +25,8 @@ class ArrowFunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        $signature = ' function';
+        $hasThis = $this->containsThisExpression($node->bodyCode?->children ?? []);
+        $signature = $hasThis ? ' function' : ' static function';
 
         $paramNames = [];
         if ($node->parameters !== null) {
@@ -46,6 +51,44 @@ class ArrowFunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
         }
 
         return $signature . $ctx->emitter->emit($node->bodyCode, $ctx);
+    }
+
+    /** @param object[] $nodes */
+    private function containsThisExpression(array $nodes): bool
+    {
+        foreach ($nodes as $child) {
+            if ($this->nodeHasThis($child)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function nodeHasThis(object $node): bool
+    {
+        if ($node instanceof ThisExpressionNode) {
+            return true;
+        }
+        // Nested arrow function is an independent closure scope — do not recurse
+        if ($node instanceof ArrowFunctionNode) {
+            return false;
+        }
+        if ($node instanceof PropertyAccessNode) {
+            return $this->nodeHasThis($node->object);
+        }
+        if ($node instanceof ReturnNode && $node->expression !== null) {
+            return $this->nodeHasThis($node->expression);
+        }
+        if ($node instanceof AssignmentNode && $node->right !== null) {
+            return $this->nodeHasThis($node->left) || $this->nodeHasThis($node->right);
+        }
+        if ($node instanceof ExpressionStatementNode) {
+            return $this->nodeHasThis($node->expression);
+        }
+        if ($node instanceof MethodScopeNode) {
+            return $this->containsThisExpression($node->children);
+        }
+        return false;
     }
 
     /**

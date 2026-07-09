@@ -148,6 +148,10 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
             if (isset($sentParams[$methodParamId])) {
                 $value = $ctx->emitter->emit($sentParams[$methodParamId], $ctx);
             } else {
+                if ($expectedParam->relatedKeyParam && !$expectedParam->required) {
+                    $code = \str_replace('[' . $expectedParam->name . ']', '[]', $code);
+                    continue;
+                }
                 $value = $this->processDefaultValue($expectedParam);
             }
 

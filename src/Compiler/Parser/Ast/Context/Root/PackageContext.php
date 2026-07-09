@@ -56,10 +56,13 @@ class PackageContext extends AbstractContext
     public function validation(Token $token, ParseContext $parseContext): void
     {
         if ($token->isEndOfLine()) {
-            $this->node->object = $parseContext
+            $classToken = $parseContext
                 ->tokenManager
-                ->getNextAfterFirstFoundElement(RuntimeClass::OBJECT_AS_CLASS)
-                ->value;
+                ->getNextAfterFirstFoundElement(RuntimeClass::OBJECT_AS_CLASS);
+
+            $this->node->object = $classToken !== null
+                ? $classToken->value
+                : \pathinfo($this->node->file, \PATHINFO_FILENAME);
 
             $this->node->generateNamespace($parseContext);
             $this->node->validate();

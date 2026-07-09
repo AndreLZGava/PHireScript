@@ -54,7 +54,14 @@ class MethodConsumptionChecker extends Checker
         foreach ($params as $number => $param) {
             $paramRawType = $param->getRawType();
 
+            if (!isset($expected[$number])) {
+                continue;
+            }
+
             if ($expected[$number]->relatedKeyParam && \in_array($paramRawType, $allowedKeys, true)) {
+                continue;
+            }
+            if ($expected[$number]->relatedKeyParam && empty($allowedKeys)) {
                 continue;
             }
             if ($expected[$number]->relatedKeyParam && !\in_array($paramRawType, $allowedKeys, true)) {

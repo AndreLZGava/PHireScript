@@ -29,9 +29,9 @@ class DotResolver implements ContextTokenResolver
             return;
         }
 
-        $last = !empty($context->children) ? end($context->children) : null;
-        if ($last !== null) {
-            $parseContext->variables->setVirtualVariable($last);
+        $focus = $parseContext->variables->getVariableOnFocus();
+        if ($focus !== null) {
+            $parseContext->variables->setVirtualVariable($focus);
         }
     }
 }

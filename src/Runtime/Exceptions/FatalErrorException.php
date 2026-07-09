@@ -25,7 +25,7 @@ class FatalErrorException
             echo "</pre>";
         }
 
-        exit;
+        exit(1);
     }
     private static function renderCli(Throwable $e): void
     {
@@ -191,7 +191,7 @@ class FatalErrorException
 
         echo '</div>';
 
-        exit;
+        exit(1);
     }
 
     private static function renderCodePreview(string $file, int $line, int $padding = 3): string
