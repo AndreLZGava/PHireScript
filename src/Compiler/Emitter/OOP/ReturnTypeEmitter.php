@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Emitter\OOP;
 
 use PHireScript\Compiler\Emitter\Base\NodeEmitterAbstract;
-use Exception;
 use PHireScript\Compiler\Emitter\Base\EmitContext;
 use PHireScript\Compiler\Emitter\Base\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\Signatures\ReturnTypeNode;
+use PHireScript\Helper\TypeResolver;
 
 class ReturnTypeEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
@@ -26,7 +26,7 @@ class ReturnTypeEmitter extends NodeEmitterAbstract implements NodeEmitter
                 $types[] = 'static';
                 continue;
             }
-            $types[] = \mb_strtolower($type);
+            $types[] = TypeResolver::isPrimitive($type) ? TypeResolver::nativeType($type) : $type;
         }
 
         $code .= \implode('|', $types);

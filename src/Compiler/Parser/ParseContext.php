@@ -25,6 +25,20 @@ class ParseContext
     /** @var array<string, string> varName → external alias for variables inferred as external type */
     public array $externalVarTypes = [];
 
+    /** Name of the class whose body is currently being parsed (null outside a class body) */
+    public ?string $currentClassName = null;
+
+    /** Methods of the current class: name → raw return type (e.g. 'Int', 'String', 'Void') */
+    public array $currentClassMethods = [];
+
+    /**
+     * Global registry of all class nodes seen in this file: className → ['methods' => [...], 'extends' => string|null]
+     * Accumulated across classes; used for transitive inheritance lookup during parse.
+     *
+     * @var array<string, array{methods: array<string, string>, extends: string|null}>
+     */
+    public array $classMethodRegistry = [];
+
     public function __construct(
         public VariableManager $variables,
         public Program $program,

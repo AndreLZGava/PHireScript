@@ -57,14 +57,15 @@ class TokenManager
         ];
     }
 
-    public function getNextAfterFirstFoundElement($elementsAsValue)
+    public function getNextAfterFirstFoundElement($elementsAsValue): ?Token
     {
-        $leftTokens = $this->getLeftTokens(1000);
-        foreach ($leftTokens as $key => $token) {
-            if (\in_array($token->value, $elementsAsValue, true)) {
-                return $leftTokens[$key + 1];
+        $count = \count($this->tokens);
+        for ($i = $this->currentPosition; $i < $count; $i++) {
+            if (\in_array($this->tokens[$i]->value, $elementsAsValue, true)) {
+                return $this->tokens[$i + 1] ?? null;
             }
         }
+        return null;
     }
 
     public function getContext()

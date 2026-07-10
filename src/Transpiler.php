@@ -24,6 +24,9 @@ class Transpiler implements TranspilerInterface
     /** @var array<string, Program> */
     private array $boundAsts = [];
 
+    /** Reused across all parseOnly() calls so classMethodRegistry persists between files. */
+    private ?Parser $parser = null;
+
     public function __construct(
         private readonly array $config,
         private readonly DependencyGraphBuilder $dependencyManager,
@@ -57,13 +60,13 @@ class Transpiler implements TranspilerInterface
         $typedTokens = $tokens;
         $validator->validate($typedTokens);
 
-        $parser = new Parser(
+        $this->parser ??= new Parser(
             $this->config,
             $this->dependencyManager,
             $this->context,
             $this->cache,
         );
-        $ast = $parser->parse($tokens, $path);
+        $ast = $this->parser->parse($tokens, $path);
 
         if ($this->cache !== null) {
             $this->cache->setProgram($path, $ast);

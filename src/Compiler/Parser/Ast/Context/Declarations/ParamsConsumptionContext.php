@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast\Context\Declarations;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
+use PHireScript\Compiler\Parser\Ast\Context\Expressions\FunctionCallContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ConsumptionParams\ClosingParamsConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\CommaResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalClassAccessResolver;
@@ -73,8 +74,12 @@ class ParamsConsumptionContext extends AbstractContext
 
     public function afterClose(Token $token, ParseContext $parseContext): void
     {
-        //$parseContext->contextManager->exit();
-        return;
+        // When the parent FunctionCallContext is a user-defined method call (no BaseMethods),
+        // close it immediately after the param list closes — the parent expression handles the rest.
+        $parent = $parseContext->contextManager->current();
+        if ($parent instanceof FunctionCallContext && !isset($parent->node->method)) {
+            $parseContext->contextManager->exit();
+        }
     }
 
 

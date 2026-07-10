@@ -8,6 +8,7 @@ use PHireScript\Compiler\Emitter\Base\NodeEmitterAbstract;
 use PHireScript\Compiler\Emitter\Base\EmitContext;
 use PHireScript\Compiler\Emitter\Base\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\PrimitiveCastingNode;
+use PHireScript\Helper\TypeResolver;
 
 class CastingEmitter extends NodeEmitterAbstract implements NodeEmitter
 {
@@ -18,6 +19,7 @@ class CastingEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     public function emit(object $node, EmitContext $ctx): string
     {
-        return  '(' . $node->to . ')' . $ctx->emitter->emit($node->value, $ctx);
+        $cast = TypeResolver::isPrimitive($node->to) ? TypeResolver::nativeType($node->to) : $node->to;
+        return '(' . $cast . ')' . $ctx->emitter->emit($node->value, $ctx);
     }
 }

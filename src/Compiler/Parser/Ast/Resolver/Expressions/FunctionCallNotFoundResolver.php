@@ -25,6 +25,8 @@ class FunctionCallNotFoundResolver implements ContextTokenResolver
     ): void {
         $focus = $parseContext->variables->getVariableOnFocus();
         $rawType = null;
+        $varName = null;
+
         if ($focus !== null) {
             if (method_exists($focus, 'getRawType')) {
                 $rawType = $focus->getRawType();
@@ -35,10 +37,26 @@ class FunctionCallNotFoundResolver implements ContextTokenResolver
             ) {
                 $rawType = $focus->type->getRawType();
             }
+
+            if (property_exists($focus, 'name')) {
+                $varName = $focus->name;
+            }
         }
-        $typeHint = $rawType !== null ? " on type \"{$rawType}\"" : '';
+
+        $parts = [];
+
+        if ($varName !== null) {
+            $parts[] = "Variable: \${$varName}";
+        }
+
+        if ($rawType !== null) {
+            $parts[] = "Type: {$rawType}";
+        }
+
+        $detail = !empty($parts) ? ' — ' . \implode(' | ', $parts) : '';
+
         throw new CompileException(
-            "Method \"{$token->value}\" does not exist nor is supported{$typeHint}",
+            "Method \"{$token->value}\" does not exist nor is supported{$detail}",
             $token->line,
             $token->column
         );

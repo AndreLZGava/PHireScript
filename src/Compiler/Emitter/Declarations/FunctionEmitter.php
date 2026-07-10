@@ -10,6 +10,7 @@ use PHireScript\Compiler\Emitter\Base\EmitContext;
 use PHireScript\Compiler\Emitter\Base\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\FunctionNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\NamedArgNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\ThisExpressionNode;
 use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 use PHireScript\Runtime\Exceptions\CompileException;
@@ -24,6 +25,13 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
     public function emit(object $node, EmitContext $ctx): string
     {
         $insideExpression = $ctx->insideExpression;
+
+        // User-defined method call: this.myMethod() — no BaseMethods attached
+        if (!isset($node->method) && ($node->variableBase ?? null) instanceof ThisExpressionNode) {
+            $params = $this->emitUserMethodParams($node, $ctx);
+            $call   = '$this->' . $node->token->value . '(' . $params . ')';
+            return $insideExpression ? $call : $call . ";\n";
+        }
 
         // Safe navigation: variableBase has safeNavigation=true
         $variableBase = $node->variableBase ?? null;
@@ -133,6 +141,19 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
         $indented = \implode("\n    ", $lines);
 
         return "(function() use ($variable) {\n    $indented\n})()";
+    }
+
+    private function emitUserMethodParams(FunctionNode $node, EmitContext $ctx): string
+    {
+        $params = $node->params->params ?? [];
+        if (empty($params)) {
+            return '';
+        }
+        $parts = [];
+        foreach ($params as $param) {
+            $parts[] = $ctx->emitter->emit($param, $ctx);
+        }
+        return \implode(', ', $parts);
     }
 
     private function overrideParams($normalized)

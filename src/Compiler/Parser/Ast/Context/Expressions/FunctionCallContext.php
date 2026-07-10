@@ -82,6 +82,17 @@ class FunctionCallContext extends AbstractContext
          * .myAnotherFunction().
          * myNewMethod()
          */
-        return $token->isDot() || $token->isSafeNavigation() || $token->isEndOfLine();
+        if ($token->isDot() || $token->isSafeNavigation() || $token->isEndOfLine()) {
+            return true;
+        }
+
+        // For user-defined methods (method === null), also close on binary operators,
+        // closing parenthesis, or closing curly bracket so the parent context can handle them.
+        if (!isset($this->node->method)) {
+            $binaryOps = ['+', '-', '*', '/', '%', '**', '>', '<', '==', '===', '!=', '!==', '>=', '<=', '&&', '||'];
+            return \in_array($token->value, [...$binaryOps, ')', '}'], true);
+        }
+
+        return false;
     }
 }

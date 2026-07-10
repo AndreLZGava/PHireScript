@@ -19,6 +19,9 @@ use PHireScript\Runtime\RuntimeClass;
 
 class Parser
 {
+    /** Shared across all parse() calls in a single build — enables cross-file inheritance lookup. */
+    private array $sharedClassRegistry = [];
+
     public function __construct(
         private readonly array $config,
         protected DependencyGraphBuilder $dependencyBuilder,
@@ -47,6 +50,7 @@ class Parser
             dependencyBuilder: $this->dependencyBuilder,
             compilerContext: $this->context,
         );
+        $parseContext->classMethodRegistry = &$this->sharedClassRegistry;
 
         $rootContext = new ProgramContext($parseContext);
 

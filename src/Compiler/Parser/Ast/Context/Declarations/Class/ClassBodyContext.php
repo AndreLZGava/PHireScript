@@ -66,4 +66,10 @@ class ClassBodyContext extends AbstractContext
     {
         return $token->isClosingCurlyBracket();
     }
+
+    public function afterClose(Token $token, ParseContext $parseContext): void
+    {
+        $parseContext->currentClassName    = null;
+        $parseContext->currentClassMethods = [];
+    }
 }

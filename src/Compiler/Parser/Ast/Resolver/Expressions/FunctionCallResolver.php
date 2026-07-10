@@ -7,6 +7,7 @@ namespace PHireScript\Compiler\Parser\Ast\Resolver\Expressions;
 use Exception;
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Context\Expressions\FunctionCallContext;
+use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\ThisExpressionNode;
 use PHireScript\Compiler\Parser\Ast\Resolver\ContextTokenResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\ArrayLiteralNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Expressions\BoolNode;
@@ -49,6 +50,16 @@ class FunctionCallResolver implements ContextTokenResolver
     {
         try {
             $focus = $parseContext->variables->getVariableOnFocus();
+
+            if (
+                $focus instanceof ThisExpressionNode &&
+                $token->isIdentifier() &&
+                $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningParenthesis() &&
+                $this->resolveFromClassHierarchy($token->value, $parseContext) !== null
+            ) {
+                return true;
+            }
+
             return $token->isIdentifier() &&
                 $parseContext->tokenManager->getNextTokenAfterCurrent()->isOpeningParenthesis() &&
                 (
@@ -69,6 +80,26 @@ class FunctionCallResolver implements ContextTokenResolver
         AbstractContext $context
     ): void {
         $focus = $parseContext->variables->getVariableOnFocus();
+
+        if ($focus instanceof ThisExpressionNode && $parseContext->currentClassName !== null) {
+            $returnType = $this->resolveFromClassHierarchy($token->value, $parseContext);
+            if ($returnType !== null) {
+                $function               = new FunctionNode(token: $token);
+                $function->variableBase = $focus;
+                $virtualVar             = $this->getNewVirtualVariable($token, $returnType);
+                $parseContext->variables->setVirtualVariable($virtualVar);
+                // Remove the ThisExpressionNode that was added as a child before the dot — the
+                // FunctionNode already carries it as variableBase, so it must not remain as a
+                // standalone child that would be mistaken for the binary expression's right side.
+                if (!empty($context->children) && end($context->children) instanceof ThisExpressionNode) {
+                    \array_pop($context->children);
+                }
+                $context->addChild($function);
+                $parseContext->contextManager->enter(new FunctionCallContext($function));
+                return;
+            }
+        }
+
         $variableType = $this->getFocusRawType($focus);
         $functionDefinition = $parseContext->symbolTable->from(
             $variableType
@@ -140,6 +171,22 @@ class FunctionCallResolver implements ContextTokenResolver
                 }
             }
         }
+    }
+
+    private function resolveFromClassHierarchy(string $methodName, ParseContext $parseContext): ?string
+    {
+        $className = $parseContext->currentClassName;
+        while ($className !== null) {
+            $entry = $parseContext->classMethodRegistry[$className] ?? null;
+            if ($entry === null) {
+                break;
+            }
+            if (isset($entry['methods'][$methodName])) {
+                return $entry['methods'][$methodName];
+            }
+            $className = $entry['extends'];
+        }
+        return null;
     }
 
     private function getNewVirtualVariable($token, $value)
