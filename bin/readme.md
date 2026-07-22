@@ -1,5 +1,5 @@
 # PHireScript CLI Documentation
-PHireScript is a powerful transpiler that converts .ps files into strictly typed PHP code. This guide covers how to initialize your project and use the built-in CLI tools to compile, debug, and monitor your source code.
+PHireScript is a powerful transpiler that converts .phs files into strictly typed PHP code. This guide covers how to initialize your project and use the built-in CLI tools to compile, debug, and monitor your source code.
 
 ## 1. Project Initialization
 To start using PHireScript, you must first initialize your project configuration. This creates a PHireScript.json file in your root directory, which stores your environment settings and default paths.
@@ -16,7 +16,7 @@ Development Mode: (y/n) Toggle specific debug features.
 
 Application Namespace: The base prefix for all generated PHP classes.
 
-Source Path: Default directory containing your .ps files (e.g., src/ps).
+Source Path: Default directory containing your .phs files (e.g., src/ps).
 
 Distribution Path: Default directory for compiled .php files (e.g., dist/php).
 
@@ -28,12 +28,12 @@ Usage
 
 php bin/debug <source_file>
 ```
-<source_file>: (Required) Path to the specific .ps file you wish to analyze.
+<source_file>: (Required) Path to the specific .phs file you wish to analyze.
 
 Example
 ```Bash
 
-php bin/debug src/User.ps
+php bin/debug src/User.phs
 ```
 ## 3. Building the Project
 The build command compiles your PHireScript files into production-ready PHP files.
@@ -70,7 +70,7 @@ Purpose
 Use this to audit the logic conversion without the final PHP boilerplate or formatting being applied. It is the "raw" output of the transpilation engine.
 
 ## 5. File Watcher (Hot Reload)
-The watch command starts a persistent process that monitors your source directory for changes. When a .ps file is saved, PHireScript re-compiles only that specific file, ensuring high performance during development.
+The watch command starts a persistent process that monitors your source directory for changes. When a .phs file is saved, PHireScript re-compiles only that specific file, ensuring high performance during development.
 
 Usage
 ```Bash
@@ -85,7 +85,7 @@ Example
 
 php bin/watch
 # Output: [WATCHER] Monitoring src/...
-# Output: [COMPILED] User.ps -> User.php (12ms)
+# Output: [COMPILED] User.phs -> User.php (12ms)
 ```
 Configuration Reference (PHireScript.json)
 You can manually edit your configuration file at any time. A typical structure looks like this:

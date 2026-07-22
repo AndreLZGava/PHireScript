@@ -1,4 +1,4 @@
-Run the PHireScript compiler in BUILD mode, compiling `.ps` files to `.php` using paths from `PHireScript.json`.
+Run the PHireScript compiler in BUILD mode, compiling `.phs` files to `.php` using paths from `PHireScript.json`.
 
 From your root sandbox project
 
@@ -6,4 +6,4 @@ From your root sandbox project
 cd /phirescript && php bin/build
 ```
 
-If there are compilation errors, show the error message and the relevant `.ps` file content around the failing line.
+If there are compilation errors, show the error message and the relevant `.phs` file content around the failing line.

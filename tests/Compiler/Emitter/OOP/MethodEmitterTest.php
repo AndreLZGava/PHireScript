@@ -82,7 +82,7 @@ class MethodEmitterTest extends EmitterTestCase
     public function testDoesNotSupportOtherNodes(): void
     {
         $token = $this->makeToken('T_KEYWORD', 'pkg');
-        $node = new \PHireScript\Compiler\Parser\Ast\Nodes\Declarations\PackageNode($token, 'file.ps', 'App', 'Foo');
+        $node = new \PHireScript\Compiler\Parser\Ast\Nodes\Declarations\PackageNode($token, 'file.phs', 'App', 'Foo');
         $node->namespace = 'App\\Foo';
 
         $ctx = $this->makeCtx();

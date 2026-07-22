@@ -139,7 +139,7 @@ class Compiler
     }
 
     /**
-     * Collect all compilable source files (.ps / .pst) in the given directory.
+     * Collect all compilable source files (.phs / .pht) in the given directory.
      *
      * @return array<int, string>
      */

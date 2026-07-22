@@ -40,7 +40,7 @@ class TranspilerTest extends TestCase
 
     private function simpleInterfacePath(): string
     {
-        return 'samples/test/Greeter.ps';
+        return 'samples/test/Greeter.phs';
     }
 
     // -------------------------------------------------------------------------
@@ -75,7 +75,7 @@ class TranspilerTest extends TestCase
         $this->assertNotEmpty($transpiler->getCodeBeforeGenerator());
 
         try {
-            $transpiler->compile('namespace Foo', 'test.ps');
+            $transpiler->compile('namespace Foo', 'test.phs');
         } catch (CompileException) {
         }
 
@@ -122,7 +122,7 @@ class TranspilerTest extends TestCase
             class Box as scoped {}
             PS;
 
-        $result = $this->makeTranspiler()->compile($code, 'samples/test/Box.ps');
+        $result = $this->makeTranspiler()->compile($code, 'samples/test/Box.phs');
 
         $this->assertStringContainsString('class Box', $result);
     }
@@ -137,7 +137,7 @@ class TranspilerTest extends TestCase
             }
             PS;
 
-        $result = $this->makeTranspiler()->compile($code, 'samples/test/Payload.ps');
+        $result = $this->makeTranspiler()->compile($code, 'samples/test/Payload.phs');
 
         $this->assertStringContainsString('Payload', $result);
     }
@@ -150,35 +150,35 @@ class TranspilerTest extends TestCase
     {
         $this->expectException(CompileException::class);
 
-        $this->makeTranspiler()->compile('namespace Foo', 'test.ps');
+        $this->makeTranspiler()->compile('namespace Foo', 'test.phs');
     }
 
     public function testCompileThrowsForSemicolon(): void
     {
         $this->expectException(CompileException::class);
 
-        $this->makeTranspiler()->compile('pkg PHireScript.Test;', 'test.ps');
+        $this->makeTranspiler()->compile('pkg PHireScript.Test;', 'test.phs');
     }
 
     public function testCompileThrowsForLowercaseVoid(): void
     {
         $this->expectException(CompileException::class);
 
-        $this->makeTranspiler()->compile('void', 'test.ps');
+        $this->makeTranspiler()->compile('void', 'test.phs');
     }
 
     public function testCompileThrowsForFunctionKeyword(): void
     {
         $this->expectException(CompileException::class);
 
-        $this->makeTranspiler()->compile('function foo() {}', 'test.ps');
+        $this->makeTranspiler()->compile('function foo() {}', 'test.phs');
     }
 
     public function testCompileThrowsForPrivateKeyword(): void
     {
         $this->expectException(CompileException::class);
 
-        $this->makeTranspiler()->compile('private String name', 'test.ps');
+        $this->makeTranspiler()->compile('private String name', 'test.phs');
     }
 
     public function testCompileThrowsForUnbalancedOpenBrace(): void
@@ -189,14 +189,14 @@ class TranspilerTest extends TestCase
             pkg PHireScript.Test
 
             interface Unclosed {
-            PS, 'test.ps');
+            PS, 'test.phs');
     }
 
     public function testCompileThrowsWhenObjectDefinedWithoutPkg(): void
     {
         $this->expectException(CompileException::class);
 
-        $this->makeTranspiler()->compile('class Orphan as scoped {}', 'test.ps');
+        $this->makeTranspiler()->compile('class Orphan as scoped {}', 'test.phs');
     }
 
     public function testCompileThrowsForMultipleObjectsInOneFile(): void
@@ -208,6 +208,6 @@ class TranspilerTest extends TestCase
 
             interface One {}
             interface Two {}
-            PS, 'test.ps');
+            PS, 'test.phs');
     }
 }

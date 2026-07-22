@@ -18,11 +18,11 @@ class ValidatorTest extends TestCase
 
     /**
      * Tokenise a source string and run it through the Validator.
-     * The Scanner path is given a .ps extension so test-only patterns are skipped.
+     * The Scanner path is given a .phs extension so test-only patterns are skipped.
      */
     private function validate(string $code): void
     {
-        $tokens = (new Scanner($code, 'test.ps'))->tokenize();
+        $tokens = (new Scanner($code, 'test.phs'))->tokenize();
         (new Validator())->validate($tokens);
     }
 

@@ -240,7 +240,7 @@ src/
 │   │                                   # VariableReferenceAssignEmitter
 │   │
 │   ├── FileManager/
-│   │   ├── ClassScanner.php            # Scans source dirs for .ps/.pst files
+│   │   ├── ClassScanner.php            # Scans source dirs for .phs/.pht files
 │   │   ├── ErrorRenderer.php           # Formats compile errors for CLI / HTML output
 │   │   ├── FileCompiler.php            # Compiles a single file through the full pipeline
 │   │   └── FileWatcher.php             # Inotify/polling loop for WATCH mode
@@ -302,10 +302,10 @@ src/
 
 ## Compiler Pipeline
 
-Each `.ps` file passes through all stages in order.
+Each `.phs` file passes through all stages in order.
 
 ```
-Source text (.ps)
+Source text (.phs)
   │
   ▼
 Scanner                         src/Compiler/Scanner.php
@@ -891,7 +891,7 @@ Register it in `src/Compiler/Emitter.php`.
 ### 6. Sandbox case
 ```
 PHire-Script-Sandbox/samples/success/case_N/
-  ├── YourFeature.ps         # source exercising the new syntax
+  ├── YourFeature.phs         # source exercising the new syntax
   └── CaseValidation.php     # asserts expected compilation output
 ```
 

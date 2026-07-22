@@ -22,7 +22,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\OOP\PropertyNode;
 
 class ParserTest extends TestCase
 {
-    private function parse(string $code, string $path = 'Test.ps'): Program
+    private function parse(string $code, string $path = 'Test.phs'): Program
     {
         $tokens = (new Scanner($code, $path))->tokenize();
         $parser = new Parser(
@@ -33,7 +33,7 @@ class ParserTest extends TestCase
         return $parser->parse($tokens, $path);
     }
 
-    private function firstStatement(string $code, string $path = 'Test.ps'): mixed
+    private function firstStatement(string $code, string $path = 'Test.phs'): mixed
     {
         $program = $this->parse($code, $path);
         $this->assertNotEmpty($program->statements, 'Expected at least one statement from: ' . $code);
@@ -73,7 +73,7 @@ class ParserTest extends TestCase
 
     public function testMultipleDeclarationsProduceMultipleStatements(): void
     {
-        $program = $this->parse("pkg PHireScript.Foo.IFoo\ninterface IFoo {}", 'IFoo.ps');
+        $program = $this->parse("pkg PHireScript.Foo.IFoo\ninterface IFoo {}", 'IFoo.phs');
         $this->assertCount(2, $program->statements);
     }
 
@@ -90,14 +90,14 @@ class ParserTest extends TestCase
     public function testPackageObjectIsLastSegment(): void
     {
         /** @var PackageNode $node */
-        $node = $this->firstStatement("pkg PHireScript.Samples1.Foo\nclass Foo {}", 'Foo.ps');
+        $node = $this->firstStatement("pkg PHireScript.Samples1.Foo\nclass Foo {}", 'Foo.phs');
         $this->assertSame('Foo', $node->object);
     }
 
     public function testPackagePropertyContainsFullPath(): void
     {
         /** @var PackageNode $node */
-        $node = $this->firstStatement("pkg PHireScript.Samples1.Foo\nclass Foo {}", 'Foo.ps');
+        $node = $this->firstStatement("pkg PHireScript.Samples1.Foo\nclass Foo {}", 'Foo.phs');
         $this->assertSame('PHireScript.Samples1.Foo', $node->package);
     }
 
@@ -369,7 +369,7 @@ class ParserTest extends TestCase
 
     public function testSecondStatementTokenIsOnCorrectLine(): void
     {
-        $program = $this->parse("pkg PHireScript.Foo.IFoo\ninterface IFoo {}", 'IFoo.ps');
+        $program = $this->parse("pkg PHireScript.Foo.IFoo\ninterface IFoo {}", 'IFoo.phs');
         $this->assertSame(2, $program->statements[1]->token->line);
     }
 }

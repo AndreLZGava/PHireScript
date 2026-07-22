@@ -41,7 +41,7 @@ if ($processed) {
 }
 
 if ($file === null || !file_exists($file)) {
-    fwrite(STDERR, "Usage: php bin/inspect <file.ps> [--phase=tokens|parse|bind|emit|processed] [--processed] [--json]\n");
+    fwrite(STDERR, "Usage: php bin/inspect <file.phs> [--phase=tokens|parse|bind|emit|processed] [--processed] [--json]\n");
     fwrite(STDERR, "  --processed   Show all tokens after parse with the resolver class that handled each one\n");
     exit(1);
 }

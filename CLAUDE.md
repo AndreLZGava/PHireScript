@@ -1,6 +1,6 @@
 # PHireScript
 
-PHireScript is a transpiler that converts `.ps` files into strictly typed PHP code, targeting PHP 8.2 as the minimum version. The goal is to evolve the target range over time (similar to how TypeScript targets different ECMAScript versions), but older PHP versions will never be supported. It implements a full compiler pipeline: Scanner → Validator → Parser → Binder → Checker → Emitter → PhpFileGenerator.
+PHireScript is a transpiler that converts `.phs` files into strictly typed PHP code, targeting PHP 8.2 as the minimum version. The goal is to evolve the target range over time (similar to how TypeScript targets different ECMAScript versions), but older PHP versions will never be supported. It implements a full compiler pipeline: Scanner → Validator → Parser → Binder → Checker → Emitter → PhpFileGenerator.
 
 ## Setup
 
@@ -15,7 +15,7 @@ php bin/init   # creates PHireScript.json interactively (first time only)
 vendor/bin/phpunit
 ```
 
-Unit tests live in `tests/`. Integration testing is done via the sandbox project (PHire-Script-Sandbox), which runs the orchestrator against sample `.ps` files.
+Unit tests live in `tests/`. Integration testing is done via the sandbox project (PHire-Script-Sandbox), which runs the orchestrator against sample `.phs` files.
 
 ## Quality
 
@@ -36,11 +36,11 @@ All commands are run from the `phirescript/` directory:
 
 | Command | Description |
 |---|---|
-| `php bin/build [src] [dist]` | Compile `.ps` → `.php` (production) |
+| `php bin/build [src] [dist]` | Compile `.phs` → `.php` (production) |
 | `php bin/watch [src] [dist]` | Hot reload — recompiles on file save |
-| `php bin/debug <file.ps>` | Inspect tokens/AST for a single file |
-| `php bin/snapshot [src] [dist]` | Generate `.psc` intermediate files |
-| `php bin/validate [src] [dist]` | Compile `.pst` test files only |
+| `php bin/debug <file.phs>` | Inspect tokens/AST for a single file |
+| `php bin/snapshot [src] [dist]` | Generate `.phc` intermediate files |
+| `php bin/validate [src] [dist]` | Compile `.pht` test files only |
 | `php bin/validateCompiled` | Run `php -l` + PHPUnit on compiled output |
 
 Source and dist paths default to `PHireScript.json` when not passed as arguments.
@@ -49,9 +49,9 @@ Source and dist paths default to `PHireScript.json` when not passed as arguments
 
 | Extension | Purpose | Compiled to |
 |---|---|---|
-| `.ps` | PHireScript source | `.php` |
-| `.pst` | PHireScript test files | `*Test.php` (PHPUnit-compatible) |
-| `.psc` | Snapshot (intermediate state) | debug only |
+| `.phs` | PHireScript source | `.php` |
+| `.pht` | PHireScript test files | `*Test.php` (PHPUnit-compatible) |
+| `.phc` | Snapshot (intermediate state) | debug only |
 
 ## PHireScript.json
 
@@ -78,7 +78,7 @@ The `resolver` field controls how `inject {}` blocks are compiled — it sets th
 ## Compiler Pipeline
 
 ```
-.ps source
+.phs source
   → Scanner       (tokenization, regex-based)
   → Validator     (forbidden keywords, syntax guards)
   → Parser        (tokens → AST, context-based recursive descent)
@@ -90,10 +90,10 @@ The `resolver` field controls how `inject {}` blocks are compiled — it sets th
 ```
 
 **CompileMode** controls which extensions are processed and whether output is persisted:
-- `BUILD` — processes `.ps`, writes `.php`
-- `TEST` — processes `.pst`, writes `*Test.php`
-- `DEBUG` — processes `.ps` + `.pst`, in-memory only
-- `SNAPSHOT` — writes `.psc` (pre-generator intermediate)
+- `BUILD` — processes `.phs`, writes `.php`
+- `TEST` — processes `.pht`, writes `*Test.php`
+- `DEBUG` — processes `.phs` + `.pht`, in-memory only
+- `SNAPSHOT` — writes `.phc` (pre-generator intermediate)
 - `WATCH` — BUILD in a loop, reacts to file changes
 - `CHECK` — validates only, no output
 
@@ -124,7 +124,7 @@ Features are classified into three tiers. When working on the compiler, respect 
 
 - **Arrow Functions** — basic cases work; edge cases may not
 - **Collections** — `List<T>`, `Map<T>`, `Queue<T>`, `Stack<T>` — type declarations compile; full runtime behavior incomplete
-- **Testing / Validate blocks (`.pst`)** — compiles to `*Test.php`, but with limitations
+- **Testing / Validate blocks (`.pht`)** — compiles to `*Test.php`, but with limitations
 
 ### Sketch — syntax may exist in the parser/emitter, but the feature is not usable
 

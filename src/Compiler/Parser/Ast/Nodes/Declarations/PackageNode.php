@@ -69,8 +69,8 @@ class PackageNode extends Statement
         $fileDir = \current(\explode('/' . $this->object, $this->file));
 
         // Build the namespace segment from cwd-relative path so that:
-        //   cwd = /project, file = /project/src/output/Foo.ps → segment = src\output
-        //   cwd = /project, file = /project/samples/case_1/Foo.ps → segment = samples\case_1
+        //   cwd = /project, file = /project/src/output/Foo.phs → segment = src\output
+        //   cwd = /project, file = /project/samples/case_1/Foo.phs → segment = samples\case_1
         $cwd = \rtrim((string) \getcwd(), '/');
 
         if (\str_starts_with($fileDir, $cwd . '/')) {

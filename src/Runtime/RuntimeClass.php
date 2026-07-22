@@ -15,7 +15,14 @@ class RuntimeClass
     public const CONTEXT_GET_BODY_METHOD = 'method';
 
     public const OBJECT_AS_CLASS = [
-        'type', 'class', 'interface', 'trait', 'enum', 'immutable', 'attribute', 'validate',
+        'type',
+        'class',
+        'interface',
+        'trait',
+        'enum',
+        'immutable',
+        'attribute',
+        'validate',
     ];
 
     public const START_END_ARGUMENTS = ['(', ')'];
@@ -34,9 +41,9 @@ class RuntimeClass
 
     public const KEYWORD_PACKAGE = 'pkg';
 
-    public const DEFAULT_FILE_EXTENSION = 'ps'; // 'phs'
+    public const DEFAULT_FILE_EXTENSION = 'phs';
 
-    public const DEFAULT_FILE_TEST_EXTENSION = 'pst';
+    public const DEFAULT_FILE_TEST_EXTENSION = 'pht';
 
-    public const DEFAULT_FILE_SNAPSHOT_EXTENSION = 'psc';
+    public const DEFAULT_FILE_SNAPSHOT_EXTENSION = 'phc';
 }

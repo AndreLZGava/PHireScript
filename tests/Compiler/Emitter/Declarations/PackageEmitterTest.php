@@ -12,7 +12,7 @@ class PackageEmitterTest extends EmitterTestCase
     public function testEmitsNamespace(): void
     {
         $token = $this->makeToken('T_KEYWORD', 'pkg');
-        $node = new PackageNode($token, 'path/to/file.ps', 'App', 'Foo');
+        $node = new PackageNode($token, 'path/to/file.phs', 'App', 'Foo');
         $node->namespace = 'App\\Foo';
 
         $ctx = $this->makeCtx();
@@ -24,7 +24,7 @@ class PackageEmitterTest extends EmitterTestCase
     public function testEmitsNamespaceWithDeepPath(): void
     {
         $token = $this->makeToken('T_KEYWORD', 'pkg');
-        $node = new PackageNode($token, 'path/to/deep/file.ps', 'MyApp', 'Services');
+        $node = new PackageNode($token, 'path/to/deep/file.phs', 'MyApp', 'Services');
         $node->namespace = 'MyApp\\Services\\Auth';
 
         $ctx = $this->makeCtx();
@@ -36,7 +36,7 @@ class PackageEmitterTest extends EmitterTestCase
     public function testSupportsPackageNode(): void
     {
         $token = $this->makeToken('T_KEYWORD', 'pkg');
-        $node = new PackageNode($token, 'file.ps', 'App', 'Foo');
+        $node = new PackageNode($token, 'file.phs', 'App', 'Foo');
         $node->namespace = 'App\\Foo';
 
         $ctx = $this->makeCtx();

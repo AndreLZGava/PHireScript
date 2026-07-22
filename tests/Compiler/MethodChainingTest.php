@@ -29,9 +29,9 @@ class MethodChainingTest extends TestCase
         $depBuilder = new DependencyGraphBuilder();
         $symbolTable = new SymbolTable();
 
-        $tokens = (new Scanner($code, 'test.ps'))->tokenize();
+        $tokens = (new Scanner($code, 'test.phs'))->tokenize();
         $parser = new Parser(config: $config, dependencyBuilder: $depBuilder, context: $context);
-        $program = $parser->parse($tokens, 'test.ps');
+        $program = $parser->parse($tokens, 'test.phs');
 
         (new Binder(new SymbolTable()))->bind($program);
 
@@ -48,9 +48,9 @@ class MethodChainingTest extends TestCase
         $context = new CompilerContext(mode: CompileMode::DEBUG, inMemory: true);
         $depBuilder = new DependencyGraphBuilder();
 
-        $tokens = (new Scanner($code, 'test.ps'))->tokenize();
+        $tokens = (new Scanner($code, 'test.phs'))->tokenize();
         $parser = new Parser(config: $config, dependencyBuilder: $depBuilder, context: $context);
-        return $parser->parse($tokens, 'test.ps');
+        return $parser->parse($tokens, 'test.phs');
     }
 
     // -------------------------------------------------------------------------
@@ -82,7 +82,7 @@ class MethodChainingTest extends TestCase
     public function testSafeNavigationTokenRecognized(): void
     {
         // ?. must appear after ) to be tokenized as T_SAFE_NAV (not part of an identifier)
-        $scanner = new Scanner("result = mystring.between('a', 'b')?.length()\n", 'test.ps');
+        $scanner = new Scanner("result = mystring.between('a', 'b')?.length()\n", 'test.phs');
         $tokens = $scanner->tokenize();
         $safeNavToken = null;
         foreach ($tokens as $token) {
