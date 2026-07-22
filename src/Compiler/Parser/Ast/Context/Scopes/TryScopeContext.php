@@ -34,6 +34,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Statements\IfResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\LoopResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\ReturnResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\SwitchResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\ThrowResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\TryResolver;
 use PHireScript\Compiler\Parser\Ast\Nodes\Scopes\TryScopeNode;
 
@@ -60,6 +61,7 @@ class TryScopeContext extends AbstractContext
             new LoopResolver(),
             new SwitchResolver(),
             new TryResolver(),
+            new ThrowResolver(),
             new FunctionCallResolver(),
             new FunctionCallNotFoundResolver(),
             new BinaryExpressionResolver(),

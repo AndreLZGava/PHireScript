@@ -39,6 +39,9 @@ class ParseContext
      */
     public array $classMethodRegistry = [];
 
+    /** @var list<AttributeUsageNode> Accumulated @Attr usages waiting for the next class/property declaration */
+    public array $pendingAttributes = [];
+
     public function __construct(
         public VariableManager $variables,
         public Program $program,

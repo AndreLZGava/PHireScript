@@ -18,6 +18,7 @@ class ClassNode extends ComplexObjectDefinition
     public string $type;
     public bool $readOnly = false;
     public array $modifiers = [];
+    public array $attributes = [];
     public ?string $docBlock = null;
     public ?ClassExtendsNode $extends = null;
     public ?WithNode $with = null;

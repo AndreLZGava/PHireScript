@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Parser\Ast\Context\Declarations\Class;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
+use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\AttributeUsageResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\MethodDeclarationResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\PropertyResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ClosingCurlyBracketResolver;
@@ -29,6 +30,7 @@ class ClassBodyContext extends AbstractContext
         parent::__construct($node);
         $this->resolvers = [
             new EndOfLineResolver(),
+            new AttributeUsageResolver(),
             new PropertyResolver(),
             new ClosingCurlyBracketResolver(),
             new CommentResolver(),

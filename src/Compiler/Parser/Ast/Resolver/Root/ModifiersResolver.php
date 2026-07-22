@@ -15,17 +15,17 @@ use PHireScript\Helper\Debug\Debug;
 class ModifiersResolver implements ContextTokenResolver
 {
     public const MODIFIERS = [
-    '*',
-    '#',
-    '+',
-    '<',
-    '>',
-    'public',
-    'protected',
-    'private',
-    'abstract',
-    'readonly',
-    'static'
+        '*',
+        '#',
+        '+',
+        '<',
+        '>',
+        'public',
+        'protected',
+        'private',
+        'abstract',
+        'readonly',
+        'static'
     ];
 
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
@@ -55,7 +55,7 @@ class ModifiersResolver implements ContextTokenResolver
     {
         return array_values(array_filter(
             $previousModifiers,
-            fn ($item) => \in_array($item, self::MODIFIERS, true)
+            fn($item) => \in_array($item, self::MODIFIERS, true)
         ));
     }
 }

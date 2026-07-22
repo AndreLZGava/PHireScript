@@ -21,7 +21,7 @@ use Throwable;
 
 class Compiler
 {
-    private readonly FileManager $loader;
+    public readonly FileManager $loader;
     private readonly DependencyGraphBuilder $dependencyManager;
     private readonly CacheManager $cache;
 
@@ -127,6 +127,8 @@ class Compiler
         }
 
         $this->loader->loadAndCompile($sourceDir, $distDir, $transpiler, $this->dependencyManager);
+
+        (new Internal($this))->createPHireScriptInternals();
 
         $this->cache->touchCompilerTimestamp(__DIR__ . '/');
         $this->cache->close();

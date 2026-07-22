@@ -23,7 +23,7 @@ class PropertyResolver implements ContextTokenResolver
                 match: fn ($t) => $t->isType(),
                 separator: fn ($t) => $t->isPipe()
             )
-            ->once(fn ($t) => $t->isIdentifier())
+            ->once(fn ($t) => $t->isIdentifier() || $t->isKeyword())
             ->until(fn ($t) => $t->isEndOfLine())
             ->match();
     }
@@ -33,6 +33,9 @@ class PropertyResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
+        $attributes = $parseContext->pendingAttributes;
+        $parseContext->pendingAttributes = [];
+
         $accumulated = $parseContext->consumePrevious();
         $accumulated = is_array($accumulated) ? $accumulated : [];
 
@@ -49,6 +52,7 @@ class PropertyResolver implements ContextTokenResolver
             modifiers: $modifiers,
             getter: $getterVis,
             setter: $setterVis,
+            attributes: $attributes,
         );
 
         $parseContext->contextManager->enter(

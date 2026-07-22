@@ -22,9 +22,9 @@ class Scanner
         'T_NUMBER'      => '/^\d+(\.\d+)?/',
         'T_DEPENDENCY_SCOPE'     => '/^\b(singleton|scoped|transient|newable)\b/',
         'T_KEYWORD'     => '/^\b(class|interface|trait|type|extends|with|' .
-            'implements|inject|async|spawn|return|immutable|try|handle|always' .
+            'implements|inject|async|spawn|return|immutable|try|handle|always|' .
             'if|else|elseif|this|self|super|pkg|use|as|external|abstract|' .
-            'schedule|cache|readonly|static|package)\b/',
+            'schedule|cache|readonly|static|package|attribute|exception|throws|throw)\b/',
         'T_MAGIC_METHODS' => '/^\b(onCreate|onDestroy|onGet|onSet|onHas|onUnset' .
             '|onCall|onStaticCall|toString|toSerialize|toUnserialize|beforeSerialize' .
             '|afterUnserialize|onClone|toInspect)\b/',
@@ -66,7 +66,7 @@ class Scanner
         'T_CONST' => '/^[A-Z][A-Z0-9_]*\b/',
         'T_IDENTIFIER' => '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff!?]*/',
         'T_SAFE_NAV'    => '/^\?\\./',
-        'T_SYMBOL'      => '/^([{}();,:=+<>\#!?\[\]\.$*\/%|-])/',
+        'T_SYMBOL'      => '/^([{}();,:=+<>\#!?\[\]\.$*\/%|@-])/',
         'T_BACKSLASH' => '/^\\\\/',
     ];
 

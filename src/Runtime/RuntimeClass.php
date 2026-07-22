@@ -14,7 +14,9 @@ class RuntimeClass
 
     public const CONTEXT_GET_BODY_METHOD = 'method';
 
-    public const OBJECT_AS_CLASS = ['type', 'class', 'interface', 'trait', 'enum', 'immutable', 'validate'];
+    public const OBJECT_AS_CLASS = [
+        'type', 'class', 'interface', 'trait', 'enum', 'immutable', 'attribute', 'validate',
+    ];
 
     public const START_END_ARGUMENTS = ['(', ')'];
 

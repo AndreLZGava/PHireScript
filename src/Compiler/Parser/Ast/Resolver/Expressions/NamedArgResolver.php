@@ -15,7 +15,7 @@ class NamedArgResolver implements ContextTokenResolver
 {
     public function isTheCase(Token $token, ParseContext $parseContext, AbstractContext $context): bool
     {
-        return $token->isIdentifier()
+        return ($token->isIdentifier() || $token->isKeyword())
             && $parseContext->tokenManager->getNextTokenAfterCurrent()->isColon();
     }
 

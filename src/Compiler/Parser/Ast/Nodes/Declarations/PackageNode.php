@@ -7,7 +7,6 @@ namespace PHireScript\Compiler\Parser\Ast\Nodes\Declarations;
 use Exception;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 use PHireScript\Runtime\RuntimeClass;
 use PHireScript\Compiler\Parser\Ast\Nodes\Statement;

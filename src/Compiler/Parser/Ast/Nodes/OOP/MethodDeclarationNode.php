@@ -24,6 +24,7 @@ class MethodDeclarationNode extends Node
         public bool $mustBeBool = false,
         public bool $mustBeVoid = false,
         public ?MagicBaseMethods $implements = null,
+        public array $attributes = [],
     ) {
     }
 }

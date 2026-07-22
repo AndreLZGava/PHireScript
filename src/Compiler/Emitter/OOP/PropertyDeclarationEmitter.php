@@ -7,6 +7,7 @@ namespace PHireScript\Compiler\Emitter\OOP;
 use PHireScript\Compiler\Emitter\Base\NodeEmitterAbstract;
 use PHireScript\Compiler\Emitter\Base\EmitContext;
 use PHireScript\Compiler\Emitter\Base\NodeEmitter;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\AttributeUsageNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\OOP\PropertyNode;
 use PHireScript\Helper\Debug\Debug;
 
@@ -21,6 +22,14 @@ class PropertyDeclarationEmitter extends NodeEmitterAbstract implements NodeEmit
 
     public function emit(object $node, EmitContext $ctx): string
     {
+        $code = '';
+        foreach ($node->attributes as $attr) {
+            if ($attr instanceof AttributeUsageNode) {
+                $attrLine = $ctx->emitter->emit($attr, $ctx);
+                $code .= '    ' . $attrLine;
+            }
+        }
+
         $visibility = isset($node->modifiers[0]) &&
             $node->modifiers[0] === 'abstract' ?
             'public ' :
@@ -29,6 +38,6 @@ class PropertyDeclarationEmitter extends NodeEmitterAbstract implements NodeEmit
         $name = '$' . $node->name;
         $defaultValue = $node->value ? ' = ' . $ctx->emitter->emit($node->value, $ctx) : '';
 
-        return "    {$visibility}{$type} {$name}{$defaultValue};\n";
+        return $code . "    {$visibility}{$type} {$name}{$defaultValue};\n";
     }
 }

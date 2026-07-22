@@ -12,6 +12,9 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\ClassResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\ImmutableResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\EnumResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\InterfaceResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\AttributeResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\AttributeUsageResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\ExceptionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\TraitResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableConsumptionResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Declaration\VariableResolver;
@@ -35,6 +38,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Root\UseResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\IfResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\LoopResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\SwitchResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Statements\ThrowResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\TryResolver;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
@@ -74,6 +78,7 @@ class ProgramContext extends AbstractContext
             new LoopResolver(),
             new SwitchResolver(),
             new TryResolver(),
+            new ThrowResolver(),
             new ExternalClassAccessResolver(),
             new ExternalMethodCallResolver(),
             new FunctionCallResolver(),
@@ -90,9 +95,13 @@ class ProgramContext extends AbstractContext
             new UseResolver(),
             new ExternalResolver(),
             new ModifiersResolver(),
+            // attribute usage (@AttrName(...)) — must precede class/property declarations
+            new AttributeUsageResolver(),
             // class
+            new AttributeResolver(),
             new ClassResolver(),
             new TraitResolver(),
+            new ExceptionResolver(),
             new TypeResolver(),
             new ImmutableResolver(),
             new EnumResolver(),

@@ -5,6 +5,8 @@ require __DIR__ . '/../vendor/autoload.php';
 use PHireScript\Compiler;
 use PHireScript\Core\CompileMode;
 use PHireScript\Core\CompilerContext;
+use PHireScript\Helper\Debug\Debug;
+use PHireScript\Internal;
 
 $sourceDir = null;
 $distDir   = null;
@@ -24,6 +26,5 @@ if ($argc === 2) {
 }
 
 $context = new CompilerContext(CompileMode::SNAPSHOT, file: $file);
-
 $compiler = new Compiler($context);
 $compiler->compile($sourceDir, $distDir);

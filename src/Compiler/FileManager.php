@@ -164,6 +164,8 @@ class FileManager
             true,
         );
         $configs['php']        = phpversion();
+        $configs['phpShort']   = PHP_MAJOR_VERSION . PHP_MINOR_VERSION;
+
         $configs['metatypes']  = $this->classScanner->listClassesExtending(
             __DIR__ . '/../../src/Runtime/Types/MetaTypes/',
             MetaTypes::class

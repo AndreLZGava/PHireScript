@@ -8,6 +8,7 @@ use PHireScript\Compiler\Binder as CompilerBinder;
 use PHireScript\Compiler\Binder\Binder;
 use PHireScript\Compiler\CompilerPass;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ClassNode;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\ExceptionNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\InterfaceNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Program;
@@ -23,7 +24,10 @@ class TypeRegistrationBinder implements Binder
     public function bind(Node $node, CompilerBinder $binder): void
     {
         foreach ($node->statements as $statement) {
-            if ($statement instanceof ClassNode || $statement instanceof InterfaceNode) {
+            if (
+                $statement instanceof ClassNode || $statement instanceof InterfaceNode
+                || $statement instanceof ExceptionNode
+            ) {
                 $binder->globalTable->registerTypeDefinition($statement->name, $statement);
             }
         }

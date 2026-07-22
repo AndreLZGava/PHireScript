@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PHireScript\Compiler\Emitter\Declarations;
 
 use PHireScript\Compiler\Emitter\Base\NodeEmitterAbstract;
-use Exception;
 use PHireScript\Compiler\Emitter\Base\EmitContext;
 use PHireScript\Compiler\Emitter\Base\NodeEmitter;
 use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\FunctionNode;
@@ -73,7 +72,7 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
         $ctx->insideExpression = $insideExpression;
 
         // Now emit the current method using the temp var as @self
-        $method = $node->method->phpCodeForConversion;
+        $method = $this->qualifyInternalClasses($node->method->phpCodeForConversion, $ctx);
         if (\is_array($method)) {
             $lines = [];
             foreach ($method as $line) {
@@ -111,7 +110,7 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
     private function overrideSelf($node, $ctx)
     {
         $variable = $ctx->emitter->emit($node->variableBase, $ctx);
-        $method = $node->method->phpCodeForConversion;
+        $method = $this->qualifyInternalClasses($node->method->phpCodeForConversion, $ctx);
 
         if (\is_array($method)) {
             return $this->emitChainedExpression($method, $variable);
@@ -120,11 +119,39 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
         return \str_replace('@self', $variable, $method);
     }
 
+    /**
+     * Replaces bare Internal class names (e.g. ArrayFunctions::) with their
+     * fully-qualified counterpart (e.g. PHireScript\Sandbox\Internal\Types\ArrayFunctions::).
+     */
+    private function qualifyInternalClasses(string|array $code, $ctx): string|array
+    {
+        if (empty($ctx->internalTypeClasses)) {
+            return $code;
+        }
+
+        $replace = static function (string $line) use ($ctx): string {
+            foreach ($ctx->internalTypeClasses as $shortName => $fqcn) {
+                $line = preg_replace(
+                    '/(?<!\\\\)\b' . preg_quote($shortName, '/') . '::/',
+                    '\\' . $fqcn . '::',
+                    $line
+                ) ?? $line;
+            }
+            return $line;
+        };
+
+        if (\is_array($code)) {
+            return array_map($replace, $code);
+        }
+
+        return $replace($code);
+    }
+
     private function emitChainedExpression(array $lines, string $self): string
     {
-        if (\count($lines) === 1 && \str_starts_with(\ltrim($lines[0]), 'return ')) {
-            $expr = \preg_replace('/^\s*return\s+/', '', $lines[0]);
-            $expr = \rtrim($expr, '; ');
+        if (\count($lines) === 1 && \str_starts_with(\ltrim((string) $lines[0]), 'return ')) {
+            $expr = \preg_replace('/^\s*return\s+/', '', (string) $lines[0]);
+            $expr = \rtrim((string) $expr, '; ');
             return \str_replace('@self', $self, $expr);
         }
 
@@ -165,7 +192,7 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
 
     private function normalizeParams($sentParams, $expected, $code, $ctx)
     {
-        $sentParams = $sentParams ?? [];
+        $sentParams ??= [];
 
         $hasNamed = false;
         $hasPositional = false;
@@ -236,7 +263,7 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
 
         $expectedNames = [];
         foreach ($expected as $expectedParam) {
-            $expectedNames[] = \ltrim($expectedParam->name, '@');
+            $expectedNames[] = \ltrim((string) $expectedParam->name, '@');
         }
 
         foreach (\array_keys($sentMap) as $sentName) {
@@ -252,7 +279,7 @@ class FunctionEmitter extends NodeEmitterAbstract implements NodeEmitter
 
         $params = [];
         foreach ($expected as $methodParamId => $expectedParam) {
-            $normalizedName = \ltrim($expectedParam->name, '@');
+            $normalizedName = \ltrim((string) $expectedParam->name, '@');
 
             if (isset($sentMap[$normalizedName])) {
                 $value = $ctx->emitter->emit($sentMap[$normalizedName]->value, $ctx);

@@ -22,6 +22,8 @@ class EmitContext
         public ?string $currentMethodReturnType = null,
         public readonly ?SymbolTable $symbolTable = null,
         public bool $insideExpression = false,
+        /** @var array<string, string> Maps bare class name → fully-qualified Internal class name */
+        public readonly array $internalTypeClasses = [],
     ) {
     }
 }

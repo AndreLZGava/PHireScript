@@ -62,7 +62,7 @@ class PackageContext extends AbstractContext
 
             $this->node->object = $classToken !== null
                 ? $classToken->value
-                : \pathinfo($this->node->file, \PATHINFO_FILENAME);
+                : \pathinfo((string) $this->node->file, \PATHINFO_FILENAME);
 
             $this->node->generateNamespace($parseContext);
             $this->node->validate();

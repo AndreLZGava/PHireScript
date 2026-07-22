@@ -26,6 +26,9 @@ class MethodDeclarationResolver implements ContextTokenResolver
         ParseContext $parseContext,
         AbstractContext $context
     ): void {
+        $attributes = $parseContext->pendingAttributes;
+        $parseContext->pendingAttributes = [];
+
         $modifiers = $this->handleModifiers($parseContext->consumePrevious());
         $method = new MethodDeclarationNode(
             token: $token,
@@ -33,6 +36,7 @@ class MethodDeclarationResolver implements ContextTokenResolver
             modifiers: empty($modifiers) ? ['public'] : $modifiers,
             mustBeBool: \str_ends_with((string) $token->value, '?'),
             mustBeVoid: \str_ends_with((string) $token->value, '!'),
+            attributes: $attributes,
         );
 
         $parseContext->contextManager->enter(
@@ -44,7 +48,7 @@ class MethodDeclarationResolver implements ContextTokenResolver
 
     private function handleModifiers($previousModifiers)
     {
-        $modifiers = $previousModifiers ? ModifiersResolver::getModifiers($previousModifiers) : [];
+        $modifiers = $previousModifiers ? ModifiersResolver::getModifiers((array) $previousModifiers) : [];
         return $modifiers ?? [];
     }
 }

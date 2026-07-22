@@ -8,6 +8,7 @@ use PHireScript\Compiler\Emitter\Base\NodeEmitterAbstract;
 use Exception;
 use PHireScript\Compiler\Emitter\Base\EmitContext;
 use PHireScript\Compiler\Emitter\Base\NodeEmitter;
+use PHireScript\Compiler\Parser\Ast\Nodes\Declarations\AttributeUsageNode;
 use PHireScript\Compiler\Parser\Ast\Nodes\OOP\MethodDeclarationNode;
 use PHireScript\Helper\Debug\Debug;
 
@@ -21,6 +22,14 @@ class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter
     public function emit(object $node, EmitContext $ctx): string
     {
         $indent = '    ';
+
+        $code = '';
+        foreach ($node->attributes as $attr) {
+            if ($attr instanceof AttributeUsageNode) {
+                $code .= $indent . $ctx->emitter->emit($attr, $ctx);
+            }
+        }
+
         $isMagicMethod  = !is_null($node->implements);
         // --------------------
         // modifiers
@@ -63,10 +72,10 @@ class MethodEmitter extends NodeEmitterAbstract implements NodeEmitter
         // abstract method
         // --------------------
         if (($node->abstract ?? false)) {
-            return "{$indent}{$signature}{$phpReturnType};\n\n";
+            return $code . "{$indent}{$signature}{$phpReturnType};\n\n";
         }
 
-        $code = "{$indent}{$signature}{$phpReturnType}";
+        $code .= "{$indent}{$signature}{$phpReturnType}";
         $code .= $ctx->emitter->emit($node->bodyCode, $ctx);
         return $code;
     }

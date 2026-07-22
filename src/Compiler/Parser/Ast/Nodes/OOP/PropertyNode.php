@@ -18,6 +18,7 @@ class PropertyNode extends Node
         public array $resolvedTypeInfo = [],
         public ?string $getter = null,
         public ?string $setter = null,
+        public array $attributes = [],
     ) {
     }
 }

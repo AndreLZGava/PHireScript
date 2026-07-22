@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PHireScript\Runtime\DefaultOverrideMethods\Types;
 
-use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseMethods;
 use PHireScript\Runtime\DefaultOverrideMethods\BaseParams;
 
@@ -79,7 +78,7 @@ class ArrayMethods extends GeneralType
     {
         return new BaseMethods(
             name: 'last',
-            phpCodeForConversion: 'empty(@self) ? null : @self[\array_key_last(@self)];',
+            phpCodeForConversion: 'ArrayFunctions::last(@self)',
             returnOfPhpExecution: ['Mixed'],
             subTypes: $this->types,
             params: [],
@@ -114,7 +113,7 @@ class ArrayMethods extends GeneralType
     {
         return new BaseMethods(
             name: 'removeValue',
-            phpCodeForConversion: '@self = array_filter(@self, fn($v) => $v !== @value)',
+            phpCodeForConversion: 'ArrayFunctions::removeValue(@self, @value)',
             returnOfPhpExecution: ['Array'],
             params: [
                 new BaseParams('@value', 'mixed', true)

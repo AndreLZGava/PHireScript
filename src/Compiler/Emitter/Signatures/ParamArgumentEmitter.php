@@ -20,7 +20,7 @@ class ParamArgumentEmitter extends NodeEmitterAbstract implements NodeEmitter
     public function emit(object $node, EmitContext $ctx): string
     {
         $resolved = \array_map(
-            static fn(string $t) => TypeResolver::isPrimitive($t) ? TypeResolver::nativeType($t) : $t,
+            static fn (string $t) => TypeResolver::isPrimitive($t) ? TypeResolver::nativeType($t) : $t,
             $node->types
         );
         $code = \implode('|', $resolved);

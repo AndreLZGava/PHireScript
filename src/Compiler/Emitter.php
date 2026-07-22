@@ -12,10 +12,13 @@ use PHireScript\Compiler\Emitter\Statements\IfStatementEmitter;
 use PHireScript\Compiler\Emitter\Statements\IssetOperatorEmitter;
 use PHireScript\Compiler\Emitter\Statements\NewExceptionEmitter;
 use PHireScript\Compiler\Emitter\Statements\NotOperatorEmitter;
+use PHireScript\Compiler\Emitter\Statements\ExceptionCallEmitter;
 use PHireScript\Compiler\Emitter\Statements\ThrowStatementEmitter;
 use PHireScript\Compiler\Emitter\Statements\TryEmitter;
 use PHireScript\Compiler\Emitter\Expressions\ArrayLiteralEmitter;
 use PHireScript\Compiler\Emitter\Declarations\ArrowFunctionEmitter;
+use PHireScript\Compiler\Emitter\Declarations\AttributeEmitter;
+use PHireScript\Compiler\Emitter\Declarations\AttributeUsageEmitter;
 use PHireScript\Compiler\Emitter\Statements\AssignmentEmitter;
 use PHireScript\Compiler\Emitter\Expressions\BinaryExpressionEmitter;
 use PHireScript\Compiler\Emitter\Expressions\GroupedExpressionEmitter;
@@ -60,6 +63,7 @@ use PHireScript\Compiler\Emitter\Expressions\StringEmitter;
 use PHireScript\Compiler\Emitter\Expressions\SuperTypeEmitter;
 use PHireScript\Compiler\Emitter\Expressions\ThisExpressionEmitter;
 use PHireScript\Compiler\Emitter\Declarations\ExternalCallEmitter;
+use PHireScript\Compiler\Emitter\Declarations\ExceptionEmitter;
 use PHireScript\Compiler\Emitter\Declarations\TraitEmitter;
 use PHireScript\Compiler\Emitter\Statements\VariableDeclarationEmitter;
 use PHireScript\Compiler\Emitter\Statements\VariableEmitter;
@@ -87,11 +91,14 @@ class Emitter
 
             new GlobalConstEmitter(),
 
+            new AttributeEmitter(),
+            new AttributeUsageEmitter(),
             new InterfaceEmitter(),
             new InterfaceBodyEmitter(),
             new ClassEmitter(),
             new ClassBodyEmitter(),
             new TraitEmitter(),
+            new ExceptionEmitter(),
             new InterfaceMethodEmitter(),
             new MethodEmitter(),
             new ReturnTypeEmitter(),
@@ -141,6 +148,7 @@ class Emitter
             new IssetOperatorEmitter(),
             new NotOperatorEmitter(),
             new ThrowStatementEmitter(),
+            new ExceptionCallEmitter(),
             new NewExceptionEmitter(),
             new CastingEmitter(),
             new ParamsListEmitter(),
@@ -160,8 +168,31 @@ class Emitter
             types: new PhpTypeResolver($this->config),
             dependencyManager: $this->dependencyManager,
             symbolTable: $this->symbolTable,
+            internalTypeClasses: $this->resolveInternalTypeClasses(),
         );
 
         return $this->dispatcher->emit($program, $context);
+    }
+
+    /** @return array<string, string> */
+    private function resolveInternalTypeClasses(): array
+    {
+        $namespace  = (string) ($this->config['namespace'] ?? 'PHireScript');
+        $phpShort   = (string) ($this->config['phpShort'] ?? '');
+        $compilerSrc = dirname(__DIR__, 2) . '/src';
+
+        $versionedDir = $compilerSrc . '/Internal/PHP' . $phpShort . '/Types';
+        $defaultDir   = $compilerSrc . '/Internal/Default/Types';
+        $typesDir     = is_dir($versionedDir) ? $versionedDir : $defaultDir;
+
+        $map   = [];
+        $files = glob($typesDir . '/*.php') ?: [];
+
+        foreach ($files as $file) {
+            $className = basename($file, '.php');
+            $map[$className] = $namespace . '\\Internal\\Types\\' . $className;
+        }
+
+        return $map;
     }
 }

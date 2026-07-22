@@ -18,6 +18,7 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\ClassBodyResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\Class\DependencyInjectionResolver;
 use PHireScript\Compiler\Parser\ParseContext;
+use PHireScript\Helper\Debug\Debug;
 use PHireScript\Runtime\Exceptions\CompileException;
 
 /**
@@ -44,6 +45,7 @@ class ClassContext extends AbstractContext
 
     public function handle(Token $token, ParseContext $parseContext): ?Node
     {
+        $this->consumePendingAttributes($parseContext);
         $this->handleModifiers($parseContext->consumePrevious());
         foreach ($this->resolvers as $keyResolver => $resolver) {
             if ($resolver->isTheCase($token, $parseContext, $this)) {
@@ -62,12 +64,20 @@ class ClassContext extends AbstractContext
         );
     }
 
-    private function handleModifiers($previousModifiers)
+    private function handleModifiers(mixed $previous): void
     {
-        $modifiers = $previousModifiers ? ModifiersResolver::getModifiers($previousModifiers) : [];
+        $modifiers = $previous ? ModifiersResolver::getModifiers((array) $previous) : [];
         if (!empty($modifiers)) {
             $this->node->modifiers = $modifiers;
         }
+    }
+
+    private function consumePendingAttributes(ParseContext $parseContext): void
+    {
+        foreach ($parseContext->pendingAttributes as $attr) {
+            $this->node->attributes[] = $attr;
+        }
+        $parseContext->pendingAttributes = [];
     }
 
     private function handleClassProperties(Token $token, int|string $keyResolver): void

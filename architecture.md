@@ -6,6 +6,7 @@
 src/
 ├── Compiler.php                        # Main entry point — orchestrates compilation
 ├── Transpiler.php                      # Runs the full pipeline for a single file
+├── Internal.php                        # PHP-version-aware runtime publisher (see § Internal)
 ├── SymbolTable.php                     # Global symbol registry (types, classes, functions)
 ├── DependencyGraphBuilder.php          # Topological sort for inter-file compile order
 │
@@ -204,7 +205,10 @@ src/
 │   │   │   │                           # dev flag, UseRegistry, PhpTypeResolver,
 │   │   │   │                           # DependencyGraphBuilder, EmitterDispatcher;
 │   │   │   │                           # state flags: insideInterface, insideClass,
-│   │   │   │                           # insideMethodSignature, currentMethodReturnType
+│   │   │   │                           # insideMethodSignature, currentMethodReturnType;
+│   │   │   │                           # internalTypeClasses: map of bare class name →
+│   │   │   │                           # FQCN for classes in Internal/Types/ (auto-populated
+│   │   │   │                           # by Emitter::resolveInternalTypeClasses())
 │   │   │   ├── UseRegistry.php         # Accumulates PHP `use` statements during emission;
 │   │   │   │                           # add(fqcn), render() → sorted `use` block
 │   │   │   └── Type/
@@ -260,6 +264,12 @@ src/
 │       ├── FunctionsHandler.php        # Post-processes function/method nodes
 │       ├── FunctionBodyProcessor.php   # Processes function body statements
 │       └── ObjectsHandler.php          # Post-processes object literal and instantiation nodes
+│
+├── Internal/
+│   ├── Default/                        # Fallback implementations (any PHP version)
+│   │   └── Types/                      # ArrayFunctions.php, GeneralFunctions.php, ...
+│   └── PHP83/                          # PHP 8.3-specific overrides (takes precedence over Default)
+│       └── Types/                      # Same structure — files here shadow Default equivalents
 │
 ├── Runtime/
 │   ├── RuntimeClass.php                # Constants: file extensions, modifier maps, defaults
@@ -337,6 +347,17 @@ PhpFileGeneratorHandler         src/Compiler/Processors/
   ▼
 FileManager::persist()          src/Compiler/FileManager.php
   Writes the .php file to the dist directory.
+  │
+  ▼
+Internal::createPHireScriptInternals()   src/Internal.php
+  Called once per build (inside Compiler::compile()) after all source files are
+  compiled. Selects the PHP-version-specific implementation folder
+  (Internal/PHP83/ or Internal/Default/), copies every .php file from it to
+  {dist}/Internal/Types/, then copies Runtime/Types/MetaTypes/ and
+  Runtime/Types/SuperTypes/ to {dist}/Internal/MetaTypes/ and
+  {dist}/Internal/SuperTypes/. All namespace declarations are rewritten to
+  match the project namespace from PHireScript.json (e.g.
+  PHireScript\Sandbox\Internal\Types\ArrayFunctions).
 ```
 
 ---
@@ -601,6 +622,7 @@ Passed to every emitter. Contains:
 | `$insideClass` | Flag: current scope is a class body |
 | `$insideMethodSignature` | Flag: currently emitting a method signature |
 | `$currentMethodReturnType` | The return type string of the method being emitted |
+| `$internalTypeClasses` | Map of bare class name → FQCN for every class in `Internal/{version}/Types/`. Populated by `Emitter::resolveInternalTypeClasses()` at context construction time. Used by `FunctionEmitter::qualifyInternalClasses()` to replace bare `ArrayFunctions::` with `\PHireScript\Sandbox\Internal\Types\ArrayFunctions::` in `phpCodeForConversion` strings before emission. |
 
 ### PhpTypeResolver
 
@@ -739,6 +761,73 @@ new BaseParams(
 
 ---
 
+## Internal — PHP-Version-Aware Runtime Publishing
+
+The `Internal` system provides the PHP standard-library helpers that PHireScript built-in type methods rely on. It is designed so the compiler can ship different implementations per PHP version while keeping the emitted namespace stable from the user's perspective.
+
+### Source layout
+
+```
+src/Internal/
+├── Default/          # Fallback — used when no version-specific folder matches
+│   └── Types/        # ArrayFunctions.php, GeneralFunctions.php, ...
+└── PHP83/            # PHP 8.3-specific implementations (shadow Default/Types/)
+    └── Types/        # Same filenames — these take precedence over Default/
+```
+
+`Runtime/Types/MetaTypes/` and `Runtime/Types/SuperTypes/` are also part of this system and are published alongside the Types folder.
+
+### How version selection works (`Internal.php`)
+
+`Internal::createPHireScriptInternals()` is called by `Compiler::compile()` after all source files are compiled. It:
+
+1. Reads `phpShort` from the config (e.g. `83` for PHP 8.3).
+2. Checks if `src/Internal/PHP{phpShort}/` exists — if yes, uses it; otherwise falls back to `src/Internal/Default/`.
+3. Copies every `.php` from the selected folder to `{dist}/Internal/Types/`.
+4. Copies `Runtime/Types/MetaTypes/*.php` to `{dist}/Internal/MetaTypes/`.
+5. Copies `Runtime/Types/SuperTypes/*.php` to `{dist}/Internal/SuperTypes/`.
+6. Copies the abstract base classes `Runtime/Types/MetaTypes.php` and `Runtime/Types/SuperTypes.php` to `{dist}/Internal/`.
+7. Rewrites all `namespace` declarations to use the project namespace from `PHireScript.json`:
+
+| Original namespace | Published namespace (namespace = `PHireScript\Sandbox`) |
+|---|---|
+| `PHireScript\Internal\Default\Types` | `PHireScript\Sandbox\Internal\Types` |
+| `PHireScript\Internal\PHP83\Types` | `PHireScript\Sandbox\Internal\Types` |
+| `PHireScript\Runtime\Types\MetaTypes` | `PHireScript\Sandbox\Internal\MetaTypes` |
+| `PHireScript\Runtime\Types\SuperTypes` | `PHireScript\Sandbox\Internal\SuperTypes` |
+| `PHireScript\Runtime\Types` (base classes) | `PHireScript\Sandbox\Internal` |
+
+Cross-group `use` statements (e.g. a `MetaTypes` class referencing `SuperTypes\CardNumber`) are also rewritten automatically.
+
+### FQCN injection at emit time (`FunctionEmitter`)
+
+`DefaultOverrideMethods` descriptors reference Internal helpers by their short class name:
+
+```php
+phpCodeForConversion: 'ArrayFunctions::add(@self, @key, @value)'
+```
+
+At emit time, `FunctionEmitter::qualifyInternalClasses()` replaces every bare class name found in `$ctx->internalTypeClasses` with its fully-qualified counterpart:
+
+```php
+// before qualification
+ArrayFunctions::add($myArray, 'key', $value)
+
+// after qualification
+\PHireScript\Sandbox\Internal\Types\ArrayFunctions::add($myArray, 'key', $value)
+```
+
+`$ctx->internalTypeClasses` is built once per file by `Emitter::resolveInternalTypeClasses()`, which scans the selected `Internal/{version}/Types/` folder dynamically — no hardcoded class list. Any new file added to that folder is picked up automatically on the next build.
+
+### Adding a new PHP-version helper class
+
+1. Create `src/Internal/PHP{ver}/Types/MyFunctions.php` (or `Default/Types/` if version-agnostic).
+2. Declare any namespace — it will be rewritten at publish time.
+3. Add a public method returning a `BaseMethods` in the corresponding `DefaultOverrideMethods/Types/YourTypeMethods.php`, referencing `MyFunctions::yourMethod(@self, ...)` in `phpCodeForConversion`.
+4. Run the build — the class is published and the FQCN is injected automatically.
+
+---
+
 ## Adding a New Language Feature
 
 Minimum required files, in pipeline order:
@@ -810,9 +899,10 @@ PHire-Script-Sandbox/samples/success/case_N/
 1. Open `src/Runtime/DefaultOverrideMethods/Types/YourTypeMethods.php`
 2. Add a public method returning a `BaseMethods` instance
 3. Define `phpCodeForConversion` using `@self` and `@paramName` placeholders
-4. List parameters via `BaseParams`
+4. If the implementation needs a PHP helper class (e.g. `ArrayFunctions::myHelper`), add the static method to the appropriate file in `src/Internal/PHP83/Types/` or `src/Internal/Default/Types/` — it will be published and FQCN-qualified automatically
+5. List parameters via `BaseParams`
 
 ### Adding methods for a new type
 1. Create `src/Runtime/DefaultOverrideMethods/Types/YourTypeMethods.php` extending `GeneralType`
-2. Register it so the compiler maps the PHireScript type to your class
-3. `SymbolTableManager` auto-discovers it at parse startup — no manual wiring needed
+2. `SymbolTableManager` auto-discovers it at parse startup — no manual wiring needed
+3. If you need a companion helper class, create `src/Internal/Default/Types/YourTypeFunctions.php` — it will be copied to `{dist}/Internal/Types/` and its short name will be available in `phpCodeForConversion` without any additional registration

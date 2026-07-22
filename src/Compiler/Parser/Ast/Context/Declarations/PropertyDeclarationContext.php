@@ -6,6 +6,7 @@ namespace PHireScript\Compiler\Parser\Ast\Context\Declarations;
 
 use PHireScript\Compiler\Parser\Ast\Context\AbstractContext;
 use PHireScript\Compiler\Parser\Ast\Resolver\Root\IdentifierResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Root\PropertyNameResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\AssignmentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\CommentResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Statements\EndOfLineResolver;
@@ -26,16 +27,13 @@ class PropertyDeclarationContext extends AbstractContext
 {
     private array $resolvers = [];
 
-    private ?VariableManager $variables;
-
-    public function __construct(PropertyNode $node, ?VariableManager $variables = null)
+    public function __construct(PropertyNode $node, private readonly ?VariableManager $variables = null)
     {
         parent::__construct($node);
-        $this->variables = $variables;
 
         $this->resolvers = [
             'types[]' => new TypeResolver(),
-            'name' => new IdentifierResolver(),
+            'name' => new PropertyNameResolver(),
             new PipeResolver(),
             new EndOfLineResolver(),
             new AssignmentResolver(),

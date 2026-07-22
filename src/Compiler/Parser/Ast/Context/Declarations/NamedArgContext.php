@@ -13,6 +13,7 @@ use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalMethodCallResol
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\ExternalPropertyAccessResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\IgnoreColonResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ArrayLiteralResolver;
+use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\ObjectLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\BoolLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\NumberLiteralResolver;
 use PHireScript\Compiler\Parser\Ast\Resolver\Expressions\Types\StringLiteralResolver;
@@ -21,6 +22,8 @@ use PHireScript\Compiler\Parser\Ast\Nodes\Node;
 use PHireScript\Compiler\Parser\Managers\Token\Token;
 use PHireScript\Compiler\Parser\ParseContext;
 use PHireScript\Runtime\Exceptions\CompileException;
+// Declare ParamsConsumptionContext for closing-paren propagation check
+use PHireScript\Compiler\Parser\Ast\Context\Declarations\ParamsConsumptionContext;
 
 /**
  * @extends AbstractContext<NamedArgNode>
@@ -43,6 +46,7 @@ class NamedArgContext extends AbstractContext
             new NumberLiteralResolver(),
             new BoolLiteralResolver(),
             new ArrayLiteralResolver(),
+            new ObjectLiteralResolver(),
             new VariableReferenceResolver(),
         ];
     }
@@ -73,6 +77,16 @@ class NamedArgContext extends AbstractContext
         $value = end($this->children);
         if ($value !== false) {
             $this->node->value = $value;
+        }
+
+        // When closing via ')' and the parent is ParamsConsumptionContext, close it too
+        if ($token->isClosingParenthesis() && $parseContext->contextManager !== null) {
+            $current = $parseContext->contextManager->current();
+            if ($current instanceof ParamsConsumptionContext) {
+                $current->onClose($token, $parseContext);
+                $parseContext->contextManager->exit();
+                $current->afterClose($token, $parseContext);
+            }
         }
     }
 }
